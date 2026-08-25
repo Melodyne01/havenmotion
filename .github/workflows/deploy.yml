@@ -33,6 +33,12 @@ jobs:
 
       - name: Préparer la clé SSH
         run: |
+          if [ -z "${{ secrets.VPS_SSH_KEY }}" ]; then
+            echo "::error::Le secret VPS_SSH_KEY est absent ou vide."
+            echo "::error::Ajoutez la clé privée SSH du compte de déploiement dans"
+            echo "::error::Settings → Secrets and variables → Actions → New repository secret."
+            exit 1
+          fi
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
