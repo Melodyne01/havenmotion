@@ -7,7 +7,7 @@ CONFIG_FILE="dist/web/browser/config.js"
 cat > "$CONFIG_FILE" <<CONFIG
 window.__VNL_CONFIG__ = {
   apiBaseUrl: '${VNL_PUBLIC_API_BASE_URL:-/api}',
-  siteOrigin: '${VNL_SITE_ORIGIN:-https://studiovnl.fr}',
+  siteOrigin: '${VNL_SITE_ORIGIN:-https://heavenmotion.be}',
 };
 CONFIG
 

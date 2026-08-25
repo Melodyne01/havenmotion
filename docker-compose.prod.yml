@@ -35,12 +35,12 @@ services:
       Email__UseSsl: 'true'
       Email__UserName: ${SMTP_USERNAME:-}
       Email__Password: ${SMTP_PASSWORD:-}
-      Email__FromAddress: ${MAIL_FROM:-no-reply@studiovnl.fr}
+      Email__FromAddress: ${MAIL_FROM:-no-reply@heavenmotion.be}
       Seed__AdminEmail: ${ADMIN_EMAIL:-admin@studiovnl.fr}
       Seed__AdminPassword: ${ADMIN_PASSWORD:-}
       MediaStorage__Provider: LocalDisk
       MediaStorage__LocalDisk__RootPath: /data/media
-      Cors__AllowedOrigins__0: ${SITE_ORIGIN:-https://studiovnl.fr}
+      Cors__AllowedOrigins__0: ${SITE_ORIGIN:-https://heavenmotion.be}
     volumes:
       - media-data:/data/media
 
@@ -53,11 +53,11 @@ services:
       - api
     environment:
       PORT: '4000'
-      VNL_ALLOWED_HOSTS: ${ALLOWED_HOSTS:-studiovnl.fr,www.studiovnl.fr,localhost}
+      VNL_ALLOWED_HOSTS: ${ALLOWED_HOSTS:-heavenmotion.be,www.heavenmotion.be,localhost}
       VNL_API_BASE_URL: http://api:5080/api
       VNL_API_PROXY_TARGET: http://api:5080
       VNL_PUBLIC_API_BASE_URL: /api
-      VNL_SITE_ORIGIN: ${SITE_ORIGIN:-https://studiovnl.fr}
+      VNL_SITE_ORIGIN: ${SITE_ORIGIN:-https://heavenmotion.be}
     ports:
       - '127.0.0.1:4000:4000'
 

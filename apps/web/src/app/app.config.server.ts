@@ -13,7 +13,7 @@ const serverConfig: ApplicationConfig = {
       provide: APP_CONFIG,
       useFactory: () => ({
         apiBaseUrl: process.env['VNL_API_BASE_URL'] ?? 'http://localhost:5080/api',
-        siteOrigin: process.env['VNL_SITE_ORIGIN'] ?? 'https://studiovnl.fr',
+        siteOrigin: process.env['VNL_SITE_ORIGIN'] ?? 'https://heavenmotion.be',
       }),
     },
   ],

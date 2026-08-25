@@ -4,5 +4,5 @@
 // Ne contient que des URL publiques : aucun secret ne doit y être ajouté.
 window.__VNL_CONFIG__ = {
   apiBaseUrl: '/api',
-  siteOrigin: 'https://studiovnl.fr',
+  siteOrigin: 'https://heavenmotion.be',
 };

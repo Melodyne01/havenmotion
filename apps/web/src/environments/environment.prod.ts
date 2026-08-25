@@ -2,5 +2,5 @@
 export const environment = {
   production: true,
   apiBaseUrl: '/api',
-  siteOrigin: 'https://studiovnl.fr',
+  siteOrigin: 'https://heavenmotion.be',
 };

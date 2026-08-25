@@ -23,7 +23,7 @@ env:
   DEPLOY_HOST: 195.35.1.21
   DEPLOY_USER: deploy
   DEPLOY_PATH: /opt/havenmotion
-  DEPLOY_URL: https://havenmotion.beetee.be/
+  DEPLOY_URL: https://heavenmotion.be/
 
 jobs:
   deploy:
@@ -64,7 +64,15 @@ jobs:
           set -eu
           cd "$DEPLOY_PATH"
           if [ -f .env ]; then
-            echo ".env déjà présent, rien à faire."
+            # Les secrets sont conservés ; seules les valeurs dérivées du
+            # domaine sont réalignées (changement de domaine sans redéploiement
+            # manuel).
+            sed -i \
+              -e 's|^SITE_ORIGIN=.*|SITE_ORIGIN=https://heavenmotion.be|' \
+              -e 's|^ALLOWED_HOSTS=.*|ALLOWED_HOSTS=heavenmotion.be,www.heavenmotion.be,localhost|' \
+              -e 's|^MAIL_FROM=.*|MAIL_FROM=no-reply@heavenmotion.be|' \
+              .env
+            echo ".env déjà présent : valeurs de domaine réalignées."
             exit 0
           fi
           ADMIN_PWD="Vnl-$(openssl rand -hex 6)!"
@@ -75,11 +83,11 @@ jobs:
           SMTP_PORT=587
           SMTP_USERNAME=
           SMTP_PASSWORD=
-          MAIL_FROM=no-reply@havenmotion.beetee.be
+          MAIL_FROM=no-reply@heavenmotion.be
           ADMIN_EMAIL=admin@studiovnl.fr
           ADMIN_PASSWORD=$ADMIN_PWD
-          SITE_ORIGIN=https://havenmotion.beetee.be
-          ALLOWED_HOSTS=havenmotion.beetee.be,localhost
+          SITE_ORIGIN=https://heavenmotion.be
+          ALLOWED_HOSTS=heavenmotion.be,localhost
           ENV
           chmod 600 .env
           printf 'Backoffice : admin@studiovnl.fr / %s\n' "$ADMIN_PWD" > BACKOFFICE-ACCES.txt
