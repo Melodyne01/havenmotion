@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hugee — Studio de développement web à Beersel</title>
+<meta name="description" content="Hugee code des sites pour les commerces et les PME du sud de Bruxelles, en français et en néerlandais. À partir de 1 500 €, en ligne en trois semaines.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css?v=2">
+<link rel="stylesheet" href="css/app.css?v=2">
+<noscript><style>.rev{opacity:1;transform:none}.rise{animation:none}.line{animation:none}</style></noscript>
+</head>
+<body>
+
+<!-- ============ NAVIGATION ============ -->
+<header class="nav">
+  <a class="brand" href="index.html"><span class="dot"></span>Hugee</a>
+  <nav class="nav-links" aria-label="Navigation principale">
+    <a href="#commerces">Commerces</a>
+    <a href="#pme">Sur-mesure</a>
+    <a href="tarifs.html">Tarifs</a>
+    <a href="#realisations">Réalisations</a>
+    <a href="#questions">Questions</a>
+    <a class="btn btn-primary mag" href="#analyse">Analyse gratuite →</a>
+  </nav>
+  <div class="prg"></div>
+</header>
+
+<!-- ============ HÉROS ============ -->
+<section class="hero">
+  <canvas class="tjc" data-mode="hero" aria-hidden="true"></canvas>
+  <div class="glow" style="width:520px;height:520px;background:var(--color-section-glow);opacity:.5;top:-160px;left:-80px" aria-hidden="true"></div>
+  <div class="glow" style="width:380px;height:380px;background:var(--color-accent-700);opacity:.35;top:120px;right:-60px;animation-delay:-7s" aria-hidden="true"></div>
+  <div class="wrap hero-in">
+    <p class="kicker rise">Sites pour commerces · Outils sur-mesure · FR &amp; NL</p>
+    <h1>
+      <span class="rise" style="animation-delay:.08s">Des sites construits,</span>
+      <span class="rise" style="animation-delay:.18s">pas assemblés.</span>
+      <span class="rise l3" style="animation-delay:.28s">Codés ici, à Beersel.</span>
+    </h1>
+    <p class="sub rise" style="animation-delay:.38s">
+      Nous codons des sites pour les commerces et les PME entre Bruxelles et Halle,
+      en français et en néerlandais. Écrivez-nous aujourd'hui : vous avez une réponse
+      écrite sous 48 heures.
+    </p>
+    <div class="hero-cta rise" style="animation-delay:.48s">
+      <a class="btn btn-primary mag" href="#analyse">Analyse gratuite →</a>
+      <a class="btn btn-secondary" href="#pme">Projet sur-mesure</a>
+    </div>
+    <div class="hero-tags rise" style="animation-delay:.58s">
+      <span class="tag tag-outline">En ligne en 3 semaines</span>
+      <span class="tag tag-outline">Français + néerlandais</span>
+      <span class="tag tag-outline">Le site vous appartient</span>
+      <span class="tag tag-outline">On se déplace chez vous</span>
+    </div>
+    <div class="line" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- ============ BANDEAU DÉFILANT ============ -->
+<div class="marq-wrap" aria-hidden="true">
+  <div class="marq">
+    <span>Beersel<i>·</i>Halle<i>·</i>Sint-Pieters-Leeuw<i>·</i>Rhode-Saint-Genèse<i>·</i>Drogenbos<i>·</i>Uccle<i>·</i>Dilbeek<i>·</i>Sites codés<i>·</i>Fiches Google<i>·</i>Portails clients<i>·</i>FR / NL<i>·</i></span>
+    <span>Beersel<i>·</i>Halle<i>·</i>Sint-Pieters-Leeuw<i>·</i>Rhode-Saint-Genèse<i>·</i>Drogenbos<i>·</i>Uccle<i>·</i>Dilbeek<i>·</i>Sites codés<i>·</i>Fiches Google<i>·</i>Portails clients<i>·</i>FR / NL<i>·</i></span>
+  </div>
+</div>
+
+<!-- ============ LES DEUX PORTES ============ -->
+<section class="doors rev" id="commerces">
+  <div class="wrap">
+    <p class="kicker">Deux façons de travailler avec nous</p>
+    <h2>Vous êtes plutôt lequel des deux&nbsp;?</h2>
+    <div class="doors-grid">
+
+      <article class="card sv spot tilt">
+        <div class="spotlay" aria-hidden="true"></div>
+        <p class="num">Porte 01 — Commerces <span class="arw">↗</span></p>
+        <h3>Vous tenez un commerce</h3>
+        <p class="promise">Un site qui fait sonner le téléphone.</p>
+        <ul>
+          <li>Votre site sort quand on tape votre métier et votre commune dans Google.</li>
+          <li>Votre fiche Google est complète&nbsp;: horaires, photos, téléphone, itinéraire.</li>
+          <li>Vos clients contents laissent un avis. On leur facilite le geste.</li>
+          <li>Chaque mois, une page&nbsp;: combien d'appels, d'où viennent les gens.</li>
+        </ul>
+        <p class="anchor-line">À partir de 1 500 €, tout compris. En ligne en trois semaines.</p>
+        <a class="btn btn-primary mag" href="#analyse">Analyse gratuite →</a>
+      </article>
+
+      <article class="card sv spot tilt" id="pme">
+        <div class="spotlay" aria-hidden="true"></div>
+        <p class="num">Porte 02 — Sur-mesure <span class="arw">↗</span></p>
+        <h3>Vous dirigez une PME</h3>
+        <p class="promise">Un outil qui colle à votre façon de travailler.</p>
+        <ul>
+          <li>Un portail où vos clients suivent leurs commandes sans vous appeler.</li>
+          <li>Vos logiciels actuels restent en place. On construit autour.</li>
+          <li>Les tâches que votre équipe refait chaque semaine, la machine les fait la nuit.</li>
+          <li>Le code est documenté et vous appartient. Un autre développeur peut le reprendre demain.</li>
+        </ul>
+        <p class="anchor-line">Tout commence par un cadrage facturé&nbsp;: quelques jours pour poser le périmètre et les risques. Le document vous reste, même si vous vous arrêtez là.</p>
+        <a class="btn btn-secondary" href="#contact">Décrire votre besoin →</a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ ZONE D'INTERVENTION ============ -->
+<hr class="sep">
+<div class="zone rev">
+  <div class="wrap">
+    <p><strong>Nous travaillons à</strong> Beersel, Halle, Sint-Pieters-Leeuw, Rhode-Saint-Genèse, Drogenbos, Uccle et Dilbeek. On vient sur place, c'est compris dans le prix.</p>
+  </div>
+</div>
+
+<!-- ============ PREUVE / CHIFFRES ============ -->
+<section class="stats rev">
+  <div class="stats-grid wrap" style="padding:0">
+    <div class="stat"><div class="ctr" data-to="3" data-suffix=" semaines">0</div><small>entre la commande et la mise en ligne</small></div>
+    <div class="stat"><div class="ctr" data-to="2" data-suffix=" langues">0</div><small>chaque site, en français et en néerlandais</small></div>
+    <div class="stat"><div class="ctr" data-to="7" data-suffix=" communes">0</div><small>desservies, déplacement compris</small></div>
+  </div>
+</section>
+
+<!-- ============ POURQUOI NOUS ============ -->
+<section class="why rev">
+  <div class="wrap">
+    <p class="kicker">Pourquoi nous</p>
+    <h2>Trois choses qu'on fait autrement</h2>
+    <div class="why-grid">
+      <div class="why-item">
+        <p class="num">01</p>
+        <h3>Nous écrivons le code</h3>
+        <p>Pas de template acheté, pas de constructeur en ligne. Concrètement&nbsp;: vos pages chargent en moins d'une seconde, et quand votre activité change, le site suit au lieu de vous bloquer.</p>
+      </div>
+      <div class="why-item">
+        <p class="num">02</p>
+        <h3>Deux langues, deux sites</h3>
+        <p>Une version française et une version néerlandaise, chacune écrite pour ses lecteurs et référencée de son côté. Ici, la moitié de vos clients cherche «&nbsp;kapper&nbsp;», pas «&nbsp;coiffeur&nbsp;».</p>
+      </div>
+      <div class="why-item">
+        <p class="num">03</p>
+        <h3>On travaille où vous êtes</h3>
+        <p>Le studio est à Beersel. Avant d'écrire une ligne, on vient voir votre commerce, votre atelier ou vos bureaux. On sait à quoi ressemble votre journée avant de parler de votre site.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ============ RÉALISATIONS ============ -->
+<section class="work rev" id="realisations">
+  <div class="wrap">
+    <p class="kicker">Réalisations</p>
+    <h2>Ce qu'on mesure, pas ce qu'on montre</h2>
+    <p class="work-note">Le studio ouvre. Ces trois emplacements attendent nos trois premiers clients&nbsp;: les chiffres publiés ici seront les leurs, datés et vérifiables. Pas de faux logos en attendant.</p>
+    <div class="work-grid">
+      <div class="work-card sv spot tilt">
+        <div class="spotlay" aria-hidden="true"></div>
+        <div class="ph plx" data-speed="-0.06"></div>
+        <div class="txt">
+          <h3>[+N appels par mois] pour [un restaurant, commune]</h3>
+          <p>[Résumé du projet en deux phrases — à publier à la livraison]</p>
+        </div>
+      </div>
+      <div class="work-card sv spot tilt">
+        <div class="spotlay" aria-hidden="true"></div>
+        <div class="ph plx" data-speed="-0.09"></div>
+        <div class="txt">
+          <h3>[N rendez-vous pris en ligne le premier mois] pour [un cabinet, commune]</h3>
+          <p>[Résumé du projet en deux phrases — à publier à la livraison]</p>
+        </div>
+      </div>
+      <div class="work-card sv spot tilt">
+        <div class="spotlay" aria-hidden="true"></div>
+        <div class="ph plx" data-speed="-0.06"></div>
+        <div class="txt">
+          <h3>[N demandes de devis en N semaines] pour [un artisan, commune]</h3>
+          <p>[Résumé du projet en deux phrases — à publier à la livraison]</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ANALYSE GRATUITE ============ -->
+<section class="free rev" id="analyse">
+  <div class="wrap">
+    <div class="free-box">
+      <div class="glow" style="width:340px;height:340px;background:var(--color-section-glow);opacity:.45;top:-30%;right:-8%" aria-hidden="true"></div>
+      <p class="kicker">Gratuit, sans suite obligée</p>
+      <h2>On regarde comment votre commerce ressort sur Google</h2>
+      <p class="lead">Donnez-nous le nom de votre établissement. On vérifie ce qu'un client voit en vous cherchant, et on vous envoie nos constats par écrit sous 48 heures.</p>
+      <form action="[FORM_ENDPOINT]" method="post">
+        <label for="etab">Le nom de votre établissement</label>
+        <input id="etab" name="etablissement" type="text" placeholder="Ex.&nbsp;: Boulangerie Vandenbroeck, Halle" required>
+        <button class="btn btn-primary mag" type="submit">Recevoir l'analyse →</button>
+      </form>
+      <p class="micro">Pas de liste d'envoi, pas de rappel commercial. Une seule réponse, écrite à la main.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faqs rev" id="questions">
+  <div class="wrap">
+    <p class="kicker">Questions fréquentes</p>
+    <h2 style="font-size:34px">Ce qu'on nous demande avant de signer</h2>
+    <div class="faq-list">
+
+      <div class="faq">
+        <button class="faq-q" aria-expanded="false"><span>Combien coûte un site&nbsp;?</span><span class="faq-ic">+</span></button>
+        <div class="faq-a"><p>Pour un commerce&nbsp;: à partir de 1 500 €, et la plupart de nos sites restent sous 4 000 €. Le prix est fixé par écrit avant de commencer, et il ne bouge plus, sauf si vous demandez autre chose en cours de route. Pour un projet d'entreprise, on chiffre après le cadrage.</p></div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-q" aria-expanded="false"><span>Trois semaines, vraiment&nbsp;?</span><span class="faq-ic">+</span></button>
+        <div class="faq-a"><p>Oui, à une condition&nbsp;: que vous nous donniez vos textes et vos photos la première semaine. C'est presque toujours ça qui bloque. Au premier rendez-vous, vous repartez avec la liste exacte de ce qu'il nous faut, et on vous relance si quelque chose manque.</p></div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-q" aria-expanded="false"><span>Je pourrai modifier le site moi-même&nbsp;?</span><span class="faq-ic">+</span></button>
+        <div class="faq-a"><p>Oui, pour ce qui change souvent&nbsp;: vos horaires, votre carte, vos photos, vos prix. On vous montre comment faire à la livraison, chez vous, sur votre ordinateur. Pour le reste, un mail suffit&nbsp;: la modification est faite sous deux jours ouvrés.</p></div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-q" aria-expanded="false"><span>Le site m'appartient&nbsp;?</span><span class="faq-ic">+</span></button>
+        <div class="faq-a"><p>Entièrement. Le nom de domaine est enregistré à votre nom, les accès sont chez vous, et le code vous est remis. Si vous partez ailleurs dans deux ans, vous emportez tout. Aucun abonnement n'est obligatoire pour garder un site que vous avez payé.</p></div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-q" aria-expanded="false"><span>Et le néerlandais&nbsp;?</span><span class="faq-ic">+</span></button>
+        <div class="faq-a"><p>Chaque site existe deux fois&nbsp;: une version française et une version néerlandaise, chacune écrite pour ses lecteurs et référencée de son côté. Un client de Halle qui tape «&nbsp;loodgieter&nbsp;» ne trouvera jamais une page traduite automatiquement depuis le français. La nôtre, si.</p></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact rev" id="contact">
+  <div class="wrap">
+    <p class="kicker">Contact</p>
+    <h2 style="font-size:34px">Un projet, une question, ou juste vérifier qu'on existe</h2>
+    <div class="contact-grid">
+      <div class="cv">
+        <span class="kicker">Par téléphone</span>
+        <a class="big" href="tel:[NUMÉRO]">[numéro de téléphone]</a>
+        <p>Du lundi au vendredi, de 9 h à 18 h. Si on est en rendez-vous, on rappelle le jour même.</p>
+      </div>
+      <div class="cv">
+        <span class="kicker">Par écrit</span>
+        <a class="big" href="mailto:[EMAIL]">[adresse email]</a>
+        <p>Réponse écrite sous 48 heures, en français ou en néerlandais.</p>
+      </div>
+      <div class="cv">
+        <span class="kicker">Sur place</span>
+        <a class="big" href="#analyse">On passe chez vous</a>
+        <p>Dites-nous où et quand. Le déplacement est compris, dans les sept communes qu'on dessert.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA FINAL ============ -->
+<section class="cta">
+  <div class="glow" style="width:520px;height:320px;background:var(--color-section-glow);opacity:.55;bottom:-140px;left:20%" aria-hidden="true"></div>
+  <div class="wrap cta-in">
+    <div>
+      <p class="kicker">On commence&nbsp;?</p>
+      <h2>Dites-nous le nom de votre établissement.</h2>
+    </div>
+    <a class="btn btn-primary mag" href="#analyse">Analyse gratuite →</a>
+  </div>
+</section>
+
+<!-- ============ PIED DE PAGE ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:14px"><span class="dot"></span>Hugee</a>
+        <p style="margin-top:14px">Studio de développement web<br>[adresse exacte], Beersel<br>TVA [numéro de TVA]</p>
+      </div>
+      <div>
+        <h4>Le site</h4>
+        <a href="#commerces">Commerces</a>
+        <a href="#pme">Sur-mesure</a>
+        <a href="tarifs.html">Tarifs</a>
+        <a href="#realisations">Réalisations</a>
+        <a href="#questions">Questions</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="tel:[NUMÉRO]">[numéro de téléphone]</a>
+        <a href="mailto:[EMAIL]">[adresse email]</a>
+        <a href="#analyse">Analyse gratuite</a>
+      </div>
+      <div>
+        <h4>Taal</h4>
+        <a href="[lien version NL]">Nederlandse versie</a>
+      </div>
+    </div>
+    <div class="foot-legal">
+      <span>© 2026 Hugee — Beersel</span>
+      <span><a href="[lien mentions légales]">Mentions légales</a> · <a href="[lien vie privée]">Vie privée</a></span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ BARRE COLLANTE BAS ============ -->
+<div class="dock">
+  <span class="avail"><span class="dot"></span>Studio à Beersel · réponse écrite sous 48 h</span>
+  <div class="btns">
+    <a class="btn btn-secondary" href="tel:[NUMÉRO]">Appeler</a>
+    <a class="btn btn-primary mag" href="#analyse">Analyse gratuite</a>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="js/scene.js?v=2" defer></script>
+<script src="js/motion.js?v=2" defer></script>
+</body>
+</html>

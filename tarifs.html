@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarifs — Hugee, studio de développement web à Beersel</title>
+<meta name="description" content="Les prix des sites Hugee pour commerces et indépendants : trois formules à prix ferme, au projet ou en abonnement. Les projets sur-mesure se chiffrent après cadrage.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css?v=2">
+<link rel="stylesheet" href="css/app.css?v=2">
+<noscript><style>.rev{opacity:1;transform:none}.rise{animation:none}.line{animation:none}</style></noscript>
+</head>
+<body>
+
+<!-- ============ NAVIGATION ============ -->
+<header class="nav">
+  <a class="brand" href="index.html"><span class="dot"></span>Hugee</a>
+  <nav class="nav-links" aria-label="Navigation principale">
+    <a href="index.html#commerces">Commerces</a>
+    <a href="index.html#pme">Sur-mesure</a>
+    <a href="tarifs.html" class="active">Tarifs</a>
+    <a href="index.html#realisations">Réalisations</a>
+    <a href="index.html#questions">Questions</a>
+    <a class="btn btn-primary mag" href="index.html#analyse">Analyse gratuite →</a>
+  </nav>
+  <div class="prg"></div>
+</header>
+
+<!-- ============ EN-TÊTE ============ -->
+<section class="phead">
+  <canvas class="tjc" data-mode="ring" aria-hidden="true"></canvas>
+  <div class="glow" style="width:460px;height:300px;background:var(--color-section-glow);opacity:.45;top:-120px;right:10%" aria-hidden="true"></div>
+  <div class="wrap phead-in">
+    <div>
+      <p class="kicker rise">Tarifs · Commerces et indépendants</p>
+      <h1 class="rise" style="animation-delay:.1s">Trois formules, un prix ferme.</h1>
+      <p class="lead rise" style="animation-delay:.2s">
+        Le prix est fixé par écrit avant de commencer et ne bouge plus.
+        Les projets sur-mesure pour PME ne sont pas ici&nbsp;: ils se chiffrent après un cadrage facturé.
+      </p>
+    </div>
+    <div class="toggle rise" style="animation-delay:.3s" role="group" aria-label="Mode de paiement">
+      <button type="button" class="active" data-mode="projet">Au projet</button>
+      <button type="button" data-mode="abo">Abonnement</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TROIS OFFRES ============ -->
+<section class="offers rev">
+  <div class="wrap offers-grid">
+
+    <article class="offer sv spot tilt">
+      <div class="spotlay" aria-hidden="true"></div>
+      <p class="name">Présence</p>
+      <p class="price" data-projet="1 500 €" data-abo="79 €">1 500 €</p>
+      <p class="unit" data-projet="prix ferme, en une fois" data-abo="par mois, 24 mois, site compris">prix ferme, en une fois</p>
+      <p class="desc">Pour être trouvé et appelé&nbsp;: une page solide, votre fiche Google reprise en main, vos horaires à jour.</p>
+      <a class="btn btn-secondary btn-block" href="index.html#analyse">Analyse gratuite →</a>
+      <ul>
+        <li>Site d'une page, en français et en néerlandais</li>
+        <li>Fiche Google reprise et complétée</li>
+        <li>Domaine et hébergement, première année comprise</li>
+        <li>En ligne en deux semaines</li>
+        <li>Prise en main montrée chez vous, à la livraison</li>
+      </ul>
+    </article>
+
+    <article class="offer hot sv spot tilt">
+      <div class="spotlay" aria-hidden="true"></div>
+      <p class="name">Commerce <span class="tag tag-accent">Le plus choisi</span></p>
+      <p class="price" data-projet="2 400 €" data-abo="119 €">2 400 €</p>
+      <p class="unit" data-projet="prix ferme, paiement en 3 fois" data-abo="par mois, 24 mois, tout compris">prix ferme, paiement en 3 fois</p>
+      <p class="desc">Le site complet qui fait sonner le téléphone, avec les avis clients et un rapport mensuel que vous lisez en deux minutes.</p>
+      <a class="btn btn-primary btn-block mag" href="index.html#analyse">Analyse gratuite →</a>
+      <ul>
+        <li>Site complet, en français et en néerlandais</li>
+        <li>Fiche Google optimisée, photos comprises</li>
+        <li>Collecte d'avis clients mise en place</li>
+        <li>Rapport mensuel&nbsp;: appels, visites, provenance</li>
+        <li>En ligne en trois semaines</li>
+        <li>Modifications faites sous deux jours ouvrés</li>
+      </ul>
+    </article>
+
+    <article class="offer sv spot tilt">
+      <div class="spotlay" aria-hidden="true"></div>
+      <p class="name">Complet</p>
+      <p class="price" data-projet="3 900 €" data-abo="179 €">3 900 €</p>
+      <p class="unit" data-projet="prix ferme, paiement en 3 fois" data-abo="par mois, 24 mois, tout compris">prix ferme, paiement en 3 fois</p>
+      <p class="desc">Tout Commerce, plus la réservation en ligne et des textes travaillés avec vous, phrase par phrase.</p>
+      <a class="btn btn-secondary btn-block" href="index.html#analyse">Analyse gratuite →</a>
+      <ul>
+        <li>Tout ce que contient Commerce</li>
+        <li>Réservation ou commande en ligne</li>
+        <li>Séance photo chez vous [photographe à confirmer]</li>
+        <li>Textes écrits avec vous, dans les deux langues</li>
+        <li>Passage prioritaire pour toute demande</li>
+      </ul>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ COMPARATIF ============ -->
+<section class="compare rev">
+  <div class="wrap">
+    <p class="sect">Ce que chaque formule comprend</p>
+    <table class="table">
+      <thead>
+        <tr><th>Prestation</th><th>Présence</th><th>Commerce</th><th>Complet</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Version néerlandaise, écrite et référencée</td><td>Oui</td><td>Oui</td><td>Oui</td></tr>
+        <tr><td>Fiche Google</td><td>Reprise</td><td>Optimisée</td><td>Optimisée</td></tr>
+        <tr><td>Collecte d'avis clients</td><td>—</td><td>Oui</td><td>Oui</td></tr>
+        <tr><td>Rapport mensuel d'une page</td><td>—</td><td>Oui</td><td>Oui</td></tr>
+        <tr><td>Délai de mise en ligne</td><td>2 semaines</td><td>3 semaines</td><td>4 semaines</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ CTA FINAL ============ -->
+<section class="cta" style="border-top:1px solid var(--color-divider);padding:56px 0">
+  <div class="glow" style="width:420px;height:260px;background:var(--color-accent-700);opacity:.4;bottom:-120px;left:35%" aria-hidden="true"></div>
+  <div class="wrap cta-in">
+    <div>
+      <p class="kicker">Vous hésitez entre deux formules&nbsp;?</p>
+      <h2 style="font-size:36px;max-width:22ch">Dites-nous ce que vous vendez, on vous dit ce qui suffit.</h2>
+    </div>
+    <a class="btn btn-primary mag" href="index.html#analyse">Analyse gratuite →</a>
+  </div>
+</section>
+
+<!-- ============ PIED DE PAGE ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:14px"><span class="dot"></span>Hugee</a>
+        <p style="margin-top:14px">Studio de développement web<br>[adresse exacte], Beersel<br>TVA [numéro de TVA]</p>
+      </div>
+      <div>
+        <h4>Le site</h4>
+        <a href="index.html#commerces">Commerces</a>
+        <a href="index.html#pme">Sur-mesure</a>
+        <a href="tarifs.html">Tarifs</a>
+        <a href="index.html#realisations">Réalisations</a>
+        <a href="index.html#questions">Questions</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="tel:[NUMÉRO]">[numéro de téléphone]</a>
+        <a href="mailto:[EMAIL]">[adresse email]</a>
+        <a href="index.html#analyse">Analyse gratuite</a>
+      </div>
+      <div>
+        <h4>Taal</h4>
+        <a href="[lien version NL]">Nederlandse versie</a>
+      </div>
+    </div>
+    <div class="foot-legal">
+      <span>© 2026 Hugee — Beersel</span>
+      <span><a href="[lien mentions légales]">Mentions légales</a> · <a href="[lien vie privée]">Vie privée</a></span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ BARRE COLLANTE BAS ============ -->
+<div class="dock">
+  <span class="avail"><span class="dot"></span>Studio à Beersel · réponse écrite sous 48 h</span>
+  <div class="btns">
+    <a class="btn btn-secondary" href="tel:[NUMÉRO]">Appeler</a>
+    <a class="btn btn-primary mag" href="index.html#analyse">Analyse gratuite</a>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="js/scene.js?v=2" defer></script>
+<script src="js/motion.js?v=2" defer></script>
+</body>
+</html>

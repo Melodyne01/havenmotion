@@ -1,0 +1,46 @@
+name: Deploy
+
+# Déclenchement manuel uniquement pour l'instant.
+# À repasser en `push: branches: [main]` une fois la cible de déploiement
+# de HavenMotion confirmée (chemin VPS + domaine ci-dessous) et le secret
+# VPS_SSH_KEY ajouté au dépôt.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+env:
+  # TODO : renseigner la cible propre à HavenMotion avant le premier déploiement.
+  # Ne pas laisser pointer vers /var/www/hugee : le rsync --delete écraserait
+  # le site Hugee en production.
+  DEPLOY_HOST: 195.35.1.21
+  DEPLOY_PATH: /var/www/havenmotion/
+  DEPLOY_URL: https://havenmotion.beetee.be/
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Préparer la clé SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
+      - name: Rsync vers le VPS
+        run: |
+          rsync -avz --delete \
+            --exclude='.git' --exclude='.github' \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            ./ "deploy@$DEPLOY_HOST:$DEPLOY_PATH"
+
+      - name: Vérifier le site
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOY_URL")
+          echo "HTTP $code"
+          test "$code" = "200"
