@@ -95,11 +95,24 @@ jobs:
           echo ".env généré ; identifiants backoffice dans $DEPLOY_PATH/BACKOFFICE-ACCES.txt"
           REMOTE
 
-      - name: Reconstruire et relancer la pile
+      # Les images sont construites sur le runner (machine puissante) puis
+      # livrées au VPS : le petit serveur n'a plus qu'à les charger et les
+      # démarrer — pas de compilation Angular/.NET sur place.
+      - name: Construire les images
+        run: |
+          docker build -f docker/api.Dockerfile -t vnl-api:prod .
+          docker build -f docker/web.Dockerfile -t vnl-web:prod .
+
+      - name: Livrer les images au VPS
+        run: |
+          docker save vnl-api:prod vnl-web:prod | gzip \
+            | ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" 'gunzip | docker load'
+
+      - name: Relancer la pile
         run: |
           ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" \
             "cd '$DEPLOY_PATH' \
-             && docker compose -f docker-compose.prod.yml up -d --build --remove-orphans \
+             && docker compose -f docker-compose.prod.yml up -d --no-build --remove-orphans \
              && docker image prune -f"
 
       - name: Vérifier le site

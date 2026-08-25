@@ -19,6 +19,7 @@ services:
       retries: 10
 
   api:
+    image: vnl-api:prod
     build:
       context: .
       dockerfile: docker/api.Dockerfile
@@ -45,6 +46,7 @@ services:
       - media-data:/data/media
 
   web:
+    image: vnl-web:prod
     build:
       context: .
       dockerfile: docker/web.Dockerfile
