@@ -55,11 +55,42 @@ jobs:
             -e "ssh -i ~/.ssh/deploy_key" \
             ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
 
+      # Premier passage : génère le .env sur le serveur (secrets créés sur
+      # place, jamais dans les logs). Les identifiants du backoffice sont
+      # écrits dans /opt/havenmotion/BACKOFFICE-ACCES.txt (lisible en SSH).
+      - name: Préparer l'environnement serveur
+        run: |
+          ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" "DEPLOY_PATH='$DEPLOY_PATH' bash -s" <<'REMOTE'
+          set -eu
+          cd "$DEPLOY_PATH"
+          if [ -f .env ]; then
+            echo ".env déjà présent, rien à faire."
+            exit 0
+          fi
+          ADMIN_PWD="Vnl-$(openssl rand -hex 6)!"
+          cat > .env <<ENV
+          POSTGRES_PASSWORD=$(openssl rand -hex 24)
+          JWT_SIGNING_KEY=$(openssl rand -base64 48 | tr -d '\n')
+          SMTP_HOST=localhost
+          SMTP_PORT=587
+          SMTP_USERNAME=
+          SMTP_PASSWORD=
+          MAIL_FROM=no-reply@havenmotion.beetee.be
+          ADMIN_EMAIL=admin@studiovnl.fr
+          ADMIN_PASSWORD=$ADMIN_PWD
+          SITE_ORIGIN=https://havenmotion.beetee.be
+          ALLOWED_HOSTS=havenmotion.beetee.be,localhost
+          ENV
+          chmod 600 .env
+          printf 'Backoffice : admin@studiovnl.fr / %s\n' "$ADMIN_PWD" > BACKOFFICE-ACCES.txt
+          chmod 600 BACKOFFICE-ACCES.txt
+          echo ".env généré ; identifiants backoffice dans $DEPLOY_PATH/BACKOFFICE-ACCES.txt"
+          REMOTE
+
       - name: Reconstruire et relancer la pile
         run: |
           ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" \
             "cd '$DEPLOY_PATH' \
-             && test -f .env || { echo 'ERREUR : $DEPLOY_PATH/.env manquant (voir .env.example)'; exit 1; } \
              && docker compose -f docker-compose.prod.yml up -d --build --remove-orphans \
              && docker image prune -f"
 
