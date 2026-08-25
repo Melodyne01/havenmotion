@@ -1,0 +1,82 @@
+@use 'tokens' as *;
+
+.modal {
+  display: grid;
+}
+
+.modal__frame {
+  display: block;
+}
+
+.modal__body {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding: 28px $pad-x-mobile 32px;
+
+  @include tablet-up {
+    padding: 32px $pad-x-desktop 40px;
+  }
+}
+
+.modal__eyebrow {
+  @include display-caps($fs-11, $ls-44, $weight-semibold);
+
+  color: $color-amber;
+}
+
+.modal__title {
+  @include display-caps($fs-40, $ls-14);
+
+  color: $color-film;
+  line-height: $lh-tight;
+
+  @include tablet-up {
+    font-size: $fs-64;
+  }
+}
+
+.modal__meta {
+  color: $color-muted-60;
+  font-size: $fs-14;
+}
+
+.modal__films {
+  display: grid;
+  gap: 0;
+  width: 100%;
+  padding: 0;
+  margin: 8px 0 0;
+  list-style: none;
+  border-top: $rule-width solid $color-rule-10;
+}
+
+.modal__film {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 0;
+  text-align: left;
+  border-bottom: $rule-width solid $color-rule-10;
+  transition: color $dur-fast $ease;
+
+  &:hover,
+  &.is-active {
+    color: $color-amber;
+  }
+}
+
+.modal__film-title {
+  @include display-caps($fs-15, $ls-14, $weight-semibold);
+}
+
+.modal__film-meta {
+  color: $color-muted-45;
+  font-family: $font-body;
+  font-size: $fs-13;
+  text-transform: none;
+  letter-spacing: normal;
+}

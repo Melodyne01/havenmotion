@@ -1,0 +1,72 @@
+@use 'tokens' as *;
+
+.testimonials {
+  background: $color-charcoal;
+
+  @include section-padding;
+}
+
+.testimonials__grid {
+  display: grid;
+  gap: $gutter;
+
+  @include tablet-up {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.quote {
+  display: grid;
+  align-content: space-between;
+  gap: 20px;
+  padding: 28px 24px;
+  margin: 0;
+  background: $color-surface;
+  border-left: $progress-height solid $color-amber;
+}
+
+.quote__text {
+  margin: 0;
+  color: $color-film;
+  font-size: $fs-15;
+  line-height: $lh-body;
+
+  @include tablet-up {
+    font-size: $fs-18;
+  }
+}
+
+.quote__author {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  display: grid;
+  gap: 4px;
+  color: $color-film;
+}
+
+.quote__role {
+  color: $color-muted-45;
+}
+
+.logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 28px 44px;
+  padding: 36px 0 0;
+  margin: 44px 0 0;
+  list-style: none;
+  border-top: $rule-width solid $color-rule-10;
+}
+
+.logos__image {
+  max-height: 34px;
+  opacity: 0.6;
+  filter: grayscale(1);
+}
+
+.logos__name {
+  @include display-caps($fs-13, $ls-20, $weight-semibold);
+
+  color: $color-muted-45;
+}

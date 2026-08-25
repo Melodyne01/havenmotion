@@ -1,0 +1,125 @@
+// =============================================================================
+// Studio VNL — jetons de design « Cinéma ».
+// Source unique de vérité : section 3 du cahier des charges.
+// Aucune valeur de couleur, de taille de police ou de durée ne doit être
+// écrite en dur dans un composant : tout passe par ce fichier.
+// =============================================================================
+
+// --- Palette ---------------------------------------------------------------
+$color-charcoal: #0b0b0c; // fond principal
+$color-surface: #111114; // fond secondaire / sections
+$color-black: #000000; // cadres vidéo
+$color-film: #f2efe9; // texte principal (blanc pellicule)
+$color-amber: #f2b33d; // accent unique (ambre projecteur)
+
+$color-muted-60: rgba(242, 239, 233, 0.6);
+$color-muted-45: rgba(242, 239, 233, 0.45);
+$color-muted-32: rgba(242, 239, 233, 0.32);
+
+$color-rule-10: rgba(255, 255, 255, 0.1);
+$color-rule-16: rgba(255, 255, 255, 0.16);
+
+$color-modal-scrim: rgba(0, 0, 0, 0.94); // fond de modale 94 %
+$color-amber-veil: rgba(242, 179, 61, 0.1); // overlay jaune 10 % au survol
+
+// --- Typographie -----------------------------------------------------------
+$font-display: 'Archivo Narrow', 'Arial Narrow', 'Helvetica Neue', arial, sans-serif;
+$font-body: 'Archivo', 'Helvetica Neue', arial, sans-serif;
+
+$weight-regular: 400;
+$weight-semibold: 600;
+$weight-bold: 700;
+
+// Échelle en px, strictement celle de la spécification.
+$fs-120: 120px; // nom de catégorie desktop
+$fs-106: 106px; // H1 hero desktop
+$fs-72: 72px;
+$fs-64: 64px; // H2
+$fs-52: 52px; // H1 hero mobile
+$fs-40: 40px; // nom de catégorie mobile
+$fs-26: 26px;
+$fs-18: 18px;
+$fs-15: 15px;
+$fs-14: 14px; // corps mobile minimum
+$fs-13: 13px;
+$fs-11: 11px; // plancher absolu
+
+$ls-10: 0.1em;
+$ls-14: 0.14em;
+$ls-20: 0.2em;
+$ls-28: 0.28em;
+$ls-44: 0.44em;
+
+$lh-tight: 0.82;
+$lh-flat: 1;
+$lh-body: 1.65;
+
+// --- Mise en page ----------------------------------------------------------
+$gutter: 2px; // gouttière entre blocs vidéo
+$pad-x-desktop: 40px;
+$pad-x-mobile: 18px;
+$pad-y: 80px;
+$pad-y-tight: 70px;
+$radius: 0; // rayon nul partout
+$rule-width: 1px;
+$watermark-inset: 36px;
+$progress-height: 3px;
+$cinemascope: 2.39; // ratio imposé des cadres vidéo
+
+// --- Motion ----------------------------------------------------------------
+$dur-fast: 0.3s;
+$dur-slow: 0.4s;
+$ease: ease;
+$dur-travelling: 26s; // travelling lent des fonds vidéo
+$reveal-offset: 12px; // translation des apparitions au scroll
+
+// --- Points de rupture -----------------------------------------------------
+$bp-desktop: 1280px;
+$bp-tablet: 768px;
+
+@mixin desktop {
+  @media (min-width: $bp-desktop) {
+    @content;
+  }
+}
+
+@mixin tablet-up {
+  @media (min-width: $bp-tablet) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media (max-width: #{$bp-tablet - 1px}) {
+    @content;
+  }
+}
+
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+// --- Fragments réutilisables ----------------------------------------------
+@mixin display-caps($size, $tracking: $ls-14, $weight: $weight-bold) {
+  font-family: $font-display;
+  font-weight: $weight;
+  font-size: $size;
+  letter-spacing: $tracking;
+  line-height: $lh-flat;
+  text-transform: uppercase;
+}
+
+@mixin section-padding {
+  padding: $pad-y $pad-x-mobile;
+
+  @include tablet-up {
+    padding: $pad-y $pad-x-desktop;
+  }
+}
+
+@mixin focus-ring {
+  outline: 2px solid $color-amber;
+  outline-offset: 2px;
+}

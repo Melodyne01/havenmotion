@@ -1,0 +1,130 @@
+@use 'tokens' as *;
+
+.contact {
+  display: grid;
+  gap: 40px;
+  background: $color-surface;
+
+  @include section-padding;
+
+  @include desktop {
+    grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+    gap: 64px;
+    align-items: start;
+  }
+}
+
+.contact__lead {
+  max-width: 44ch;
+  color: $color-muted-60;
+  font-size: $fs-15;
+}
+
+.contact__links {
+  display: grid;
+  gap: 8px;
+  padding: 24px 0 0;
+  margin: 24px 0 0;
+  list-style: none;
+  border-top: $rule-width solid $color-rule-10;
+}
+
+.contact__link {
+  @include display-caps($fs-13, $ls-20, $weight-semibold);
+
+  color: $color-amber;
+
+  &:hover {
+    color: $color-film;
+  }
+}
+
+.contact__done {
+  padding: 24px;
+  color: $color-film;
+  font-size: $fs-15;
+  background: $color-charcoal;
+  border-left: $progress-height solid $color-amber;
+}
+
+.form {
+  display: grid;
+  gap: 18px;
+
+  @include tablet-up {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.form__row {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.form__row--wide {
+  @include tablet-up {
+    grid-column: 1 / -1;
+  }
+}
+
+.form__label {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  color: $color-muted-60;
+}
+
+.form__input {
+  width: 100%;
+  padding: 13px 14px;
+  color: $color-film;
+  font-family: $font-body;
+  font-size: $fs-14;
+  background: $color-charcoal;
+  border: $rule-width solid $color-rule-16;
+  transition: border-color $dur-fast $ease;
+
+  &:hover {
+    border-color: $color-rule-16;
+  }
+
+  &:focus {
+    border-color: $color-amber;
+    outline: none;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+textarea.form__input {
+  resize: vertical;
+}
+
+.form__error {
+  color: $color-amber;
+  font-family: $font-body;
+  font-size: $fs-14;
+}
+
+.form__error--global {
+  @include tablet-up {
+    grid-column: 1 / -1;
+  }
+}
+
+// Retiré du flux sans `display: none`, qui alerterait certains robots.
+.form__honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form__actions {
+  @include tablet-up {
+    grid-column: 1 / -1;
+  }
+}

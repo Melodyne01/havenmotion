@@ -1,0 +1,84 @@
+@use 'tokens' as *;
+
+.services {
+  background: $color-surface;
+
+  @include section-padding;
+}
+
+.services__grid {
+  display: grid;
+  gap: $gutter;
+
+  @include tablet-up {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include desktop {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.card {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  padding: 28px 24px 32px;
+  background: $color-charcoal;
+  border: $rule-width solid $color-rule-10;
+}
+
+.card__name {
+  @include display-caps($fs-26, $ls-14);
+
+  color: $color-film;
+}
+
+.card__included {
+  display: grid;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.card__item {
+  position: relative;
+  padding-left: 16px;
+  color: $color-muted-60;
+  font-size: $fs-14;
+
+  &::before {
+    position: absolute;
+    left: 0;
+    color: $color-amber;
+    content: '—';
+  }
+}
+
+.card__facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  margin: 0;
+  padding-top: 16px;
+  border-top: $rule-width solid $color-rule-10;
+
+  dt {
+    @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+    color: $color-muted-45;
+  }
+
+  dd {
+    margin: 0;
+    color: $color-film;
+    font-size: $fs-13;
+  }
+}
+
+.card__price {
+  @include display-caps($fs-18, $ls-14);
+
+  color: $color-amber;
+}

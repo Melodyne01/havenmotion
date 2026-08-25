@@ -1,0 +1,78 @@
+@use 'tokens' as *;
+
+.shell {
+  display: grid;
+  min-height: 100vh;
+  background: $color-charcoal;
+
+  @include tablet-up {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+}
+
+.shell__nav {
+  display: grid;
+  align-content: start;
+  gap: 28px;
+  padding: 24px 20px;
+  border-bottom: $rule-width solid $color-rule-10;
+
+  @include tablet-up {
+    align-content: space-between;
+    border-right: $rule-width solid $color-rule-10;
+    border-bottom: 0;
+  }
+
+  nav {
+    display: grid;
+    gap: 2px;
+  }
+}
+
+.shell__link {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  padding: 11px 12px;
+  color: $color-muted-60;
+  border-left: $progress-height solid transparent;
+  transition: color $dur-fast $ease;
+
+  &:hover {
+    color: $color-film;
+  }
+
+  &.is-active {
+    color: $color-amber;
+    border-left-color: $color-amber;
+    background: $color-surface;
+  }
+}
+
+.shell__foot {
+  display: grid;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: $rule-width solid $color-rule-10;
+}
+
+.shell__preview,
+.shell__logout {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  justify-self: start;
+  color: $color-amber;
+  text-align: left;
+}
+
+.shell__user {
+  color: $color-muted-45;
+  font-size: $fs-13;
+}
+
+.shell__main {
+  padding: 28px $pad-x-mobile 64px;
+
+  @include tablet-up {
+    padding: 32px $pad-x-desktop 64px;
+  }
+}

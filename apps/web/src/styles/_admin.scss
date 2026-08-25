@@ -1,0 +1,175 @@
+// Habillage commun du backoffice. Déclaré en global : les composants du
+// backoffice partagent la même grammaire de tableaux, champs et boutons, et
+// aucun d'eux n'a besoin de la redéfinir.
+@use 'tokens' as *;
+
+.a-page {
+  display: grid;
+  gap: 24px;
+  align-content: start;
+}
+
+.a-page__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: $rule-width solid $color-rule-10;
+}
+
+.a-title {
+  @include display-caps($fs-26, $ls-14);
+
+  color: $color-film;
+}
+
+.a-hint {
+  color: $color-muted-45;
+  font-size: $fs-13;
+}
+
+.a-card {
+  padding: 20px;
+  background: $color-surface;
+  border: $rule-width solid $color-rule-10;
+}
+
+.a-grid {
+  display: grid;
+  gap: 16px;
+
+  @media (min-width: $bp-tablet) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.a-field {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
+.a-label {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  color: $color-muted-60;
+}
+
+.a-input {
+  width: 100%;
+  padding: 11px 12px;
+  color: $color-film;
+  font-family: $font-body;
+  font-size: $fs-14;
+  background: $color-charcoal;
+  border: $rule-width solid $color-rule-16;
+
+  &:focus {
+    border-color: $color-amber;
+    outline: none;
+  }
+}
+
+textarea.a-input {
+  resize: vertical;
+}
+
+.a-btn {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  padding: 11px 16px;
+  color: $color-charcoal;
+  background: $color-amber;
+  border: $rule-width solid $color-amber;
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.a-btn--ghost {
+  color: $color-amber;
+  background: none;
+  border-color: $color-rule-16;
+
+  &:hover {
+    border-color: $color-amber;
+  }
+}
+
+.a-btn--danger {
+  color: $color-film;
+  background: none;
+  border-color: $color-rule-16;
+
+  &:hover {
+    color: $color-amber;
+    border-color: $color-amber;
+  }
+}
+
+.a-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.a-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $fs-13;
+
+  th,
+  td {
+    padding: 11px 12px;
+    text-align: left;
+    border-bottom: $rule-width solid $color-rule-10;
+    vertical-align: top;
+  }
+
+  th {
+    @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+    color: $color-muted-45;
+  }
+}
+
+.a-scroll {
+  overflow-x: auto;
+}
+
+.a-tag {
+  @include display-caps($fs-11, $ls-10, $weight-semibold);
+
+  display: inline-block;
+  padding: 3px 8px;
+  color: $color-charcoal;
+  background: $color-amber;
+}
+
+.a-tag--muted {
+  color: $color-muted-60;
+  background: none;
+  border: $rule-width solid $color-rule-16;
+}
+
+.a-status {
+  color: $color-amber;
+  font-size: $fs-13;
+}
+
+.a-error {
+  color: $color-amber;
+  font-size: $fs-14;
+}
+
+.a-empty {
+  padding: 28px;
+  color: $color-muted-45;
+  font-size: $fs-14;
+  text-align: center;
+  border: $rule-width dashed $color-rule-16;
+}

@@ -1,0 +1,63 @@
+@use 'tokens' as *;
+
+.hero {
+  background: $color-black;
+}
+
+.hero__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(11, 11, 12, 0.25) 0%,
+    rgba(11, 11, 12, 0.1) 45%,
+    rgba(11, 11, 12, 0.85) 100%
+  );
+}
+
+.hero__watermark {
+  position: absolute;
+  top: $watermark-inset;
+  right: $watermark-inset;
+}
+
+.hero__content {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding: 0 $pad-x-mobile 28px;
+
+  @include tablet-up {
+    gap: 20px;
+    padding: 0 $pad-x-desktop 44px;
+  }
+}
+
+.hero__eyebrow {
+  @include display-caps($fs-11, $ls-44, $weight-semibold);
+
+  color: $color-amber;
+}
+
+.hero__title {
+  @include display-caps($fs-52, $ls-14);
+
+  color: $color-film;
+  line-height: $lh-tight;
+
+  @include desktop {
+    font-size: $fs-106;
+  }
+}
+
+.hero__tagline {
+  max-width: 46ch;
+  color: $color-muted-60;
+  font-size: $fs-14;
+
+  @include tablet-up {
+    font-size: $fs-18;
+  }
+}

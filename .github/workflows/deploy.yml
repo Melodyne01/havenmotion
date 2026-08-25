@@ -1,22 +1,28 @@
 name: Deploy
 
-# Déclenchement manuel uniquement pour l'instant.
-# À repasser en `push: branches: [main]` une fois la cible de déploiement
-# de HavenMotion confirmée (chemin VPS + domaine ci-dessous) et le secret
-# VPS_SSH_KEY ajouté au dépôt.
+# Déploiement automatique : chaque poussée sur master (ou main) reconstruit
+# les images sur le VPS et relance la pile docker compose.
+#
+# Pré-requis côté dépôt (Settings → Secrets and variables → Actions) :
+#   - VPS_SSH_KEY : clé privée SSH du compte de déploiement.
+# Pré-requis côté serveur :
+#   - Docker + le plugin compose installés.
+#   - Un fichier /opt/havenmotion/.env complété à partir de .env.example
+#     (mots de passe Postgres, clé JWT, SMTP…). Jamais dans le dépôt.
+#   - Le reverse proxy de l'hôte pointe vers 127.0.0.1:4000 (conteneur web).
 on:
+  push:
+    branches: [master, main]
   workflow_dispatch:
 
 concurrency:
   group: deploy
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 env:
-  # TODO : renseigner la cible propre à HavenMotion avant le premier déploiement.
-  # Ne pas laisser pointer vers /var/www/hugee : le rsync --delete écraserait
-  # le site Hugee en production.
   DEPLOY_HOST: 195.35.1.21
-  DEPLOY_PATH: /var/www/havenmotion/
+  DEPLOY_USER: deploy
+  DEPLOY_PATH: /opt/havenmotion
   DEPLOY_URL: https://havenmotion.beetee.be/
 
 jobs:
@@ -32,15 +38,34 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
 
-      - name: Rsync vers le VPS
+      - name: Synchroniser les sources vers le VPS
         run: |
-          rsync -avz --delete \
-            --exclude='.git' --exclude='.github' \
+          ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_PATH'"
+          rsync -az --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='dist' \
+            --exclude='.env' \
             -e "ssh -i ~/.ssh/deploy_key" \
-            ./ "deploy@$DEPLOY_HOST:$DEPLOY_PATH"
+            ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+
+      - name: Reconstruire et relancer la pile
+        run: |
+          ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" \
+            "cd '$DEPLOY_PATH' \
+             && test -f .env || { echo 'ERREUR : $DEPLOY_PATH/.env manquant (voir .env.example)'; exit 1; } \
+             && docker compose -f docker-compose.prod.yml up -d --build --remove-orphans \
+             && docker image prune -f"
 
       - name: Vérifier le site
         run: |
-          code=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOY_URL")
-          echo "HTTP $code"
-          test "$code" = "200"
+          for attempt in $(seq 1 12); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOY_URL") || code=000
+            echo "Tentative $attempt : HTTP $code"
+            if [ "$code" = "200" ]; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Le site ne répond pas en 200 après le déploiement."
+          exit 1

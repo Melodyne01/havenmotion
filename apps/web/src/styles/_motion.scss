@@ -1,0 +1,26 @@
+@use 'tokens' as *;
+
+.reveal.is-armed {
+  opacity: 0;
+  transform: translateY($reveal-offset);
+}
+
+.reveal {
+  transition:
+    opacity $dur-slow $ease,
+    transform $dur-slow $ease;
+}
+
+.reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@include reduced-motion {
+  .reveal,
+  .reveal.is-armed {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

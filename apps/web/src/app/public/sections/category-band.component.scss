@@ -1,0 +1,139 @@
+@use 'tokens' as *;
+
+.band-host {
+  display: block;
+}
+
+.band {
+  display: block;
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  background: $color-black;
+  cursor: pointer;
+
+  &:focus-visible {
+    @include focus-ring;
+
+    outline-offset: -3px;
+  }
+}
+
+.band__veil,
+.band__scrim,
+.band__body,
+.band__progress {
+  position: absolute;
+}
+
+// Lisibilité du texte sur l'image, quelle que soit la vidéo.
+.band__scrim {
+  inset: 0;
+  background: linear-gradient(90deg, rgba(11, 11, 12, 0.85) 0%, rgba(11, 11, 12, 0.25) 70%);
+}
+
+// Voile ambre 10 %, uniquement au survol.
+.band__veil {
+  inset: 0;
+  z-index: 1;
+  background: $color-amber-veil;
+  opacity: 0;
+  transition: opacity $dur-fast $ease;
+}
+
+.band__body {
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  padding: 0 $pad-x-mobile;
+
+  @include tablet-up {
+    gap: 14px;
+    padding: 0 $pad-x-desktop;
+  }
+}
+
+.band__index {
+  @include display-caps($fs-11, $ls-44, $weight-semibold);
+
+  color: $color-amber;
+}
+
+.band__name {
+  @include display-caps($fs-40, $ls-14);
+
+  color: $color-film;
+  line-height: $lh-tight;
+
+  @include desktop {
+    font-size: $fs-120;
+  }
+}
+
+.band__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  color: $color-muted-60;
+  font-family: $font-body;
+  font-size: $fs-13;
+  line-height: $lh-body;
+
+  @include tablet-up {
+    font-size: $fs-15;
+  }
+}
+
+.band__tagline {
+  max-width: 52ch;
+}
+
+.band__count {
+  @include display-caps($fs-11, $ls-28, $weight-semibold);
+
+  flex: none;
+  color: $color-muted-45;
+}
+
+.band__invite {
+  @include display-caps($fs-11, $ls-28, $weight-semibold);
+
+  color: $color-amber;
+  opacity: 0;
+  transition: opacity $dur-fast $ease;
+}
+
+.band__progress {
+  inset: auto 0 0 0;
+  z-index: 3;
+  height: $progress-height;
+  background: $color-rule-10;
+  opacity: 0;
+  transition: opacity $dur-fast $ease;
+}
+
+.band__progress-bar {
+  display: block;
+  height: 100%;
+  background: $color-amber;
+}
+
+.band:hover,
+.band:focus-visible {
+  .band__veil,
+  .band__invite,
+  .band__progress {
+    opacity: 1;
+  }
+}
+
+// Sans survol (mobile), l'invite et la progression restent visibles.
+@media (hover: none) {
+  .band__invite,
+  .band__progress {
+    opacity: 1;
+  }
+}

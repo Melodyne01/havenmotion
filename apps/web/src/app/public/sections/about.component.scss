@@ -1,0 +1,39 @@
+@use 'tokens' as *;
+
+.about {
+  display: grid;
+  gap: 32px;
+  background: $color-surface;
+
+  @include section-padding;
+
+  @include tablet-up {
+    grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
+  }
+}
+
+.about__portrait {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: $color-black;
+  border: $rule-width solid $color-rule-10;
+}
+
+.about__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about__text {
+  display: grid;
+  gap: 14px;
+}
+
+.about__line {
+  max-width: 62ch;
+  color: $color-muted-60;
+  font-size: $fs-15;
+}

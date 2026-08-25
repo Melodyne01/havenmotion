@@ -1,0 +1,48 @@
+@use 'tokens' as *;
+
+.footer {
+  display: grid;
+  gap: 16px;
+  padding: 44px $pad-x-mobile 56px;
+  background: $color-charcoal;
+  border-top: $rule-width solid $color-rule-10;
+
+  @include tablet-up {
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 32px;
+    padding: 44px $pad-x-desktop;
+  }
+}
+
+.footer__legal {
+  color: $color-muted-45;
+  font-size: $fs-13;
+}
+
+.footer__nav {
+  display: flex;
+  gap: 20px;
+}
+
+.footer__link {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  color: $color-muted-60;
+
+  &:hover {
+    color: $color-amber;
+  }
+}
+
+.footer__copy {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  color: $color-muted-32;
+
+  @include tablet-up {
+    grid-column: 1 / -1;
+    padding-top: 20px;
+    border-top: $rule-width solid $color-rule-10;
+  }
+}

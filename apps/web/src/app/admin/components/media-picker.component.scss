@@ -1,0 +1,77 @@
+@use 'tokens' as *;
+
+.picker {
+  display: grid;
+  gap: 12px;
+}
+
+.picker__current {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border: $rule-width solid $color-rule-10;
+}
+
+.picker__thumb {
+  width: 96px;
+  aspect-ratio: 2.39;
+  object-fit: cover;
+  background: $color-black;
+}
+
+.picker__name {
+  @include display-caps($fs-11, $ls-10, $weight-semibold);
+
+  color: $color-film;
+}
+
+.picker__drop {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  padding: 20px;
+  text-align: center;
+  border: $rule-width dashed $color-rule-16;
+  transition: border-color $dur-fast $ease;
+
+  &.is-over {
+    border-color: $color-amber;
+  }
+}
+
+.picker__browse {
+  cursor: pointer;
+}
+
+.picker__progress {
+  height: $progress-height;
+  background: $color-rule-10;
+}
+
+.picker__bar {
+  height: 100%;
+  background: $color-amber;
+}
+
+.picker__library {
+  display: flex;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.picker__item {
+  display: grid;
+  gap: 6px;
+  width: 128px;
+  padding: 6px;
+  text-align: left;
+  border: $rule-width solid transparent;
+
+  &.is-active,
+  &:hover {
+    border-color: $color-amber;
+  }
+}

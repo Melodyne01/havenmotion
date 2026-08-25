@@ -1,0 +1,20 @@
+@use 'tokens' as *;
+
+.categories {
+  background: $color-charcoal;
+}
+
+.categories__head {
+  padding: $pad-y-tight $pad-x-mobile 40px;
+
+  @include tablet-up {
+    padding: $pad-y $pad-x-desktop 44px;
+  }
+}
+
+// Bandes bord à bord, séparées par la gouttière de 2 px.
+.categories__bands {
+  display: grid;
+  gap: $gutter;
+  background: $color-charcoal;
+}

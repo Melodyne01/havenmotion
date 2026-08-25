@@ -1,0 +1,119 @@
+name: CI
+
+# Build + tests + lint sur chaque PR et chaque poussée de branche.
+on:
+  pull_request:
+  push:
+    branches-ignore: [master, main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Front Angular (build · lint · tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Installer les dépendances
+        run: npm ci --no-audit --no-fund
+
+      - name: Lint
+        run: npx ng lint
+
+      - name: Tests unitaires
+        run: npx ng test --watch=false
+
+      - name: Build de production
+        run: npx ng build
+
+      - name: Conserver le bundle pour le job e2e
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: apps/web/dist/web
+          retention-days: 1
+
+  api:
+    name: API .NET (build · tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Tests
+        run: dotnet test --no-build -c Release --verbosity normal
+
+  e2e:
+    name: Parcours e2e (Playwright)
+    runs-on: ubuntu-latest
+    needs: web
+    defaults:
+      run:
+        working-directory: e2e
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: e2e/package-lock.json
+
+      - name: Récupérer le bundle du front
+        uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: apps/web/dist/web
+
+      - name: Installer les dépendances
+        run: npm ci --no-audit --no-fund
+
+      - name: Installer Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Lancer le parcours
+        run: npx playwright test
+
+      - name: Publier le rapport en cas d'échec
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: e2e/playwright-report
+          retention-days: 7
+
+  docker:
+    name: Images Docker (vérification de build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Construire l'image API
+        run: docker build -f docker/api.Dockerfile .
+
+      - name: Construire l'image Web
+        run: docker build -f docker/web.Dockerfile .
