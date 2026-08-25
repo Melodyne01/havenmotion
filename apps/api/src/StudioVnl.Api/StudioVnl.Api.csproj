@@ -1,4 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <!--
+      AD0001 : le RouteHandlerAnalyzer d'ASP.NET Core plante (NullReferenceException)
+      sur les handlers génériques du CRUD de contenu ; c'est le crash de
+      l'analyseur, pas un défaut du code. On ignore ce diagnostic pour que
+      TreatWarningsAsErrors ne transforme pas ce bug d'outillage en échec de build.
+    -->
+    <NoWarn>$(NoWarn);AD0001</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\StudioVnl.Infrastructure\StudioVnl.Infrastructure.csproj" />
   </ItemGroup>
