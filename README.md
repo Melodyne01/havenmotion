@@ -93,20 +93,24 @@ Aucun secret dans le dépôt : tout passe par les variables d'environnement
 
 ## Déploiement
 
-`.github/workflows/deploy.yml` se déclenche **à chaque push sur
-`master`/`main`** :
+Deux pipelines appellent la même mécanique (`deploy-stack.yml`) :
 
-1. rsync des sources vers le VPS (`/opt/havenmotion`) ;
-2. `docker compose -f docker-compose.prod.yml up -d --build` sur le serveur ;
-3. vérification HTTP 200 de l'URL publique.
+| Pipeline | Déclencheur | URL | Pile sur le VPS | Port web |
+| --- | --- | --- | --- | --- |
+| `deploy.yml` (prod) | push sur `master`/`main` | https://heavenmotion.be | `/opt/havenmotion` (images `vnl-*:prod`) | 127.0.0.1:4000 |
+| `deploy-dev.yml` (dev) | push sur `develop` | https://dev.heavenmotion.be | `/opt/havenmotion-dev` (images `vnl-*:dev`) | 127.0.0.1:4100 |
+
+Chaque déploiement : rsync des sources, génération/réalignement du `.env`
+serveur (secrets créés sur place au premier passage, identifiants backoffice
+dans `BACKOFFICE-ACCES.txt`), build des images sur le runner, livraison par
+`docker save | ssh | docker load`, `compose up -d --no-build`, puis
+vérification HTTP 200 de l'URL publique.
 
 Pré-requis (une seule fois) :
 
 - secret GitHub `VPS_SSH_KEY` (clé privée du compte `deploy`) ;
 - Docker + plugin compose sur le VPS ;
-- `/opt/havenmotion/.env` complété à partir de `.env.example` ;
-- reverse proxy de l'hôte → `127.0.0.1:4000` (conteneur web, qui relaie
-  `/api` et `/media` vers l'API).
+- DNS + vhost nginx (avec certificat) de chaque domaine vers son port web.
 
 La CI (`ci.yml`) tourne sur chaque PR et branche : lint + tests + build du
 front, build + tests de l'API, parcours e2e, et build des deux images Docker.

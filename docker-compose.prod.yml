@@ -1,7 +1,9 @@
-# Production : le conteneur web (SSR) est l'unique point d'entrée ; il sert le
-# site et relaie /api et /media vers l'API. Le reverse proxy de l'hôte (nginx,
-# caddy…) pointe vers web:4000. Les secrets viennent d'un fichier `.env` posé
-# sur le serveur — jamais dans le dépôt.
+# Production/dev : le conteneur web (SSR) est l'unique point d'entrée ; il sert
+# le site et relaie /api et /media vers l'API. Le reverse proxy de l'hôte
+# (nginx, caddy…) pointe vers 127.0.0.1:${WEB_PORT}. Les secrets viennent d'un
+# fichier `.env` posé sur le serveur — jamais dans le dépôt. Le même fichier
+# sert aux deux environnements : IMAGE_TAG et WEB_PORT (dans le .env de chaque
+# dossier de déploiement) distinguent prod (prod/4000) et dev (dev/4100).
 services:
   postgres:
     image: postgres:16-alpine
@@ -19,7 +21,7 @@ services:
       retries: 10
 
   api:
-    image: vnl-api:prod
+    image: vnl-api:${IMAGE_TAG:-prod}
     build:
       context: .
       dockerfile: docker/api.Dockerfile
@@ -46,7 +48,7 @@ services:
       - media-data:/data/media
 
   web:
-    image: vnl-web:prod
+    image: vnl-web:${IMAGE_TAG:-prod}
     build:
       context: .
       dockerfile: docker/web.Dockerfile
@@ -61,7 +63,7 @@ services:
       VNL_PUBLIC_API_BASE_URL: /api
       VNL_SITE_ORIGIN: ${SITE_ORIGIN:-https://heavenmotion.be}
     ports:
-      - '127.0.0.1:4000:4000'
+      - '127.0.0.1:${WEB_PORT:-4000}:4000'
 
 volumes:
   postgres-data:

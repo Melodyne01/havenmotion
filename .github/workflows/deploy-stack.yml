@@ -1,0 +1,164 @@
+name: Deploy stack
+
+# Mécanique de déploiement partagée entre la prod (deploy.yml) et la dev
+# (deploy-dev.yml). Les images sont construites sur le runner puis livrées au
+# VPS par docker save/load ; le serveur ne fait que les charger et démarrer.
+#
+# Pré-requis côté dépôt : secret VPS_SSH_KEY (clé privée SSH du compte deploy).
+# Pré-requis côté serveur : Docker + plugin compose ; le reverse proxy de
+# l'hôte pointe vers 127.0.0.1:<web_port>.
+on:
+  workflow_call:
+    inputs:
+      env_name:
+        description: "Nom lisible de l'environnement (production, dev…)"
+        required: true
+        type: string
+      deploy_path:
+        description: "Dossier de la pile sur le VPS"
+        required: true
+        type: string
+      site_url:
+        description: "URL publique vérifiée en fin de déploiement"
+        required: true
+        type: string
+      site_origin:
+        description: "Origine publique (https://…, sans / final)"
+        required: true
+        type: string
+      allowed_hosts:
+        description: "Hosts acceptés par le serveur SSR (séparés par des virgules)"
+        required: true
+        type: string
+      image_tag:
+        description: "Tag des images Docker (prod, dev…)"
+        required: true
+        type: string
+      web_port:
+        description: "Port hôte (127.0.0.1) exposé par le conteneur web"
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: Déployer ${{ inputs.env_name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DEPLOY_HOST: 195.35.1.21
+      DEPLOY_USER: deploy
+      DEPLOY_PATH: ${{ inputs.deploy_path }}
+      DEPLOY_URL: ${{ inputs.site_url }}
+      SITE_ORIGIN: ${{ inputs.site_origin }}
+      ALLOWED_HOSTS: ${{ inputs.allowed_hosts }}
+      IMAGE_TAG: ${{ inputs.image_tag }}
+      WEB_PORT: ${{ inputs.web_port }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Préparer la clé SSH
+        run: |
+          if [ -z "${{ secrets.VPS_SSH_KEY }}" ]; then
+            echo "::error::Le secret VPS_SSH_KEY est absent ou vide."
+            echo "::error::Ajoutez la clé privée SSH du compte de déploiement dans"
+            echo "::error::Settings → Secrets and variables → Actions → New repository secret."
+            exit 1
+          fi
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
+      - name: Synchroniser les sources vers le VPS
+        run: |
+          ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_PATH'"
+          rsync -az --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='dist' \
+            --exclude='.env' \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+
+      # Premier passage : génère le .env sur le serveur (secrets créés sur
+      # place, jamais dans les logs). Les identifiants du backoffice sont
+      # écrits dans <deploy_path>/BACKOFFICE-ACCES.txt (lisible en SSH).
+      # Passages suivants : les secrets sont conservés, seules les valeurs
+      # dérivées du domaine/environnement sont réalignées.
+      - name: Préparer l'environnement serveur
+        run: |
+          ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" \
+            "DEPLOY_PATH='$DEPLOY_PATH' SITE_ORIGIN='$SITE_ORIGIN' ALLOWED_HOSTS='$ALLOWED_HOSTS' IMAGE_TAG='$IMAGE_TAG' WEB_PORT='$WEB_PORT' bash -s" <<'REMOTE'
+          set -eu
+          cd "$DEPLOY_PATH"
+          DOMAIN="${SITE_ORIGIN#https://}"
+          if [ -f .env ]; then
+            sed -i \
+              -e "s|^SITE_ORIGIN=.*|SITE_ORIGIN=$SITE_ORIGIN|" \
+              -e "s|^ALLOWED_HOSTS=.*|ALLOWED_HOSTS=$ALLOWED_HOSTS|" \
+              .env
+            for kv in "IMAGE_TAG=$IMAGE_TAG" "WEB_PORT=$WEB_PORT"; do
+              key="${kv%%=*}"
+              if grep -q "^$key=" .env; then
+                sed -i "s|^$key=.*|$kv|" .env
+              else
+                printf '%s\n' "$kv" >> .env
+              fi
+            done
+            echo ".env déjà présent : valeurs d'environnement réalignées."
+            exit 0
+          fi
+          ADMIN_PWD="Vnl-$(openssl rand -hex 6)!"
+          cat > .env <<ENV
+          POSTGRES_PASSWORD=$(openssl rand -hex 24)
+          JWT_SIGNING_KEY=$(openssl rand -base64 48 | tr -d '\n')
+          SMTP_HOST=localhost
+          SMTP_PORT=587
+          SMTP_USERNAME=
+          SMTP_PASSWORD=
+          MAIL_FROM=no-reply@heavenmotion.be
+          ADMIN_EMAIL=admin@studiovnl.fr
+          ADMIN_PASSWORD=$ADMIN_PWD
+          SITE_ORIGIN=$SITE_ORIGIN
+          ALLOWED_HOSTS=$ALLOWED_HOSTS
+          IMAGE_TAG=$IMAGE_TAG
+          WEB_PORT=$WEB_PORT
+          ENV
+          chmod 600 .env
+          printf 'Backoffice %s : admin@studiovnl.fr / %s\n' "$DOMAIN" "$ADMIN_PWD" > BACKOFFICE-ACCES.txt
+          chmod 600 BACKOFFICE-ACCES.txt
+          echo ".env généré ; identifiants backoffice dans $DEPLOY_PATH/BACKOFFICE-ACCES.txt"
+          REMOTE
+
+      # Les images sont construites sur le runner (machine puissante) puis
+      # livrées au VPS : le petit serveur n'a plus qu'à les charger et les
+      # démarrer — pas de compilation Angular/.NET sur place.
+      - name: Construire les images
+        run: |
+          docker build -f docker/api.Dockerfile -t "vnl-api:$IMAGE_TAG" .
+          docker build -f docker/web.Dockerfile -t "vnl-web:$IMAGE_TAG" .
+
+      - name: Livrer les images au VPS
+        run: |
+          docker save "vnl-api:$IMAGE_TAG" "vnl-web:$IMAGE_TAG" | gzip \
+            | ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" 'gunzip | docker load'
+
+      - name: Relancer la pile
+        run: |
+          ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" \
+            "cd '$DEPLOY_PATH' \
+             && docker compose -f docker-compose.prod.yml up -d --no-build --remove-orphans \
+             && docker image prune -f"
+
+      - name: Vérifier le site
+        run: |
+          for attempt in $(seq 1 12); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOY_URL") || code=000
+            echo "Tentative $attempt : HTTP $code"
+            if [ "$code" = "200" ]; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Le site ne répond pas en 200 après le déploiement."
+          exit 1
