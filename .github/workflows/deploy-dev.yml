@@ -1,8 +1,9 @@
 name: Deploy dev
 
 # Déploiement de l'environnement de développement : chaque poussée sur develop
-# livre une pile séparée (/opt/havenmotion-dev, images vnl-*:dev, port 4100)
-# sur https://dev.heavenmotion.be/ (mécanique dans deploy-stack.yml).
+# livre une pile séparée (/home/deploy/havenmotion-dev — un dossier que le
+# compte deploy peut créer sans root —, images vnl-*:dev, port 4100) sur
+# https://dev.heavenmotion.be/ (mécanique dans deploy-stack.yml).
 #
 # Pré-requis côté hôte : entrée DNS dev.heavenmotion.be → 195.35.1.21 et un
 # vhost nginx dev.heavenmotion.be → 127.0.0.1:4100 avec son certificat.
@@ -21,7 +22,7 @@ jobs:
     secrets: inherit
     with:
       env_name: dev
-      deploy_path: /opt/havenmotion-dev
+      deploy_path: /home/deploy/havenmotion-dev
       site_url: https://dev.heavenmotion.be/
       site_origin: https://dev.heavenmotion.be
       allowed_hosts: dev.heavenmotion.be,localhost

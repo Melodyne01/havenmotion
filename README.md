@@ -98,7 +98,7 @@ Deux pipelines appellent la même mécanique (`deploy-stack.yml`) :
 | Pipeline | Déclencheur | URL | Pile sur le VPS | Port web |
 | --- | --- | --- | --- | --- |
 | `deploy.yml` (prod) | push sur `master`/`main` | https://heavenmotion.be | `/opt/havenmotion` (images `vnl-*:prod`) | 127.0.0.1:4000 |
-| `deploy-dev.yml` (dev) | push sur `develop` | https://dev.heavenmotion.be | `/opt/havenmotion-dev` (images `vnl-*:dev`) | 127.0.0.1:4100 |
+| `deploy-dev.yml` (dev) | push sur `develop` | https://dev.heavenmotion.be | `/home/deploy/havenmotion-dev` (images `vnl-*:dev`) | 127.0.0.1:4100 |
 
 Chaque déploiement : rsync des sources, génération/réalignement du `.env`
 serveur (secrets créés sur place au premier passage, identifiants backoffice
