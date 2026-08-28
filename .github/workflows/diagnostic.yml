@@ -1,0 +1,90 @@
+name: Diagnostic serveur
+
+on:
+  workflow_dispatch:
+
+env:
+  DEPLOY_HOST: 195.35.1.21
+  DEPLOY_USER: deploy
+  DEPLOY_PATH: /opt/havenmotion
+  SITE_DOMAIN: heavenmotion.be
+
+jobs:
+  diagnostic:
+    name: État du VPS et du domaine
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Préparer la clé SSH
+        run: |
+          if [ -z "${{ secrets.VPS_SSH_KEY }}" ]; then
+            echo "::error::Le secret VPS_SSH_KEY est vide."
+            exit 1
+          fi
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: DNS et accès public (depuis Internet)
+        run: |
+          echo "=== Résolution DNS (vue Internet) ==="
+          dig +short A "$SITE_DOMAIN" || true
+          dig +short A "www.$SITE_DOMAIN" || true
+          dig +short CNAME "www.$SITE_DOMAIN" || true
+          echo "=== HTTP ==="
+          curl -sI -m 10 "http://$SITE_DOMAIN/" | head -n 5 || echo "(HTTP injoignable)"
+          echo "=== HTTPS ==="
+          curl -sI -m 10 "https://$SITE_DOMAIN/" | head -n 8 || echo "(HTTPS injoignable)"
+          echo "=== Certificat ==="
+          echo | timeout 10 openssl s_client -connect "$SITE_DOMAIN:443" -servername "$SITE_DOMAIN" 2>/dev/null \
+            | openssl x509 -noout -subject -issuer -dates 2>/dev/null || echo "(pas de certificat TLS présenté)"
+
+      - name: État du serveur (via SSH)
+        run: |
+          ssh -i ~/.ssh/id_deploy "$DEPLOY_USER@$DEPLOY_HOST" SITE_DOMAIN="$SITE_DOMAIN" DEPLOY_PATH="$DEPLOY_PATH" 'bash -s' <<'REMOTE'
+          set -u
+          echo "=== Conteneurs Docker ==="
+          docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
+          echo
+          echo "=== Réponse locale du site (port 4000) ==="
+          curl -sI -m 10 http://127.0.0.1:4000/ | head -n 5 || echo "(port 4000 injoignable)"
+          echo
+          echo "=== Réponse locale de l'API via le web (proxy /api) ==="
+          curl -s -o /dev/null -w 'HTTP %{http_code}\n' -m 10 http://127.0.0.1:4000/api/public/site || true
+          echo
+          echo "=== nginx installé ? ==="
+          if command -v nginx >/dev/null 2>&1; then
+            nginx -v 2>&1
+            systemctl is-active nginx 2>/dev/null || true
+          else
+            echo "nginx ABSENT"
+          fi
+          echo
+          echo "=== Sites nginx activés ==="
+          ls -la /etc/nginx/sites-enabled/ 2>/dev/null || echo "(inaccessible ou absent)"
+          for f in /etc/nginx/sites-enabled/*; do
+            [ -r "$f" ] || continue
+            echo "--- $f ---"
+            grep -E 'server_name|listen|proxy_pass|client_max_body_size|ssl_certificate ' "$f" 2>/dev/null || true
+          done
+          echo
+          echo "=== Certificats Let's Encrypt ==="
+          ls /etc/letsencrypt/live/ 2>/dev/null || echo "(inaccessible sans root ou absent)"
+          echo
+          echo "=== Ports en écoute (80/443/4000) ==="
+          ss -tln 2>/dev/null | grep -E ':(80|443|4000)\s' || echo "(rien sur 80/443/4000)"
+          echo
+          echo "=== DNS vu depuis le VPS ==="
+          getent hosts "$SITE_DOMAIN" || echo "(non résolu)"
+          echo
+          echo "=== Fichiers de la pile ==="
+          ls -la "$DEPLOY_PATH" | head -n 20
+          echo
+          echo "=== Variables clés du .env (sans secrets) ==="
+          grep -E '^(SITE_ORIGIN|ALLOWED_HOSTS|MAIL_FROM|SMTP_HOST|ADMIN_EMAIL)=' "$DEPLOY_PATH/.env" 2>/dev/null || echo "(.env illisible)"
+          echo
+          echo "=== Mémoire et disque ==="
+          free -h | head -n 2
+          df -h / | tail -n 1
+          REMOTE
