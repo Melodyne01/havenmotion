@@ -2,12 +2,23 @@ name: Diagnostic serveur
 
 on:
   workflow_dispatch:
+    inputs:
+      domain:
+        description: "Domaine à sonder"
+        required: false
+        default: heavenmotion.be
+        type: string
+      deploy_path:
+        description: "Dossier de la pile à inspecter sur le VPS"
+        required: false
+        default: /opt/havenmotion
+        type: string
 
 env:
   DEPLOY_HOST: 195.35.1.21
   DEPLOY_USER: deploy
-  DEPLOY_PATH: /opt/havenmotion
-  SITE_DOMAIN: heavenmotion.be
+  DEPLOY_PATH: ${{ inputs.deploy_path || '/opt/havenmotion' }}
+  SITE_DOMAIN: ${{ inputs.domain || 'heavenmotion.be' }}
 
 jobs:
   diagnostic:
@@ -72,8 +83,8 @@ jobs:
           echo "=== Certificats Let's Encrypt ==="
           ls /etc/letsencrypt/live/ 2>/dev/null || echo "(inaccessible sans root ou absent)"
           echo
-          echo "=== Ports en écoute (80/443/4000) ==="
-          ss -tln 2>/dev/null | grep -E ':(80|443|4000)\s' || echo "(rien sur 80/443/4000)"
+          echo "=== Ports en écoute (80/443/4000/4100) ==="
+          ss -tln 2>/dev/null | grep -E ':(80|443|4000|4100)\s' || echo "(rien sur 80/443/4000/4100)"
           echo
           echo "=== DNS vu depuis le VPS ==="
           getent hosts "$SITE_DOMAIN" || echo "(non résolu)"
