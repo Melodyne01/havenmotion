@@ -38,23 +38,35 @@ dotnet run --project src/StudioVnl.Api    # http://localhost:5080 (Swagger en de
 Sans backend démarré, le site public retombe automatiquement sur le contenu
 placeholder.
 
-### Extraits de banque vidéo (provisoire)
+### Boucles d'ambiance (provisoire)
 
 En attendant les vraies vidéos du studio, les cinq bandes et le showreel
-jouent des extraits libres de droits servis par le CDN de Mixkit. Le poster
-reste un cadre 2.39:1 local : si le CDN ne répond pas, la mise en page ne
-bouge pas.
+jouent des boucles fabriquées pour le site : dérive lumineuse ambre sur fond
+charbon, grain argentique, halo anamorphique. Elles sont servies par le site
+lui-même — aucun CDN tiers, donc aucun lien qui puisse mourir, et le rendu est
+identique hors ligne.
 
 | Où | Fichier |
 | --- | --- |
-| Front (repli hors API) | `apps/web/src/app/core/stock-footage.ts` |
-| API (seed) | `apps/api/src/StudioVnl.Infrastructure/Data/StockFootage.cs` |
+| Fichiers servis | `apps/web/public/ambience/*.webm` + `*.jpg` (poster) |
+| Générateur | `apps/web/tools/generate-ambience.py` |
+| Front (repli hors API) | `apps/web/src/app/core/ambience.ts` |
+| API (seed) | `apps/api/src/StudioVnl.Infrastructure/Data/AmbienceFootage.cs` |
 
-Les deux listes doivent rester identiques. `cd apps/web && npm run check:stock`
-vérifie que les six liens répondent encore.
+Pour régénérer les boucles (les paramètres de chaque plan sont en tête du
+script) :
 
-Côté API, un extrait n'est posé que sur un emplacement vide, et plus aucun
-n'est ajouté dès qu'un fichier a été déposé dans la bibliothèque : le contenu
+```bash
+cd apps/web
+pip install numpy pillow
+python3 tools/generate-ambience.py
+```
+
+Format : VP8/WebM muet, 8 s bouclées. Les navigateurs sans WebM (iOS antérieur
+à 14.4) affichent le poster — le cadre reste habillé, il ne bouge pas.
+
+Côté API, une boucle n'est posée que sur un emplacement vide, et plus aucune
+n'est ajoutée dès qu'un fichier a été déposé dans la bibliothèque : le contenu
 du studio reprend la main sans manipulation.
 
 ### Comptes de démo

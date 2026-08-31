@@ -8,8 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:web": "node dist/web/server/server.mjs",
-    "lint": "ng lint",
-    "check:stock": "node tools/check-stock-footage.mjs"
+    "lint": "ng lint"
   },
   "prettier": {
     "printWidth": 100,

@@ -1,14 +1,13 @@
 import { Category, Film, SitePayload } from '../models';
-import { STOCK_CLIPS, stockMedia } from './stock-footage';
+import { AMBIENCE_CLIPS, ambienceMedia } from './ambience';
 
 /**
  * Contenu de démarrage. Il sert de repli si l'API est injoignable et de
  * référence pour le seed .NET (`SeedData.cs`).
  *
  * En attendant les vraies vidéos du studio, les bandes et le showreel portent
- * des extraits de banque libres de droits (`stock-footage.ts`) ; le poster
- * reste un cadre 2.39:1 local, affiché tout de suite et conservé si le CDN de
- * la banque ne répond pas.
+ * des boucles d'ambiance fabriquées pour le site (`ambience.ts`), servies
+ * depuis `public/ambience/`.
  */
 
 export const PLACEHOLDER_CATEGORIES: Category[] = [
@@ -20,7 +19,7 @@ export const PLACEHOLDER_CATEGORIES: Category[] = [
     sortOrder: 1,
     filmCount: 2,
     isPublished: true,
-    reel: stockMedia(STOCK_CLIPS.mariage),
+    reel: ambienceMedia(AMBIENCE_CLIPS.mariage),
     poster: null,
   },
   {
@@ -31,7 +30,7 @@ export const PLACEHOLDER_CATEGORIES: Category[] = [
     sortOrder: 2,
     filmCount: 2,
     isPublished: true,
-    reel: stockMedia(STOCK_CLIPS.corporate),
+    reel: ambienceMedia(AMBIENCE_CLIPS.corporate),
     poster: null,
   },
   {
@@ -42,7 +41,7 @@ export const PLACEHOLDER_CATEGORIES: Category[] = [
     sortOrder: 3,
     filmCount: 2,
     isPublished: true,
-    reel: stockMedia(STOCK_CLIPS.sport),
+    reel: ambienceMedia(AMBIENCE_CLIPS.sport),
     poster: null,
   },
   {
@@ -53,7 +52,7 @@ export const PLACEHOLDER_CATEGORIES: Category[] = [
     sortOrder: 4,
     filmCount: 2,
     isPublished: true,
-    reel: stockMedia(STOCK_CLIPS.clip),
+    reel: ambienceMedia(AMBIENCE_CLIPS.clip),
     poster: null,
   },
   {
@@ -64,7 +63,7 @@ export const PLACEHOLDER_CATEGORIES: Category[] = [
     sortOrder: 5,
     filmCount: 2,
     isPublished: true,
-    reel: stockMedia(STOCK_CLIPS.lifestyle),
+    reel: ambienceMedia(AMBIENCE_CLIPS.lifestyle),
     poster: null,
   },
 ];
@@ -111,7 +110,7 @@ export const PLACEHOLDER_SITE: SitePayload = {
     city: 'Lyon',
     region: 'Auvergne-Rhône-Alpes',
     legalText: 'Heaven Motion — micro-entreprise. Mentions légales à compléter.',
-    showreel: stockMedia(STOCK_CLIPS.showreel),
+    showreel: ambienceMedia(AMBIENCE_CLIPS.showreel),
   },
   services: [
     {

@@ -15,7 +15,7 @@ namespace StudioVnl.Infrastructure.Data;
 ///
 /// Deux passes s'exécutent ensuite à chaque démarrage, sans jamais toucher au
 /// contenu saisi par le client : la reprise de l'ancienne marque et la pose
-/// des extraits de banque vidéo sur les emplacements encore vides.
+/// des boucles d'ambiance sur les emplacements encore vides.
 /// </summary>
 public static class SeedData
 {
@@ -83,7 +83,7 @@ public static class SeedData
         await db.SaveChangesAsync(cancellationToken);
 
         await RenameLegacyBrandAsync(db, logger, cancellationToken);
-        await AttachStockFootageAsync(db, logger, cancellationToken);
+        await AttachAmbienceFootageAsync(db, logger, cancellationToken);
     }
 
     /// <summary>
@@ -140,18 +140,22 @@ public static class SeedData
     }
 
     /// <summary>
-    /// Pose un extrait de banque vidéo sur les bandes et le showreel encore
+    /// Pose une boucle d'ambiance sur les bandes et le showreel encore
     /// dépourvus de média — le site montre du mouvement en attendant les vraies
-    /// vidéos. Dès qu'un fichier a été déposé dans la bibliothèque, plus aucun
-    /// extrait n'est ajouté : le contenu du studio reprend la main.
+    /// vidéos. Dès qu'un fichier a été déposé dans la bibliothèque, plus aucune
+    /// boucle n'est ajoutée : le contenu du studio reprend la main.
     /// </summary>
-    private static async Task AttachStockFootageAsync(
+    private static async Task AttachAmbienceFootageAsync(
         AppDbContext db,
         ILogger logger,
         CancellationToken cancellationToken)
     {
+        await RemoveDeadStockMediaAsync(db, logger, cancellationToken);
+
+        // Un seul vrai fichier dans la bibliothèque suffit à couper la pose :
+        // le studio a commencé à livrer, on ne complète plus.
         var hasUploadedMedia = await db.MediaAssets
-            .AnyAsync(m => !m.OriginalPath.StartsWith("http"), cancellationToken);
+            .AnyAsync(m => !m.OriginalPath.StartsWith("/ambience/"), cancellationToken);
         if (hasUploadedMedia)
         {
             return;
@@ -163,7 +167,7 @@ public static class SeedData
             .ToListAsync(cancellationToken);
         foreach (var category in categories)
         {
-            if (!StockFootage.ByCategorySlug.TryGetValue(category.Slug, out var clip))
+            if (!AmbienceFootage.ByCategorySlug.TryGetValue(category.Slug, out var clip))
             {
                 continue;
             }
@@ -176,7 +180,7 @@ public static class SeedData
         var settings = await db.SiteSettings.FirstOrDefaultAsync(cancellationToken);
         if (settings is not null && settings.ShowreelMediaId is null)
         {
-            var media = StockFootage.Showreel.ToMediaAsset();
+            var media = AmbienceFootage.Showreel.ToMediaAsset();
             db.MediaAssets.Add(media);
             settings.ShowreelMediaId = media.Id;
             attached++;
@@ -186,9 +190,68 @@ public static class SeedData
         {
             await db.SaveChangesAsync(cancellationToken);
             logger.LogInformation(
-                "{Count} extrait(s) de banque vidéo rattaché(s) en attendant les vraies vidéos.",
+                "{Count} boucle(s) d'ambiance rattachée(s) en attendant les vraies vidéos.",
                 attached);
         }
+    }
+
+    /// <summary>
+    /// Retire les extraits de banque externes posés par une version précédente
+    /// du seed : leurs URL ne répondent pas et les cadres restaient noirs. Les
+    /// références sont d'abord détachées, puis les médias supprimés — rien
+    /// d'autre que ces extraits n'est touché, un fichier déposé par le studio
+    /// n'ayant jamais une URL absolue pour chemin d'origine.
+    /// </summary>
+    private static async Task RemoveDeadStockMediaAsync(
+        AppDbContext db,
+        ILogger logger,
+        CancellationToken cancellationToken)
+    {
+        var dead = await db.MediaAssets
+            .Where(m => m.OriginalPath.StartsWith("http"))
+            .ToListAsync(cancellationToken);
+        if (dead.Count == 0)
+        {
+            return;
+        }
+
+        var deadIds = dead.Select(m => m.Id).ToHashSet();
+
+        foreach (var category in await db.Categories.ToListAsync(cancellationToken))
+        {
+            if (category.ReelMediaId is Guid reel && deadIds.Contains(reel))
+            {
+                category.ReelMediaId = null;
+            }
+            if (category.PosterMediaId is Guid poster && deadIds.Contains(poster))
+            {
+                category.PosterMediaId = null;
+            }
+        }
+
+        foreach (var film in await db.Films.ToListAsync(cancellationToken))
+        {
+            if (film.MediaId is Guid media && deadIds.Contains(media))
+            {
+                film.MediaId = null;
+            }
+            if (film.PosterMediaId is Guid poster && deadIds.Contains(poster))
+            {
+                film.PosterMediaId = null;
+            }
+        }
+
+        var settings = await db.SiteSettings.FirstOrDefaultAsync(cancellationToken);
+        if (settings?.ShowreelMediaId is Guid showreel && deadIds.Contains(showreel))
+        {
+            settings.ShowreelMediaId = null;
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
+
+        db.MediaAssets.RemoveRange(dead);
+        await db.SaveChangesAsync(cancellationToken);
+        logger.LogInformation("{Count} extrait(s) de banque externe retiré(s) : liens morts.", dead.Count);
     }
 
     private static async Task SeedRolesAndUsersAsync(IServiceProvider services, ILogger logger)

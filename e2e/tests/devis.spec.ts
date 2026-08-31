@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test';
 
-const baseUrl = 'http://localhost:4326';
-
 /**
  * Parcours de référence du cahier des charges :
  * hero → survol d'une bande → modale → formulaire de devis envoyé.
@@ -9,20 +7,10 @@ const baseUrl = 'http://localhost:4326';
 test('du hero à la demande de devis', async ({ page }) => {
   const consoleErrors: string[] = [];
   page.on('console', (message) => {
-    // Seules les erreurs venant du site lui-même comptent : les extraits de
-    // banque vidéo sont coupés plus bas et signalent leur échec en console.
-    if (message.type() === 'error' && message.location().url.startsWith(baseUrl)) {
+    if (message.type() === 'error') {
       consoleErrors.push(message.text());
     }
   });
-
-  // Les extraits de banque vidéo (CDN tiers, contenu provisoire) ne sont pas
-  // joignables en CI : on les coupe pour garder le parcours hermétique. Les
-  // cadres retombent sur leur poster local, la mise en page est inchangée.
-  await page.route(
-    (url) => url.origin !== baseUrl,
-    (route) => route.abort(),
-  );
 
   // L'API de devis est interceptée : le test reste hermétique.
   await page.route('**/api/public/leads', async (route) => {
