@@ -12,6 +12,10 @@ namespace StudioVnl.Infrastructure.Data;
 /// Contenu de départ : cinq catégories protégées, réglages, prestations,
 /// process, témoignages et comptes de démo. Aligné sur les placeholders du
 /// front (`placeholder-content.ts`).
+///
+/// Deux passes s'exécutent ensuite à chaque démarrage, sans jamais toucher au
+/// contenu saisi par le client : la reprise de l'ancienne marque et la pose
+/// des extraits de banque vidéo sur les emplacements encore vides.
 /// </summary>
 public static class SeedData
 {
@@ -33,17 +37,17 @@ public static class SeedData
             db.SiteSettings.Add(new SiteSettings
             {
                 Id = 1,
-                BrandName = "Studio VNL",
+                BrandName = "Heaven Motion",
                 Tagline = "Vidéaste freelance — mariages, marques, sport et clips.",
-                Email = "contact@studiovnl.fr",
-                Instagram = "@studiovnl",
+                Email = "contact@heavenmotion.be",
+                Instagram = "@heavenmotion",
                 City = "Lyon",
                 Region = "Auvergne-Rhône-Alpes",
-                LegalText = "Studio VNL — micro-entreprise. Mentions légales à compléter.",
+                LegalText = "Heaven Motion — micro-entreprise. Mentions légales à compléter.",
                 AboutPortraitUrl = "/placeholders/portrait.svg",
                 AboutParagraphsJson = DtoMapper.ToJson(
                 [
-                    "Studio VNL est un studio vidéo indépendant basé à Lyon.",
+                    "Heaven Motion est un studio vidéo indépendant basé à Lyon.",
                     "Je filme seul ou en équipe réduite, pour rester au plus près des gens.",
                     "Le montage cherche le rythme d’un film, pas celui d’un résumé.",
                     "Chaque projet part d’un échange, jamais d’un catalogue.",
@@ -77,6 +81,114 @@ public static class SeedData
         }
 
         await db.SaveChangesAsync(cancellationToken);
+
+        await RenameLegacyBrandAsync(db, logger, cancellationToken);
+        await AttachStockFootageAsync(db, logger, cancellationToken);
+    }
+
+    /// <summary>
+    /// Reprise de l'ancienne marque « Studio VNL » sur les bases déjà en
+    /// service. Seules les valeurs restées à l'ancien défaut sont réécrites :
+    /// un texte modifié depuis le backoffice n'est jamais écrasé.
+    /// </summary>
+    private static async Task RenameLegacyBrandAsync(
+        AppDbContext db,
+        ILogger logger,
+        CancellationToken cancellationToken)
+    {
+        var settings = await db.SiteSettings.FirstOrDefaultAsync(cancellationToken);
+        if (settings is null)
+        {
+            return;
+        }
+
+        var renamed = false;
+        if (settings.BrandName == "Studio VNL")
+        {
+            settings.BrandName = "Heaven Motion";
+            renamed = true;
+        }
+        if (settings.Email == "contact@studiovnl.fr")
+        {
+            settings.Email = "contact@heavenmotion.be";
+            renamed = true;
+        }
+        if (settings.Instagram == "@studiovnl")
+        {
+            settings.Instagram = "@heavenmotion";
+            renamed = true;
+        }
+        if (settings.LegalText.StartsWith("Studio VNL", StringComparison.Ordinal))
+        {
+            settings.LegalText = settings.LegalText.Replace("Studio VNL", "Heaven Motion", StringComparison.Ordinal);
+            renamed = true;
+        }
+
+        var paragraphs = DtoMapper.ParseStringList(settings.AboutParagraphsJson);
+        if (paragraphs.Any(p => p.Contains("Studio VNL", StringComparison.Ordinal)))
+        {
+            settings.AboutParagraphsJson = DtoMapper.ToJson(
+                paragraphs.Select(p => p.Replace("Studio VNL", "Heaven Motion", StringComparison.Ordinal)).ToList());
+            renamed = true;
+        }
+
+        if (renamed)
+        {
+            await db.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("Réglages repris à la marque Heaven Motion.");
+        }
+    }
+
+    /// <summary>
+    /// Pose un extrait de banque vidéo sur les bandes et le showreel encore
+    /// dépourvus de média — le site montre du mouvement en attendant les vraies
+    /// vidéos. Dès qu'un fichier a été déposé dans la bibliothèque, plus aucun
+    /// extrait n'est ajouté : le contenu du studio reprend la main.
+    /// </summary>
+    private static async Task AttachStockFootageAsync(
+        AppDbContext db,
+        ILogger logger,
+        CancellationToken cancellationToken)
+    {
+        var hasUploadedMedia = await db.MediaAssets
+            .AnyAsync(m => !m.OriginalPath.StartsWith("http"), cancellationToken);
+        if (hasUploadedMedia)
+        {
+            return;
+        }
+
+        var attached = 0;
+        var categories = await db.Categories
+            .Where(c => c.ReelMediaId == null)
+            .ToListAsync(cancellationToken);
+        foreach (var category in categories)
+        {
+            if (!StockFootage.ByCategorySlug.TryGetValue(category.Slug, out var clip))
+            {
+                continue;
+            }
+            var media = clip.ToMediaAsset();
+            db.MediaAssets.Add(media);
+            category.ReelMediaId = media.Id;
+            attached++;
+        }
+
+        var settings = await db.SiteSettings.FirstOrDefaultAsync(cancellationToken);
+        if (settings is not null && settings.ShowreelMediaId is null)
+        {
+            var media = StockFootage.Showreel.ToMediaAsset();
+            db.MediaAssets.Add(media);
+            settings.ShowreelMediaId = media.Id;
+            attached++;
+        }
+
+        if (attached > 0)
+        {
+            await db.SaveChangesAsync(cancellationToken);
+            logger.LogInformation(
+                "{Count} extrait(s) de banque vidéo rattaché(s) en attendant les vraies vidéos.",
+                attached);
+        }
     }
 
     private static async Task SeedRolesAndUsersAsync(IServiceProvider services, ILogger logger)
@@ -92,7 +204,7 @@ public static class SeedData
 
         var userManager = services.GetRequiredService<UserManager<AppUser>>();
         var configuration = services.GetRequiredService<IConfiguration>();
-        var adminEmail = configuration["Seed:AdminEmail"] ?? "admin@studiovnl.fr";
+        var adminEmail = configuration["Seed:AdminEmail"] ?? "admin@heavenmotion.be";
         var adminPassword = configuration["Seed:AdminPassword"];
 
         if (string.IsNullOrEmpty(adminPassword))

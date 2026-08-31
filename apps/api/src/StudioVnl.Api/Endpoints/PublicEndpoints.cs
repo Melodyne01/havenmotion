@@ -135,7 +135,7 @@ public static class PublicEndpoints
         await db.SaveChangesAsync(cancellationToken);
 
         var settings = await db.SiteSettings.AsNoTracking().FirstOrDefaultAsync(cancellationToken);
-        var brandName = settings?.BrandName ?? "Studio VNL";
+        var brandName = settings?.BrandName ?? "Heaven Motion";
         var studioAddress = settings?.Email;
 
         // Notification au studio + accusé de réception au prospect.

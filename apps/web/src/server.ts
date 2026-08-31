@@ -104,7 +104,7 @@ if (isMainModule(import.meta.url) || process.env['pm_id']) {
     if (error) {
       throw error;
     }
-    console.log(`Studio VNL — SSR à l'écoute sur http://localhost:${port}`);
+    console.log(`Heaven Motion — SSR à l'écoute sur http://localhost:${port}`);
   });
 }
 

@@ -39,7 +39,7 @@ services:
       Email__UserName: ${SMTP_USERNAME:-}
       Email__Password: ${SMTP_PASSWORD:-}
       Email__FromAddress: ${MAIL_FROM:-no-reply@heavenmotion.be}
-      Seed__AdminEmail: ${ADMIN_EMAIL:-admin@studiovnl.fr}
+      Seed__AdminEmail: ${ADMIN_EMAIL:-admin@heavenmotion.be}
       Seed__AdminPassword: ${ADMIN_PASSWORD:-}
       MediaStorage__Provider: LocalDisk
       MediaStorage__LocalDisk__RootPath: /data/media

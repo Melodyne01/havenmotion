@@ -14,7 +14,7 @@ interface NavLink {
   imports: [LogotypeComponent, CtaButtonComponent],
   template: `
     <header class="header">
-      <a class="header__brand" href="#hero" aria-label="Studio VNL — accueil">
+      <a class="header__brand" href="#hero" aria-label="Heaven Motion — accueil">
         <app-logotype />
       </a>
 

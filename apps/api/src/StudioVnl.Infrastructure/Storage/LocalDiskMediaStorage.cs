@@ -42,7 +42,9 @@ public class LocalDiskMediaStorage(IOptions<LocalDiskStorageOptions> options) : 
     }
 
     public string GetPublicUrl(string key) =>
-        $"{_options.PublicBaseUrl.TrimEnd('/')}/{key.Replace('\\', '/')}";
+        MediaKeys.IsAlreadyPublic(key)
+            ? key
+            : $"{_options.PublicBaseUrl.TrimEnd('/')}/{key.Replace('\\', '/')}";
 
     public Task<string> GetLocalPathAsync(string key, CancellationToken cancellationToken) =>
         Task.FromResult(Resolve(key));

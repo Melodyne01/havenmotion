@@ -1,6 +1,6 @@
-# Studio VNL — site « Cinéma »
+# Heaven Motion — site « Cinéma »
 
-Site vitrine de **Studio VNL**, vidéaste freelance (mariages, corporate, sport,
+Site vitrine de **Heaven Motion**, vidéaste freelance (mariages, corporate, sport,
 clips, lifestyle) à Lyon / Auvergne-Rhône-Alpes. Direction artistique
 « Cinéma » (noir & ambre), objectif unique : **décrocher des demandes de devis**.
 
@@ -36,14 +36,33 @@ dotnet run --project src/StudioVnl.Api    # http://localhost:5080 (Swagger en de
 ```
 
 Sans backend démarré, le site public retombe automatiquement sur le contenu
-placeholder (cadres 2.39:1 noirs portant le nom du fichier attendu).
+placeholder.
+
+### Extraits de banque vidéo (provisoire)
+
+En attendant les vraies vidéos du studio, les cinq bandes et le showreel
+jouent des extraits libres de droits servis par le CDN de Mixkit. Le poster
+reste un cadre 2.39:1 local : si le CDN ne répond pas, la mise en page ne
+bouge pas.
+
+| Où | Fichier |
+| --- | --- |
+| Front (repli hors API) | `apps/web/src/app/core/stock-footage.ts` |
+| API (seed) | `apps/api/src/StudioVnl.Infrastructure/Data/StockFootage.cs` |
+
+Les deux listes doivent rester identiques. `cd apps/web && npm run check:stock`
+vérifie que les six liens répondent encore.
+
+Côté API, un extrait n'est posé que sur un emplacement vide, et plus aucun
+n'est ajouté dès qu'un fichier a été déposé dans la bibliothèque : le contenu
+du studio reprend la main sans manipulation.
 
 ### Comptes de démo
 
 Le seed crée un compte admin si `Seed:AdminPassword` est défini. En dev
 (`appsettings.Development.json` et `docker-compose.yml`) :
 
-- **admin@studiovnl.fr** / `Admin-Demo-2026!` → rôle `Admin`
+- **admin@heavenmotion.be** / `Admin-Demo-2026!` → rôle `Admin`
 
 Backoffice : http://localhost:4200/admin — e-mails visibles dans Mailpit :
 http://localhost:8025.

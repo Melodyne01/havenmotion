@@ -136,8 +136,8 @@ export class LegalPageComponent {
   constructor() {
     this.store.load();
     this.seo.apply({
-      title: `${this.pageTitle()} — Studio VNL`,
-      description: `${this.pageTitle()} du site Studio VNL.`,
+      title: `${this.pageTitle()} — Heaven Motion`,
+      description: `${this.pageTitle()} du site Heaven Motion.`,
       path: this.routeData().document === 'confidentialite' ? '/confidentialite' : '/mentions-legales',
     });
   }

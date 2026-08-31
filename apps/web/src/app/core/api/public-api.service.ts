@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { APP_CONFIG } from '../app-config';
 import { Category, Film, LeadRequest, SitePayload } from '../../models';
-import { PLACEHOLDER_CATEGORIES, PLACEHOLDER_SITE } from '../placeholder-content';
+import { PLACEHOLDER_CATEGORIES, PLACEHOLDER_FILMS, PLACEHOLDER_SITE } from '../placeholder-content';
 
 /**
  * Lecture du contenu publié.
@@ -33,7 +33,7 @@ export class PublicApiService {
   films(slug: string): Observable<Film[]> {
     return this.http
       .get<Film[]>(`${this.base}/public/categories/${slug}/films`)
-      .pipe(catchError(() => of([])));
+      .pipe(catchError(() => of(PLACEHOLDER_FILMS[slug] ?? [])));
   }
 
   submitLead(payload: LeadRequest): Observable<{ id: string }> {

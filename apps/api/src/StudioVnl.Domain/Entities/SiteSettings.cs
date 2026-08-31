@@ -4,7 +4,7 @@ namespace StudioVnl.Domain.Entities;
 public class SiteSettings
 {
     public int Id { get; set; } = 1;
-    public string BrandName { get; set; } = "Studio VNL";
+    public string BrandName { get; set; } = "Heaven Motion";
     public string Tagline { get; set; } = string.Empty;
     public Guid? ShowreelMediaId { get; set; }
     public MediaAsset? ShowreelMedia { get; set; }

@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+const baseUrl = 'http://localhost:4326';
+
 /**
  * Parcours de référence du cahier des charges :
  * hero → survol d'une bande → modale → formulaire de devis envoyé.
@@ -7,10 +9,20 @@ import { expect, test } from '@playwright/test';
 test('du hero à la demande de devis', async ({ page }) => {
   const consoleErrors: string[] = [];
   page.on('console', (message) => {
-    if (message.type() === 'error') {
+    // Seules les erreurs venant du site lui-même comptent : les extraits de
+    // banque vidéo sont coupés plus bas et signalent leur échec en console.
+    if (message.type() === 'error' && message.location().url.startsWith(baseUrl)) {
       consoleErrors.push(message.text());
     }
   });
+
+  // Les extraits de banque vidéo (CDN tiers, contenu provisoire) ne sont pas
+  // joignables en CI : on les coupe pour garder le parcours hermétique. Les
+  // cadres retombent sur leur poster local, la mise en page est inchangée.
+  await page.route(
+    (url) => url.origin !== baseUrl,
+    (route) => route.abort(),
+  );
 
   // L'API de devis est interceptée : le test reste hermétique.
   await page.route('**/api/public/leads', async (route) => {
@@ -24,7 +36,7 @@ test('du hero à la demande de devis', async ({ page }) => {
   await page.goto('/');
 
   // 1. Hero : marque et CTA visibles.
-  await expect(page.getByRole('heading', { level: 1, name: /studio vnl/i })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /heaven motion/i })).toBeVisible();
 
   // 2. Les cinq bandes de catégories sont là.
   const bands = page.locator('app-category-band');
