@@ -13,6 +13,18 @@
     rgba(11, 11, 12, 0.1) 45%,
     rgba(11, 11, 12, 0.85) 100%
   );
+
+  // Sur téléphone le cadre est bien plus haut que son 2.39:1 : l'image est
+  // recadrée de près et son centre remonte derrière le titre. Le voile est
+  // donc plus dense au milieu, là où le texte se pose.
+  @include mobile {
+    background: linear-gradient(
+      180deg,
+      rgba(11, 11, 12, 0.35) 0%,
+      rgba(11, 11, 12, 0.5) 45%,
+      rgba(11, 11, 12, 0.9) 100%
+    );
+  }
 }
 
 .hero__watermark {

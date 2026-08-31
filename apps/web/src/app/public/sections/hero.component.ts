@@ -17,6 +17,7 @@ import { SiteStore } from '../site-store';
       <app-video-frame
         [asset]="settings().showreel"
         playback="auto"
+        [minHeight]="heroMinHeight"
         [travelling]="true"
         [priority]="true"
         [label]="'Showreel ' + settings().brandName"
@@ -39,4 +40,11 @@ import { SiteStore } from '../site-store';
 export class HeroComponent {
   private readonly store = inject(SiteStore);
   protected readonly settings = this.store.settings;
+
+  /**
+   * Plancher de hauteur du cadre : le bloc titre mesure jusqu'à 266 px sur un
+   * téléphone étroit, il lui faut cette place sous le cadre. Au-delà de 813 px
+   * de large le 2.39:1 redonne davantage et le plancher ne s'applique plus.
+   */
+  protected readonly heroMinHeight = 340;
 }
