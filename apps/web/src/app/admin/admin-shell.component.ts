@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { LogotypeComponent } from '../shared/ui/logotype.component';
 import { AuthService } from '../core/auth/auth.service';
+import { AdminLocaleService } from './admin-locale.service';
+import { SiteLocale } from '../core/locale';
 
 /** Cadre du backoffice : navigation latérale, session et lien de prévisualisation. */
 @Component({
@@ -28,6 +30,25 @@ import { AuthService } from '../core/auth/auth.service';
           }
         </nav>
 
+        <div class="shell__lang" role="group" aria-label="Langue éditée">
+          <button
+            type="button"
+            class="shell__lang-btn"
+            [class.is-active]="locale() === 'fr'"
+            (click)="setLocale('fr')"
+          >
+            FR
+          </button>
+          <button
+            type="button"
+            class="shell__lang-btn"
+            [class.is-active]="locale() === 'nl'"
+            (click)="setLocale('nl')"
+          >
+            NL
+          </button>
+        </div>
+
         <div class="shell__foot">
           <a class="shell__preview" href="/?preview=1" target="_blank" rel="noopener">
             Voir en preview
@@ -47,8 +68,10 @@ import { AuthService } from '../core/auth/auth.service';
 export class AdminShellComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly adminLocale = inject(AdminLocaleService);
 
   protected readonly email = this.auth.email;
+  protected readonly locale = this.adminLocale.locale;
 
   protected readonly links = [
     { path: 'categories', label: 'Catégories' },
@@ -59,6 +82,10 @@ export class AdminShellComponent {
     { path: 'devis', label: 'Demandes de devis' },
     { path: 'journal', label: 'Journal' },
   ];
+
+  protected setLocale(locale: SiteLocale): void {
+    this.adminLocale.set(locale);
+  }
 
   protected logout(): void {
     this.auth.logout().subscribe(() => {

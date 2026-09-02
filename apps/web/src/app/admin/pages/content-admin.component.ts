@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AdminApiService } from '../../core/api/admin-api.service';
+import { AdminLocaleService } from '../admin-locale.service';
 import { ClientLogo, ProcessStep, ServiceCard, SiteSettings, Testimonial } from '../../models';
 
 /** Contenus texte : prestations, process, témoignages, logos, coordonnées. */
@@ -201,6 +202,7 @@ import { ClientLogo, ProcessStep, ServiceCard, SiteSettings, Testimonial } from 
 })
 export class ContentAdminComponent {
   private readonly api = inject(AdminApiService);
+  private readonly adminLocale = inject(AdminLocaleService);
 
   protected readonly settings = signal<SiteSettings | null>(null);
   protected readonly services = signal<ServiceCard[]>([]);
@@ -210,11 +212,19 @@ export class ContentAdminComponent {
   protected readonly status = signal<string | null>(null);
 
   constructor() {
-    this.api.settings().subscribe({ next: (v) => this.settings.set(v), error: () => undefined });
-    this.reloadServices();
-    this.reloadSteps();
-    this.reloadTestimonials();
+    // Les logos client sont partagés entre langues (noms de marque) : chargés
+    // une seule fois, pas rebranchés sur le changement de langue.
     this.reloadLogos();
+
+    effect(() => {
+      this.adminLocale.locale();
+      this.api
+        .settings(this.adminLocale.locale())
+        .subscribe({ next: (v) => this.settings.set(v), error: () => undefined });
+      this.reloadServices();
+      this.reloadSteps();
+      this.reloadTestimonials();
+    });
   }
 
   protected splitLines(value: string): string[] {
@@ -225,7 +235,7 @@ export class ContentAdminComponent {
   }
 
   protected saveSettings(site: SiteSettings): void {
-    this.api.updateSettings(site).subscribe({
+    this.api.updateSettings(site, this.adminLocale.locale()).subscribe({
       next: () => this.status.set('Coordonnées enregistrées.'),
       error: () => this.status.set("L'enregistrement a échoué."),
     });
@@ -247,7 +257,7 @@ export class ContentAdminComponent {
   }
 
   protected saveService(service: ServiceCard): void {
-    this.api.saveService(service).subscribe({
+    this.api.saveService(service, this.adminLocale.locale()).subscribe({
       next: () => {
         this.status.set('Prestation enregistrée.');
         this.reloadServices();
@@ -272,7 +282,7 @@ export class ContentAdminComponent {
   }
 
   protected saveStep(step: ProcessStep): void {
-    this.api.saveProcessStep(step).subscribe({
+    this.api.saveProcessStep(step, this.adminLocale.locale()).subscribe({
       next: () => {
         this.status.set('Étape enregistrée.');
         this.reloadSteps();
@@ -297,7 +307,7 @@ export class ContentAdminComponent {
   }
 
   protected saveTestimonial(testimonial: Testimonial): void {
-    this.api.saveTestimonial(testimonial).subscribe({
+    this.api.saveTestimonial(testimonial, this.adminLocale.locale()).subscribe({
       next: () => {
         this.status.set('Témoignage enregistré.');
         this.reloadTestimonials();
@@ -340,16 +350,20 @@ export class ContentAdminComponent {
   }
 
   private reloadServices(): void {
-    this.api.services().subscribe({ next: (v) => this.services.set(v), error: () => undefined });
+    this.api
+      .services(this.adminLocale.locale())
+      .subscribe({ next: (v) => this.services.set(v), error: () => undefined });
   }
 
   private reloadSteps(): void {
-    this.api.processSteps().subscribe({ next: (v) => this.steps.set(v), error: () => undefined });
+    this.api
+      .processSteps(this.adminLocale.locale())
+      .subscribe({ next: (v) => this.steps.set(v), error: () => undefined });
   }
 
   private reloadTestimonials(): void {
     this.api
-      .testimonials()
+      .testimonials(this.adminLocale.locale())
       .subscribe({ next: (v) => this.testimonials.set(v), error: () => undefined });
   }
 
