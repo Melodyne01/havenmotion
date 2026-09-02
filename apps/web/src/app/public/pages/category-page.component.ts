@@ -143,6 +143,7 @@ export class CategoryPageComponent {
         { name: 'Accueil', path: this.homePath() },
         { name: cat.name, path },
       ]);
+      this.seo.applyService(settings, cat, this.store.services());
 
       const pair = CATEGORY_SLUG_MAP.find((entry) =>
         this.locale === 'nl' ? entry.nl === cat.slug : entry.fr === cat.slug,

@@ -1,0 +1,26 @@
+# Heaven Motion
+
+> Vidéaste indépendant basé à Bruxelles, spécialisé dans les films de mariage, les vidéos d'entreprise, le sport, les clips musicaux et le contenu lifestyle. Zone d'intervention : Bruxelles et les communes environnantes.
+
+Heaven Motion tourne et monte des films sur mesure, seul ou en petite équipe selon le projet. Devis chiffré sous 48 h après un premier échange.
+
+## Pages principales
+
+- [Accueil](https://heavenmotion.be/): présentation du studio, aperçu des cinq catégories de films, showreel.
+- [Mariage](https://heavenmotion.be/realisations/mariage): films de mariage, à partir de 900 €.
+- [Corporate](https://heavenmotion.be/realisations/corporate): vidéos d'entreprise, portraits de métiers, captations d'événements professionnels.
+- [Sport](https://heavenmotion.be/realisations/sport): captation d'athlètes, clubs et compétitions.
+- [Clip](https://heavenmotion.be/realisations/clip): clips musicaux et formats courts à direction artistique.
+- [Lifestyle](https://heavenmotion.be/realisations/lifestyle): vlogs, séries sociales, contenu de marque au quotidien.
+- [FAQ](https://heavenmotion.be/faq): tarifs, délais de livraison, zone d'intervention, droits d'usage, déroulé d'une prestation.
+- [À propos](https://heavenmotion.be/a-propos): présentation du vidéaste et de son approche.
+- [Contact](https://heavenmotion.be/contact): formulaire de demande de devis.
+
+## Néerlandais (NL)
+
+Le site existe aussi en néerlandais sous [/nl](https://heavenmotion.be/nl), avec les mêmes catégories sous des URL traduites (`/nl/realisaties/huwelijk`, `/nl/realisaties/zakelijk`, etc.).
+
+## Notes pour les robots
+
+- Le backoffice (`/admin`) n'est pas destiné à l'indexation.
+- Le sitemap complet (FR + NL) est disponible sur [/sitemap.xml](https://heavenmotion.be/sitemap.xml).

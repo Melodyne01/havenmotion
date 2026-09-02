@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { APP_CONFIG } from './app-config';
 import { SiteLocale } from './locale';
-import { Category, SiteSettings } from '../models';
+import { Category, ServiceCard, SiteSettings } from '../models';
 
 export interface SeoInput {
   title: string;
@@ -104,6 +104,39 @@ export class SeoService {
     this.writeJsonLd('vnl-jsonld', { '@context': 'https://schema.org', '@graph': graph });
   }
 
+  /**
+   * Publie le bloc JSON-LD `Service` d'une page catégorie, quand une fiche
+   * tarifaire correspondante existe (elles ne sont pas nommées à l'identique
+   * — "Sport & event" couvre la catégorie "Sport", "Clip & lifestyle" couvre
+   * "Clip" et "Lifestyle" — d'où le rapprochement souple plutôt qu'une
+   * correspondance exacte).
+   */
+  applyService(settings: SiteSettings, category: Category, services: readonly ServiceCard[]): void {
+    const needle = category.name.toLowerCase();
+    const match = services.find(
+      (s) => s.name.toLowerCase().includes(needle) || needle.includes(s.name.toLowerCase()),
+    );
+    if (!match) {
+      return;
+    }
+    const graph = {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      serviceType: category.name,
+      name: `${settings.brandName} — ${category.name}`,
+      description: category.tagline,
+      provider: { '@type': 'LocalBusiness', name: settings.brandName, '@id': `${this.origin}/#studio` },
+      areaServed: settings.region,
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'EUR',
+        price: this.extractPrice(match.startingPrice),
+        description: match.startingPrice,
+      },
+    };
+    this.writeJsonLd('vnl-service', graph);
+  }
+
   /** Publie le bloc JSON-LD `BreadcrumbList` de la page courante. */
   applyBreadcrumbs(items: readonly { name: string; path: string }[]): void {
     const graph = {
@@ -142,6 +175,17 @@ export class SeoService {
       this.document.head.appendChild(script);
     }
     script.textContent = JSON.stringify(payload);
+  }
+
+  /**
+   * "à partir de 1 400 €" → "1400". Les prix du site sont toujours des
+   * montants entiers en euros avec un espace comme séparateur de milliers
+   * (jamais de décimales) : ne garder que les chiffres suffit, pas besoin
+   * de gérer virgule décimale ou autre devise.
+   */
+  private extractPrice(text: string): string | undefined {
+    const digits = text.replace(/[^\d]/g, '');
+    return digits || undefined;
   }
 
   private absolute(path: string | null): string | undefined {
