@@ -129,8 +129,13 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    // Applique les migrations si elles existent, sinon crée le schéma :
-    // le dépôt démarre sans migration initiale (générée avec `dotnet ef`).
+    if (db.Database.IsRelational())
+    {
+        await AdoptLegacySchemaAsync(db);
+    }
+    // Applique les migrations si elles existent, sinon crée le schéma : ce
+    // dernier cas ne sert plus qu'aux tests locaux sans base pré-existante,
+    // dev et prod passent désormais par `AdoptLegacySchemaAsync` + Migrate.
     if (db.Database.IsRelational() && (await db.Database.GetPendingMigrationsAsync()).Any())
     {
         await db.Database.MigrateAsync();
@@ -140,6 +145,69 @@ using (var scope = app.Services.CreateScope())
         await db.Database.EnsureCreatedAsync();
     }
     await SeedData.EnsureSeededAsync(scope.ServiceProvider);
+}
+
+/// <summary>
+/// Le dépôt a longtemps démarré via EnsureCreatedAsync, sans jamais poser de
+/// migration : les bases déjà en service (dev, prod) ont donc tout le schéma
+/// mais aucun historique `__EFMigrationsHistory`. Sans ce pont, poser la
+/// première migration ferait rejouer la création de tables qui existent déjà
+/// et l'API planterait au démarrage (`relation "AspNetRoles" already
+/// exists`, vérifié en local). On ne fait ça qu'une fois : dès que
+/// l'historique existe, cette fonction ne touche plus à rien.
+/// </summary>
+static async Task AdoptLegacySchemaAsync(AppDbContext db)
+{
+    if ((await db.Database.GetAppliedMigrationsAsync()).Any())
+    {
+        return;
+    }
+
+    var connection = db.Database.GetDbConnection();
+    var shouldClose = connection.State != System.Data.ConnectionState.Open;
+    if (shouldClose)
+    {
+        await connection.OpenAsync();
+    }
+
+    bool legacySchemaExists;
+    try
+    {
+        await using var probe = connection.CreateCommand();
+        probe.CommandText = "SELECT to_regclass('\"AspNetRoles\"')::text";
+        legacySchemaExists = await probe.ExecuteScalarAsync() is not (null or System.DBNull);
+    }
+    finally
+    {
+        if (shouldClose)
+        {
+            await connection.CloseAsync();
+        }
+    }
+
+    if (!legacySchemaExists)
+    {
+        return;
+    }
+
+    var baselineMigrationId = db.Database.GetMigrations().OrderBy(id => id, StringComparer.Ordinal).First();
+
+    await db.Database.ExecuteSqlRawAsync(
+        """
+        CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+            "MigrationId" character varying(150) NOT NULL,
+            "ProductVersion" character varying(32) NOT NULL,
+            CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+        )
+        """);
+
+    await db.Database.ExecuteSqlRawAsync(
+        """
+        INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+        VALUES ({0}, '8.0.8')
+        ON CONFLICT DO NOTHING
+        """,
+        baselineMigrationId);
 }
 
 app.UseExceptionHandler();

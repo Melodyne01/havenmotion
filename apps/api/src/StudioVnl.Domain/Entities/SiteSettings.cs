@@ -17,4 +17,13 @@ public class SiteSettings
 
     /// <summary>Paragraphes « À propos », sérialisés en JSON.</summary>
     public string AboutParagraphsJson { get; set; } = "[]";
+
+    /// <summary>
+    /// Langue de cette fiche de réglages ("fr" ou "nl"). BrandName, Email,
+    /// Instagram, ShowreelMediaId et AboutPortraitUrl sont l'identité de la
+    /// marque et devraient rester identiques entre les deux fiches — c'est à
+    /// l'admin de les garder synchronisés pour l'instant, rien ne l'impose
+    /// techniquement.
+    /// </summary>
+    public string Locale { get; set; } = "fr";
 }
