@@ -12,6 +12,21 @@ export const routes: Routes = [
       import('./public/pages/category-page.component').then((m) => m.CategoryPageComponent),
   },
   {
+    path: 'a-propos',
+    loadComponent: () =>
+      import('./public/pages/about-page.component').then((m) => m.AboutPageComponent),
+  },
+  {
+    path: 'contact',
+    loadComponent: () =>
+      import('./public/pages/contact-page.component').then((m) => m.ContactPageComponent),
+  },
+  {
+    path: 'faq',
+    loadComponent: () =>
+      import('./public/pages/faq-page.component').then((m) => m.FaqPageComponent),
+  },
+  {
     path: 'mentions-legales',
     loadComponent: () =>
       import('./public/legal-page.component').then((m) => m.LegalPageComponent),

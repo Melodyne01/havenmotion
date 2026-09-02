@@ -84,8 +84,39 @@ export class SeoService {
       });
     }
 
-    const payload = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
-    const id = 'vnl-jsonld';
+    this.writeJsonLd('vnl-jsonld', { '@context': 'https://schema.org', '@graph': graph });
+  }
+
+  /** Publie le bloc JSON-LD `BreadcrumbList` de la page courante. */
+  applyBreadcrumbs(items: readonly { name: string; path: string }[]): void {
+    const graph = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: items.map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+        item: `${this.origin}${item.path}`,
+      })),
+    };
+    this.writeJsonLd('vnl-breadcrumb', graph);
+  }
+
+  /** Publie le bloc JSON-LD `FAQPage` de la page courante. */
+  applyFaq(items: readonly { question: string; answer: string }[]): void {
+    const graph = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: items.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: { '@type': 'Answer', text: item.answer },
+      })),
+    };
+    this.writeJsonLd('vnl-faq', graph);
+  }
+
+  private writeJsonLd(id: string, payload: unknown): void {
     let script = this.document.getElementById(id) as HTMLScriptElement | null;
     if (!script) {
       script = this.document.createElement('script');
@@ -93,7 +124,7 @@ export class SeoService {
       script.type = 'application/ld+json';
       this.document.head.appendChild(script);
     }
-    script.textContent = payload;
+    script.textContent = JSON.stringify(payload);
   }
 
   private absolute(path: string | null): string | undefined {

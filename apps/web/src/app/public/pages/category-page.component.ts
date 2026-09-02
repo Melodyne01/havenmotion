@@ -131,6 +131,10 @@ export class CategoryPageComponent {
         path: `/realisations/${cat.slug}`,
         imagePath: cat.poster?.posterUrl ?? undefined,
       });
+      this.seo.applyBreadcrumbs([
+        { name: 'Accueil', path: '/' },
+        { name: cat.name, path: `/realisations/${cat.slug}` },
+      ]);
     });
   }
 

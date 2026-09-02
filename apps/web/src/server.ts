@@ -74,6 +74,39 @@ if (proxyTarget) {
   });
 }
 
+/**
+ * Le sitemap est généré par l'API depuis la base (voir
+ * GetSitemapAsync côté StudioVnl.Api) : il doit rester joignable à la racine
+ * (`/sitemap.xml`), là où les moteurs de recherche le cherchent, alors que
+ * l'API le sert sous `/api/public/sitemap.xml`. Route ajoutée avant les
+ * fichiers statiques pour ne pas être court-circuitée par un éventuel
+ * fichier `sitemap.xml` posé dans `public/`.
+ */
+if (proxyTarget) {
+  app.get('/sitemap.xml', (req, res) => {
+    const target = new URL(proxyTarget);
+    const upstream = httpRequest(
+      {
+        hostname: target.hostname,
+        port: target.port,
+        path: '/api/public/sitemap.xml',
+        method: 'GET',
+        headers: { host: target.host },
+      },
+      (response) => {
+        res.writeHead(response.statusCode ?? 502, response.headers);
+        response.pipe(res);
+      },
+    );
+    upstream.on('error', () => {
+      if (!res.headersSent) {
+        res.status(502).type('text/plain').send('API indisponible.');
+      }
+    });
+    upstream.end();
+  });
+}
+
 // Fichiers statiques du bundle navigateur.
 app.use(
   express.static(browserDistFolder, {

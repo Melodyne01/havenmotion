@@ -11,7 +11,10 @@ import { SiteStore } from '../site-store';
     <footer class="footer">
       <app-logotype />
       <p class="footer__legal">{{ settings().legalText }}</p>
-      <nav class="footer__nav" aria-label="Informations légales">
+      <nav class="footer__nav" aria-label="Navigation du pied de page">
+        <a class="footer__link" href="/a-propos">À propos</a>
+        <a class="footer__link" href="/faq">FAQ</a>
+        <a class="footer__link" href="/contact">Contact</a>
         <a class="footer__link" href="/mentions-legales">Mentions légales</a>
         <a class="footer__link" href="/confidentialite">Confidentialité</a>
       </nav>

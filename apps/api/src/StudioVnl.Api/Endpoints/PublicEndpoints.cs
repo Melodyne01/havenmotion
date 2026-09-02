@@ -17,6 +17,7 @@ public static class PublicEndpoints
         group.MapGet("/site", GetSiteAsync);
         group.MapGet("/categories", GetCategoriesAsync);
         group.MapGet("/categories/{slug}/films", GetFilmsAsync);
+        group.MapGet("/sitemap.xml", GetSitemapAsync);
         group.MapPost("/leads", CreateLeadAsync)
             .RequireRateLimiting("leads")
             .AddEndpointFilter<ValidationFilter<CreateLeadRequest>>();
@@ -92,6 +93,57 @@ public static class PublicEndpoints
         return categories
             .Select(c => c.ToDto(storage.GetPublicUrl, counts.GetValueOrDefault(c.Id)))
             .ToList();
+    }
+
+    /// <summary>
+    /// Sitemap généré depuis la base plutôt qu'un fichier statique : une
+    /// catégorie ajoutée ou dépubliée s'y reflète sans déploiement. Ne liste
+    /// que les URL FR effectivement servies par le front — le NL n'a pas
+    /// encore ses propres pages, il ne rentre pas ici tant que ce n'est pas
+    /// le cas, plutôt que de référencer des liens morts.
+    /// </summary>
+    private static async Task<IResult> GetSitemapAsync(
+        AppDbContext db,
+        IConfiguration configuration,
+        CancellationToken cancellationToken)
+    {
+        var origin = (configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [])
+            .FirstOrDefault() ?? "https://heavenmotion.be";
+
+        var slugs = await db.Categories
+            .Where(c => c.IsPublished && c.Locale == "fr")
+            .OrderBy(c => c.SortOrder)
+            .Select(c => c.Slug)
+            .ToListAsync(cancellationToken);
+
+        var urls = new List<(string Path, string ChangeFreq, string Priority)>
+        {
+            ("/", "weekly", "1.0"),
+            ("/a-propos", "monthly", "0.5"),
+            ("/faq", "monthly", "0.5"),
+            ("/contact", "monthly", "0.5"),
+            ("/mentions-legales", "yearly", "0.2"),
+            ("/confidentialite", "yearly", "0.2"),
+        };
+        urls.AddRange(slugs.Select(slug => ($"/realisations/{slug}", "weekly", "0.8")));
+
+        var body = string.Concat(urls.Select(u =>
+            $"""
+              <url>
+                <loc>{origin}{u.Path}</loc>
+                <changefreq>{u.ChangeFreq}</changefreq>
+                <priority>{u.Priority}</priority>
+              </url>
+            """));
+
+        var xml =
+            $"""
+            <?xml version="1.0" encoding="UTF-8"?>
+            <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+            {body}</urlset>
+            """;
+
+        return Results.Text(xml, "application/xml");
     }
 
     private static async Task<IResult> GetFilmsAsync(
