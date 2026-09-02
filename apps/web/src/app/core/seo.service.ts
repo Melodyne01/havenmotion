@@ -33,7 +33,7 @@ export class SeoService {
     this.setTag('property', 'og:description', description);
     this.setTag('property', 'og:url', url);
     this.setTag('property', 'og:image', image);
-    this.setTag('property', 'og:locale', 'fr_FR');
+    this.setTag('property', 'og:locale', 'fr_BE');
     this.setTag('name', 'twitter:card', 'summary_large_image');
     this.setTag('name', 'twitter:title', title);
     this.setTag('name', 'twitter:description', description);
@@ -52,7 +52,7 @@ export class SeoService {
         email: settings.email,
         url: this.origin,
         areaServed: settings.region,
-        address: { '@type': 'PostalAddress', addressLocality: settings.city, addressCountry: 'FR' },
+        address: { '@type': 'PostalAddress', addressLocality: settings.city, addressCountry: 'BE' },
         sameAs: settings.instagram
           ? [`https://instagram.com/${settings.instagram.replace('@', '')}`]
           : [],

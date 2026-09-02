@@ -7,6 +7,11 @@ export const routes: Routes = [
       import('./public/public-page.component').then((m) => m.PublicPageComponent),
   },
   {
+    path: 'realisations/:slug',
+    loadComponent: () =>
+      import('./public/pages/category-page.component').then((m) => m.CategoryPageComponent),
+  },
+  {
     path: 'mentions-legales',
     loadComponent: () =>
       import('./public/legal-page.component').then((m) => m.LegalPageComponent),
