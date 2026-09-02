@@ -22,21 +22,28 @@ public static class PublicEndpoints
             .AddEndpointFilter<ValidationFilter<CreateLeadRequest>>();
     }
 
+    /// <summary>Langues supportées ; toute autre valeur retombe sur "fr".</summary>
+    private static string NormalizeLocale(string? locale) => locale == "nl" ? "nl" : "fr";
+
     private static async Task<SitePayloadDto> GetSiteAsync(
+        string? locale,
         AppDbContext db,
         IMediaStorage storage,
         CancellationToken cancellationToken)
     {
+        var loc = NormalizeLocale(locale);
+
         var settings = await db.SiteSettings
             .Include(s => s.ShowreelMedia)
+            .Where(s => s.Locale == loc)
             .AsNoTracking()
             .FirstOrDefaultAsync(cancellationToken) ?? new SiteSettings();
 
-        var services = await db.Services.AsNoTracking()
+        var services = await db.Services.Where(s => s.Locale == loc).AsNoTracking()
             .OrderBy(s => s.SortOrder).ToListAsync(cancellationToken);
-        var steps = await db.ProcessSteps.AsNoTracking()
+        var steps = await db.ProcessSteps.Where(p => p.Locale == loc).AsNoTracking()
             .OrderBy(s => s.SortOrder).ToListAsync(cancellationToken);
-        var testimonials = await db.Testimonials.AsNoTracking()
+        var testimonials = await db.Testimonials.Where(t => t.Locale == loc).AsNoTracking()
             .OrderBy(t => t.SortOrder).ToListAsync(cancellationToken);
         var logos = await db.ClientLogos.AsNoTracking()
             .OrderBy(l => l.SortOrder).ToListAsync(cancellationToken);
@@ -61,14 +68,17 @@ public static class PublicEndpoints
     }
 
     private static async Task<IReadOnlyList<CategoryDto>> GetCategoriesAsync(
+        string? locale,
         AppDbContext db,
         IMediaStorage storage,
         CancellationToken cancellationToken)
     {
+        var loc = NormalizeLocale(locale);
+
         var categories = await db.Categories
             .Include(c => c.ReelMedia)
             .Include(c => c.PosterMedia)
-            .Where(c => c.IsPublished)
+            .Where(c => c.IsPublished && c.Locale == loc)
             .OrderBy(c => c.SortOrder)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
@@ -86,12 +96,15 @@ public static class PublicEndpoints
 
     private static async Task<IResult> GetFilmsAsync(
         string slug,
+        string? locale,
         AppDbContext db,
         IMediaStorage storage,
         CancellationToken cancellationToken)
     {
+        var loc = NormalizeLocale(locale);
+
         var category = await db.Categories.AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Slug == slug && c.IsPublished, cancellationToken);
+            .FirstOrDefaultAsync(c => c.Slug == slug && c.Locale == loc && c.IsPublished, cancellationToken);
         if (category is null)
         {
             return Results.NotFound();

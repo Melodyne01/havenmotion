@@ -84,7 +84,196 @@ public static class SeedData
 
         await RenameLegacyBrandAsync(db, logger, cancellationToken);
         await FixLegacyLocationAsync(db, logger, cancellationToken);
+        await EnsureNlTranslationsAsync(db, logger, cancellationToken);
         await AttachAmbienceFootageAsync(db, logger, cancellationToken);
+    }
+
+    /// <summary>
+    /// Correspondance FR → NL pour les cinq catégories : slug et nom réels
+    /// (utilisés dans les URL et la navigation), pas des lorem — un menu en
+    /// faux-latin serait inutilisable, même à titre provisoire.
+    /// </summary>
+    private static readonly (string FrSlug, string NlSlug, string NlName)[] CategoryLocaleMap =
+    [
+        ("mariage", "huwelijk", "Huwelijk"),
+        ("corporate", "zakelijk", "Zakelijk"),
+        ("sport", "sport", "Sport"),
+        ("clip", "clip", "Clip"),
+        ("lifestyle", "lifestyle", "Lifestyle"),
+    ];
+
+    private const string LoremShort = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+    private const string LoremLong =
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+
+    /// <summary>
+    /// Pose la version néerlandaise du contenu structurel (catégories,
+    /// prestations, étapes, témoignages, réglages), une fois par élément
+    /// français déjà en place. Les libellés qui déterminent une URL ou un
+    /// intitulé de menu sont traduits pour de vrai ; tout le texte de
+    /// contenu (accroches, descriptions, témoignages, "à propos") est posé
+    /// en lorem ipsum, comme convenu, en attendant une vraie rédaction NL.
+    /// Ne touche jamais une fiche NL déjà créée : une traduction saisie
+    /// depuis le backoffice n'est jamais écrasée.
+    /// </summary>
+    private static async Task EnsureNlTranslationsAsync(
+        AppDbContext db,
+        ILogger logger,
+        CancellationToken cancellationToken)
+    {
+        var created = 0;
+
+        var frCategories = await db.Categories
+            .Where(c => c.Locale == "fr")
+            .ToListAsync(cancellationToken);
+        var existingNlSlugs = await db.Categories
+            .Where(c => c.Locale == "nl")
+            .Select(c => c.Slug)
+            .ToListAsync(cancellationToken);
+
+        foreach (var (frSlug, nlSlug, nlName) in CategoryLocaleMap)
+        {
+            if (existingNlSlugs.Contains(nlSlug))
+            {
+                continue;
+            }
+            var fr = frCategories.FirstOrDefault(c => c.Slug == frSlug);
+            if (fr is null)
+            {
+                continue;
+            }
+            db.Categories.Add(new Category
+            {
+                Id = Guid.NewGuid(),
+                Slug = nlSlug,
+                Name = nlName,
+                Tagline = LoremShort,
+                Locale = "nl",
+                SortOrder = fr.SortOrder,
+                ReelMediaId = fr.ReelMediaId,
+                PosterMediaId = fr.PosterMediaId,
+                IsPublished = fr.IsPublished,
+                IsProtected = fr.IsProtected,
+            });
+            created++;
+        }
+
+        var frServices = await db.Services.Where(s => s.Locale == "fr").ToListAsync(cancellationToken);
+        var existingNlServiceNames = await db.Services
+            .Where(s => s.Locale == "nl")
+            .Select(s => s.Name)
+            .ToListAsync(cancellationToken);
+        var serviceNameMap = new Dictionary<string, string>
+        {
+            ["Mariage"] = "Huwelijk",
+            ["Corporate"] = "Zakelijk",
+            ["Sport & event"] = "Sport & event",
+            ["Clip & lifestyle"] = "Clip & lifestyle",
+        };
+        foreach (var fr in frServices)
+        {
+            var nlName = serviceNameMap.GetValueOrDefault(fr.Name, fr.Name);
+            if (existingNlServiceNames.Contains(nlName))
+            {
+                continue;
+            }
+            db.Services.Add(new Service
+            {
+                Id = Guid.NewGuid(),
+                Name = nlName,
+                IncludedJson = DtoMapper.ToJson([LoremShort]),
+                Duration = LoremShort,
+                Deliverables = LoremShort,
+                StartingPrice = fr.StartingPrice,
+                Locale = "nl",
+                SortOrder = fr.SortOrder,
+            });
+            created++;
+        }
+
+        var frSteps = await db.ProcessSteps.Where(p => p.Locale == "fr").ToListAsync(cancellationToken);
+        var existingNlStepIndexes = await db.ProcessSteps
+            .Where(p => p.Locale == "nl")
+            .Select(p => p.Index)
+            .ToListAsync(cancellationToken);
+        foreach (var fr in frSteps)
+        {
+            if (existingNlStepIndexes.Contains(fr.Index))
+            {
+                continue;
+            }
+            db.ProcessSteps.Add(new ProcessStep
+            {
+                Id = Guid.NewGuid(),
+                Index = fr.Index,
+                Title = LoremShort,
+                Body = LoremLong,
+                Locale = "nl",
+                SortOrder = fr.SortOrder,
+            });
+            created++;
+        }
+
+        var frTestimonials = await db.Testimonials.Where(t => t.Locale == "fr").ToListAsync(cancellationToken);
+        var existingNlTestimonialRoles = await db.Testimonials
+            .Where(t => t.Locale == "nl")
+            .Select(t => t.Role)
+            .ToListAsync(cancellationToken);
+        var roleMap = new Dictionary<string, string>
+        {
+            ["Mariage"] = "Huwelijk",
+            ["Corporate"] = "Zakelijk",
+            ["Sport"] = "Sport",
+        };
+        foreach (var fr in frTestimonials)
+        {
+            var nlRole = roleMap.GetValueOrDefault(fr.Role, fr.Role);
+            if (existingNlTestimonialRoles.Contains(nlRole))
+            {
+                continue;
+            }
+            db.Testimonials.Add(new Testimonial
+            {
+                Id = Guid.NewGuid(),
+                Quote = LoremLong,
+                Author = fr.Author,
+                Role = nlRole,
+                Locale = "nl",
+                SortOrder = fr.SortOrder,
+            });
+            created++;
+        }
+
+        var frSettings = await db.SiteSettings.FirstOrDefaultAsync(s => s.Locale == "fr", cancellationToken);
+        var nlSettingsExists = await db.SiteSettings.AnyAsync(s => s.Locale == "nl", cancellationToken);
+        if (frSettings is not null && !nlSettingsExists)
+        {
+            db.SiteSettings.Add(new SiteSettings
+            {
+                // Id n'est pas auto-généré par EF ici (défaut C# = 1, jamais la
+                // valeur CLR par défaut) : il faut le fixer nous-mêmes, sous
+                // peine de collision avec la fiche FR.
+                Id = 2,
+                BrandName = frSettings.BrandName,
+                Tagline = LoremShort,
+                ShowreelMediaId = frSettings.ShowreelMediaId,
+                Email = frSettings.Email,
+                Instagram = frSettings.Instagram,
+                City = "Brussel",
+                Region = "Brussels Hoofdstedelijk Gewest",
+                LegalText = LoremLong,
+                AboutPortraitUrl = frSettings.AboutPortraitUrl,
+                AboutParagraphsJson = DtoMapper.ToJson([LoremLong, LoremLong]),
+                Locale = "nl",
+            });
+            created++;
+        }
+
+        if (created > 0)
+        {
+            await db.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("{Count} fiche(s) néerlandaise(s) créée(s) (contenu provisoire).", created);
+        }
     }
 
     /// <summary>
