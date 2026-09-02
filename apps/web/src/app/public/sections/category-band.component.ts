@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
   viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { VideoFrameComponent } from '../../shared/ui/video-frame.component';
+import { SITE_LOCALE } from '../../core/locale';
 import { Category } from '../../models';
 
 /**
@@ -27,7 +29,7 @@ import { Category } from '../../models';
   template: `
     <a
       class="band"
-      [routerLink]="['/realisations', category().slug]"
+      [routerLink]="categoryLink()"
       [attr.aria-label]="ariaLabel()"
       (mouseenter)="setHover(true)"
       (mouseleave)="setHover(false)"
@@ -67,8 +69,14 @@ export class CategoryBandComponent {
   readonly category = input.required<Category>();
   readonly index = input.required<number>();
 
+  private readonly locale = inject(SITE_LOCALE);
   private readonly frame = viewChild.required<VideoFrameComponent>('frame');
 
+  protected readonly categoryLink = computed(() =>
+    this.locale === 'nl'
+      ? ['/nl/realisaties', this.category().slug]
+      : ['/realisations', this.category().slug],
+  );
   protected readonly indexLabel = computed(() => String(this.index() + 1).padStart(2, '0'));
   protected readonly reverseTravelling = computed(() => this.index() % 2 === 1);
   protected readonly filmCountLabel = computed(() => {

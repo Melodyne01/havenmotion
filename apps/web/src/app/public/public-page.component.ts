@@ -11,6 +11,7 @@ import { SiteFooterComponent } from './sections/site-footer.component';
 import { CtaButtonComponent } from '../shared/ui/cta-button.component';
 import { SiteStore } from './site-store';
 import { SeoService } from '../core/seo.service';
+import { SITE_LOCALE } from '../core/locale';
 
 /**
  * Page unique du site public : tout est en un seul défilement, chaque section
@@ -76,18 +77,22 @@ import { SeoService } from '../core/seo.service';
 export class PublicPageComponent {
   private readonly store = inject(SiteStore);
   private readonly seo = inject(SeoService);
+  private readonly locale = inject(SITE_LOCALE);
 
   constructor() {
-    this.store.load();
+    this.store.load(this.locale);
 
     effect(() => {
       const settings = this.store.settings();
+      const path = this.locale === 'nl' ? '/nl' : '/';
       this.seo.apply({
         title: `${settings.brandName} — Vidéaste ${settings.city} & ${settings.region}`,
         description: `${settings.tagline} Devis sous 48 h.`,
-        path: '/',
+        path,
         imagePath: settings.showreel?.posterUrl ?? undefined,
+        locale: this.locale,
       });
+      this.seo.applyHreflang({ fr: '/', nl: '/nl' });
       this.seo.applyStructuredData(settings, this.store.categories());
     });
   }

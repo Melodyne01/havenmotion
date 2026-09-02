@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { PublicApiService } from '../core/api/public-api.service';
+import { SiteLocale } from '../core/locale';
 import { Category, SitePayload } from '../models';
 import { PLACEHOLDER_CATEGORIES, PLACEHOLDER_SITE } from '../core/placeholder-content';
 
@@ -8,6 +9,11 @@ import { PLACEHOLDER_CATEGORIES, PLACEHOLDER_SITE } from '../core/placeholder-co
  * État du site public. Un seul chargement (`/public/site` + `/public/categories`)
  * alimente toutes les sections ; le résultat est repris tel quel à l'hydratation
  * grâce au cache de transfert HTTP.
+ *
+ * Un seul store, partagé par les deux langues : `load(locale)` recharge à
+ * chaque appel (pas de cache par langue), ce qui est déjà le comportement
+ * existant d'une page à l'autre en FR — rien de nouveau à ce niveau, juste un
+ * paramètre de langue en plus qui traverse jusqu'à l'API.
  */
 @Injectable({ providedIn: 'root' })
 export class SiteStore {
@@ -30,8 +36,8 @@ export class SiteStore {
   );
   readonly isLoaded = this.loaded.asReadonly();
 
-  load(): void {
-    forkJoin({ site: this.api.site(), categories: this.api.categories() }).subscribe(
+  load(locale: SiteLocale = 'fr'): void {
+    forkJoin({ site: this.api.site(locale), categories: this.api.categories(locale) }).subscribe(
       ({ site, categories }) => {
         this.payload.set(site);
         this.categoryList.set(categories.length > 0 ? categories : PLACEHOLDER_CATEGORIES);

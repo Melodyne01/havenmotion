@@ -4,6 +4,7 @@ import { SiteFooterComponent } from '../sections/site-footer.component';
 import { SectionTitleComponent } from '../../shared/ui/section-title.component';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
+import { SITE_LOCALE } from '../../core/locale';
 
 interface FaqEntry {
   readonly question: string;
@@ -15,9 +16,11 @@ interface FaqEntry {
  * répondues directement en 1-2 phrases, format pensé pour être repris tel
  * quel par un moteur de recherche ou une IA conversationnelle. Contenu géré
  * ici plutôt que depuis le backoffice pour l'instant — pas d'entité FAQ côté
- * API à ce stade.
+ * API à ce stade. Traduit pour de vrai en NL (pas de lorem) : c'est
+ * justement le contenu dont la valeur SEO/GEO dépend du fait qu'il soit
+ * dans la bonne langue.
  */
-const FAQ_ENTRIES: readonly FaqEntry[] = [
+const FAQ_ENTRIES_FR: readonly FaqEntry[] = [
   {
     question: 'Combien coûte un vidéaste à Bruxelles ?',
     answer:
@@ -47,6 +50,38 @@ const FAQ_ENTRIES: readonly FaqEntry[] = [
     question: 'Le tournage se fait-il seul ou en équipe ?',
     answer:
       "Selon le projet : seul pour rester discret sur un mariage ou un tournage de marque léger, en équipe réduite dès que la prestation demande plusieurs angles de caméra (sport, événements avec plusieurs temps forts).",
+  },
+];
+
+const FAQ_ENTRIES_NL: readonly FaqEntry[] = [
+  {
+    question: 'Hoeveel kost een videograaf in Brussel?',
+    answer:
+      'De prijs hangt af van het project: reken tussen € 900 en € 1 800 naargelang de categorie (huwelijk, zakelijk, sport, clip), de opnameduur en het aantal eindproducten. Een concrete offerte volgt binnen 48 u na een eerste gesprek.',
+  },
+  {
+    question: 'Wat is de levertijd van een video?',
+    answer:
+      'Gemiddeld 2 tot 4 weken na de opname, afhankelijk van de complexiteit van de montage en het seizoen. De offerte vermeldt altijd een vaste leverdatum.',
+  },
+  {
+    question: 'Welk gebied wordt gedekt?',
+    answer: 'Brussel en de omliggende gemeenten. Verplaatsing verder in België is bespreekbaar per project.',
+  },
+  {
+    question: 'Hoe verloopt een opdracht, van aanvraag tot levering?',
+    answer:
+      'Drie stappen: een gesprek om de intentie, het budget en de datum af te bakenen; de opname, met verkenning indien nodig; en tot slot de montage en kleurcorrectie, geleverd online na één à twee rondes feedback.',
+  },
+  {
+    question: 'Wie heeft de rechten op de eindvideo?',
+    answer:
+      'De klant krijgt volledig gebruiksrecht op de geleverde film voor eigen doeleinden (website, sociale media, interne verspreiding). Gebruikte muziek is steeds in licentie, zodat platforms de video nooit kunnen blokkeren.',
+  },
+  {
+    question: 'Wordt er alleen of met een team gefilmd?',
+    answer:
+      'Naargelang het project: alleen om discreet te blijven bij een huwelijk of een lichte merkopname, met een klein team zodra meerdere camerahoeken nodig zijn (sport, evenementen met meerdere hoogtepunten).',
   },
 ];
 
@@ -118,24 +153,31 @@ const FAQ_ENTRIES: readonly FaqEntry[] = [
 export class FaqPageComponent {
   private readonly store = inject(SiteStore);
   private readonly seo = inject(SeoService);
+  private readonly locale = inject(SITE_LOCALE);
 
-  protected readonly entries = FAQ_ENTRIES;
+  protected readonly entries = this.locale === 'nl' ? FAQ_ENTRIES_NL : FAQ_ENTRIES_FR;
 
   constructor() {
-    this.store.load();
+    this.store.load(this.locale);
 
     effect(() => {
       const settings = this.store.settings();
+      const path = this.locale === 'nl' ? '/nl/faq' : '/faq';
       this.seo.apply({
         title: `FAQ — ${settings.brandName}`,
-        description: 'Tarifs, délais, zone d’intervention : les réponses aux questions les plus fréquentes.',
-        path: '/faq',
+        description:
+          this.locale === 'nl'
+            ? 'Prijzen, levertijden, werkgebied: antwoorden op de meest gestelde vragen.'
+            : 'Tarifs, délais, zone d’intervention : les réponses aux questions les plus fréquentes.',
+        path,
+        locale: this.locale,
       });
       this.seo.applyBreadcrumbs([
-        { name: 'Accueil', path: '/' },
-        { name: 'FAQ', path: '/faq' },
+        { name: 'Accueil', path: this.locale === 'nl' ? '/nl' : '/' },
+        { name: 'FAQ', path },
       ]);
-      this.seo.applyFaq(FAQ_ENTRIES);
+      this.seo.applyFaq(this.entries);
+      this.seo.applyHreflang({ fr: '/faq', nl: '/nl/faq' });
     });
   }
 }

@@ -4,6 +4,7 @@ import { AboutComponent } from '../sections/about.component';
 import { SiteFooterComponent } from '../sections/site-footer.component';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
+import { SITE_LOCALE } from '../../core/locale';
 
 /** Page « À propos » dédiée : même contenu que la section home, sa propre URL. */
 @Component({
@@ -22,21 +23,25 @@ import { SeoService } from '../../core/seo.service';
 export class AboutPageComponent {
   private readonly store = inject(SiteStore);
   private readonly seo = inject(SeoService);
+  private readonly locale = inject(SITE_LOCALE);
 
   constructor() {
-    this.store.load();
+    this.store.load(this.locale);
 
     effect(() => {
       const settings = this.store.settings();
+      const path = this.locale === 'nl' ? '/nl/over-ons' : '/a-propos';
       this.seo.apply({
         title: `À propos — ${settings.brandName}`,
         description: `${settings.tagline} Basé à ${settings.city}.`,
-        path: '/a-propos',
+        path,
+        locale: this.locale,
       });
       this.seo.applyBreadcrumbs([
-        { name: 'Accueil', path: '/' },
-        { name: 'À propos', path: '/a-propos' },
+        { name: 'Accueil', path: this.locale === 'nl' ? '/nl' : '/' },
+        { name: 'À propos', path },
       ]);
+      this.seo.applyHreflang({ fr: '/a-propos', nl: '/nl/over-ons' });
     });
   }
 }

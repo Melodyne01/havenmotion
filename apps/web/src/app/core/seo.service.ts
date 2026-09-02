@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Injectable, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { APP_CONFIG } from './app-config';
+import { SiteLocale } from './locale';
 import { Category, SiteSettings } from '../models';
 
 export interface SeoInput {
@@ -9,6 +10,8 @@ export interface SeoInput {
   description: string;
   path: string;
   imagePath?: string;
+  /** Sert à `og:locale` (fr_BE / nl_BE). Par défaut "fr". */
+  locale?: SiteLocale;
 }
 
 /**
@@ -22,7 +25,7 @@ export class SeoService {
   private readonly document = inject(DOCUMENT);
   private readonly origin = inject(APP_CONFIG).siteOrigin;
 
-  apply({ title, description, path, imagePath }: SeoInput): void {
+  apply({ title, description, path, imagePath, locale = 'fr' }: SeoInput): void {
     const url = `${this.origin}${path}`;
     const image = `${this.origin}${imagePath ?? '/placeholders/showreel-2026.svg'}`;
 
@@ -33,12 +36,26 @@ export class SeoService {
     this.setTag('property', 'og:description', description);
     this.setTag('property', 'og:url', url);
     this.setTag('property', 'og:image', image);
-    this.setTag('property', 'og:locale', 'fr_BE');
+    this.setTag('property', 'og:locale', locale === 'nl' ? 'nl_BE' : 'fr_BE');
     this.setTag('name', 'twitter:card', 'summary_large_image');
     this.setTag('name', 'twitter:title', title);
     this.setTag('name', 'twitter:description', description);
     this.setTag('name', 'twitter:image', image);
     this.setCanonical(url);
+    this.document.documentElement.lang = locale;
+  }
+
+  /**
+   * Balises `hreflang` reliant les deux versions d'une même page. `paths`
+   * doit contenir le chemin FR et le chemin NL — l'appelant sait déjà lequel
+   * est lequel (mapping de slugs pour les catégories, chemin fixe sinon).
+   * Le FR sert de `x-default` : c'est le marché majoritaire et la version
+   * non préfixée.
+   */
+  applyHreflang(paths: { fr: string; nl: string }): void {
+    this.setAlternate('fr', `${this.origin}${paths.fr}`);
+    this.setAlternate('nl', `${this.origin}${paths.nl}`);
+    this.setAlternate('x-default', `${this.origin}${paths.fr}`);
   }
 
   /** Publie le bloc JSON-LD `LocalBusiness` + `VideoObject` du showreel. */
@@ -146,5 +163,18 @@ export class SeoService {
       this.document.head.appendChild(link);
     }
     link.href = url;
+  }
+
+  private setAlternate(hreflang: string, href: string): void {
+    let link = this.document.querySelector<HTMLLinkElement>(
+      `link[rel='alternate'][hreflang='${hreflang}']`,
+    );
+    if (!link) {
+      link = this.document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = hreflang;
+      this.document.head.appendChild(link);
+    }
+    link.href = href;
   }
 }

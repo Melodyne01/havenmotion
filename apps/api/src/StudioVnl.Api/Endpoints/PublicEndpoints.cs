@@ -97,10 +97,10 @@ public static class PublicEndpoints
 
     /// <summary>
     /// Sitemap généré depuis la base plutôt qu'un fichier statique : une
-    /// catégorie ajoutée ou dépubliée s'y reflète sans déploiement. Ne liste
-    /// que les URL FR effectivement servies par le front — le NL n'a pas
-    /// encore ses propres pages, il ne rentre pas ici tant que ce n'est pas
-    /// le cas, plutôt que de référencer des liens morts.
+    /// catégorie ajoutée ou dépubliée s'y reflète sans déploiement. Les
+    /// mentions légales et la confidentialité restent FR uniquement (pas de
+    /// version NL de ces pages côté front), le reste existe dans les deux
+    /// langues.
     /// </summary>
     private static async Task<IResult> GetSitemapAsync(
         AppDbContext db,
@@ -110,8 +110,13 @@ public static class PublicEndpoints
         var origin = (configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [])
             .FirstOrDefault() ?? "https://heavenmotion.be";
 
-        var slugs = await db.Categories
+        var frSlugs = await db.Categories
             .Where(c => c.IsPublished && c.Locale == "fr")
+            .OrderBy(c => c.SortOrder)
+            .Select(c => c.Slug)
+            .ToListAsync(cancellationToken);
+        var nlSlugs = await db.Categories
+            .Where(c => c.IsPublished && c.Locale == "nl")
             .OrderBy(c => c.SortOrder)
             .Select(c => c.Slug)
             .ToListAsync(cancellationToken);
@@ -119,13 +124,18 @@ public static class PublicEndpoints
         var urls = new List<(string Path, string ChangeFreq, string Priority)>
         {
             ("/", "weekly", "1.0"),
+            ("/nl", "weekly", "1.0"),
             ("/a-propos", "monthly", "0.5"),
+            ("/nl/over-ons", "monthly", "0.5"),
             ("/faq", "monthly", "0.5"),
+            ("/nl/faq", "monthly", "0.5"),
             ("/contact", "monthly", "0.5"),
+            ("/nl/contact", "monthly", "0.5"),
             ("/mentions-legales", "yearly", "0.2"),
             ("/confidentialite", "yearly", "0.2"),
         };
-        urls.AddRange(slugs.Select(slug => ($"/realisations/{slug}", "weekly", "0.8")));
+        urls.AddRange(frSlugs.Select(slug => ($"/realisations/{slug}", "weekly", "0.8")));
+        urls.AddRange(nlSlugs.Select(slug => ($"/nl/realisaties/{slug}", "weekly", "0.8")));
 
         var body = string.Concat(urls.Select(u =>
             $"""

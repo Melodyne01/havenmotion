@@ -107,8 +107,8 @@ export const PLACEHOLDER_SITE: SitePayload = {
     tagline: 'Vidéaste freelance — mariages, marques, sport et clips.',
     email: 'contact@heavenmotion.be',
     instagram: '@heavenmotion',
-    city: 'Lyon',
-    region: 'Auvergne-Rhône-Alpes',
+    city: 'Bruxelles',
+    region: 'Bruxelles-Capitale',
     legalText: 'Heaven Motion — micro-entreprise. Mentions légales à compléter.',
     showreel: ambienceMedia(AMBIENCE_CLIPS.showreel),
   },
@@ -176,7 +176,7 @@ export const PLACEHOLDER_SITE: SitePayload = {
   about: {
     portraitUrl: '/placeholders/portrait.svg',
     paragraphs: [
-      'Heaven Motion est un studio vidéo indépendant basé à Lyon.',
+      'Heaven Motion est un studio vidéo indépendant basé à Bruxelles.',
       'Je filme seul ou en équipe réduite, pour rester au plus près des gens.',
       'Le montage cherche le rythme d’un film, pas celui d’un résumé.',
       'Chaque projet part d’un échange, jamais d’un catalogue.',

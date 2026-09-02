@@ -16,6 +16,7 @@ import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
 import { PublicApiService } from '../../core/api/public-api.service';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
+import { CATEGORY_SLUG_MAP, SITE_LOCALE } from '../../core/locale';
 import { Film } from '../../models';
 
 /**
@@ -35,7 +36,7 @@ import { Film } from '../../models';
       @if (category(); as cat) {
         <article class="category-page">
           <nav class="category-page__breadcrumb" aria-label="Fil d'Ariane">
-            <a routerLink="/">Accueil</a>
+            <a [routerLink]="homePath()">Accueil</a>
             <span aria-hidden="true">/</span>
             <span>{{ cat.name }}</span>
           </nav>
@@ -74,7 +75,7 @@ import { Film } from '../../models';
               </ul>
             }
 
-            <app-cta-button href="/#contact">Un projet comme ça ? Devis</app-cta-button>
+            <app-cta-button [href]="contactHref()">Un projet comme ça ? Devis</app-cta-button>
           </div>
         </article>
       }
@@ -90,6 +91,7 @@ export class CategoryPageComponent {
   private readonly api = inject(PublicApiService);
   private readonly store = inject(SiteStore);
   private readonly seo = inject(SeoService);
+  private readonly locale = inject(SITE_LOCALE);
 
   private readonly paramMap = toSignal(this.route.paramMap, { initialValue: this.route.snapshot.paramMap });
 
@@ -102,20 +104,23 @@ export class CategoryPageComponent {
 
   protected readonly films = toSignal(
     toObservable(this.category).pipe(
-      switchMap((category) => (category ? this.api.films(category.slug) : of([]))),
+      switchMap((category) => (category ? this.api.films(category.slug, this.locale) : of([]))),
     ),
     { initialValue: [] as Film[] },
   );
 
+  protected readonly homePath = computed(() => (this.locale === 'nl' ? '/nl' : '/'));
+  protected readonly contactHref = computed(() => (this.locale === 'nl' ? '/nl/#contact' : '/#contact'));
+
   constructor() {
-    this.store.load();
+    this.store.load(this.locale);
 
     effect(() => {
       // Le store a fini de charger mais aucune catégorie ne correspond au
       // slug de l'URL : on revient à la home plutôt que de laisser une page
       // vide indexable.
       if (this.store.isLoaded() && !this.category()) {
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl(this.homePath());
       }
     });
 
@@ -125,16 +130,29 @@ export class CategoryPageComponent {
         return;
       }
       const settings = this.store.settings();
+      const base = this.locale === 'nl' ? '/nl/realisaties' : '/realisations';
+      const path = `${base}/${cat.slug}`;
       this.seo.apply({
         title: `${cat.name} — ${settings.brandName} — Vidéaste ${settings.city}`,
         description: `${cat.tagline} Devis sous 48 h.`,
-        path: `/realisations/${cat.slug}`,
+        path,
         imagePath: cat.poster?.posterUrl ?? undefined,
+        locale: this.locale,
       });
       this.seo.applyBreadcrumbs([
-        { name: 'Accueil', path: '/' },
-        { name: cat.name, path: `/realisations/${cat.slug}` },
+        { name: 'Accueil', path: this.homePath() },
+        { name: cat.name, path },
       ]);
+
+      const pair = CATEGORY_SLUG_MAP.find((entry) =>
+        this.locale === 'nl' ? entry.nl === cat.slug : entry.fr === cat.slug,
+      );
+      if (pair) {
+        this.seo.applyHreflang({
+          fr: `/realisations/${pair.fr}`,
+          nl: `/nl/realisaties/${pair.nl}`,
+        });
+      }
     });
   }
 
