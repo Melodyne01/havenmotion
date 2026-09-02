@@ -41,13 +41,13 @@ public static class SeedData
                 Tagline = "Vidéaste freelance — mariages, marques, sport et clips.",
                 Email = "contact@heavenmotion.be",
                 Instagram = "@heavenmotion",
-                City = "Lyon",
-                Region = "Auvergne-Rhône-Alpes",
+                City = "Bruxelles",
+                Region = "Bruxelles-Capitale",
                 LegalText = "Heaven Motion — micro-entreprise. Mentions légales à compléter.",
                 AboutPortraitUrl = "/placeholders/portrait.svg",
                 AboutParagraphsJson = DtoMapper.ToJson(
                 [
-                    "Heaven Motion est un studio vidéo indépendant basé à Lyon.",
+                    "Heaven Motion est un studio vidéo indépendant basé à Bruxelles.",
                     "Je filme seul ou en équipe réduite, pour rester au plus près des gens.",
                     "Le montage cherche le rythme d’un film, pas celui d’un résumé.",
                     "Chaque projet part d’un échange, jamais d’un catalogue.",
@@ -83,7 +83,53 @@ public static class SeedData
         await db.SaveChangesAsync(cancellationToken);
 
         await RenameLegacyBrandAsync(db, logger, cancellationToken);
+        await FixLegacyLocationAsync(db, logger, cancellationToken);
         await AttachAmbienceFootageAsync(db, logger, cancellationToken);
+    }
+
+    /// <summary>
+    /// Correction du même type que <see cref="RenameLegacyBrandAsync"/> : la
+    /// ville/région de départ pointaient vers Lyon (contexte hérité, avant le
+    /// passage à Bruxelles). Seules les valeurs restées à cet ancien défaut
+    /// sont réécrites ; un texte modifié depuis le backoffice n'est jamais
+    /// écrasé.
+    /// </summary>
+    private static async Task FixLegacyLocationAsync(
+        AppDbContext db,
+        ILogger logger,
+        CancellationToken cancellationToken)
+    {
+        var settings = await db.SiteSettings.FirstOrDefaultAsync(cancellationToken);
+        if (settings is null)
+        {
+            return;
+        }
+
+        var fixedLocation = false;
+        if (settings.City == "Lyon")
+        {
+            settings.City = "Bruxelles";
+            fixedLocation = true;
+        }
+        if (settings.Region == "Auvergne-Rhône-Alpes")
+        {
+            settings.Region = "Bruxelles-Capitale";
+            fixedLocation = true;
+        }
+
+        var paragraphs = DtoMapper.ParseStringList(settings.AboutParagraphsJson);
+        if (paragraphs.Any(p => p.Contains("basé à Lyon", StringComparison.Ordinal)))
+        {
+            settings.AboutParagraphsJson = DtoMapper.ToJson(
+                paragraphs.Select(p => p.Replace("basé à Lyon", "basé à Bruxelles", StringComparison.Ordinal)).ToList());
+            fixedLocation = true;
+        }
+
+        if (fixedLocation)
+        {
+            await db.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("Réglages de localisation repris sur Bruxelles.");
+        }
     }
 
     /// <summary>
