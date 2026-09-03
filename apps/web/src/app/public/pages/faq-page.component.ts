@@ -5,6 +5,7 @@ import { SectionTitleComponent } from '../../shared/ui/section-title.component';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
 import { SITE_LOCALE } from '../../core/locale';
+import { UI_TEXT } from '../../core/ui-text';
 
 interface FaqEntry {
   readonly question: string;
@@ -90,12 +91,12 @@ const FAQ_ENTRIES_NL: readonly FaqEntry[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [SiteHeaderComponent, SiteFooterComponent, SectionTitleComponent],
   template: `
-    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <a class="skip-link" href="#contenu">{{ text.skipLink }}</a>
     <app-site-header />
 
     <main id="contenu">
       <section class="faq-page">
-        <app-section-title eyebrow="FAQ" title="Questions fréquentes" titleId="titre-faq" />
+        <app-section-title eyebrow="FAQ" [title]="faqTitle()" titleId="titre-faq" />
 
         <dl class="faq-page__list">
           @for (entry of entries; track entry.question) {
@@ -156,6 +157,7 @@ export class FaqPageComponent {
   private readonly locale = inject(SITE_LOCALE);
 
   protected readonly entries = this.locale === 'nl' ? FAQ_ENTRIES_NL : FAQ_ENTRIES_FR;
+  protected readonly text = UI_TEXT[this.locale];
 
   constructor() {
     this.store.load(this.locale);
@@ -173,11 +175,15 @@ export class FaqPageComponent {
         locale: this.locale,
       });
       this.seo.applyBreadcrumbs([
-        { name: 'Accueil', path: this.locale === 'nl' ? '/nl' : '/' },
+        { name: this.text.home, path: this.locale === 'nl' ? '/nl' : '/' },
         { name: 'FAQ', path },
       ]);
       this.seo.applyFaq(this.entries);
       this.seo.applyHreflang({ fr: '/faq', nl: '/nl/faq' });
     });
+  }
+
+  protected faqTitle(): string {
+    return this.locale === 'nl' ? 'Veelgestelde vragen' : 'Questions fréquentes';
   }
 }

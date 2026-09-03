@@ -12,6 +12,7 @@ import { CtaButtonComponent } from '../shared/ui/cta-button.component';
 import { SiteStore } from './site-store';
 import { SeoService } from '../core/seo.service';
 import { SITE_LOCALE } from '../core/locale';
+import { UI_TEXT } from '../core/ui-text';
 
 /**
  * Page unique du site public : tout est en un seul défilement, chaque section
@@ -33,7 +34,7 @@ import { SITE_LOCALE } from '../core/locale';
     CtaButtonComponent,
   ],
   template: `
-    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <a class="skip-link" href="#contenu">{{ text.skipLink }}</a>
     <app-site-header />
 
     <main id="contenu">
@@ -50,7 +51,7 @@ import { SITE_LOCALE } from '../core/locale';
 
     <!-- Le CTA reste atteignable en permanence sur mobile. -->
     <div class="sticky-cta">
-      <app-cta-button href="#contact">Demander un devis</app-cta-button>
+      <app-cta-button href="#contact">{{ text.hero.cta }}</app-cta-button>
     </div>
   `,
   styles: [
@@ -78,6 +79,7 @@ export class PublicPageComponent {
   private readonly store = inject(SiteStore);
   private readonly seo = inject(SeoService);
   private readonly locale = inject(SITE_LOCALE);
+  protected readonly text = UI_TEXT[this.locale];
 
   constructor() {
     this.store.load(this.locale);

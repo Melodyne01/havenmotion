@@ -9,6 +9,7 @@ import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
 import { SITE_LOCALE } from '../../core/locale';
 import { findCommune } from '../../core/communes';
+import { UI_TEXT } from '../../core/ui-text';
 import { Category } from '../../models';
 
 /**
@@ -27,14 +28,14 @@ import { Category } from '../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [SiteHeaderComponent, SiteFooterComponent, VideoFrameComponent, CtaButtonComponent, RouterLink],
   template: `
-    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <a class="skip-link" href="#contenu">{{ text.skipLink }}</a>
     <app-site-header />
 
     <main id="contenu">
       @if (commune(); as c) {
         <article class="commune-page">
-          <nav class="commune-page__breadcrumb" aria-label="Fil d'Ariane">
-            <a [routerLink]="homePath()">Accueil</a>
+          <nav class="commune-page__breadcrumb" [attr.aria-label]="text.breadcrumbAriaLabel">
+            <a [routerLink]="homePath()">{{ text.home }}</a>
             <span aria-hidden="true">/</span>
             <a [routerLink]="zonesPath()">{{ zonesLabel() }}</a>
             <span aria-hidden="true">/</span>
@@ -103,6 +104,7 @@ export class CommunePageComponent {
   protected readonly communeName = computed(
     () => (this.locale === 'nl' ? this.commune()?.nameNl : this.commune()?.nameFr) ?? '',
   );
+  protected readonly text = UI_TEXT[this.locale];
 
   constructor() {
     this.store.load(this.locale);
@@ -135,7 +137,7 @@ export class CommunePageComponent {
         locale: this.locale,
       });
       this.seo.applyBreadcrumbs([
-        { name: 'Accueil', path: this.homePath() },
+        { name: this.text.home, path: this.homePath() },
         { name: this.zonesLabel(), path: this.zonesPath() },
         { name, path },
       ]);

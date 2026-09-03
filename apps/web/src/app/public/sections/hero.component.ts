@@ -3,6 +3,8 @@ import { VideoFrameComponent } from '../../shared/ui/video-frame.component';
 import { BrandMarkComponent } from '../../shared/ui/brand-mark.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
 import { SiteStore } from '../site-store';
+import { SITE_LOCALE } from '../../core/locale';
+import { UI_TEXT } from '../../core/ui-text';
 
 /**
  * Hero : showreel plein cadre en 2.39:1, muet et en boucle.
@@ -30,7 +32,7 @@ import { SiteStore } from '../site-store';
           <p class="hero__eyebrow">{{ settings().city }} · {{ settings().region }}</p>
           <h1 class="hero__title">{{ settings().brandName }}</h1>
           <p class="hero__tagline">{{ settings().tagline }}</p>
-          <app-cta-button href="#contact">Demander un devis</app-cta-button>
+          <app-cta-button href="#contact">{{ text.hero.cta }}</app-cta-button>
         </div>
       </app-video-frame>
     </section>
@@ -39,7 +41,9 @@ import { SiteStore } from '../site-store';
 })
 export class HeroComponent {
   private readonly store = inject(SiteStore);
+  private readonly locale = inject(SITE_LOCALE);
   protected readonly settings = this.store.settings;
+  protected readonly text = UI_TEXT[this.locale];
 
   /**
    * Plancher de hauteur du cadre : le bloc titre mesure jusqu'à 266 px sur un

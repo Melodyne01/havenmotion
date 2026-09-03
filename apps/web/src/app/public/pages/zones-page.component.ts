@@ -7,6 +7,7 @@ import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
 import { SITE_LOCALE } from '../../core/locale';
 import { BRUSSELS_COMMUNES, PERIPHERY_COMMUNES, CommuneInfo } from '../../core/communes';
+import { UI_TEXT } from '../../core/ui-text';
 
 /**
  * Page hub `/zones` : liste les 19 communes de la Région de
@@ -21,7 +22,7 @@ import { BRUSSELS_COMMUNES, PERIPHERY_COMMUNES, CommuneInfo } from '../../core/c
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [SiteHeaderComponent, SiteFooterComponent, SectionTitleComponent, RouterLink],
   template: `
-    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <a class="skip-link" href="#contenu">{{ text.skipLink }}</a>
     <app-site-header />
 
     <main id="contenu">
@@ -111,6 +112,7 @@ export class ZonesPageComponent {
 
   protected readonly brusselsCommunes = BRUSSELS_COMMUNES;
   protected readonly peripheryCommunes = PERIPHERY_COMMUNES;
+  protected readonly text = UI_TEXT[this.locale];
 
   constructor() {
     this.store.load(this.locale);
@@ -131,7 +133,7 @@ export class ZonesPageComponent {
         locale: this.locale,
       });
       this.seo.applyBreadcrumbs([
-        { name: 'Accueil', path: this.locale === 'nl' ? '/nl' : '/' },
+        { name: this.text.home, path: this.locale === 'nl' ? '/nl' : '/' },
         { name: this.eyebrow(), path },
       ]);
       this.seo.applyHreflang({ fr: '/zones', nl: '/nl/zones' });

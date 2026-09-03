@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CategoryBandComponent } from './category-band.component';
 import { SectionTitleComponent } from '../../shared/ui/section-title.component';
 import { SiteStore } from '../site-store';
+import { SITE_LOCALE } from '../../core/locale';
+import { UI_TEXT } from '../../core/ui-text';
 
 /**
  * Réalisations. Les catégories *sont* la navigation : cinq bandes empilées,
@@ -17,8 +19,8 @@ import { SiteStore } from '../site-store';
     <section class="categories" id="realisations" aria-labelledby="titre-realisations">
       <div class="categories__head">
         <app-section-title
-          eyebrow="Réalisations"
-          title="Cinq territoires"
+          [eyebrow]="text.categories.eyebrow"
+          [title]="text.categories.title"
           titleId="titre-realisations"
         />
       </div>
@@ -34,6 +36,8 @@ import { SiteStore } from '../site-store';
 })
 export class CategoriesComponent {
   private readonly store = inject(SiteStore);
+  private readonly locale = inject(SITE_LOCALE);
 
   protected readonly categories = this.store.categories;
+  protected readonly text = UI_TEXT[this.locale];
 }

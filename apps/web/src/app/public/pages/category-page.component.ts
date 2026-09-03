@@ -17,6 +17,7 @@ import { PublicApiService } from '../../core/api/public-api.service';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
 import { CATEGORY_SLUG_MAP, SITE_LOCALE } from '../../core/locale';
+import { UI_TEXT } from '../../core/ui-text';
 import { Film } from '../../models';
 
 /**
@@ -29,14 +30,14 @@ import { Film } from '../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [SiteHeaderComponent, SiteFooterComponent, VideoFrameComponent, CtaButtonComponent, RouterLink],
   template: `
-    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <a class="skip-link" href="#contenu">{{ text.skipLink }}</a>
     <app-site-header />
 
     <main id="contenu">
       @if (category(); as cat) {
         <article class="category-page">
-          <nav class="category-page__breadcrumb" aria-label="Fil d'Ariane">
-            <a [routerLink]="homePath()">Accueil</a>
+          <nav class="category-page__breadcrumb" [attr.aria-label]="text.breadcrumbAriaLabel">
+            <a [routerLink]="homePath()">{{ text.home }}</a>
             <span aria-hidden="true">/</span>
             <span>{{ cat.name }}</span>
           </nav>
@@ -75,7 +76,7 @@ import { Film } from '../../models';
               </ul>
             }
 
-            <app-cta-button [href]="contactHref()">Un projet comme ça ? Devis</app-cta-button>
+            <app-cta-button [href]="contactHref()">{{ ctaLabel() }}</app-cta-button>
           </div>
         </article>
       }
@@ -109,8 +110,12 @@ export class CategoryPageComponent {
     { initialValue: [] as Film[] },
   );
 
+  protected readonly text = UI_TEXT[this.locale];
   protected readonly homePath = computed(() => (this.locale === 'nl' ? '/nl' : '/'));
   protected readonly contactHref = computed(() => (this.locale === 'nl' ? '/nl/#contact' : '/#contact'));
+  protected readonly ctaLabel = computed(() =>
+    this.locale === 'nl' ? 'Zo’n project? Offerte aanvragen' : 'Un projet comme ça ? Devis',
+  );
 
   constructor() {
     this.store.load(this.locale);
@@ -140,7 +145,7 @@ export class CategoryPageComponent {
         locale: this.locale,
       });
       this.seo.applyBreadcrumbs([
-        { name: 'Accueil', path: this.homePath() },
+        { name: this.text.home, path: this.homePath() },
         { name: cat.name, path },
       ]);
       this.seo.applyService(settings, cat, this.store.services());
@@ -178,7 +183,8 @@ export class CategoryPageComponent {
     if (!cat) {
       return '';
     }
-    return `${cat.filmCount} ${cat.filmCount > 1 ? 'films' : 'film'} · ${cat.name}`;
+    const noun = cat.filmCount > 1 ? this.text.categoryBand.filmPlural : this.text.categoryBand.filmSingular;
+    return `${cat.filmCount} ${noun} · ${cat.name}`;
   }
 
   protected selectFilm(film: Film): void {

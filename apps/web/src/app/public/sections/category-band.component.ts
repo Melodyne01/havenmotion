@@ -9,6 +9,7 @@ import {
 import { RouterLink } from '@angular/router';
 import { VideoFrameComponent } from '../../shared/ui/video-frame.component';
 import { SITE_LOCALE } from '../../core/locale';
+import { UI_TEXT } from '../../core/ui-text';
 import { Category } from '../../models';
 
 /**
@@ -42,7 +43,7 @@ import { Category } from '../../models';
         playback="hover"
         [travelling]="true"
         [travellingReverse]="reverseTravelling()"
-        [label]="'Extrait ' + category().name"
+        [label]="videoLabel()"
       >
         <span class="band__veil" aria-hidden="true"></span>
         <span class="band__scrim" aria-hidden="true"></span>
@@ -54,7 +55,7 @@ import { Category } from '../../models';
             <span class="band__tagline">{{ category().tagline }}</span>
             <span class="band__count">{{ filmCountLabel() }}</span>
           </span>
-          <span class="band__invite" aria-hidden="true">&#9654; Voir la catégorie &#8594;</span>
+          <span class="band__invite" aria-hidden="true">&#9654; {{ text.categoryBand.viewCategory }} &#8594;</span>
         </span>
 
         <span class="band__progress" aria-hidden="true">
@@ -71,6 +72,7 @@ export class CategoryBandComponent {
 
   private readonly locale = inject(SITE_LOCALE);
   private readonly frame = viewChild.required<VideoFrameComponent>('frame');
+  protected readonly text = UI_TEXT[this.locale];
 
   protected readonly categoryLink = computed(() =>
     this.locale === 'nl'
@@ -81,10 +83,14 @@ export class CategoryBandComponent {
   protected readonly reverseTravelling = computed(() => this.index() % 2 === 1);
   protected readonly filmCountLabel = computed(() => {
     const count = this.category().filmCount;
-    return count > 1 ? `${count} films` : `${count} film`;
+    const noun = count > 1 ? this.text.categoryBand.filmPlural : this.text.categoryBand.filmSingular;
+    return `${count} ${noun}`;
   });
   protected readonly ariaLabel = computed(
-    () => `${this.category().name} — ${this.filmCountLabel()}. Ouvrir la catégorie.`,
+    () => `${this.category().name} — ${this.filmCountLabel()}. ${this.text.categoryBand.openCategorySuffix}`,
+  );
+  protected readonly videoLabel = computed(
+    () => `${this.text.categoryBand.excerptPrefix} ${this.category().name}`,
   );
 
   protected progress(): number {
