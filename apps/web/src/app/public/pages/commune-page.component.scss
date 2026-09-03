@@ -107,6 +107,23 @@
   line-height: $lh-body;
 }
 
+.commune-page__service-facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 8px;
+  margin: 6px 0 0;
+  font-size: $fs-13;
+
+  dt {
+    color: $color-muted-45;
+  }
+
+  dd {
+    margin: 0;
+    color: $color-muted-60;
+  }
+}
+
 .commune-page__faq {
   padding: 16px 0;
   border-top: $rule-width solid $color-rule-10;

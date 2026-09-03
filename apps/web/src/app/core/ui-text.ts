@@ -17,6 +17,7 @@ export interface UiText {
     readonly eyebrow: string;
     readonly title: string;
     readonly duration: string;
+    readonly included: string;
     readonly deliverables: string;
     readonly cta: string;
   };
@@ -72,6 +73,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       eyebrow: 'Prestations',
       title: 'Ce que je livre',
       duration: 'Durée',
+      included: 'Inclus',
       deliverables: 'Livrables',
       cta: 'Demander un devis',
     },
@@ -126,6 +128,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       eyebrow: 'Diensten',
       title: 'Wat ik lever',
       duration: 'Duur',
+      included: 'Inbegrepen',
       deliverables: 'Op te leveren',
       cta: 'Offerte aanvragen',
     },

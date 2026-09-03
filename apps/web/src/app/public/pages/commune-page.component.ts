@@ -65,6 +65,12 @@ import { Category, ServiceCard } from '../../models';
                   <a class="commune-page__service-name" [routerLink]="categoryHref(cat)">{{ serviceHeading(cat) }}</a>
                   @if (serviceFor(cat); as service) {
                     <p class="commune-page__service-detail">{{ service.deliverables }}, {{ service.startingPrice }}.</p>
+                    <dl class="commune-page__service-facts">
+                      <dt>{{ text.services.duration }}</dt>
+                      <dd>{{ service.duration }}</dd>
+                      <dt>{{ text.services.included }}</dt>
+                      <dd>{{ service.included.join(', ') }}</dd>
+                    </dl>
                   }
                 </li>
               }
@@ -75,6 +81,8 @@ import { Category, ServiceCard } from '../../models';
               <p class="commune-page__faq-a">{{ faqAnswer() }}</p>
               <p class="commune-page__faq-q">{{ faqQuestion2() }}</p>
               <p class="commune-page__faq-a">{{ faqAnswer2() }}</p>
+              <p class="commune-page__faq-q">{{ faqQuestion3() }}</p>
+              <p class="commune-page__faq-a">{{ faqAnswer3() }}</p>
             </div>
 
             <app-cta-button [href]="contactHref()">{{ ctaLabel() }}</app-cta-button>
@@ -155,6 +163,7 @@ export class CommunePageComponent {
       this.seo.applyFaq([
         { question: this.faqQuestion(), answer: this.faqAnswer() },
         { question: this.faqQuestion2(), answer: this.faqAnswer2() },
+        { question: this.faqQuestion3(), answer: this.faqAnswer3() },
       ]);
       this.seo.applyHreflang({
         fr: `/zones/${c.slugFr}`,
@@ -263,5 +272,23 @@ export class CommunePageComponent {
     return this.locale === 'nl'
       ? `Alle vijf categorieën van de studio zijn beschikbaar in ${name}: huwelijk, bedrijfsvideo, sport, muziekclip en lifestyle-content, met dezelfde kwaliteit als in de rest van het werkgebied.`
       : `Les cinq catégories du studio sont disponibles à ${name} : mariage, vidéo d'entreprise, sport, clip musical et contenu lifestyle, avec le même niveau de qualité que sur le reste de la zone d'intervention.`;
+  }
+
+  /**
+   * Répond à une intention de recherche fréquente côté mariage ("est-ce que
+   * le vidéaste est discret pendant la cérémonie ?") en reprenant tel quel
+   * un fait déjà validé du site (page "à propos"), pas une affirmation
+   * inventée pour l'occasion.
+   */
+  protected faqQuestion3(): string {
+    const name = this.communeName();
+    return this.locale === 'nl' ? `Is de opname discreet in ${name}?` : `Le tournage est-il discret à ${name} ?`;
+  }
+
+  protected faqAnswer3(): string {
+    const name = this.communeName();
+    return this.locale === 'nl'
+      ? `Ja: ik film alleen of met een klein team, om dicht bij de gasten en de echte momenten te blijven, in ${name} net als elders.`
+      : `Oui : le tournage se fait seul ou en équipe réduite, pour rester au plus près des invités et des moments réels, à ${name} comme ailleurs.`;
   }
 }
