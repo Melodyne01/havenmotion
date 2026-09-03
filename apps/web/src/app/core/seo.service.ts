@@ -58,8 +58,12 @@ export class SeoService {
     this.setAlternate('x-default', `${this.origin}${paths.fr}`);
   }
 
-  /** Publie le bloc JSON-LD `LocalBusiness` + `VideoObject` du showreel. */
-  applyStructuredData(settings: SiteSettings, categories: Category[]): void {
+  /**
+   * Publie le bloc JSON-LD `LocalBusiness` + `VideoObject` du showreel.
+   * `priceRange` est optionnel et doit être calculé depuis les vrais tarifs
+   * (SITE_CONTENT) par l'appelant — jamais une fourchette inventée.
+   */
+  applyStructuredData(settings: SiteSettings, categories: Category[], priceRange?: string): void {
     const graph: unknown[] = [
       {
         '@type': 'LocalBusiness',
@@ -70,6 +74,7 @@ export class SeoService {
         url: this.origin,
         areaServed: settings.region,
         address: { '@type': 'PostalAddress', addressLocality: settings.city, addressCountry: 'BE' },
+        ...(priceRange ? { priceRange } : {}),
         sameAs: settings.instagram
           ? [`https://instagram.com/${settings.instagram.replace('@', '')}`]
           : [],

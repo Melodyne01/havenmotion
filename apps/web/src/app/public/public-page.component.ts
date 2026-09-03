@@ -14,6 +14,7 @@ import { SiteStore } from './site-store';
 import { SeoService } from '../core/seo.service';
 import { SITE_LOCALE } from '../core/locale';
 import { UI_TEXT } from '../core/ui-text';
+import { SITE_CONTENT } from '../core/site-content';
 
 /**
  * Page unique du site public : tout est en un seul défilement, chaque section
@@ -131,8 +132,23 @@ export class PublicPageComponent {
         locale: this.locale,
       });
       this.seo.applyHreflang({ fr: '/', nl: '/nl' });
-      this.seo.applyStructuredData(settings, this.store.categories());
+      this.seo.applyStructuredData(settings, this.store.categories(), this.priceRange());
     });
+  }
+
+  /**
+   * "900€–1800€" calculé depuis les vrais tarifs de départ (SITE_CONTENT),
+   * jamais une fourchette inventée — répond à l'intention de recherche
+   * "combien coûte un vidéaste" dès les résultats enrichis de Google.
+   */
+  private priceRange(): string | undefined {
+    const prices = SITE_CONTENT[this.locale].services
+      .map((s) => Number(s.startingPrice.replace(/[^\d]/g, '')))
+      .filter((n) => Number.isFinite(n) && n > 0);
+    if (!prices.length) {
+      return undefined;
+    }
+    return `${Math.min(...prices)}€–${Math.max(...prices)}€`;
   }
 
   /**
