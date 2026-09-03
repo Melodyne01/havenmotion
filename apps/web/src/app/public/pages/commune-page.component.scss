@@ -66,26 +66,45 @@
   line-height: $lh-body;
 }
 
-.commune-page__categories {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
+.commune-page__section-title {
+  @include display-caps($fs-15, $ls-14, $weight-semibold);
+
+  color: $color-film;
+  margin: 8px 0 0;
+}
+
+.commune-page__services {
+  display: grid;
+  gap: 0;
+  width: 100%;
   padding: 0;
   margin: 0;
   list-style: none;
+  border-top: $rule-width solid $color-rule-10;
+}
 
-  a {
-    @include display-caps($fs-13, $ls-14, $weight-semibold);
+.commune-page__service {
+  padding: 12px 0;
+  border-bottom: $rule-width solid $color-rule-10;
+}
 
-    color: $color-film;
-    text-decoration: none;
-    border-bottom: $rule-width solid $color-rule-16;
+.commune-page__service-name {
+  @include display-caps($fs-13, $ls-14, $weight-semibold);
 
-    &:hover {
-      color: $color-amber;
-      border-color: $color-amber;
-    }
+  display: inline-block;
+  color: $color-film;
+  text-decoration: none;
+
+  &:hover {
+    color: $color-amber;
   }
+}
+
+.commune-page__service-detail {
+  margin: 4px 0 0;
+  color: $color-muted-60;
+  font-size: $fs-13;
+  line-height: $lh-body;
 }
 
 .commune-page__faq {

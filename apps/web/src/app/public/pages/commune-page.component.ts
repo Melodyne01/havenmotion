@@ -10,7 +10,8 @@ import { SeoService } from '../../core/seo.service';
 import { SITE_LOCALE } from '../../core/locale';
 import { findCommune } from '../../core/communes';
 import { UI_TEXT } from '../../core/ui-text';
-import { Category } from '../../models';
+import { SITE_CONTENT } from '../../core/site-content';
+import { Category, ServiceCard } from '../../models';
 
 /**
  * Page locale par commune (`/zones/{slug}`) : les 19 communes de la Région
@@ -57,15 +58,23 @@ import { Category } from '../../models';
             <h1 class="commune-page__title">{{ heroTitle() }}</h1>
             <p class="commune-page__intro">{{ introText() }}</p>
 
-            <ul class="commune-page__categories">
+            <h2 class="commune-page__section-title">{{ servicesSectionTitle() }}</h2>
+            <ul class="commune-page__services">
               @for (cat of store.categories(); track cat.id) {
-                <li><a [routerLink]="categoryHref(cat)">{{ cat.name }}</a></li>
+                <li class="commune-page__service">
+                  <a class="commune-page__service-name" [routerLink]="categoryHref(cat)">{{ serviceHeading(cat) }}</a>
+                  @if (serviceFor(cat); as service) {
+                    <p class="commune-page__service-detail">{{ service.deliverables }}, {{ service.startingPrice }}.</p>
+                  }
+                </li>
               }
             </ul>
 
             <div class="commune-page__faq">
               <p class="commune-page__faq-q">{{ faqQuestion() }}</p>
               <p class="commune-page__faq-a">{{ faqAnswer() }}</p>
+              <p class="commune-page__faq-q">{{ faqQuestion2() }}</p>
+              <p class="commune-page__faq-a">{{ faqAnswer2() }}</p>
             </div>
 
             <app-cta-button [href]="contactHref()">{{ ctaLabel() }}</app-cta-button>
@@ -105,6 +114,7 @@ export class CommunePageComponent {
     () => (this.locale === 'nl' ? this.commune()?.nameNl : this.commune()?.nameFr) ?? '',
   );
   protected readonly text = UI_TEXT[this.locale];
+  private readonly services = SITE_CONTENT[this.locale].services;
 
   constructor() {
     this.store.load(this.locale);
@@ -142,6 +152,10 @@ export class CommunePageComponent {
         { name, path },
       ]);
       this.seo.applyAreaServed(settings, name, c.postalCode);
+      this.seo.applyFaq([
+        { question: this.faqQuestion(), answer: this.faqAnswer() },
+        { question: this.faqQuestion2(), answer: this.faqAnswer2() },
+      ]);
       this.seo.applyHreflang({
         fr: `/zones/${c.slugFr}`,
         nl: `/nl/zones/${c.slugNl}`,
@@ -196,6 +210,35 @@ export class CommunePageComponent {
     return `${base}/${cat.slug}`;
   }
 
+  protected servicesSectionTitle(): string {
+    const name = this.communeName();
+    return this.locale === 'nl' ? `Diensten in ${name}` : `Prestations à ${name}`;
+  }
+
+  /**
+   * "Vidéaste Mariage à Uccle" / "Videograaf Huwelijk in Wemmel" : le titre de
+   * chaque prestation reprend le nom de la commune — c'est exactement la
+   * phrase qu'un client tape dans un moteur de recherche, pas un mot-clé
+   * ajouté au hasard dans une liste.
+   */
+  protected serviceHeading(cat: Category): string {
+    const name = this.communeName();
+    return this.locale === 'nl' ? `Videograaf ${cat.name} in ${name}` : `Vidéaste ${cat.name} à ${name}`;
+  }
+
+  /**
+   * Sport, Clip et Lifestyle sont 5 catégories mais seulement 4 fiches
+   * tarifaires ("Sport & event" couvre Sport, "Clip & lifestyle" couvre Clip
+   * et Lifestyle) — même rapprochement souple que SeoService.applyService,
+   * pour rester cohérent avec ce qu'affiche la page catégorie elle-même.
+   */
+  protected serviceFor(cat: Category): ServiceCard | undefined {
+    const needle = cat.name.toLowerCase();
+    return this.services.find(
+      (s) => s.name.toLowerCase().includes(needle) || needle.includes(s.name.toLowerCase()),
+    );
+  }
+
   protected faqQuestion(): string {
     const name = this.communeName();
     return this.locale === 'nl' ? `Komt u filmen in ${name}?` : `Est-ce que vous vous déplacez à ${name} ?`;
@@ -206,5 +249,19 @@ export class CommunePageComponent {
     return this.locale === 'nl'
       ? `Ja, ${name} maakt deel uit van ons werkgebied (Brussel en omliggende gemeenten). De verplaatsing zit inbegrepen in de offerte, zonder toeslag.`
       : `Oui, ${name} fait partie de notre zone d'intervention (Bruxelles et communes environnantes). Le déplacement est inclus dans le devis, sans supplément.`;
+  }
+
+  protected faqQuestion2(): string {
+    const name = this.communeName();
+    return this.locale === 'nl'
+      ? `Welke soorten video's kan ik in ${name} laten maken?`
+      : `Quels types de vidéos peut-on tourner à ${name} ?`;
+  }
+
+  protected faqAnswer2(): string {
+    const name = this.communeName();
+    return this.locale === 'nl'
+      ? `Alle vijf categorieën van de studio zijn beschikbaar in ${name}: huwelijk, bedrijfsvideo, sport, muziekclip en lifestyle-content, met dezelfde kwaliteit als in de rest van het werkgebied.`
+      : `Les cinq catégories du studio sont disponibles à ${name} : mariage, vidéo d'entreprise, sport, clip musical et contenu lifestyle, avec le même niveau de qualité que sur le reste de la zone d'intervention.`;
   }
 }
