@@ -137,6 +137,28 @@ export class SeoService {
     this.writeJsonLd('vnl-service', graph);
   }
 
+  /**
+   * Publie le bloc JSON-LD `Service` d'une page zone/commune : même forme
+   * que `applyService`, mais `areaServed` pointe sur une `City` précise
+   * (nom + code postal) plutôt que sur la région entière — c'est tout
+   * l'intérêt local SEO de ces pages par rapport à la home.
+   */
+  applyAreaServed(settings: SiteSettings, communeName: string, postalCode: string): void {
+    const graph = {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      serviceType: 'Vidéaste événementiel et corporate',
+      name: `${settings.brandName} — ${communeName}`,
+      provider: { '@type': 'LocalBusiness', name: settings.brandName, '@id': `${this.origin}/#studio` },
+      areaServed: {
+        '@type': 'City',
+        name: communeName,
+        address: { '@type': 'PostalAddress', postalCode, addressCountry: 'BE' },
+      },
+    };
+    this.writeJsonLd('vnl-area', graph);
+  }
+
   /** Publie le bloc JSON-LD `BreadcrumbList` de la page courante. */
   applyBreadcrumbs(items: readonly { name: string; path: string }[]): void {
     const graph = {

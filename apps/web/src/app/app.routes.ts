@@ -28,6 +28,16 @@ export const routes: Routes = [
       import('./public/pages/faq-page.component').then((m) => m.FaqPageComponent),
   },
   {
+    path: 'zones',
+    loadComponent: () =>
+      import('./public/pages/zones-page.component').then((m) => m.ZonesPageComponent),
+  },
+  {
+    path: 'zones/:commune',
+    loadComponent: () =>
+      import('./public/pages/commune-page.component').then((m) => m.CommunePageComponent),
+  },
+  {
     // Racine FR non préfixée (marché majoritaire, aucune migration d'URL à
     // faire sur l'existant) ; le NL vit sous /nl avec ses propres slugs
     // traduits. `providers` fixe SITE_LOCALE à 'nl' pour toute la sous-arborescence
@@ -60,6 +70,16 @@ export const routes: Routes = [
         path: 'faq',
         loadComponent: () =>
           import('./public/pages/faq-page.component').then((m) => m.FaqPageComponent),
+      },
+      {
+        path: 'zones',
+        loadComponent: () =>
+          import('./public/pages/zones-page.component').then((m) => m.ZonesPageComponent),
+      },
+      {
+        path: 'zones/:commune',
+        loadComponent: () =>
+          import('./public/pages/commune-page.component').then((m) => m.CommunePageComponent),
       },
     ],
   },

@@ -26,6 +26,37 @@ public static class PublicEndpoints
     /// <summary>Langues supportées ; toute autre valeur retombe sur "fr".</summary>
     private static string NormalizeLocale(string? locale) => locale == "nl" ? "nl" : "fr";
 
+    /// <summary>
+    /// Les 19 communes de la Région de Bruxelles-Capitale, pour le sitemap
+    /// uniquement. Liste administrative fixe : un dictionnaire statique ici
+    /// évite une table dédiée pour un contenu qui ne change jamais — même
+    /// principe et même duplication assumée que `CATEGORY_SLUG_MAP` côté
+    /// front (`communes.ts`), qui porte la version complète (noms, codes
+    /// postaux) utilisée pour construire les pages elles-mêmes.
+    /// </summary>
+    private static readonly (string Fr, string Nl)[] CommuneSlugs =
+    [
+        ("bruxelles-ville", "stad-brussel"),
+        ("anderlecht", "anderlecht"),
+        ("auderghem", "oudergem"),
+        ("berchem-sainte-agathe", "sint-agatha-berchem"),
+        ("etterbeek", "etterbeek"),
+        ("evere", "evere"),
+        ("forest", "vorst"),
+        ("ganshoren", "ganshoren"),
+        ("ixelles", "elsene"),
+        ("jette", "jette"),
+        ("koekelberg", "koekelberg"),
+        ("molenbeek-saint-jean", "sint-jans-molenbeek"),
+        ("saint-gilles", "sint-gillis"),
+        ("saint-josse-ten-noode", "sint-joost-ten-node"),
+        ("schaerbeek", "schaarbeek"),
+        ("uccle", "ukkel"),
+        ("watermael-boitsfort", "watermaal-bosvoorde"),
+        ("woluwe-saint-lambert", "sint-lambrechts-woluwe"),
+        ("woluwe-saint-pierre", "sint-pieters-woluwe"),
+    ];
+
     private static async Task<SitePayloadDto> GetSiteAsync(
         string? locale,
         AppDbContext db,
@@ -136,6 +167,10 @@ public static class PublicEndpoints
         };
         urls.AddRange(frSlugs.Select(slug => ($"/realisations/{slug}", "weekly", "0.8")));
         urls.AddRange(nlSlugs.Select(slug => ($"/nl/realisaties/{slug}", "weekly", "0.8")));
+        urls.Add(("/zones", "monthly", "0.6"));
+        urls.Add(("/nl/zones", "monthly", "0.6"));
+        urls.AddRange(CommuneSlugs.Select(c => ($"/zones/{c.Fr}", "monthly", "0.6")));
+        urls.AddRange(CommuneSlugs.Select(c => ($"/nl/zones/{c.Nl}", "monthly", "0.6")));
 
         var body = string.Concat(urls.Select(u =>
             $"""

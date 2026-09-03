@@ -21,6 +21,7 @@ import { SITE_LOCALE } from '../../core/locale';
       <nav class="footer__nav" aria-label="Navigation du pied de page">
         <a class="footer__link" [href]="aboutHref()">{{ aboutLabel() }}</a>
         <a class="footer__link" [href]="faqHref()">FAQ</a>
+        <a class="footer__link" [href]="zonesHref()">{{ zonesLabel() }}</a>
         <a class="footer__link" [href]="contactHref()">Contact</a>
         <a class="footer__link" href="/mentions-legales">Mentions légales</a>
         <a class="footer__link" href="/confidentialite">Confidentialité</a>
@@ -40,5 +41,9 @@ export class SiteFooterComponent {
   protected readonly aboutHref = computed(() => (this.locale === 'nl' ? '/nl/over-ons' : '/a-propos'));
   protected readonly aboutLabel = computed(() => (this.locale === 'nl' ? 'Over ons' : 'À propos'));
   protected readonly faqHref = computed(() => (this.locale === 'nl' ? '/nl/faq' : '/faq'));
+  protected readonly zonesHref = computed(() => (this.locale === 'nl' ? '/nl/zones' : '/zones'));
+  protected readonly zonesLabel = computed(() =>
+    this.locale === 'nl' ? 'Werkgebied' : "Zone d'intervention",
+  );
   protected readonly contactHref = computed(() => (this.locale === 'nl' ? '/nl/contact' : '/contact'));
 }
