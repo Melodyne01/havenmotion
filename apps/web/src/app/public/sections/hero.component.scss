@@ -64,6 +64,21 @@
   }
 }
 
+// Le nom de marque reste le repère visuel du hero ; ce sous-titre, dans le
+// même H1, porte la phrase que Google et un visiteur pressé lisent en
+// premier pour comprendre le métier et la zone — un H1 réduit au seul nom
+// de marque n'aide pas le référencement, aussi grand soit-il à l'écran.
+.hero__title-sub {
+  display: block;
+  margin-top: 8px;
+  font-family: $font-body;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: $weight-regular;
+  font-size: $fs-18;
+  color: $color-muted-60;
+}
+
 .hero__tagline {
   max-width: 46ch;
   color: $color-muted-60;

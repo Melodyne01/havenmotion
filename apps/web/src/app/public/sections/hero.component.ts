@@ -30,7 +30,10 @@ import { UI_TEXT } from '../../core/ui-text';
         </div>
         <div class="hero__content">
           <p class="hero__eyebrow">{{ settings().city }} · {{ settings().region }}</p>
-          <h1 class="hero__title">{{ settings().brandName }}</h1>
+          <h1 class="hero__title">
+            {{ settings().brandName }}
+            <span class="hero__title-sub">{{ titleSubtitle() }}</span>
+          </h1>
           <p class="hero__tagline">{{ settings().tagline }}</p>
           <app-cta-button href="#contact">{{ text.hero.cta }}</app-cta-button>
         </div>
@@ -49,6 +52,20 @@ export class HeroComponent {
    * Plancher de hauteur du cadre : le bloc titre mesure jusqu'à 266 px sur un
    * téléphone étroit, il lui faut cette place sous le cadre. Au-delà de 813 px
    * de large le 2.39:1 redonne davantage et le plancher ne s'applique plus.
+   * Revérifié après l'ajout du sous-titre SEO dans le H1 (une ligne de plus).
    */
   protected readonly heroMinHeight = 340;
+
+  /**
+   * Sous-titre dans le H1 : le nom de marque seul n'aide pas le
+   * référencement, cette phrase reprend la même position ("vidéaste
+   * indépendant à {ville} et environs") déjà validée sur le titre de la
+   * page et sur la home.
+   */
+  protected titleSubtitle(): string {
+    const city = this.settings().city;
+    return this.locale === 'nl'
+      ? `Onafhankelijke videograaf in ${city} en omstreken`
+      : `Vidéaste indépendant à ${city} et environs`;
+  }
 }
