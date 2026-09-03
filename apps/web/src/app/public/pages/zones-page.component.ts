@@ -30,16 +30,16 @@ import { UI_TEXT } from '../../core/ui-text';
         <app-section-title [eyebrow]="eyebrow()" [title]="title()" titleId="titre-zones" />
         <p class="zones-page__intro">{{ intro() }}</p>
 
-        <h2 class="zones-page__group-title">{{ brusselsGroupTitle() }}</h2>
+        <h2 class="zones-page__group-title">{{ peripheryGroupTitle() }}</h2>
         <ul class="zones-page__list">
-          @for (commune of brusselsCommunes; track commune.slugFr) {
+          @for (commune of peripheryCommunes; track commune.slugFr) {
             <li><a [routerLink]="communeHref(commune)">{{ communeName(commune) }}</a></li>
           }
         </ul>
 
-        <h2 class="zones-page__group-title">{{ peripheryGroupTitle() }}</h2>
+        <h2 class="zones-page__group-title">{{ brusselsGroupTitle() }}</h2>
         <ul class="zones-page__list">
-          @for (commune of peripheryCommunes; track commune.slugFr) {
+          @for (commune of brusselsCommunes; track commune.slugFr) {
             <li><a [routerLink]="communeHref(commune)">{{ communeName(commune) }}</a></li>
           }
         </ul>

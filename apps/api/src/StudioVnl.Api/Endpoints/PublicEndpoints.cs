@@ -27,6 +27,13 @@ public static class PublicEndpoints
     private static string NormalizeLocale(string? locale) => locale == "nl" ? "nl" : "fr";
 
     /// <summary>
+    /// Slugs de catégorie à prioriser au lancement (même valeur FR/NL) : Clip
+    /// et Lifestyle, moins disputés par les grosses agences bruxelloises que
+    /// Mariage/Corporate, sur demande du client.
+    /// </summary>
+    private static readonly HashSet<string> LaunchPriorityCategorySlugs = ["clip", "lifestyle"];
+
+    /// <summary>
     /// Les 19 communes de la Région de Bruxelles-Capitale, pour le sitemap
     /// uniquement. Liste administrative fixe : un dictionnaire statique ici
     /// évite une table dédiée pour un contenu qui ne change jamais — même
@@ -173,12 +180,16 @@ public static class PublicEndpoints
             ("/mentions-legales", "yearly", "0.2"),
             ("/confidentialite", "yearly", "0.2"),
         };
-        urls.AddRange(frSlugs.Select(slug => ($"/realisations/{slug}", "weekly", "0.8")));
-        urls.AddRange(nlSlugs.Select(slug => ($"/nl/realisaties/{slug}", "weekly", "0.8")));
+        // Priorité de sitemap relevée pour Clip/Lifestyle et Wemmel : lancement
+        // volontairement positionné sur ces mots-clés à faible concurrence
+        // plutôt que sur Mariage/Corporate à Bruxelles, déjà saturés par des
+        // studios établis et des annuaires (starofservice, sortlist…).
+        urls.AddRange(frSlugs.Select(slug => ($"/realisations/{slug}", "weekly", LaunchPriorityCategorySlugs.Contains(slug) ? "0.9" : "0.8")));
+        urls.AddRange(nlSlugs.Select(slug => ($"/nl/realisaties/{slug}", "weekly", LaunchPriorityCategorySlugs.Contains(slug) ? "0.9" : "0.8")));
         urls.Add(("/zones", "monthly", "0.6"));
         urls.Add(("/nl/zones", "monthly", "0.6"));
-        urls.AddRange(CommuneSlugs.Select(c => ($"/zones/{c.Fr}", "monthly", "0.6")));
-        urls.AddRange(CommuneSlugs.Select(c => ($"/nl/zones/{c.Nl}", "monthly", "0.6")));
+        urls.AddRange(CommuneSlugs.Select(c => ($"/zones/{c.Fr}", "monthly", c.Fr == "wemmel" ? "0.8" : "0.6")));
+        urls.AddRange(CommuneSlugs.Select(c => ($"/nl/zones/{c.Nl}", "monthly", c.Nl == "wemmel" ? "0.8" : "0.6")));
 
         var body = string.Concat(urls.Select(u =>
             $"""
