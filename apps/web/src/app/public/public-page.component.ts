@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { SiteHeaderComponent } from './sections/site-header.component';
 import { HeroComponent } from './sections/hero.component';
 import { CategoriesComponent } from './sections/categories.component';
@@ -22,6 +23,7 @@ import { UI_TEXT } from '../core/ui-text';
   selector: 'app-public-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    RouterLink,
     SiteHeaderComponent,
     HeroComponent,
     CategoriesComponent,
@@ -39,6 +41,10 @@ import { UI_TEXT } from '../core/ui-text';
 
     <main id="contenu">
       <app-hero />
+      <p class="home-intro">
+        {{ homeIntroText() }}
+        <a [routerLink]="zonesPath()">{{ zonesLinkLabel() }}</a>
+      </p>
       <app-categories />
       <app-services />
       <app-process />
@@ -72,6 +78,30 @@ import { UI_TEXT } from '../core/ui-text';
           display: none;
         }
       }
+
+      .home-intro {
+        max-width: 640px;
+        margin: 20px auto 0;
+        padding: 0 $pad-x-mobile;
+        color: $color-muted-60;
+        font-size: $fs-14;
+        line-height: $lh-body;
+        text-align: center;
+
+        @include tablet-up {
+          padding: 0 $pad-x-desktop;
+        }
+
+        a {
+          color: $color-amber;
+          text-decoration: none;
+          white-space: nowrap;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
     `,
   ],
 })
@@ -88,8 +118,14 @@ export class PublicPageComponent {
       const settings = this.store.settings();
       const path = this.locale === 'nl' ? '/nl' : '/';
       this.seo.apply({
-        title: `${settings.brandName} — Vidéaste ${settings.city} & ${settings.region}`,
-        description: `${settings.tagline} Devis sous 48 h.`,
+        title:
+          this.locale === 'nl'
+            ? `${settings.brandName} — Onafhankelijke videograaf in ${settings.city} en omstreken`
+            : `${settings.brandName} — Vidéaste indépendant à ${settings.city} et environs`,
+        description:
+          this.locale === 'nl'
+            ? `${settings.tagline} Brussel, Wemmel en de Vlaamse rand — offerte binnen 48 u.`
+            : `${settings.tagline} Bruxelles, Wemmel et la périphérie flamande — devis sous 48 h.`,
         path,
         imagePath: settings.showreel?.posterUrl ?? undefined,
         locale: this.locale,
@@ -97,5 +133,28 @@ export class PublicPageComponent {
       this.seo.applyHreflang({ fr: '/', nl: '/nl' });
       this.seo.applyStructuredData(settings, this.store.categories());
     });
+  }
+
+  /**
+   * Répond à trois intentions de recherche réelles dès la home : "vidéaste
+   * indépendant" (par opposition aux agences trouvées chez les concurrents
+   * établis), "en français et en néerlandais" (vrai différenciateur — la
+   * plupart des concurrents repérés n'ont qu'une seule langue), et "couvre
+   * ma commune" (renvoi direct vers /zones plutôt qu'un lien de pied de
+   * page seul).
+   */
+  protected homeIntroText(): string {
+    const brand = this.store.settings().brandName;
+    return this.locale === 'nl'
+      ? `Onafhankelijke videograaf gevestigd in Brussel, ${brand} filmt in het Frans en het Nederlands in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, en ook in Wemmel en de Vlaamse rand.`
+      : `Vidéaste indépendant basé à Bruxelles, ${brand} tourne en français et en néerlandais dans les 19 communes de la Région de Bruxelles-Capitale, ainsi qu'à Wemmel et dans sa périphérie flamande.`;
+  }
+
+  protected zonesPath(): string {
+    return this.locale === 'nl' ? '/nl/zones' : '/zones';
+  }
+
+  protected zonesLinkLabel(): string {
+    return this.locale === 'nl' ? 'Bekijk het volledige werkgebied' : "Voir toute la zone d'intervention";
   }
 }
