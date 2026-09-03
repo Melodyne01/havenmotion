@@ -15,7 +15,7 @@ Heaven Motion tourne et monte des films sur mesure, seul ou en petite équipe se
 - [FAQ](https://heavenmotion.be/faq): tarifs, délais de livraison, zone d'intervention, droits d'usage, déroulé d'une prestation.
 - [À propos](https://heavenmotion.be/a-propos): présentation du vidéaste et de son approche.
 - [Contact](https://heavenmotion.be/contact): formulaire de demande de devis.
-- [Zone d'intervention](https://heavenmotion.be/zones): les 19 communes de la Région de Bruxelles-Capitale, chacune avec sa propre page (`/zones/{commune}`, ex. `/zones/uccle`, `/zones/ixelles`).
+- [Zone d'intervention](https://heavenmotion.be/zones): les 19 communes de la Région de Bruxelles-Capitale, plus Wemmel et sa périphérie flamande (Grimbergen, Meise, Asse, Dilbeek, Vilvorde), chacune avec sa propre page (`/zones/{commune}`, ex. `/zones/uccle`, `/zones/wemmel`).
 
 ## Néerlandais (NL)
 

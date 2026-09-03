@@ -6,12 +6,15 @@ import { SectionTitleComponent } from '../../shared/ui/section-title.component';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
 import { SITE_LOCALE } from '../../core/locale';
-import { COMMUNES, CommuneInfo } from '../../core/communes';
+import { BRUSSELS_COMMUNES, PERIPHERY_COMMUNES, CommuneInfo } from '../../core/communes';
 
 /**
  * Page hub `/zones` : liste les 19 communes de la Région de
- * Bruxelles-Capitale, chacune avec sa propre page locale. Sert de maillage
- * interne entre la home et les 19 pages commune (silo SEO classique).
+ * Bruxelles-Capitale, plus Wemmel et sa périphérie flamande, chacune avec sa
+ * propre page locale. Sert de maillage interne entre la home et les pages
+ * commune (silo SEO classique). Les deux groupes sont présentés à part :
+ * Wemmel et ses voisines ne sont pas des communes bruxelloises, les
+ * confondre dans une seule liste "communes de Bruxelles" serait inexact.
  */
 @Component({
   selector: 'app-zones-page',
@@ -26,8 +29,16 @@ import { COMMUNES, CommuneInfo } from '../../core/communes';
         <app-section-title [eyebrow]="eyebrow()" [title]="title()" titleId="titre-zones" />
         <p class="zones-page__intro">{{ intro() }}</p>
 
+        <h2 class="zones-page__group-title">{{ brusselsGroupTitle() }}</h2>
         <ul class="zones-page__list">
-          @for (commune of communes; track commune.slugFr) {
+          @for (commune of brusselsCommunes; track commune.slugFr) {
+            <li><a [routerLink]="communeHref(commune)">{{ communeName(commune) }}</a></li>
+          }
+        </ul>
+
+        <h2 class="zones-page__group-title">{{ peripheryGroupTitle() }}</h2>
+        <ul class="zones-page__list">
+          @for (commune of peripheryCommunes; track commune.slugFr) {
             <li><a [routerLink]="communeHref(commune)">{{ communeName(commune) }}</a></li>
           }
         </ul>
@@ -56,12 +67,21 @@ import { COMMUNES, CommuneInfo } from '../../core/communes';
         line-height: $lh-body;
       }
 
+      .zones-page__group-title {
+        @include display-caps($fs-13, $ls-14, $weight-semibold);
+
+        color: $color-amber;
+        margin: 32px 0 0;
+        padding-top: 16px;
+        border-top: $rule-width solid $color-rule-10;
+      }
+
       .zones-page__list {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 4px 24px;
         padding: 0;
-        margin: 24px 0 0;
+        margin: 8px 0 0;
         list-style: none;
 
         @include tablet-up {
@@ -89,7 +109,8 @@ export class ZonesPageComponent {
   private readonly seo = inject(SeoService);
   private readonly locale = inject(SITE_LOCALE);
 
-  protected readonly communes = COMMUNES;
+  protected readonly brusselsCommunes = BRUSSELS_COMMUNES;
+  protected readonly peripheryCommunes = PERIPHERY_COMMUNES;
 
   constructor() {
     this.store.load(this.locale);
@@ -104,8 +125,8 @@ export class ZonesPageComponent {
             : `Zone d'intervention — ${settings.brandName}`,
         description:
           this.locale === 'nl'
-            ? 'De 19 gemeenten van het Brussels Hoofdstedelijk Gewest waar we filmen, zonder extra verplaatsingskosten.'
-            : "Les 19 communes de la Région de Bruxelles-Capitale où nous tournons, sans frais de déplacement supplémentaires.",
+            ? 'De 19 gemeenten van het Brussels Hoofdstedelijk Gewest, plus Wemmel en de Vlaamse rand, waar we filmen.'
+            : "Les 19 communes de la Région de Bruxelles-Capitale, plus Wemmel et sa périphérie, où nous tournons.",
         path,
         locale: this.locale,
       });
@@ -122,14 +143,24 @@ export class ZonesPageComponent {
   }
 
   protected title(): string {
-    return this.locale === 'nl' ? 'De 19 gemeenten van Brussel' : 'Les 19 communes de Bruxelles';
+    return this.locale === 'nl' ? 'Waar we filmen' : 'Où nous tournons';
   }
 
   protected intro(): string {
     const brand = this.store.settings().brandName;
     return this.locale === 'nl'
-      ? `${brand} filmt in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest: huwelijk, bedrijfsvideo, sport, clip en lifestyle-content, zonder extra verplaatsingskosten.`
-      : `${brand} tourne dans les 19 communes de la Région de Bruxelles-Capitale : mariage, vidéo d'entreprise, sport, clip et contenu lifestyle, sans frais de déplacement supplémentaires.`;
+      ? `${brand} filmt in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, en ook in Wemmel en de omliggende gemeenten van de Vlaamse rand: huwelijk, bedrijfsvideo, sport, clip en lifestyle-content, zonder extra verplaatsingskosten.`
+      : `${brand} tourne dans les 19 communes de la Région de Bruxelles-Capitale, ainsi qu'à Wemmel et dans les communes environnantes de la périphérie flamande : mariage, vidéo d'entreprise, sport, clip et contenu lifestyle, sans frais de déplacement supplémentaires.`;
+  }
+
+  protected brusselsGroupTitle(): string {
+    return this.locale === 'nl'
+      ? 'Brussels Hoofdstedelijk Gewest'
+      : 'Région de Bruxelles-Capitale';
+  }
+
+  protected peripheryGroupTitle(): string {
+    return this.locale === 'nl' ? 'Vlaamse rand (rond Wemmel)' : 'Périphérie flamande (autour de Wemmel)';
   }
 
   protected communeName(commune: CommuneInfo): string {

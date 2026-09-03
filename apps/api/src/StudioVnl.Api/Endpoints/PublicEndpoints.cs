@@ -55,6 +55,14 @@ public static class PublicEndpoints
         ("watermael-boitsfort", "watermaal-bosvoorde"),
         ("woluwe-saint-lambert", "sint-lambrechts-woluwe"),
         ("woluwe-saint-pierre", "sint-pieters-woluwe"),
+        // Périphérie flamande autour de Wemmel : pas des communes de la
+        // Région de Bruxelles-Capitale, mais dans la même zone d'intervention.
+        ("wemmel", "wemmel"),
+        ("grimbergen", "grimbergen"),
+        ("meise", "meise"),
+        ("asse", "asse"),
+        ("dilbeek", "dilbeek"),
+        ("vilvorde", "vilvoorde"),
     ];
 
     private static async Task<SitePayloadDto> GetSiteAsync(
