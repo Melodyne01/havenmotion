@@ -6,6 +6,16 @@ export interface UiText {
   readonly home: string;
   readonly hero: { readonly cta: string };
   readonly categories: { readonly eyebrow: string; readonly title: string };
+  readonly keyFigures: {
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly communes: string;
+    readonly categoriesLabel: string;
+    readonly quoteDelayValue: string;
+    readonly quoteDelayLabel: string;
+    readonly revisionsValue: string;
+    readonly revisionsLabel: string;
+  };
   readonly categoryBand: {
     readonly viewCategory: string;
     readonly filmSingular: string;
@@ -62,6 +72,16 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     home: 'Accueil',
     hero: { cta: 'Demander un devis' },
     categories: { eyebrow: 'Réalisations', title: 'Cinq territoires' },
+    keyFigures: {
+      eyebrow: 'En chiffres',
+      title: 'Le studio en quelques chiffres',
+      communes: 'communes couvertes',
+      categoriesLabel: 'catégories de films',
+      quoteDelayValue: '48 h',
+      quoteDelayLabel: 'pour recevoir un devis chiffré',
+      revisionsValue: '2',
+      revisionsLabel: 'allers-retours de retouche inclus',
+    },
     categoryBand: {
       viewCategory: 'Voir la catégorie',
       filmSingular: 'film',
@@ -117,6 +137,16 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     home: 'Home',
     hero: { cta: 'Offerte aanvragen' },
     categories: { eyebrow: 'Realisaties', title: 'Vijf domeinen' },
+    keyFigures: {
+      eyebrow: 'In cijfers',
+      title: 'De studio in enkele cijfers',
+      communes: 'bediende gemeenten',
+      categoriesLabel: 'filmcategorieën',
+      quoteDelayValue: '48 u',
+      quoteDelayLabel: 'om een concrete offerte te ontvangen',
+      revisionsValue: '2',
+      revisionsLabel: 'rondes feedback inbegrepen',
+    },
     categoryBand: {
       viewCategory: 'Bekijk de categorie',
       filmSingular: 'film',

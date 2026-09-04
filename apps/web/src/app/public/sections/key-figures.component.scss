@@ -1,0 +1,38 @@
+@use 'tokens' as *;
+
+.key-figures {
+  background: $color-charcoal;
+
+  @include section-padding;
+}
+
+.key-figures__grid {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+
+  @include tablet-up {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.key-figures__item {
+  display: grid;
+  gap: 8px;
+  padding: 28px 24px 32px;
+  background: $color-surface;
+  border-top: $progress-height solid $color-amber;
+}
+
+.key-figures__value {
+  @include display-caps($fs-52, $ls-14);
+
+  color: $color-film;
+  line-height: $lh-tight;
+}
+
+.key-figures__label {
+  margin: 0;
+  color: $color-muted-60;
+  font-size: $fs-14;
+}

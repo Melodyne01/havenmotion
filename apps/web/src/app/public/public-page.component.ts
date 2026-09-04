@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/cor
 import { RouterLink } from '@angular/router';
 import { SiteHeaderComponent } from './sections/site-header.component';
 import { HeroComponent } from './sections/hero.component';
+import { KeyFiguresComponent } from './sections/key-figures.component';
 import { CategoriesComponent } from './sections/categories.component';
 import { ServicesComponent } from './sections/services.component';
 import { ProcessComponent } from './sections/process.component';
@@ -27,6 +28,7 @@ import { SITE_CONTENT } from '../core/site-content';
     RouterLink,
     SiteHeaderComponent,
     HeroComponent,
+    KeyFiguresComponent,
     CategoriesComponent,
     ServicesComponent,
     ProcessComponent,
@@ -46,6 +48,7 @@ import { SITE_CONTENT } from '../core/site-content';
         {{ homeIntroText() }}
         <a [routerLink]="zonesPath()">{{ zonesLinkLabel() }}</a>
       </p>
+      <app-key-figures />
       <app-categories />
       <app-services />
       <app-process />
