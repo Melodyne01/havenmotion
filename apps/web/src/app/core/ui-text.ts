@@ -38,6 +38,7 @@ export interface UiText {
     readonly cta: string;
   };
   readonly process: { readonly eyebrow: string; readonly title: string };
+  readonly homeFaq: { readonly eyebrow: string; readonly title: string; readonly seeMoreLabel: string };
   readonly about: { readonly eyebrow: string; readonly title: string };
   readonly testimonials: { readonly eyebrow: string; readonly title: string; readonly clientsAriaLabel: string };
   readonly contact: {
@@ -110,6 +111,11 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       cta: 'Demander un devis',
     },
     process: { eyebrow: 'Process', title: 'Trois étapes' },
+    homeFaq: {
+      eyebrow: 'FAQ',
+      title: 'Questions fréquentes',
+      seeMoreLabel: 'Voir toutes les questions',
+    },
     about: { eyebrow: 'Le studio', title: 'Derrière la caméra' },
     testimonials: {
       eyebrow: 'Ils ont tourné avec le studio',
@@ -181,6 +187,11 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       cta: 'Offerte aanvragen',
     },
     process: { eyebrow: 'Werkwijze', title: 'Drie stappen' },
+    homeFaq: {
+      eyebrow: 'FAQ',
+      title: 'Veelgestelde vragen',
+      seeMoreLabel: 'Bekijk alle vragen',
+    },
     about: { eyebrow: 'De studio', title: 'Achter de camera' },
     testimonials: {
       eyebrow: 'Zij filmden met de studio',

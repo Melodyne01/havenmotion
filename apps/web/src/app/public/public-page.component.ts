@@ -9,6 +9,7 @@ import { ProcessComponent } from './sections/process.component';
 import { AboutComponent } from './sections/about.component';
 import { TestimonialsComponent } from './sections/testimonials.component';
 import { ContactComponent } from './sections/contact.component';
+import { HomeFaqComponent } from './sections/home-faq.component';
 import { SiteFooterComponent } from './sections/site-footer.component';
 import { CtaButtonComponent } from '../shared/ui/cta-button.component';
 import { SiteStore } from './site-store';
@@ -16,6 +17,7 @@ import { SeoService } from '../core/seo.service';
 import { SITE_LOCALE } from '../core/locale';
 import { UI_TEXT } from '../core/ui-text';
 import { SITE_CONTENT } from '../core/site-content';
+import { FAQ_CONTENT } from '../core/faq-content';
 
 /**
  * Page unique du site public : tout est en un seul défilement, chaque section
@@ -35,6 +37,7 @@ import { SITE_CONTENT } from '../core/site-content';
     AboutComponent,
     TestimonialsComponent,
     ContactComponent,
+    HomeFaqComponent,
     SiteFooterComponent,
     CtaButtonComponent,
   ],
@@ -52,6 +55,7 @@ import { SITE_CONTENT } from '../core/site-content';
       <app-about />
       <app-testimonials />
       <app-contact />
+      <app-home-faq />
     </main>
 
     <app-site-footer />
@@ -109,6 +113,7 @@ export class PublicPageComponent {
       });
       this.seo.applyHreflang({ fr: '/', nl: '/nl' });
       this.seo.applyStructuredData(settings, this.store.categories(), this.priceRange());
+      this.seo.applyFaq(FAQ_CONTENT[this.locale]);
     });
   }
 
