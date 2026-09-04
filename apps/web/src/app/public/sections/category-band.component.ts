@@ -55,7 +55,7 @@ import { Category } from '../../models';
             <span class="band__tagline">{{ category().tagline }}</span>
             <span class="band__count">{{ filmCountLabel() }}</span>
           </span>
-          <span class="band__invite" aria-hidden="true">&#9654; {{ text.categoryBand.viewCategory }} &#8594;</span>
+          <span class="band__invite" aria-hidden="true">{{ text.categoryBand.viewCategory }} &#8594;</span>
         </span>
 
         <span class="band__progress" aria-hidden="true">
