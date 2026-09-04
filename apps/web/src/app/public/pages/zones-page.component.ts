@@ -27,7 +27,7 @@ import { UI_TEXT } from '../../core/ui-text';
 
     <main id="contenu">
       <section class="zones-page">
-        <app-section-title [eyebrow]="eyebrow()" [title]="title()" titleId="titre-zones" />
+        <app-section-title [eyebrow]="eyebrow()" [title]="title()" titleId="titre-zones" level="h1" />
         <p class="zones-page__intro">{{ intro() }}</p>
 
         <h2 class="zones-page__group-title">{{ peripheryGroupTitle() }}</h2>
