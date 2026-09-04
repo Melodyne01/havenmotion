@@ -11,6 +11,10 @@ public class Service
     public string Duration { get; set; } = string.Empty;
     public string Deliverables { get; set; } = string.Empty;
     public string StartingPrice { get; set; } = string.Empty;
+
+    /// <summary>Langue du contenu ("fr" ou "nl"). Une fiche par langue.</summary>
+    public string Locale { get; set; } = "fr";
+
     public int SortOrder { get; set; }
 }
 
@@ -20,6 +24,10 @@ public class ProcessStep
     public string Index { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string Body { get; set; } = string.Empty;
+
+    /// <summary>Langue du contenu ("fr" ou "nl"). Une étape par langue.</summary>
+    public string Locale { get; set; } = "fr";
+
     public int SortOrder { get; set; }
 }
 
@@ -29,6 +37,10 @@ public class Testimonial
     public string Quote { get; set; } = string.Empty;
     public string Author { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+
+    /// <summary>Langue du contenu ("fr" ou "nl"). Un témoignage par langue.</summary>
+    public string Locale { get; set; } = "fr";
+
     public int SortOrder { get; set; }
 }
 

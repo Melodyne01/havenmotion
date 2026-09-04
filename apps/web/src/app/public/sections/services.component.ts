@@ -3,6 +3,8 @@ import { SectionTitleComponent } from '../../shared/ui/section-title.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
 import { RevealDirective } from '../../shared/directives/reveal.directive';
 import { SiteStore } from '../site-store';
+import { SITE_LOCALE } from '../../core/locale';
+import { UI_TEXT } from '../../core/ui-text';
 
 /** Prestations : quatre cartes, contenu piloté par le backoffice. */
 @Component({
@@ -12,8 +14,8 @@ import { SiteStore } from '../site-store';
   template: `
     <section class="services" id="prestations" aria-labelledby="titre-prestations">
       <app-section-title
-        eyebrow="Prestations"
-        title="Ce que je livre"
+        [eyebrow]="text.services.eyebrow"
+        [title]="text.services.title"
         titleId="titre-prestations"
       />
 
@@ -29,14 +31,14 @@ import { SiteStore } from '../site-store';
             </ul>
 
             <dl class="card__facts">
-              <dt>Durée</dt>
+              <dt>{{ text.services.duration }}</dt>
               <dd>{{ service.duration }}</dd>
-              <dt>Livrables</dt>
+              <dt>{{ text.services.deliverables }}</dt>
               <dd>{{ service.deliverables }}</dd>
             </dl>
 
             <p class="card__price">{{ service.startingPrice }}</p>
-            <app-cta-button href="#contact" variant="ghost">Demander un devis</app-cta-button>
+            <app-cta-button href="#contact" variant="ghost">{{ text.services.cta }}</app-cta-button>
           </article>
         }
       </div>
@@ -46,5 +48,7 @@ import { SiteStore } from '../site-store';
 })
 export class ServicesComponent {
   private readonly store = inject(SiteStore);
+  private readonly locale = inject(SITE_LOCALE);
   protected readonly services = this.store.services;
+  protected readonly text = UI_TEXT[this.locale];
 }

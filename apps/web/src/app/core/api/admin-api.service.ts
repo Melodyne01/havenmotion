@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { APP_CONFIG } from '../app-config';
+import { SiteLocale } from '../locale';
 import {
   AuditLogEntry,
   Category,
@@ -31,8 +32,10 @@ export class AdminApiService {
   private readonly base = inject(APP_CONFIG).apiBaseUrl;
 
   // --- Catégories ---------------------------------------------------------
-  categories(): Observable<Category[]> {
-    return this.http.get<Category[]>(`${this.base}/admin/categories`);
+  categories(locale: SiteLocale = 'fr'): Observable<Category[]> {
+    return this.http.get<Category[]>(`${this.base}/admin/categories`, {
+      params: new HttpParams().set('locale', locale),
+    });
   }
 
   updateCategory(id: string, body: Partial<Category>): Observable<Category> {
@@ -79,16 +82,24 @@ export class AdminApiService {
   }
 
   // --- Réglages -----------------------------------------------------------
-  settings(): Observable<SiteSettings> {
-    return this.http.get<SiteSettings>(`${this.base}/admin/settings`);
+  settings(locale: SiteLocale = 'fr'): Observable<SiteSettings> {
+    return this.http.get<SiteSettings>(`${this.base}/admin/settings`, {
+      params: new HttpParams().set('locale', locale),
+    });
   }
 
-  updateSettings(body: Partial<SiteSettings>): Observable<SiteSettings> {
-    return this.http.put<SiteSettings>(`${this.base}/admin/settings`, body);
+  updateSettings(body: Partial<SiteSettings>, locale: SiteLocale = 'fr'): Observable<SiteSettings> {
+    return this.http.put<SiteSettings>(`${this.base}/admin/settings`, body, {
+      params: new HttpParams().set('locale', locale),
+    });
   }
 
-  setShowreel(mediaId: string): Observable<SiteSettings> {
-    return this.http.put<SiteSettings>(`${this.base}/admin/settings/showreel`, { mediaId });
+  setShowreel(mediaId: string, locale: SiteLocale = 'fr'): Observable<SiteSettings> {
+    return this.http.put<SiteSettings>(
+      `${this.base}/admin/settings/showreel`,
+      { mediaId },
+      { params: new HttpParams().set('locale', locale) },
+    );
   }
 
   showreelHistory(): Observable<MediaAsset[]> {
@@ -96,42 +107,54 @@ export class AdminApiService {
   }
 
   // --- Contenus texte -----------------------------------------------------
-  services(): Observable<ServiceCard[]> {
-    return this.http.get<ServiceCard[]>(`${this.base}/admin/services`);
+  services(locale: SiteLocale = 'fr'): Observable<ServiceCard[]> {
+    return this.http.get<ServiceCard[]>(`${this.base}/admin/services`, {
+      params: new HttpParams().set('locale', locale),
+    });
   }
 
-  saveService(body: Partial<ServiceCard>): Observable<ServiceCard> {
+  saveService(body: Partial<ServiceCard>, locale: SiteLocale = 'fr'): Observable<ServiceCard> {
     return body.id
       ? this.http.put<ServiceCard>(`${this.base}/admin/services/${body.id}`, body)
-      : this.http.post<ServiceCard>(`${this.base}/admin/services`, body);
+      : this.http.post<ServiceCard>(`${this.base}/admin/services`, body, {
+          params: new HttpParams().set('locale', locale),
+        });
   }
 
   deleteService(id: string): Observable<void> {
     return this.http.delete<void>(`${this.base}/admin/services/${id}`);
   }
 
-  processSteps(): Observable<ProcessStep[]> {
-    return this.http.get<ProcessStep[]>(`${this.base}/admin/process`);
+  processSteps(locale: SiteLocale = 'fr'): Observable<ProcessStep[]> {
+    return this.http.get<ProcessStep[]>(`${this.base}/admin/process`, {
+      params: new HttpParams().set('locale', locale),
+    });
   }
 
-  saveProcessStep(body: Partial<ProcessStep>): Observable<ProcessStep> {
+  saveProcessStep(body: Partial<ProcessStep>, locale: SiteLocale = 'fr'): Observable<ProcessStep> {
     return body.id
       ? this.http.put<ProcessStep>(`${this.base}/admin/process/${body.id}`, body)
-      : this.http.post<ProcessStep>(`${this.base}/admin/process`, body);
+      : this.http.post<ProcessStep>(`${this.base}/admin/process`, body, {
+          params: new HttpParams().set('locale', locale),
+        });
   }
 
   deleteProcessStep(id: string): Observable<void> {
     return this.http.delete<void>(`${this.base}/admin/process/${id}`);
   }
 
-  testimonials(): Observable<Testimonial[]> {
-    return this.http.get<Testimonial[]>(`${this.base}/admin/testimonials`);
+  testimonials(locale: SiteLocale = 'fr'): Observable<Testimonial[]> {
+    return this.http.get<Testimonial[]>(`${this.base}/admin/testimonials`, {
+      params: new HttpParams().set('locale', locale),
+    });
   }
 
-  saveTestimonial(body: Partial<Testimonial>): Observable<Testimonial> {
+  saveTestimonial(body: Partial<Testimonial>, locale: SiteLocale = 'fr'): Observable<Testimonial> {
     return body.id
       ? this.http.put<Testimonial>(`${this.base}/admin/testimonials/${body.id}`, body)
-      : this.http.post<Testimonial>(`${this.base}/admin/testimonials`, body);
+      : this.http.post<Testimonial>(`${this.base}/admin/testimonials`, body, {
+          params: new HttpParams().set('locale', locale),
+        });
   }
 
   deleteTestimonial(id: string): Observable<void> {

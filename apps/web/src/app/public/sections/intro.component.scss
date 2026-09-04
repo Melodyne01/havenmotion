@@ -1,0 +1,26 @@
+@use 'tokens' as *;
+
+.intro {
+  @include section-padding;
+}
+
+.intro__line {
+  max-width: 68ch;
+  margin: 0 0 16px;
+  color: $color-muted-60;
+  font-size: $fs-15;
+  line-height: $lh-body;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  a {
+    color: $color-amber;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
