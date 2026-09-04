@@ -75,6 +75,26 @@ if (proxyTarget) {
 }
 
 /**
+ * `robots.txt` servi dynamiquement plutôt que comme fichier statique dans
+ * `public/` : un fichier statique unique serait identique sur la prod et
+ * sur dev.heavenmotion.be, qui partage la même image. Un hôte préfixé
+ * `dev.` bloque toute indexation (l'environnement de test n'a rien à faire
+ * dans les résultats de recherche) ; les autres reprennent le
+ * comportement normal, avec l'URL de sitemap dérivée de VNL_SITE_ORIGIN
+ * plutôt que codée en dur — le fichier statique renvoyait jusqu'ici vers
+ * le sitemap de la prod même quand il était servi depuis dev.
+ */
+const siteOrigin = process.env['VNL_SITE_ORIGIN'] ?? 'https://heavenmotion.be';
+const isDevEnvironment = new URL(siteOrigin).hostname.startsWith('dev.');
+
+app.get('/robots.txt', (req, res) => {
+  const body = isDevEnvironment
+    ? 'User-agent: *\nDisallow: /\n'
+    : `User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${siteOrigin}/sitemap.xml\n`;
+  res.type('text/plain').send(body);
+});
+
+/**
  * Le sitemap est généré par l'API depuis la base (voir
  * GetSitemapAsync côté StudioVnl.Api) : il doit rester joignable à la racine
  * (`/sitemap.xml`), là où les moteurs de recherche le cherchent, alors que

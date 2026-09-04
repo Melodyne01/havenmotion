@@ -16,7 +16,7 @@ import { UI_TEXT } from '../../core/ui-text';
     <a class="skip-link" href="#contenu">{{ text.skipLink }}</a>
     <app-site-header />
     <main id="contenu">
-      <app-contact />
+      <app-contact headingLevel="h1" />
     </main>
     <app-site-footer />
   `,

@@ -96,7 +96,7 @@ const FAQ_ENTRIES_NL: readonly FaqEntry[] = [
 
     <main id="contenu">
       <section class="faq-page">
-        <app-section-title eyebrow="FAQ" [title]="faqTitle()" titleId="titre-faq" />
+        <app-section-title eyebrow="FAQ" [title]="faqTitle()" titleId="titre-faq" level="h1" />
 
         <dl class="faq-page__list">
           @for (entry of entries; track entry.question) {

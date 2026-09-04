@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SectionTitleComponent } from '../../shared/ui/section-title.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
@@ -21,7 +21,12 @@ import { UI_TEXT } from '../../core/ui-text';
   template: `
     <section class="contact" id="contact" aria-labelledby="titre-contact">
       <div class="contact__intro">
-        <app-section-title [eyebrow]="text.eyebrow" [title]="text.title" titleId="titre-contact" />
+        <app-section-title
+          [eyebrow]="text.eyebrow"
+          [title]="text.title"
+          titleId="titre-contact"
+          [level]="headingLevel()"
+        />
         <p class="contact__lead">
           {{ text.lead }}
         </p>
@@ -117,6 +122,8 @@ import { UI_TEXT } from '../../core/ui-text';
   styleUrl: './contact.component.scss',
 })
 export class ContactComponent {
+  readonly headingLevel = input<'h1' | 'h2'>('h2');
+
   private readonly fb = inject(FormBuilder);
   private readonly api = inject(PublicApiService);
   private readonly store = inject(SiteStore);
