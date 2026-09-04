@@ -6,6 +6,12 @@ export interface UiText {
   readonly home: string;
   readonly hero: { readonly cta: string };
   readonly categories: { readonly eyebrow: string; readonly title: string };
+  readonly intro: {
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly zonesLinkLabel: string;
+    readonly prestationsLinkLabel: string;
+  };
   readonly keyFigures: {
     readonly eyebrow: string;
     readonly title: string;
@@ -72,6 +78,12 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     home: 'Accueil',
     hero: { cta: 'Demander un devis' },
     categories: { eyebrow: 'Réalisations', title: 'Cinq territoires' },
+    intro: {
+      eyebrow: 'Présentation',
+      title: 'Heaven Motion, vidéaste à Bruxelles',
+      zonesLinkLabel: "Voir toute la zone d'intervention",
+      prestationsLinkLabel: 'le détail des prestations et des tarifs',
+    },
     keyFigures: {
       eyebrow: 'En chiffres',
       title: 'Le studio en quelques chiffres',
@@ -137,6 +149,12 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     home: 'Home',
     hero: { cta: 'Offerte aanvragen' },
     categories: { eyebrow: 'Realisaties', title: 'Vijf domeinen' },
+    intro: {
+      eyebrow: 'Voorstelling',
+      title: 'Heaven Motion, videograaf in Brussel',
+      zonesLinkLabel: 'Bekijk het volledige werkgebied',
+      prestationsLinkLabel: 'de diensten en tarieven hieronder',
+    },
     keyFigures: {
       eyebrow: 'In cijfers',
       title: 'De studio in enkele cijfers',

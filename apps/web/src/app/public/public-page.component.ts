@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { SiteHeaderComponent } from './sections/site-header.component';
 import { HeroComponent } from './sections/hero.component';
+import { IntroComponent } from './sections/intro.component';
 import { KeyFiguresComponent } from './sections/key-figures.component';
 import { CategoriesComponent } from './sections/categories.component';
 import { ServicesComponent } from './sections/services.component';
@@ -25,9 +25,9 @@ import { SITE_CONTENT } from '../core/site-content';
   selector: 'app-public-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    RouterLink,
     SiteHeaderComponent,
     HeroComponent,
+    IntroComponent,
     KeyFiguresComponent,
     CategoriesComponent,
     ServicesComponent,
@@ -44,10 +44,7 @@ import { SITE_CONTENT } from '../core/site-content';
 
     <main id="contenu">
       <app-hero />
-      <p class="home-intro">
-        {{ homeIntroText() }}
-        <a [routerLink]="zonesPath()">{{ zonesLinkLabel() }}</a>
-      </p>
+      <app-intro />
       <app-key-figures />
       <app-categories />
       <app-services />
@@ -80,30 +77,6 @@ import { SITE_CONTENT } from '../core/site-content';
 
         @include desktop {
           display: none;
-        }
-      }
-
-      .home-intro {
-        max-width: 640px;
-        margin: 20px auto 0;
-        padding: 0 $pad-x-mobile;
-        color: $color-muted-60;
-        font-size: $fs-14;
-        line-height: $lh-body;
-        text-align: center;
-
-        @include tablet-up {
-          padding: 0 $pad-x-desktop;
-        }
-
-        a {
-          color: $color-amber;
-          text-decoration: none;
-          white-space: nowrap;
-
-          &:hover {
-            text-decoration: underline;
-          }
         }
       }
     `,
@@ -152,28 +125,5 @@ export class PublicPageComponent {
       return undefined;
     }
     return `${Math.min(...prices)}€–${Math.max(...prices)}€`;
-  }
-
-  /**
-   * Répond à trois intentions de recherche réelles dès la home : "vidéaste
-   * indépendant" (par opposition aux agences trouvées chez les concurrents
-   * établis), "en français et en néerlandais" (vrai différenciateur — la
-   * plupart des concurrents repérés n'ont qu'une seule langue), et "couvre
-   * ma commune" (renvoi direct vers /zones plutôt qu'un lien de pied de
-   * page seul).
-   */
-  protected homeIntroText(): string {
-    const brand = this.store.settings().brandName;
-    return this.locale === 'nl'
-      ? `Onafhankelijke videograaf gevestigd in Brussel, ${brand} filmt in het Frans en het Nederlands in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, en ook in Wemmel en de Vlaamse rand.`
-      : `Vidéaste indépendant basé à Bruxelles, ${brand} tourne en français et en néerlandais dans les 19 communes de la Région de Bruxelles-Capitale, ainsi qu'à Wemmel et dans sa périphérie flamande.`;
-  }
-
-  protected zonesPath(): string {
-    return this.locale === 'nl' ? '/nl/zones' : '/zones';
-  }
-
-  protected zonesLinkLabel(): string {
-    return this.locale === 'nl' ? 'Bekijk het volledige werkgebied' : "Voir toute la zone d'intervention";
   }
 }
