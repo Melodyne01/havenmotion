@@ -102,3 +102,38 @@
   text-transform: none;
   letter-spacing: normal;
 }
+
+.category-page__faq-title {
+  @include display-caps($fs-15, $ls-14, $weight-semibold);
+
+  color: $color-film;
+  margin: 8px 0 0;
+}
+
+.category-page__faq {
+  display: grid;
+  gap: 0;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border-top: $rule-width solid $color-rule-10;
+}
+
+.category-page__faq-item {
+  padding: 16px 0;
+  border-bottom: $rule-width solid $color-rule-10;
+}
+
+.category-page__faq-q {
+  @include display-caps($fs-13, $ls-14, $weight-semibold);
+
+  color: $color-film;
+  margin: 0 0 8px;
+}
+
+.category-page__faq-a {
+  margin: 0;
+  color: $color-muted-60;
+  font-size: $fs-14;
+  line-height: $lh-body;
+}

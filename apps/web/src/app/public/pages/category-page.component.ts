@@ -18,6 +18,7 @@ import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
 import { CATEGORY_SLUG_MAP, SITE_LOCALE } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
+import { CATEGORY_FAQ_CONTENT } from '../../core/category-faq-content';
 import { Film } from '../../models';
 
 /**
@@ -77,6 +78,18 @@ import { Film } from '../../models';
             }
 
             <app-cta-button [href]="contactHref()">{{ ctaLabel() }}</app-cta-button>
+
+            @if (categoryFaq().length > 0) {
+              <h2 class="category-page__faq-title">{{ faqSectionTitle() }}</h2>
+              <dl class="category-page__faq">
+                @for (entry of categoryFaq(); track entry.question) {
+                  <div class="category-page__faq-item">
+                    <dt class="category-page__faq-q">{{ entry.question }}</dt>
+                    <dd class="category-page__faq-a">{{ entry.answer }}</dd>
+                  </div>
+                }
+              </dl>
+            }
           </div>
         </article>
       }
@@ -111,6 +124,10 @@ export class CategoryPageComponent {
   );
 
   protected readonly text = UI_TEXT[this.locale];
+  protected readonly categoryFaq = computed(() => {
+    const cat = this.category();
+    return cat ? (CATEGORY_FAQ_CONTENT[this.locale][cat.slug] ?? []) : [];
+  });
   protected readonly homePath = computed(() => (this.locale === 'nl' ? '/nl' : '/'));
   protected readonly contactHref = computed(() => (this.locale === 'nl' ? '/nl/#contact' : '/#contact'));
   protected readonly ctaLabel = computed(() =>
@@ -149,6 +166,10 @@ export class CategoryPageComponent {
         { name: cat.name, path },
       ]);
       this.seo.applyService(settings, cat, this.store.services());
+      const faq = this.categoryFaq();
+      if (faq.length > 0) {
+        this.seo.applyFaq(faq);
+      }
 
       const pair = CATEGORY_SLUG_MAP.find((entry) =>
         this.locale === 'nl' ? entry.nl === cat.slug : entry.fr === cat.slug,
@@ -189,5 +210,10 @@ export class CategoryPageComponent {
 
   protected selectFilm(film: Film): void {
     this.selected.set(film.id === this.selected()?.id ? null : film);
+  }
+
+  protected faqSectionTitle(): string {
+    const name = this.category()?.name ?? '';
+    return this.locale === 'nl' ? `Veelgestelde vragen over ${name}` : `Questions fréquentes sur ${name}`;
   }
 }
