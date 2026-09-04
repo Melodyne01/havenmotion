@@ -10,16 +10,10 @@ import { SITE_LOCALE } from '../../core/locale';
  * NL (texte juridique, pas un contenu à traduire à la légère) : le pied de
  * page NL pointe donc vers les pages FR plutôt que vers un lien mort.
  *
- * Liens SEO (Clip, Lifestyle) : présents sur chaque page du site, avec un
- * ancrage explicite plutôt qu'un "en savoir plus" — c'est le levier de
- * maillage interne le plus concret pour pousser ces pages, bien plus
- * qu'un ordre d'affichage ou une priorité de sitemap. Choisis sur demande
- * du client pour lancer le site sur des catégories non disputées par les
- * grosses agences bruxelloises plutôt que sur "mariage"/"corporate" à
- * Bruxelles, déjà saturés par des studios établis et des annuaires.
- * Le lien Wemmel a été retiré du pied de page sur demande du client — la
- * page /zones/wemmel reste en ligne et indexée (sitemap, maillage depuis
- * /zones), simplement plus mise en avant à chaque page.
+ * Les liens SEO ajoutés au lancement (Wemmel, Clip, Lifestyle) ont tous
+ * été retirés du pied de page sur demande du client — ces pages restent
+ * en ligne et indexées (sitemap, maillage depuis /zones et la home),
+ * simplement plus mises en avant sur chaque page du site.
  */
 @Component({
   selector: 'app-site-footer',
@@ -33,8 +27,6 @@ import { SITE_LOCALE } from '../../core/locale';
         <a class="footer__link" [href]="aboutHref()">{{ aboutLabel() }}</a>
         <a class="footer__link" [href]="faqHref()">FAQ</a>
         <a class="footer__link" [href]="zonesHref()">{{ zonesLabel() }}</a>
-        <a class="footer__link" [href]="clipHref()">{{ clipLabel() }}</a>
-        <a class="footer__link" [href]="lifestyleHref()">{{ lifestyleLabel() }}</a>
         <a class="footer__link" [href]="contactHref()">Contact</a>
         <a class="footer__link" href="/mentions-legales">Mentions légales</a>
         <a class="footer__link" href="/confidentialite">Confidentialité</a>
@@ -58,13 +50,5 @@ export class SiteFooterComponent {
   protected readonly zonesLabel = computed(() =>
     this.locale === 'nl' ? 'Werkgebied' : "Zone d'intervention",
   );
-  protected readonly clipHref = computed(() =>
-    this.locale === 'nl' ? '/nl/realisaties/clip' : '/realisations/clip',
-  );
-  protected readonly clipLabel = computed(() => (this.locale === 'nl' ? 'Clips' : 'Clips musicaux'));
-  protected readonly lifestyleHref = computed(() =>
-    this.locale === 'nl' ? '/nl/realisaties/lifestyle' : '/realisations/lifestyle',
-  );
-  protected readonly lifestyleLabel = computed(() => 'Lifestyle');
   protected readonly contactHref = computed(() => (this.locale === 'nl' ? '/nl/contact' : '/contact'));
 }
