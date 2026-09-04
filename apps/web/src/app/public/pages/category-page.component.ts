@@ -19,6 +19,7 @@ import { SeoService } from '../../core/seo.service';
 import { CATEGORY_SLUG_MAP, SITE_LOCALE } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 import { CATEGORY_FAQ_CONTENT } from '../../core/category-faq-content';
+import { CATEGORY_INTRO_CONTENT } from '../../core/category-intro-content';
 import { Film } from '../../models';
 
 /**
@@ -58,6 +59,9 @@ import { Film } from '../../models';
             <p class="category-page__eyebrow">{{ cat.tagline }}</p>
             <h1 class="category-page__title">{{ activeTitle() }}</h1>
             <p class="category-page__meta">{{ metaLine() }}</p>
+            @if (introText(); as intro) {
+              <p class="category-page__intro">{{ intro }}</p>
+            }
 
             @if (films().length > 0) {
               <ul class="category-page__films">
@@ -127,6 +131,10 @@ export class CategoryPageComponent {
   protected readonly categoryFaq = computed(() => {
     const cat = this.category();
     return cat ? (CATEGORY_FAQ_CONTENT[this.locale][cat.slug] ?? []) : [];
+  });
+  protected readonly introText = computed(() => {
+    const cat = this.category();
+    return cat ? (CATEGORY_INTRO_CONTENT[this.locale][cat.slug] ?? '') : '';
   });
   protected readonly homePath = computed(() => (this.locale === 'nl' ? '/nl' : '/'));
   protected readonly contactHref = computed(() => (this.locale === 'nl' ? '/nl/#contact' : '/#contact'));

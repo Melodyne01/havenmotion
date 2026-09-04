@@ -63,6 +63,13 @@
   font-size: $fs-14;
 }
 
+.category-page__intro {
+  max-width: 62ch;
+  color: $color-muted-60;
+  font-size: $fs-14;
+  line-height: $lh-body;
+}
+
 .category-page__films {
   display: grid;
   gap: 0;
