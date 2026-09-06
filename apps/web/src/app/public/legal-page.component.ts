@@ -1,17 +1,24 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SiteHeaderComponent } from './sections/site-header.component';
 import { SiteFooterComponent } from './sections/site-footer.component';
 import { SiteStore } from './site-store';
 import { SeoService } from '../core/seo.service';
+import { SITE_LOCALE } from '../core/locale';
 
 interface LegalSection {
   title: string;
   body: string[];
 }
 
-/** Mentions légales et politique de confidentialité (obligations RGPD). */
+/**
+ * Mentions légales et politique de confidentialité (obligations RGPD).
+ * Traduites en NL sur demande du client (texte juridique déjà validé en
+ * FR, reformulé fidèlement — pas de nouveau contenu inventé). `settings`
+ * porte déjà legalText/city/region par langue via SITE_CONTENT
+ * (voir SiteStore.load), seul le texte fixe de cette page doit l'être ici.
+ */
 @Component({
   selector: 'app-legal-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -74,18 +81,52 @@ export class LegalPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(SiteStore);
   private readonly seo = inject(SeoService);
+  private readonly locale = inject(SITE_LOCALE);
 
   private readonly routeData = toSignal(this.route.data, { initialValue: {} as { document?: string } });
+  private readonly isConfidentialite = computed(() => this.routeData().document === 'confidentialite');
 
-  protected readonly pageTitle = computed(() =>
-    this.routeData().document === 'confidentialite'
-      ? 'Politique de confidentialité'
-      : 'Mentions légales',
-  );
+  protected readonly pageTitle = computed(() => {
+    if (this.locale === 'nl') {
+      return this.isConfidentialite() ? 'Privacybeleid' : 'Wettelijke vermeldingen';
+    }
+    return this.isConfidentialite() ? 'Politique de confidentialité' : 'Mentions légales';
+  });
 
   protected readonly sections = computed<LegalSection[]>(() => {
     const settings = this.store.settings();
-    if (this.routeData().document === 'confidentialite') {
+
+    if (this.isConfidentialite()) {
+      if (this.locale === 'nl') {
+        return [
+          {
+            title: 'Verzamelde gegevens',
+            body: [
+              `Het offerteformulier verzamelt uw naam, uw e-mailadres, het type project, de beoogde datum, een budgetvork en uw bericht.`,
+              `Deze gegevens dienen uitsluitend om op uw aanvraag te antwoorden. Ze worden niet verkocht en niet doorgegeven aan een externe adverteerder.`,
+            ],
+          },
+          {
+            title: 'Bewaartermijn',
+            body: [
+              `Offerteaanvragen worden 24 maanden bewaard vanaf de laatste uitwisseling, en daarna automatisch verwijderd.`,
+            ],
+          },
+          {
+            title: 'Bezoekersstatistieken',
+            body: [
+              `Er wordt geen enkele tracker voor bezoekersstatistieken geplaatst zonder uw uitdrukkelijke toestemming. Een weigering heeft geen invloed op de navigatie.`,
+            ],
+          },
+          {
+            title: 'Uw rechten',
+            body: [
+              `U beschikt over een recht op inzage, rectificatie, verwijdering en bezwaar.`,
+              `Om dit recht uit te oefenen, schrijft u naar ${settings.email}.`,
+            ],
+          },
+        ];
+      }
       return [
         {
           title: 'Données collectées',
@@ -115,6 +156,25 @@ export class LegalPageComponent {
         },
       ];
     }
+
+    if (this.locale === 'nl') {
+      return [
+        {
+          title: 'Uitgever',
+          body: [settings.legalText, `${settings.city} — ${settings.region}`, settings.email],
+        },
+        {
+          title: 'Hosting',
+          body: [`Hostingprovider te vermelden in het backoffice vóór de livegang.`],
+        },
+        {
+          title: 'Intellectuele eigendom',
+          body: [
+            `De getoonde films, beelden en teksten zijn eigendom van ${settings.brandName} of hun rechthebbenden. Elk hergebruik zonder schriftelijke toestemming is verboden.`,
+          ],
+        },
+      ];
+    }
     return [
       {
         title: 'Éditeur',
@@ -134,11 +194,31 @@ export class LegalPageComponent {
   });
 
   constructor() {
-    this.store.load();
-    this.seo.apply({
-      title: `${this.pageTitle()} — Heaven Motion`,
-      description: `${this.pageTitle()} du site Heaven Motion.`,
-      path: this.routeData().document === 'confidentialite' ? '/confidentialite' : '/mentions-legales',
+    this.store.load(this.locale);
+
+    effect(() => {
+      const isConfidentialite = this.isConfidentialite();
+      const path = this.frPath(isConfidentialite);
+      const nlPath = this.nlPath(isConfidentialite);
+      const currentPath = this.locale === 'nl' ? nlPath : path;
+      this.seo.apply({
+        title: `${this.pageTitle()} — Heaven Motion`,
+        description:
+          this.locale === 'nl'
+            ? `${this.pageTitle()} van de website Heaven Motion.`
+            : `${this.pageTitle()} du site Heaven Motion.`,
+        path: currentPath,
+        locale: this.locale,
+      });
+      this.seo.applyHreflang({ fr: path, nl: nlPath });
     });
+  }
+
+  private frPath(isConfidentialite: boolean): string {
+    return isConfidentialite ? '/confidentialite' : '/mentions-legales';
+  }
+
+  private nlPath(isConfidentialite: boolean): string {
+    return isConfidentialite ? '/nl/privacybeleid' : '/nl/wettelijke-vermeldingen';
   }
 }

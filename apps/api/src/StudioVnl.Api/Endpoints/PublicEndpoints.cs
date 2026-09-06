@@ -143,10 +143,9 @@ public static class PublicEndpoints
 
     /// <summary>
     /// Sitemap généré depuis la base plutôt qu'un fichier statique : une
-    /// catégorie ajoutée ou dépubliée s'y reflète sans déploiement. Les
-    /// mentions légales et la confidentialité restent FR uniquement (pas de
-    /// version NL de ces pages côté front), le reste existe dans les deux
-    /// langues.
+    /// catégorie ajoutée ou dépubliée s'y reflète sans déploiement. Toutes
+    /// les pages existent désormais dans les deux langues, mentions légales
+    /// et confidentialité incluses.
     /// </summary>
     private static async Task<IResult> GetSitemapAsync(
         AppDbContext db,
@@ -178,7 +177,9 @@ public static class PublicEndpoints
             ("/contact", "monthly", "0.5"),
             ("/nl/contact", "monthly", "0.5"),
             ("/mentions-legales", "yearly", "0.2"),
+            ("/nl/wettelijke-vermeldingen", "yearly", "0.2"),
             ("/confidentialite", "yearly", "0.2"),
+            ("/nl/privacybeleid", "yearly", "0.2"),
         };
         // Priorité de sitemap relevée pour Clip/Lifestyle et Wemmel : lancement
         // volontairement positionné sur ces mots-clés à faible concurrence

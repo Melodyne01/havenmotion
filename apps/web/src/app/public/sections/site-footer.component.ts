@@ -6,10 +6,6 @@ import { SITE_LOCALE } from '../../core/locale';
 /**
  * Pied de page : logotype, mention légale, © année + ville.
  *
- * Les mentions légales et la confidentialité n'ont pas encore de version
- * NL (texte juridique, pas un contenu à traduire à la légère) : le pied de
- * page NL pointe donc vers les pages FR plutôt que vers un lien mort.
- *
  * Les liens SEO ajoutés au lancement (Wemmel, Clip, Lifestyle) ont tous
  * été retirés du pied de page sur demande du client — ces pages restent
  * en ligne et indexées (sitemap, maillage depuis /zones et la home),
@@ -28,8 +24,8 @@ import { SITE_LOCALE } from '../../core/locale';
         <a class="footer__link" [href]="faqHref()">FAQ</a>
         <a class="footer__link" [href]="zonesHref()">{{ zonesLabel() }}</a>
         <a class="footer__link" [href]="contactHref()">Contact</a>
-        <a class="footer__link" href="/mentions-legales">Mentions légales</a>
-        <a class="footer__link" href="/confidentialite">Confidentialité</a>
+        <a class="footer__link" [href]="mentionsHref()">{{ mentionsLabel() }}</a>
+        <a class="footer__link" [href]="confidentialiteHref()">{{ confidentialiteLabel() }}</a>
       </nav>
       <p class="footer__copy">© {{ year }} {{ settings().brandName }} — {{ settings().city }}</p>
     </footer>
@@ -51,4 +47,16 @@ export class SiteFooterComponent {
     this.locale === 'nl' ? 'Werkgebied' : "Zone d'intervention",
   );
   protected readonly contactHref = computed(() => (this.locale === 'nl' ? '/nl/contact' : '/contact'));
+  protected readonly mentionsHref = computed(() =>
+    this.locale === 'nl' ? '/nl/wettelijke-vermeldingen' : '/mentions-legales',
+  );
+  protected readonly mentionsLabel = computed(() =>
+    this.locale === 'nl' ? 'Wettelijke vermeldingen' : 'Mentions légales',
+  );
+  protected readonly confidentialiteHref = computed(() =>
+    this.locale === 'nl' ? '/nl/privacybeleid' : '/confidentialite',
+  );
+  protected readonly confidentialiteLabel = computed(() =>
+    this.locale === 'nl' ? 'Privacybeleid' : 'Confidentialité',
+  );
 }

@@ -81,6 +81,18 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./public/pages/commune-page.component').then((m) => m.CommunePageComponent),
       },
+      {
+        path: 'wettelijke-vermeldingen',
+        loadComponent: () =>
+          import('./public/legal-page.component').then((m) => m.LegalPageComponent),
+        data: { document: 'mentions' },
+      },
+      {
+        path: 'privacybeleid',
+        loadComponent: () =>
+          import('./public/legal-page.component').then((m) => m.LegalPageComponent),
+        data: { document: 'confidentialite' },
+      },
     ],
   },
   {
