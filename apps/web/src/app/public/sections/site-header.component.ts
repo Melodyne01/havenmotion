@@ -94,6 +94,7 @@ export class SiteHeaderComponent {
           { href: `${home}#process`, label: 'Werkwijze' },
           { href: `${home}#studio`, label: 'Studio' },
           { href: `${home}#contact`, label: 'Contact' },
+          { href: `${home}#faq`, label: 'FAQ' },
         ]
       : [
           { href: `${home}#realisations`, label: 'Réalisations' },
@@ -101,6 +102,7 @@ export class SiteHeaderComponent {
           { href: `${home}#process`, label: 'Process' },
           { href: `${home}#studio`, label: 'Studio' },
           { href: `${home}#contact`, label: 'Contact' },
+          { href: `${home}#faq`, label: 'FAQ' },
         ];
   });
 
