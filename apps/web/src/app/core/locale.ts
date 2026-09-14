@@ -19,7 +19,7 @@ export const SITE_LOCALE = new InjectionToken<SiteLocale>('SITE_LOCALE', {
  * décision de traduction, dupliquée ici uniquement parce que le sélecteur
  * de langue doit pouvoir construire l'URL cible sans aller-retour réseau.
  */
-export const CATEGORY_SLUG_MAP: ReadonlyArray<{ fr: string; nl: string }> = [
+export const CATEGORY_SLUG_MAP: readonly { fr: string; nl: string }[] = [
   { fr: 'mariage', nl: 'huwelijk' },
   { fr: 'corporate', nl: 'zakelijk' },
   { fr: 'sport', nl: 'sport' },
