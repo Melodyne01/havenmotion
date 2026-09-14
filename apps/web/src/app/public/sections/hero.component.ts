@@ -58,15 +58,14 @@ export class HeroComponent {
 
   /**
    * Sous-titre dans le H1 : le nom de marque seul n'aide pas le
-   * référencement. Reprend le positionnement réel du studio — basé à
-   * {ville}, disponible dans le monde entier — plutôt qu'un ancrage
-   * uniquement local, devenu inexact depuis que le studio se déplace à
-   * l'international.
+   * référencement. Sur demande du client, plus aucune ville n'apparaît ici —
+   * le studio se présente d'emblée comme disponible partout dans le monde ;
+   * l'ancrage local (communes, JSON-LD LocalBusiness) reste réel et affiché
+   * ailleurs sur la page (intro, pied de page, données structurées).
    */
   protected titleSubtitle(): string {
-    const city = this.settings().city;
     return this.locale === 'nl'
-      ? `Fotograaf & videograaf, gevestigd in ${city}, wereldwijd beschikbaar`
-      : `Photographe & vidéaste, basé à ${city}, disponible dans le monde entier`;
+      ? 'Fotograaf & videograaf, wereldwijd beschikbaar'
+      : 'Photographe & vidéaste, disponible dans le monde entier';
   }
 }

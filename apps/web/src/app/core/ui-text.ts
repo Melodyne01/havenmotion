@@ -14,13 +14,15 @@ export interface UiText {
   };
   readonly keyFigures: {
     readonly eyebrow: string;
-    readonly title: string;
-    readonly communes: string;
+    readonly titleSuffix: string;
+    readonly worldwideValue: string;
+    readonly worldwideLabel: string;
     readonly categoriesLabel: string;
     readonly quoteDelayValue: string;
     readonly quoteDelayLabel: string;
     readonly revisionsValue: string;
     readonly revisionsLabel: string;
+    readonly note: string;
   };
   readonly categoryBand: {
     readonly viewCategory: string;
@@ -91,13 +93,15 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     },
     keyFigures: {
       eyebrow: 'En chiffres',
-      title: 'Le studio en quelques chiffres',
-      communes: 'communes couvertes',
+      titleSuffix: 'en quelques chiffres',
+      worldwideValue: 'Monde entier',
+      worldwideLabel: "zone d'intervention, en plus de la Belgique",
       categoriesLabel: 'catégories de films',
       quoteDelayValue: '48 h',
       quoteDelayLabel: 'pour recevoir un devis chiffré',
       revisionsValue: '2',
       revisionsLabel: 'allers-retours de retouche inclus',
+      note: '* Basé en Belgique, déplacement à l’international à discuter selon le projet.',
     },
     categoryBand: {
       viewCategory: 'Voir la catégorie',
@@ -171,13 +175,15 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     },
     keyFigures: {
       eyebrow: 'In cijfers',
-      title: 'De studio in enkele cijfers',
-      communes: 'bediende gemeenten',
+      titleSuffix: 'in enkele cijfers',
+      worldwideValue: 'Wereldwijd',
+      worldwideLabel: 'werkgebied, naast België',
       categoriesLabel: 'filmcategorieën',
       quoteDelayValue: '48 u',
       quoteDelayLabel: 'om een concrete offerte te ontvangen',
       revisionsValue: '2',
       revisionsLabel: 'rondes feedback inbegrepen',
+      note: '* Gevestigd in België, verplaatsing naar het buitenland te bespreken per project.',
     },
     categoryBand: {
       viewCategory: 'Bekijk de categorie',

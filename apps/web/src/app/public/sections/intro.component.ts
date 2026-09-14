@@ -26,10 +26,15 @@ import { UI_TEXT } from '../../core/ui-text';
     <section class="intro" aria-labelledby="titre-intro">
       <app-section-title [eyebrow]="text.intro.eyebrow" [title]="text.intro.title" titleId="titre-intro" />
 
+      <p class="intro__line">{{ openingText() }}</p>
+      <p class="intro__line">{{ anyProjectText() }}</p>
+      <p class="intro__line">{{ feelAgainText() }}</p>
+      <p class="intro__line">{{ worldwideText() }}</p>
       <p class="intro__line">
-        {{ identityText() }}
+        {{ localZoneText() }}
         <a [routerLink]="zonesPath()">{{ text.intro.zonesLinkLabel }}</a>
       </p>
+      <p class="intro__line">{{ visionCallText() }}</p>
       <p class="intro__line">
         {{ categoriesTextBefore() }}<a href="#prestations">{{ text.intro.prestationsLinkLabel }}</a>.
       </p>
@@ -44,19 +49,51 @@ export class IntroComponent {
   protected readonly text = UI_TEXT[this.locale];
   private readonly categories = this.store.categories;
 
-  protected identityText(): string {
+  protected openingText(): string {
     const brand = this.store.settings().brandName;
     return this.locale === 'nl'
-      ? `Onafhankelijke foto- en videostudio gevestigd in Brussel, ${brand} filmt in het Frans en het Nederlands in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, in Wemmel en de Vlaamse rand, en ook overal elders waar uw verhaal ons brengt — in België en internationaal.`
-      : `Studio photo et vidéo indépendant basé à Bruxelles, ${brand} tourne en français et en néerlandais dans les 19 communes de la Région de Bruxelles-Capitale, à Wemmel et dans sa périphérie flamande, ainsi que partout ailleurs où votre histoire nous emmène — en Belgique comme à l'international.`;
+      ? `Bij ${brand} creëren we beelden die vertellen wat u beleeft. Video, fotografie of allebei, we willen veel meer vastleggen dan een eenvoudig moment: een emotie, een sfeer, een blik, een energie — al die details die een moment uniek maken.`
+      : `Chez ${brand}, nous créons des images qui racontent ce que vous vivez. Vidéo, photographie ou les deux, nous cherchons à capturer bien plus qu'un simple instant : une émotion, une ambiance, un regard, une énergie, tous ces détails qui rendent un moment unique.`;
+  }
+
+  protected anyProjectText(): string {
+    return this.locale === 'nl'
+      ? 'Een evenement, een huwelijk, een feestje, een verjaardag, een restaurant, een professioneel project, een reis, een merk, of gewoon een verhaal dat u wilt vertellen… welk project het ook is, elk verhaal heeft iets te tonen en verdient mooie beelden.'
+      : 'Un événement, un mariage, une soirée, un anniversaire, un restaurant, un projet professionnel, un voyage, une marque, ou simplement une histoire que vous souhaitez raconter… peu importe le projet, chacun a quelque chose à montrer et mérite de belles images.';
+  }
+
+  protected feelAgainText(): string {
+    return this.locale === 'nl'
+      ? 'Een beeld dient niet alleen om te tonen wat er gebeurd is. Het laat toe om het opnieuw te voelen.'
+      : "Parce qu'une image ne sert pas seulement à montrer ce qui s'est passé. Elle permet de le ressentir à nouveau.";
+  }
+
+  protected worldwideText(): string {
+    const brand = this.store.settings().brandName;
+    return this.locale === 'nl'
+      ? `Gevestigd in België en wereldwijd beschikbaar, verplaatst ${brand} zich overal waar uw verhalen ons brengen. We hebben al projecten buiten onze grenzen gerealiseerd en staan steeds klaar om nieuwe plekken, nieuwe mensen en nieuwe verhalen te ontdekken.`
+      : `Basé en Belgique et disponible partout dans le monde, ${brand} se déplace là où vos histoires l'emmènent. Nous avons déjà réalisé des projets au-delà de nos frontières et restons toujours prêts à découvrir de nouveaux lieux, de nouvelles personnes et de nouvelles histoires.`;
+  }
+
+  protected localZoneText(): string {
+    return this.locale === 'nl'
+      ? 'De studio filmt in het Frans en het Nederlands in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, in Wemmel en de Vlaamse rand.'
+      : 'Le studio tourne en français et en néerlandais dans les 19 communes de la Région de Bruxelles-Capitale, à Wemmel et dans sa périphérie flamande.';
+  }
+
+  protected visionCallText(): string {
+    return this.locale === 'nl'
+      ? 'Elk project begint met een gesprek om uw visie, uw wensen en wat u wilt overbrengen te begrijpen.'
+      : 'Chaque projet commence par un échange pour comprendre votre vision, vos envies et ce que vous souhaitez transmettre.';
   }
 
   protected categoriesTextBefore(): string {
+    const brand = this.store.settings().brandName;
     const list = this.categoriesList();
     const count = this.categoryCountWord();
     return this.locale === 'nl'
-      ? `De studio dekt ${count} soorten projecten — ${list} — elk met een eigen opname- en montagetraject, verder uitgewerkt in `
-      : `Le studio couvre ${count} types de projets — ${list} — chacun avec son propre déroulé de tournage et de montage, détaillé dans `;
+      ? `${brand} dekt ${count} soorten projecten — ${list} — elk met een eigen opname- en montagetraject, verder uitgewerkt in `
+      : `${brand} couvre ${count} types de projets — ${list} — chacun avec son propre déroulé de tournage et de montage, détaillé dans `;
   }
 
   protected processText(): string {
