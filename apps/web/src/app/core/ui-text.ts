@@ -4,7 +4,7 @@ export interface UiText {
   readonly skipLink: string;
   readonly breadcrumbAriaLabel: string;
   readonly home: string;
-  readonly hero: { readonly cta: string };
+  readonly hero: { readonly cta: string; readonly role: string; readonly tagline: string };
   readonly categories: { readonly eyebrow: string; readonly title: string };
   readonly intro: {
     readonly eyebrow: string;
@@ -77,11 +77,15 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     skipLink: 'Aller au contenu',
     breadcrumbAriaLabel: "Fil d'Ariane",
     home: 'Accueil',
-    hero: { cta: 'Demander un devis' },
-    categories: { eyebrow: 'Réalisations', title: 'Cinq territoires' },
+    hero: {
+      cta: 'Demander un devis',
+      role: 'Photographe / Vidéaste',
+      tagline: 'Capturer l’instant. Raconter l’histoire.',
+    },
+    categories: { eyebrow: 'Réalisations', title: 'Nos réalisations' },
     intro: {
       eyebrow: 'Présentation',
-      title: 'Heaven Motion, vidéaste à Bruxelles',
+      title: 'Chaque histoire mérite d’être vécue. Chaque moment mérite d’être gardé.',
       zonesLinkLabel: "Voir toute la zone d'intervention",
       prestationsLinkLabel: 'le détail des prestations et des tarifs',
     },
@@ -153,11 +157,15 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     skipLink: 'Ga naar de inhoud',
     breadcrumbAriaLabel: 'Kruimelpad',
     home: 'Home',
-    hero: { cta: 'Offerte aanvragen' },
-    categories: { eyebrow: 'Realisaties', title: 'Vijf domeinen' },
+    hero: {
+      cta: 'Offerte aanvragen',
+      role: 'Fotograaf / Videograaf',
+      tagline: 'Het moment vastleggen. Het verhaal vertellen.',
+    },
+    categories: { eyebrow: 'Realisaties', title: 'Onze realisaties' },
     intro: {
       eyebrow: 'Voorstelling',
-      title: 'Heaven Motion, videograaf in Brussel',
+      title: 'Elk verhaal verdient het beleefd te worden. Elk moment verdient het bewaard te blijven.',
       zonesLinkLabel: 'Bekijk het volledige werkgebied',
       prestationsLinkLabel: 'de diensten en tarieven hieronder',
     },

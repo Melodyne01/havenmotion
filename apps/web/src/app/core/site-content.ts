@@ -27,12 +27,12 @@ export interface SiteContent {
  */
 export const SITE_CONTENT: Record<SiteLocale, SiteContent> = {
   fr: {
-    tagline: 'Vidéaste freelance — mariages, marques, sport et clips.',
+    tagline: 'Photographe et vidéaste indépendant, basé en Belgique et disponible dans le monde entier.',
     city: 'Bruxelles',
     region: 'Bruxelles-Capitale',
     legalText: 'Heaven Motion — micro-entreprise. Mentions légales à compléter.',
     aboutParagraphs: [
-      'Heaven Motion est un studio vidéo indépendant basé à Bruxelles.',
+      'Heaven Motion est un studio photo et vidéo indépendant, basé à Bruxelles et disponible dans le monde entier.',
       'Je filme seul ou en équipe réduite, pour rester au plus près des gens.',
       'Le montage cherche le rythme d’un film, pas celui d’un résumé.',
       'Chaque projet part d’un échange, jamais d’un catalogue.',
@@ -87,12 +87,12 @@ export const SITE_CONTENT: Record<SiteLocale, SiteContent> = {
     ],
   },
   nl: {
-    tagline: 'Freelance videograaf — huwelijken, merken, sport en clips.',
+    tagline: 'Onafhankelijke fotograaf en videograaf, gevestigd in België en wereldwijd beschikbaar.',
     city: 'Brussel',
     region: 'Brussels Hoofdstedelijk Gewest',
     legalText: 'Heaven Motion — eenmanszaak. Wettelijke vermeldingen aan te vullen.',
     aboutParagraphs: [
-      'Heaven Motion is een onafhankelijke videostudio gevestigd in Brussel.',
+      'Heaven Motion is een onafhankelijke foto- en videostudio, gevestigd in Brussel en wereldwijd beschikbaar.',
       'Ik film alleen of met een klein team, om dicht bij de mensen te blijven.',
       'De montage zoekt het ritme van een film, niet dat van een samenvatting.',
       'Elk project vertrekt van een gesprek, nooit van een catalogus.',

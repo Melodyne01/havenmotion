@@ -163,7 +163,7 @@ export class CategoryPageComponent {
       const base = this.locale === 'nl' ? '/nl/realisaties' : '/realisations';
       const path = `${base}/${cat.slug}`;
       this.seo.apply({
-        title: `${cat.name} — ${settings.brandName} — Vidéaste ${settings.city}`,
+        title: `${cat.name} — ${settings.brandName} — Photographe & Vidéaste ${settings.city}`,
         description: `${cat.tagline} Devis sous 48 h.`,
         path,
         imagePath: cat.poster?.posterUrl ?? undefined,

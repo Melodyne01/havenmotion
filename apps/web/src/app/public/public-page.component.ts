@@ -101,12 +101,12 @@ export class PublicPageComponent {
       this.seo.apply({
         title:
           this.locale === 'nl'
-            ? `${settings.brandName} — Onafhankelijke videograaf in ${settings.city} en omstreken`
-            : `${settings.brandName} — Vidéaste indépendant à ${settings.city} et environs`,
+            ? `${settings.brandName} — Fotograaf & videograaf, België en wereldwijd`
+            : `${settings.brandName} — Photographe & vidéaste, Belgique et international`,
         description:
           this.locale === 'nl'
-            ? `${settings.tagline} Brussel, Wemmel en de Vlaamse rand — offerte binnen 48 u.`
-            : `${settings.tagline} Bruxelles, Wemmel et la périphérie flamande — devis sous 48 h.`,
+            ? `${settings.tagline} Brussel, Wemmel, de Vlaamse rand — en overal waar uw verhaal ons brengt. Offerte binnen 48 u.`
+            : `${settings.tagline} Bruxelles, Wemmel, la périphérie flamande — et partout où votre histoire nous emmène. Devis sous 48 h.`,
         path,
         imagePath: settings.showreel?.posterUrl ?? undefined,
         locale: this.locale,
@@ -120,7 +120,8 @@ export class PublicPageComponent {
   /**
    * "900€–1800€" calculé depuis les vrais tarifs de départ (SITE_CONTENT),
    * jamais une fourchette inventée — répond à l'intention de recherche
-   * "combien coûte un vidéaste" dès les résultats enrichis de Google.
+   * "combien coûte un photographe et vidéaste" dès les résultats enrichis
+   * de Google.
    */
   private priceRange(): string | undefined {
     const prices = SITE_CONTENT[this.locale].services

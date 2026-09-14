@@ -15,7 +15,7 @@ export interface FaqEntry {
 export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
   fr: [
     {
-      question: 'Combien coûte un vidéaste à Bruxelles ?',
+      question: 'Combien coûte un photographe et vidéaste à Bruxelles ?',
       answer:
         "Le tarif dépend du projet : comptez entre 900 € et 1 800 € selon la catégorie (mariage, corporate, sport, clip), la durée de tournage et le nombre de livrables. Un devis chiffré est envoyé sous 48 h après un premier échange.",
     },
@@ -27,7 +27,7 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
     {
       question: 'Quelle zone géographique est couverte ?',
       answer:
-        'Bruxelles et les communes environnantes. Un déplacement plus loin en Belgique reste possible, à discuter selon le projet.',
+        'Le studio est basé à Bruxelles et couvre les communes environnantes sans frais supplémentaires. Il se déplace aussi ailleurs en Belgique et à l’international, à discuter selon le projet.',
     },
     {
       question: 'Comment se déroule une prestation, de la demande à la livraison ?',
@@ -47,7 +47,7 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
   ],
   nl: [
     {
-      question: 'Hoeveel kost een videograaf in Brussel?',
+      question: 'Hoeveel kost een fotograaf en videograaf in Brussel?',
       answer:
         'De prijs hangt af van het project: reken tussen € 900 en € 1 800 naargelang de categorie (huwelijk, zakelijk, sport, clip), de opnameduur en het aantal eindproducten. Een concrete offerte volgt binnen 48 u na een eerste gesprek.',
     },
@@ -58,7 +58,8 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
     },
     {
       question: 'Welk gebied wordt gedekt?',
-      answer: 'Brussel en de omliggende gemeenten. Verplaatsing verder in België is bespreekbaar per project.',
+      answer:
+        'De studio is gevestigd in Brussel en dekt de omliggende gemeenten zonder extra kosten. Verplaatsing elders in België en internationaal is ook mogelijk, te bespreken per project.',
     },
     {
       question: 'Hoe verloopt een opdracht, van aanvraag tot levering?',

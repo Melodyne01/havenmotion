@@ -38,8 +38,8 @@ export class AboutPageComponent {
         title: `${title} — ${settings.brandName}`,
         description:
           this.locale === 'nl'
-            ? `${settings.tagline} Gevestigd in ${settings.city}.`
-            : `${settings.tagline} Basé à ${settings.city}.`,
+            ? `${settings.tagline} Studio gevestigd in ${settings.city}.`
+            : `${settings.tagline} Studio installé à ${settings.city}.`,
         path,
         locale: this.locale,
       });

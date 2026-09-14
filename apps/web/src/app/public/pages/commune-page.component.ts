@@ -148,8 +148,8 @@ export class CommunePageComponent {
       this.seo.apply({
         title:
           this.locale === 'nl'
-            ? `Videograaf in ${name} (${c.postalCode}) — ${settings.brandName}`
-            : `Vidéaste à ${name} (${c.postalCode}) — ${settings.brandName}`,
+            ? `Fotograaf & videograaf in ${name} (${c.postalCode}) — ${settings.brandName}`
+            : `Photographe & vidéaste à ${name} (${c.postalCode}) — ${settings.brandName}`,
         description: this.metaDescription(c.isBrusselsRegion, name, settings.brandName),
         path,
         locale: this.locale,
@@ -174,7 +174,7 @@ export class CommunePageComponent {
 
   protected heroTitle(): string {
     const name = this.communeName();
-    return this.locale === 'nl' ? `Videograaf in ${name}` : `Vidéaste à ${name}`;
+    return this.locale === 'nl' ? `Fotograaf & videograaf in ${name}` : `Photographe & vidéaste à ${name}`;
   }
 
   protected introText(): string {
@@ -188,8 +188,8 @@ export class CommunePageComponent {
 
     if (c.isBrusselsRegion) {
       return this.locale === 'nl'
-        ? `${brand} draait en monteert video's in ${name}, zoals in de rest van het Brussels Hoofdstedelijk Gewest: huwelijksfilms, bedrijfsvideo's, sportverslagen, clips en lifestyle-content. Niet ver van ${landmark}, net als in elke andere Brusselse gemeente.`
-        : `${brand} tourne et monte des films à ${name}, comme dans le reste de la Région de Bruxelles-Capitale : films de mariage, vidéos d'entreprise, captations sportives, clips et contenu lifestyle. Non loin de ${landmark}, comme dans chacune des communes bruxelloises.`;
+        ? `${brand} filmt en fotografeert in ${name}, zoals in de rest van het Brussels Hoofdstedelijk Gewest: huwelijksfilms, bedrijfsvideo's, sportverslagen, clips en lifestyle-content. Niet ver van ${landmark}, net als in elke andere Brusselse gemeente.`
+        : `${brand} photographie et filme à ${name}, comme dans le reste de la Région de Bruxelles-Capitale : films de mariage, vidéos d'entreprise, captations sportives, clips et contenu lifestyle. Non loin de ${landmark}, comme dans chacune des communes bruxelloises.`;
     }
 
     // Communes de la périphérie flamande (Wemmel et alentours) : pas partie
@@ -199,19 +199,19 @@ export class CommunePageComponent {
     const suffixFr = landmark ? ` Non loin de ${landmark}.` : '';
     const suffixNl = landmark ? ` Niet ver van ${landmark}.` : '';
     return this.locale === 'nl'
-      ? `${brand} draait en monteert ook video's in ${name}, in de Brusselse rand: huwelijksfilms, bedrijfsvideo's, sportverslagen, clips en lifestyle-content, net als in Brussel zelf en de omliggende gemeenten.${suffixNl}`
-      : `${brand} tourne et monte aussi des films à ${name}, dans la périphérie bruxelloise : films de mariage, vidéos d'entreprise, captations sportives, clips et contenu lifestyle, comme à Bruxelles même et dans les communes environnantes.${suffixFr}`;
+      ? `${brand} filmt en fotografeert ook in ${name}, in de Brusselse rand: huwelijksfilms, bedrijfsvideo's, sportverslagen, clips en lifestyle-content, net als in Brussel zelf en de omliggende gemeenten.${suffixNl}`
+      : `${brand} photographie et filme aussi à ${name}, dans la périphérie bruxelloise : films de mariage, vidéos d'entreprise, captations sportives, clips et contenu lifestyle, comme à Bruxelles même et dans les communes environnantes.${suffixFr}`;
   }
 
   private metaDescription(isBrusselsRegion: boolean, name: string, brandName: string): string {
     if (isBrusselsRegion) {
       return this.locale === 'nl'
-        ? `${brandName} filmt in ${name} en de rest van het Brussels Hoofdstedelijk Gewest: huwelijk, bedrijfsvideo, sport, clip. Offerte binnen 48 u.`
-        : `${brandName} tourne à ${name} et dans le reste de la Région de Bruxelles-Capitale : mariage, vidéo d'entreprise, sport, clip. Devis sous 48 h.`;
+        ? `${brandName}, fotograaf & videograaf in ${name} en de rest van het Brussels Hoofdstedelijk Gewest: huwelijk, bedrijfsvideo, sport, clip. Offerte binnen 48 u.`
+        : `${brandName}, photographe & vidéaste à ${name} et dans le reste de la Région de Bruxelles-Capitale : mariage, vidéo d'entreprise, sport, clip. Devis sous 48 h.`;
     }
     return this.locale === 'nl'
-      ? `${brandName} filmt in ${name}, in de Brusselse rand: huwelijk, bedrijfsvideo, sport, clip. Offerte binnen 48 u.`
-      : `${brandName} tourne à ${name}, dans la périphérie bruxelloise : mariage, vidéo d'entreprise, sport, clip. Devis sous 48 h.`;
+      ? `${brandName}, fotograaf & videograaf in ${name}, in de Brusselse rand: huwelijk, bedrijfsvideo, sport, clip. Offerte binnen 48 u.`
+      : `${brandName}, photographe & vidéaste à ${name}, dans la périphérie bruxelloise : mariage, vidéo d'entreprise, sport, clip. Devis sous 48 h.`;
   }
 
   protected categoryHref(cat: Category): string {
@@ -225,14 +225,16 @@ export class CommunePageComponent {
   }
 
   /**
-   * "Vidéaste Mariage à Uccle" / "Videograaf Huwelijk in Wemmel" : le titre de
-   * chaque prestation reprend le nom de la commune — c'est exactement la
-   * phrase qu'un client tape dans un moteur de recherche, pas un mot-clé
-   * ajouté au hasard dans une liste.
+   * "Photographe & vidéaste Mariage à Uccle" / "Fotograaf & videograaf
+   * Huwelijk in Wemmel" : le titre de chaque prestation reprend le nom de
+   * la commune — c'est exactement la phrase qu'un client tape dans un
+   * moteur de recherche, pas un mot-clé ajouté au hasard dans une liste.
    */
   protected serviceHeading(cat: Category): string {
     const name = this.communeName();
-    return this.locale === 'nl' ? `Videograaf ${cat.name} in ${name}` : `Vidéaste ${cat.name} à ${name}`;
+    return this.locale === 'nl'
+      ? `Fotograaf & videograaf ${cat.name} in ${name}`
+      : `Photographe & vidéaste ${cat.name} à ${name}`;
   }
 
   /**

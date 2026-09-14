@@ -29,12 +29,12 @@ import { UI_TEXT } from '../../core/ui-text';
           <app-brand-mark [watermark]="true" />
         </div>
         <div class="hero__content">
-          <p class="hero__eyebrow">{{ settings().city }} · {{ settings().region }}</p>
+          <p class="hero__eyebrow">{{ text.hero.role }}</p>
           <h1 class="hero__title">
             {{ settings().brandName }}
             <span class="hero__title-sub">{{ titleSubtitle() }}</span>
           </h1>
-          <p class="hero__tagline">{{ settings().tagline }}</p>
+          <p class="hero__tagline">{{ text.hero.tagline }}</p>
           <app-cta-button href="#contact">{{ text.hero.cta }}</app-cta-button>
         </div>
       </app-video-frame>
@@ -58,14 +58,15 @@ export class HeroComponent {
 
   /**
    * Sous-titre dans le H1 : le nom de marque seul n'aide pas le
-   * référencement, cette phrase reprend la même position ("vidéaste
-   * indépendant à {ville} et environs") déjà validée sur le titre de la
-   * page et sur la home.
+   * référencement. Reprend le positionnement réel du studio — basé à
+   * {ville}, disponible dans le monde entier — plutôt qu'un ancrage
+   * uniquement local, devenu inexact depuis que le studio se déplace à
+   * l'international.
    */
   protected titleSubtitle(): string {
     const city = this.settings().city;
     return this.locale === 'nl'
-      ? `Onafhankelijke videograaf in ${city} en omstreken`
-      : `Vidéaste indépendant à ${city} et environs`;
+      ? `Fotograaf & videograaf, gevestigd in ${city}, wereldwijd beschikbaar`
+      : `Photographe & vidéaste, basé à ${city}, disponible dans le monde entier`;
   }
 }

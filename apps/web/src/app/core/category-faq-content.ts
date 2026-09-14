@@ -37,7 +37,7 @@ export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly Fa
           'Un film de 5 à 8 minutes qui raconte la journée, accompagné d’un teaser d’environ 60 secondes pensé pour les réseaux sociaux.',
       },
       {
-        question: 'Le vidéaste est-il discret pendant la cérémonie ?',
+        question: 'Le photographe et vidéaste est-il discret pendant la cérémonie ?',
         answer:
           'Oui : le tournage se fait seul ou en équipe réduite, pour rester proche des invités sans jamais s’imposer dans les moments importants.',
       },
@@ -51,9 +51,9 @@ export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly Fa
           'Oui : la musique utilisée est systématiquement sous licence, ce qui évite tout retrait ou mise en sourdine sur Instagram ou YouTube.',
       },
       {
-        question: 'Le vidéaste se déplace-t-il dans toute la région bruxelloise pour un mariage ?',
+        question: 'Le photographe et vidéaste se déplace-t-il pour un mariage à l’étranger ?',
         answer:
-          'Oui, dans les 19 communes de la Région de Bruxelles-Capitale ainsi qu’à Wemmel et dans sa périphérie flamande, sans frais de déplacement supplémentaires.',
+          'Oui : dans les 19 communes de la Région de Bruxelles-Capitale, à Wemmel et sa périphérie flamande sans frais supplémentaires, mais aussi partout ailleurs en Belgique et à l’international selon votre projet.',
       },
     ],
     corporate: [
@@ -82,8 +82,8 @@ export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly Fa
           'Oui, les interviews font partie de la prestation standard, avec un cadrage et un son pensés pour un rendu professionnel.',
       },
       {
-        question: 'Le tournage peut-il se faire directement dans nos bureaux à Bruxelles ?',
-        answer: 'Oui, le tournage se déroule dans vos locaux ou sur le lieu de votre choix, à Bruxelles et dans sa périphérie.',
+        question: 'Le tournage peut-il se faire directement dans nos bureaux, même hors de Belgique ?',
+        answer: 'Oui, le tournage se déroule dans vos locaux ou sur le lieu de votre choix — à Bruxelles, dans sa périphérie, ou à l’international selon votre implantation.',
       },
       {
         question: 'La vidéo peut-elle inclure notre logo et nos couleurs de marque ?',
@@ -118,8 +118,8 @@ export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly Fa
         answer: 'Oui, la prestation s’adapte aussi bien à un club amateur qu’à un événement plus important, à discuter selon le format de la compétition.',
       },
       {
-        question: 'Le vidéaste se déplace-t-il sur les terrains et salles de toute la région bruxelloise ?',
-        answer: 'Oui, dans les 19 communes de la Région de Bruxelles-Capitale ainsi qu’à Wemmel et sa périphérie.',
+        question: 'Le photographe et vidéaste se déplace-t-il pour un événement sportif à l’étranger ?',
+        answer: 'Oui : dans les 19 communes de la Région de Bruxelles-Capitale, à Wemmel et sa périphérie, mais aussi partout ailleurs selon le lieu de la compétition.',
       },
     ],
     clip: [
@@ -149,8 +149,8 @@ export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly Fa
           'Oui, le clip musical se construit autour du morceau de l’artiste — contrairement aux autres prestations, où la musique de fond est fournie sous licence.',
       },
       {
-        question: 'Le tournage peut-il se faire en extérieur à Bruxelles ou en studio ?',
-        answer: 'Les deux sont possibles : le lieu de tournage se décide ensemble lors du premier échange, selon l’univers recherché pour le clip.',
+        question: 'Le tournage peut-il se faire en extérieur, à Bruxelles ou ailleurs dans le monde ?',
+        answer: 'Oui : le lieu de tournage se décide ensemble lors du premier échange, selon l’univers recherché pour le clip — à Bruxelles, en studio, ou à l’international.',
       },
     ],
     lifestyle: [
@@ -180,9 +180,9 @@ export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly Fa
         answer: 'C’est possible, à discuter ensemble lors du premier échange selon la fréquence de contenu recherchée.',
       },
       {
-        question: 'Le tournage lifestyle se fait-il à Bruxelles et dans les communes environnantes ?',
+        question: 'Le tournage lifestyle se fait-il uniquement à Bruxelles ?',
         answer:
-          'Oui, dans toute la zone d’intervention du studio : les 19 communes de la Région de Bruxelles-Capitale, Wemmel et sa périphérie flamande.',
+          'Non : le studio couvre les 19 communes de la Région de Bruxelles-Capitale, Wemmel et sa périphérie flamande, mais se déplace aussi ailleurs selon votre projet et vos déplacements.',
       },
     ],
   },
@@ -207,7 +207,7 @@ export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly Fa
         answer: 'Een film van 5 tot 8 minuten die de dag vertelt, samen met een teaser van ongeveer 60 seconden voor sociale media.',
       },
       {
-        question: 'Is de videograaf discreet tijdens de ceremonie?',
+        question: 'Is de fotograaf en videograaf discreet tijdens de ceremonie?',
         answer: 'Ja: er wordt alleen of met een klein team gefilmd, dicht bij de gasten zonder ooit de belangrijke momenten te verstoren.',
       },
       {
@@ -219,9 +219,9 @@ export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly Fa
         answer: 'Ja: de gebruikte muziek is steeds in licentie, zodat Instagram of YouTube de video nooit dempen of verwijderen.',
       },
       {
-        question: 'Komt de videograaf filmen in het hele Brusselse gewest voor een huwelijk?',
+        question: 'Komt de fotograaf en videograaf ook filmen voor een huwelijk in het buitenland?',
         answer:
-          'Ja, in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, en ook in Wemmel en de Vlaamse rand, zonder extra verplaatsingskosten.',
+          'Ja: in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, in Wemmel en de Vlaamse rand zonder extra kosten, maar ook overal elders in België en internationaal naargelang uw project.',
       },
     ],
     zakelijk: [
@@ -247,8 +247,8 @@ export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly Fa
         answer: 'Ja, interviews maken deel uit van de standaardprestatie, met beeld en geluid gericht op een professioneel resultaat.',
       },
       {
-        question: 'Kan er in onze kantoren in Brussel gefilmd worden?',
-        answer: 'Ja, de opname gebeurt in uw kantoren of op de locatie van uw keuze, in Brussel en omstreken.',
+        question: 'Kan er ook gefilmd worden in kantoren buiten België?',
+        answer: 'Ja, de opname gebeurt in uw kantoren of op de locatie van uw keuze — in Brussel, in de Vlaamse rand, of internationaal naargelang uw vestiging.',
       },
       {
         question: 'Kan de video ons logo en onze huisstijl bevatten?',
@@ -282,8 +282,8 @@ export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly Fa
         answer: 'Ja, de prestatie past zich aan een amateurclub of een groter evenement aan, te bespreken volgens het format van de competitie.',
       },
       {
-        question: 'Komt de videograaf filmen op terreinen en in zalen in heel het Brusselse gewest?',
-        answer: 'Ja, in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, en ook in Wemmel en de Vlaamse rand.',
+        question: 'Komt de fotograaf en videograaf ook filmen voor een sportevenement in het buitenland?',
+        answer: 'Ja: in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, in Wemmel en de Vlaamse rand, maar ook elders naargelang de locatie van de competitie.',
       },
     ],
     clip: [
@@ -313,8 +313,8 @@ export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly Fa
           'Ja, de muziekclip wordt rond het nummer van de artiest gebouwd — in tegenstelling tot andere prestaties, waar achtergrondmuziek in licentie wordt geleverd.',
       },
       {
-        question: 'Kan er buiten in Brussel of in een studio gefilmd worden?',
-        answer: 'Beide zijn mogelijk: de opnamelocatie wordt samen bepaald tijdens het eerste gesprek, afhankelijk van de gewenste sfeer voor de clip.',
+        question: 'Kan er buiten gefilmd worden, in Brussel of elders in de wereld?',
+        answer: 'Ja: de opnamelocatie wordt samen bepaald tijdens het eerste gesprek, afhankelijk van de gewenste sfeer voor de clip — in Brussel, in een studio, of internationaal.',
       },
     ],
     lifestyle: [
@@ -344,8 +344,9 @@ export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly Fa
         answer: 'Dat is mogelijk, te bespreken tijdens het eerste gesprek naargelang de gewenste contentfrequentie.',
       },
       {
-        question: 'Wordt er gefilmd in Brussel en de omliggende gemeenten?',
-        answer: 'Ja, in het volledige werkgebied van de studio: de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, Wemmel en de Vlaamse rand.',
+        question: 'Wordt er alleen in Brussel gefilmd?',
+        answer:
+          'Nee: de studio dekt de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, Wemmel en de Vlaamse rand, maar verplaatst zich ook daarbuiten naargelang uw project.',
       },
     ],
   },

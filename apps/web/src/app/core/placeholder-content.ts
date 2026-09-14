@@ -104,7 +104,7 @@ function film(category: Category, index: number, title: string, client: string, 
 export const PLACEHOLDER_SITE: SitePayload = {
   settings: {
     brandName: 'Heaven Motion',
-    tagline: 'Vidéaste freelance — mariages, marques, sport et clips.',
+    tagline: 'Photographe et vidéaste indépendant, basé en Belgique et disponible dans le monde entier.',
     email: 'contact@heavenmotion.be',
     instagram: '@heavenmotion',
     city: 'Bruxelles',
@@ -176,7 +176,7 @@ export const PLACEHOLDER_SITE: SitePayload = {
   about: {
     portraitUrl: '/placeholders/portrait.svg',
     paragraphs: [
-      'Heaven Motion est un studio vidéo indépendant basé à Bruxelles.',
+      'Heaven Motion est un studio photo et vidéo indépendant, basé à Bruxelles et disponible dans le monde entier.',
       'Je filme seul ou en équipe réduite, pour rester au plus près des gens.',
       'Le montage cherche le rythme d’un film, pas celui d’un résumé.',
       'Chaque projet part d’un échange, jamais d’un catalogue.',

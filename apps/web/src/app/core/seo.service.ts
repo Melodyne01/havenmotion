@@ -152,7 +152,7 @@ export class SeoService {
     const graph = {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      serviceType: 'Vidéaste événementiel et corporate',
+      serviceType: 'Photographe et vidéaste événementiel et corporate',
       name: `${settings.brandName} — ${communeName}`,
       provider: { '@type': 'LocalBusiness', name: settings.brandName, '@id': `${this.origin}/#studio` },
       areaServed: {

@@ -13,6 +13,10 @@ import { UI_TEXT } from '../../core/ui-text';
  * est déjà réel et déjà affiché ailleurs (zone d'intervention, catégories
  * chargées depuis l'API, étapes du process, ligne "seul ou en équipe
  * réduite" de la page à propos), pour éviter tout mot-clé sans substance.
+ * Repositionné sur demande du client : le studio n'est plus présenté comme
+ * limité à Bruxelles, mais comme basé en Belgique et disponible partout où
+ * un projet l'emmène — la liste réelle des communes reste affichée (ancrage
+ * SEO local toujours valable), simplement plus comme une limite.
  */
 @Component({
   selector: 'app-intro',
@@ -43,21 +47,22 @@ export class IntroComponent {
   protected identityText(): string {
     const brand = this.store.settings().brandName;
     return this.locale === 'nl'
-      ? `Onafhankelijke videograaf gevestigd in Brussel, ${brand} filmt in het Frans en het Nederlands in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, en ook in Wemmel en de Vlaamse rand.`
-      : `Vidéaste indépendant basé à Bruxelles, ${brand} tourne en français et en néerlandais dans les 19 communes de la Région de Bruxelles-Capitale, ainsi qu'à Wemmel et dans sa périphérie flamande.`;
+      ? `Onafhankelijke foto- en videostudio gevestigd in Brussel, ${brand} filmt in het Frans en het Nederlands in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, in Wemmel en de Vlaamse rand, en ook overal elders waar uw verhaal ons brengt — in België en internationaal.`
+      : `Studio photo et vidéo indépendant basé à Bruxelles, ${brand} tourne en français et en néerlandais dans les 19 communes de la Région de Bruxelles-Capitale, à Wemmel et dans sa périphérie flamande, ainsi que partout ailleurs où votre histoire nous emmène — en Belgique comme à l'international.`;
   }
 
   protected categoriesTextBefore(): string {
     const list = this.categoriesList();
+    const count = this.categoryCountWord();
     return this.locale === 'nl'
-      ? `De studio dekt vijf soorten projecten — ${list} — elk met een eigen opname- en montagetraject, verder uitgewerkt in `
-      : `Le studio couvre cinq types de projets — ${list} — chacun avec son propre déroulé de tournage et de montage, détaillé dans `;
+      ? `De studio dekt ${count} soorten projecten — ${list} — elk met een eigen opname- en montagetraject, verder uitgewerkt in `
+      : `Le studio couvre ${count} types de projets — ${list} — chacun avec son propre déroulé de tournage et de montage, détaillé dans `;
   }
 
   protected processText(): string {
     return this.locale === 'nl'
       ? "Elk project begint met een gesprek om de intentie, het budget en de datum te bepalen, met een concrete offerte binnen 48 u. Er wordt alleen of met een klein team gefilmd, om dicht bij de mensen te blijven, en de montage volgt twee rondes feedback vóór de levering online."
-      : "Chaque projet démarre par un échange pour cadrer l'intention, le budget et la date, avec un devis chiffré sous 48 h. Le tournage se fait seul ou en équipe réduite, pour rester au plus près des gens, et le montage suit deux allers-retours avant la livraison en ligne.";
+      : "Chaque projet démarre par un échange pour cadrer l'intention, le budget et la date, avec un devis chiffré sous 48 h. Le tournage se fait seul ou en équipe réduite, pour rester au plus près des personnes, et le montage suit deux allers-retours avant la livraison en ligne.";
   }
 
   private categoriesList(): string {
@@ -72,6 +77,20 @@ export class IntroComponent {
     const rest = names.slice(0, -1).join(', ');
     const sep = this.locale === 'nl' ? ' en ' : ' et ';
     return `${rest}${sep}${last}`;
+  }
+
+  /**
+   * Évite de coder "cinq" en dur : le nombre de catégories vient de l'API
+   * (store.categories()) et changera dès qu'une catégorie sera ajoutée ou
+   * retirée depuis le backoffice — cette phrase doit rester exacte sans
+   * qu'on ait à y repenser à ce moment-là.
+   */
+  private categoryCountWord(): string {
+    const count = this.categories().length;
+    const wordsFr = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix'];
+    const wordsNl = ['nul', 'één', 'twee', 'drie', 'vier', 'vijf', 'zes', 'zeven', 'acht', 'negen', 'tien'];
+    const words = this.locale === 'nl' ? wordsNl : wordsFr;
+    return words[count] ?? String(count);
   }
 
   protected zonesPath(): string {
