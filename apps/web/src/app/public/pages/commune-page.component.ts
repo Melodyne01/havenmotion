@@ -159,7 +159,7 @@ export class CommunePageComponent {
         { name: this.zonesLabel(), path: this.zonesPath() },
         { name, path },
       ]);
-      this.seo.applyAreaServed(settings, name, c.postalCode);
+      this.seo.applyAreaServed(settings, name, c.postalCode, this.locale);
       this.seo.applyFaq([
         { question: this.faqQuestion(), answer: this.faqAnswer() },
         { question: this.faqQuestion2(), answer: this.faqAnswer2() },

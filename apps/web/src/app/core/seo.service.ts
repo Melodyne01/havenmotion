@@ -146,13 +146,23 @@ export class SeoService {
    * Publie le bloc JSON-LD `Service` d'une page zone/commune : même forme
    * que `applyService`, mais `areaServed` pointe sur une `City` précise
    * (nom + code postal) plutôt que sur la région entière — c'est tout
-   * l'intérêt local SEO de ces pages par rapport à la home.
+   * l'intérêt local SEO de ces pages par rapport à la home. `serviceType`
+   * dépend de la locale : servir du texte FR dans le JSON-LD d'une page NL
+   * était une incohérence de langue aux yeux des moteurs de recherche.
    */
-  applyAreaServed(settings: SiteSettings, communeName: string, postalCode: string): void {
+  applyAreaServed(
+    settings: SiteSettings,
+    communeName: string,
+    postalCode: string,
+    locale: SiteLocale = 'fr',
+  ): void {
     const graph = {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      serviceType: 'Photographe et vidéaste événementiel et corporate',
+      serviceType:
+        locale === 'nl'
+          ? 'Fotograaf en videograaf voor evenementen en bedrijven'
+          : 'Photographe et vidéaste événementiel et corporate',
       name: `${settings.brandName} — ${communeName}`,
       provider: { '@type': 'LocalBusiness', name: settings.brandName, '@id': `${this.origin}/#studio` },
       areaServed: {
