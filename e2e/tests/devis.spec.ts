@@ -24,7 +24,7 @@ test('du hero à la demande de devis', async ({ page }) => {
   await page.goto('/');
 
   // 1. Hero : marque et CTA visibles.
-  await expect(page.getByRole('heading', { level: 1, name: /studio vnl/i })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /heaven motion/i })).toBeVisible();
 
   // 2. Les cinq bandes de catégories sont là.
   const bands = page.locator('app-category-band');

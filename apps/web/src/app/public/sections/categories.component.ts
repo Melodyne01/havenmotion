@@ -1,52 +1,43 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CategoryBandComponent } from './category-band.component';
-import { CategoryModalComponent } from './category-modal.component';
 import { SectionTitleComponent } from '../../shared/ui/section-title.component';
 import { SiteStore } from '../site-store';
-import { Category } from '../../models';
+import { SITE_LOCALE } from '../../core/locale';
+import { UI_TEXT } from '../../core/ui-text';
 
 /**
  * Réalisations. Les catégories *sont* la navigation : cinq bandes empilées,
- * bord à bord, séparées de 2 px. Pas d'onglets, pas de carrousel.
+ * bord à bord, séparées de 2 px. Pas d'onglets, pas de carrousel — et depuis
+ * le passage en pages, plus de modale non plus : chaque bande est un lien
+ * direct vers la page de la catégorie.
  */
 @Component({
   selector: 'app-categories',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CategoryBandComponent, CategoryModalComponent, SectionTitleComponent],
+  imports: [CategoryBandComponent, SectionTitleComponent],
   template: `
     <section class="categories" id="realisations" aria-labelledby="titre-realisations">
       <div class="categories__head">
         <app-section-title
-          eyebrow="Réalisations"
-          title="Cinq territoires"
+          [eyebrow]="text.categories.eyebrow"
+          [title]="text.categories.title"
           titleId="titre-realisations"
         />
       </div>
 
       <div class="categories__bands">
         @for (category of categories(); track category.id; let i = $index) {
-          <app-category-band [category]="category" [index]="i" (open)="openCategory($event)" />
+          <app-category-band [category]="category" [index]="i" />
         }
       </div>
     </section>
-
-    @if (active(); as category) {
-      <app-category-modal [category]="category" (closed)="closeCategory()" />
-    }
   `,
   styleUrl: './categories.component.scss',
 })
 export class CategoriesComponent {
   private readonly store = inject(SiteStore);
+  private readonly locale = inject(SITE_LOCALE);
 
   protected readonly categories = this.store.categories;
-  protected readonly active = signal<Category | null>(null);
-
-  protected openCategory(category: Category): void {
-    this.active.set(category);
-  }
-
-  protected closeCategory(): void {
-    this.active.set(null);
-  }
+  protected readonly text = UI_TEXT[this.locale];
 }

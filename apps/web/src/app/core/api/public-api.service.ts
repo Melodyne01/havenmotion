@@ -1,10 +1,11 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { APP_CONFIG } from '../app-config';
+import { SiteLocale } from '../locale';
 import { Category, Film, LeadRequest, SitePayload } from '../../models';
-import { PLACEHOLDER_CATEGORIES, PLACEHOLDER_SITE } from '../placeholder-content';
+import { PLACEHOLDER_CATEGORIES, PLACEHOLDER_FILMS, PLACEHOLDER_SITE } from '../placeholder-content';
 
 /**
  * Lecture du contenu publié.
@@ -18,22 +19,26 @@ export class PublicApiService {
   private readonly http = inject(HttpClient);
   private readonly base = inject(APP_CONFIG).apiBaseUrl;
 
-  site(): Observable<SitePayload> {
+  site(locale: SiteLocale = 'fr'): Observable<SitePayload> {
     return this.http
-      .get<SitePayload>(`${this.base}/public/site`)
+      .get<SitePayload>(`${this.base}/public/site`, { params: new HttpParams().set('locale', locale) })
       .pipe(catchError(() => of(PLACEHOLDER_SITE)));
   }
 
-  categories(): Observable<Category[]> {
+  categories(locale: SiteLocale = 'fr'): Observable<Category[]> {
     return this.http
-      .get<Category[]>(`${this.base}/public/categories`)
+      .get<Category[]>(`${this.base}/public/categories`, {
+        params: new HttpParams().set('locale', locale),
+      })
       .pipe(catchError(() => of(PLACEHOLDER_CATEGORIES)));
   }
 
-  films(slug: string): Observable<Film[]> {
+  films(slug: string, locale: SiteLocale = 'fr'): Observable<Film[]> {
     return this.http
-      .get<Film[]>(`${this.base}/public/categories/${slug}/films`)
-      .pipe(catchError(() => of([])));
+      .get<Film[]>(`${this.base}/public/categories/${slug}/films`, {
+        params: new HttpParams().set('locale', locale),
+      })
+      .pipe(catchError(() => of(PLACEHOLDER_FILMS[slug] ?? [])));
   }
 
   submitLead(payload: LeadRequest): Observable<{ id: string }> {

@@ -1,0 +1,43 @@
+@use 'tokens' as *;
+
+.home-faq {
+  @include section-padding;
+}
+
+.home-faq__list {
+  display: grid;
+  gap: 0;
+  margin: 24px 0 0;
+  border-top: $rule-width solid $color-rule-10;
+}
+
+.home-faq__item {
+  padding: 20px 0;
+  border-bottom: $rule-width solid $color-rule-10;
+}
+
+.home-faq__question {
+  @include display-caps($fs-15, $ls-14, $weight-semibold);
+
+  color: $color-film;
+  margin: 0 0 8px;
+}
+
+.home-faq__answer {
+  margin: 0;
+  color: $color-muted-60;
+  font-size: $fs-14;
+  line-height: $lh-body;
+}
+
+.home-faq__more {
+  display: inline-block;
+  margin-top: 24px;
+  color: $color-amber;
+  text-decoration: none;
+  font-size: $fs-14;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

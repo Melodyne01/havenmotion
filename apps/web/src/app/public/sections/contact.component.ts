@@ -1,18 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SectionTitleComponent } from '../../shared/ui/section-title.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
 import { PublicApiService } from '../../core/api/public-api.service';
 import { SiteStore } from '../site-store';
-
-const PROJECT_TYPES = ['Mariage', 'Corporate', 'Sport & event', 'Clip', 'Lifestyle', 'Autre'];
-const BUDGET_RANGES = [
-  'moins de 1 000 €',
-  '1 000 – 2 000 €',
-  '2 000 – 5 000 €',
-  'plus de 5 000 €',
-  'à définir',
-];
+import { SITE_LOCALE } from '../../core/locale';
+import { UI_TEXT } from '../../core/ui-text';
 
 /**
  * Demande de devis. Formulaire court : nom, type de projet, date, budget,
@@ -28,9 +21,14 @@ const BUDGET_RANGES = [
   template: `
     <section class="contact" id="contact" aria-labelledby="titre-contact">
       <div class="contact__intro">
-        <app-section-title eyebrow="Contact" title="Parlons du projet" titleId="titre-contact" />
+        <app-section-title
+          [eyebrow]="text.eyebrow"
+          [title]="text.title"
+          titleId="titre-contact"
+          [level]="headingLevel()"
+        />
         <p class="contact__lead">
-          Réponse sous 48 h avec un devis chiffré. Aucun engagement.
+          {{ text.lead }}
         </p>
         <ul class="contact__links">
           <li><a class="contact__link" [href]="'mailto:' + settings().email">{{ settings().email }}</a></li>
@@ -48,20 +46,20 @@ const BUDGET_RANGES = [
 
       @if (sent()) {
         <p class="contact__done" role="status">
-          Demande envoyée. Un accusé de réception vient de partir vers votre boîte mail.
+          {{ text.successMessage }}
         </p>
       } @else {
         <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
           <div class="form__row">
-            <label class="form__label" for="name">Nom</label>
+            <label class="form__label" for="name">{{ text.nameLabel }}</label>
             <input id="name" class="form__input" type="text" formControlName="name" autocomplete="name" />
             @if (showError('name')) {
-              <p class="form__error">Indiquez votre nom.</p>
+              <p class="form__error">{{ text.nameError }}</p>
             }
           </div>
 
           <div class="form__row">
-            <label class="form__label" for="email">E-mail</label>
+            <label class="form__label" for="email">{{ text.emailLabel }}</label>
             <input
               id="email"
               class="form__input"
@@ -70,12 +68,12 @@ const BUDGET_RANGES = [
               autocomplete="email"
             />
             @if (showError('email')) {
-              <p class="form__error">Adresse e-mail invalide.</p>
+              <p class="form__error">{{ text.emailError }}</p>
             }
           </div>
 
           <div class="form__row">
-            <label class="form__label" for="projectType">Type de projet</label>
+            <label class="form__label" for="projectType">{{ text.projectTypeLabel }}</label>
             <select id="projectType" class="form__input" formControlName="projectType">
               @for (type of projectTypes; track type) {
                 <option [value]="type">{{ type }}</option>
@@ -84,12 +82,12 @@ const BUDGET_RANGES = [
           </div>
 
           <div class="form__row">
-            <label class="form__label" for="eventDate">Date</label>
+            <label class="form__label" for="eventDate">{{ text.dateLabel }}</label>
             <input id="eventDate" class="form__input" type="date" formControlName="eventDate" />
           </div>
 
           <div class="form__row">
-            <label class="form__label" for="budgetRange">Budget</label>
+            <label class="form__label" for="budgetRange">{{ text.budgetLabel }}</label>
             <select id="budgetRange" class="form__input" formControlName="budgetRange">
               @for (range of budgetRanges; track range) {
                 <option [value]="range">{{ range }}</option>
@@ -98,13 +96,13 @@ const BUDGET_RANGES = [
           </div>
 
           <div class="form__row form__row--wide">
-            <label class="form__label" for="message">Message (optionnel)</label>
+            <label class="form__label" for="message">{{ text.messageLabel }}</label>
             <textarea id="message" class="form__input" rows="4" formControlName="message"></textarea>
           </div>
 
           <!-- Pot de miel : masqué aux humains, rempli par les robots. -->
           <div class="form__honeypot" aria-hidden="true">
-            <label for="website">Ne pas remplir</label>
+            <label for="website">{{ text.honeypotLabel }}</label>
             <input id="website" type="text" formControlName="website" tabindex="-1" autocomplete="off" />
           </div>
 
@@ -114,7 +112,7 @@ const BUDGET_RANGES = [
 
           <div class="form__actions">
             <app-cta-button type="submit" [disabled]="pending()">
-              {{ pending() ? 'Envoi…' : 'Envoyer la demande' }}
+              {{ pending() ? text.submitPending : text.submitIdle }}
             </app-cta-button>
           </div>
         </form>
@@ -124,13 +122,17 @@ const BUDGET_RANGES = [
   styleUrl: './contact.component.scss',
 })
 export class ContactComponent {
+  readonly headingLevel = input<'h1' | 'h2'>('h2');
+
   private readonly fb = inject(FormBuilder);
   private readonly api = inject(PublicApiService);
   private readonly store = inject(SiteStore);
+  private readonly locale = inject(SITE_LOCALE);
 
   protected readonly settings = this.store.settings;
-  protected readonly projectTypes = PROJECT_TYPES;
-  protected readonly budgetRanges = BUDGET_RANGES;
+  protected readonly text = UI_TEXT[this.locale].contact;
+  protected readonly projectTypes = this.text.projectTypes;
+  protected readonly budgetRanges = this.text.budgetRanges;
 
   protected readonly sent = signal(false);
   protected readonly pending = signal(false);
@@ -139,9 +141,9 @@ export class ContactComponent {
   protected readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(120)]],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(180)]],
-    projectType: [PROJECT_TYPES[0], Validators.required],
+    projectType: [this.projectTypes[0], Validators.required],
     eventDate: [''],
-    budgetRange: [BUDGET_RANGES[4], Validators.required],
+    budgetRange: [this.budgetRanges[4], Validators.required],
     message: ['', Validators.maxLength(2000)],
     website: [''],
   });
@@ -173,7 +175,7 @@ export class ContactComponent {
         },
         error: () => {
           this.pending.set(false);
-          this.error.set("L'envoi a échoué. Réessayez ou écrivez-nous directement par e-mail.");
+          this.error.set(this.text.genericError);
         },
       });
   }

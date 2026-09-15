@@ -1,6 +1,15 @@
-# Guide backoffice — Studio VNL (1 page)
+# Guide backoffice — Heaven Motion (1 page)
 
 Connexion : **votresite.fr/admin** avec votre e-mail et votre mot de passe.
+
+## Les vidéos actuelles sont provisoires
+
+En attendant vos films, les cinq bandes et le showreel jouent des boucles
+d'ambiance fabriquées pour le site — un simple habillage lumineux, pas de la
+vidéo. Elles portent toutes un nom en `…_AMBIANCE.WEBM` dans la bibliothèque.
+Dès que vous déposez votre première vidéo, plus aucune boucle n'est ajoutée :
+remplacez-les au fur et à mesure comme ci-dessous, puis supprimez-les de la
+bibliothèque quand elles ne servent plus.
 
 ## Remplacer la vidéo d'une bande (l'essentiel)
 
