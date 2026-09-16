@@ -14,12 +14,13 @@ export const SITE_LOCALE = new InjectionToken<SiteLocale>('SITE_LOCALE', {
 });
 
 /**
- * Correspondance slug FR ↔ NL des cinq catégories. Doit rester synchronisée
+ * Correspondance slug FR ↔ NL des six catégories. Doit rester synchronisée
  * avec `CategoryLocaleMap` dans `SeedData.cs` côté API — c'est la même
  * décision de traduction, dupliquée ici uniquement parce que le sélecteur
  * de langue doit pouvoir construire l'URL cible sans aller-retour réseau.
  */
 export const CATEGORY_SLUG_MAP: readonly { fr: string; nl: string }[] = [
+  { fr: 'evenementiel', nl: 'evenementen' },
   { fr: 'mariage', nl: 'huwelijk' },
   { fr: 'corporate', nl: 'zakelijk' },
   { fr: 'sport', nl: 'sport' },

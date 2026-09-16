@@ -29,6 +29,12 @@ public static class AmbienceFootage
     public static readonly IReadOnlyDictionary<string, AmbienceClip> ByCategorySlug =
         new Dictionary<string, AmbienceClip>
         {
+            ["evenementiel"] = new("evenementiel"),
+            // "evenementen" (slug NL) réutilise le même fichier .webm/.jpg que la
+            // version FR : seuls sport/clip/lifestyle partagent littéralement leur
+            // slug entre les deux langues, donc un slug NL distinct comme
+            // "evenementen" doit avoir sa propre entrée pour être trouvé ici.
+            ["evenementen"] = new("evenementiel"),
             ["mariage"] = new("mariage"),
             ["corporate"] = new("corporate"),
             ["sport"] = new("sport"),

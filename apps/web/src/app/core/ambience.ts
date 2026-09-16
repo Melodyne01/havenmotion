@@ -36,6 +36,7 @@ function clip(slug: string): AmbienceClip {
 
 export const AMBIENCE_CLIPS = {
   showreel: clip('showreel'),
+  evenementiel: clip('evenementiel'),
   mariage: clip('mariage'),
   corporate: clip('corporate'),
   sport: clip('sport'),

@@ -15,6 +15,37 @@ import { FaqEntry } from './faq-content';
  */
 export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly FaqEntry[]>> = {
   fr: {
+    evenementiel: [
+      {
+        question: 'Combien coûte une captation événementielle à Bruxelles ?',
+        answer:
+          'Le tarif est établi sur devis selon la durée et le déroulé de votre événement : un devis chiffré est communiqué sous 48 h après un premier échange.',
+      },
+      {
+        question: 'Quels types d’événements sont couverts ?',
+        answer:
+          'Soirées privées, anniversaires, fêtes de famille, lancements ou tout événement dont vous souhaitez garder une trace authentique.',
+      },
+      {
+        question: 'Le photographe et vidéaste est-il discret pendant l’événement ?',
+        answer:
+          'Oui : le tournage se fait seul ou en équipe réduite, pour rester proche des invités sans jamais s’imposer pendant la soirée.',
+      },
+      {
+        question: 'Peut-on demander des retouches sur les images livrées ?',
+        answer: 'Oui, deux allers-retours sont prévus après le premier montage avant la livraison en ligne définitive.',
+      },
+      {
+        question: 'Qui détient les droits sur les images finales ?',
+        answer:
+          'Vous recevez un usage complet des images livrées pour vos propres besoins (partage, réseaux, souvenir personnel). La musique utilisée est systématiquement sous licence.',
+      },
+      {
+        question: 'Le photographe et vidéaste se déplace-t-il pour un événement à l’étranger ?',
+        answer:
+          'Oui : dans les 19 communes de la Région de Bruxelles-Capitale, à Wemmel et sa périphérie flamande sans frais supplémentaires, mais aussi partout ailleurs en Belgique et à l’international selon votre projet.',
+      },
+    ],
     mariage: [
       {
         question: 'Combien coûte un film de mariage à Bruxelles ?',
@@ -187,6 +218,37 @@ export const CATEGORY_FAQ_CONTENT: Record<SiteLocale, Record<string, readonly Fa
     ],
   },
   nl: {
+    evenementen: [
+      {
+        question: 'Hoeveel kost een evenementopname in Brussel?',
+        answer:
+          'De prijs wordt op maat bepaald op basis van de duur en het verloop van uw evenement: een concrete offerte volgt binnen 48 u na een eerste gesprek.',
+      },
+      {
+        question: 'Welke soorten evenementen worden gedekt?',
+        answer:
+          'Privéfeestjes, verjaardagen, familiefeesten, lanceringen of elk evenement waarvan u een authentieke herinnering wilt bewaren.',
+      },
+      {
+        question: 'Is de fotograaf en videograaf discreet tijdens het evenement?',
+        answer:
+          'Ja: er wordt alleen of met een klein team gefilmd, dicht bij de gasten zonder ooit de avond te verstoren.',
+      },
+      {
+        question: 'Kan er nog aangepast worden aan de geleverde beelden?',
+        answer: 'Ja, na de eerste montage zijn er twee rondes feedback voorzien vóór de definitieve levering online.',
+      },
+      {
+        question: 'Wie heeft de rechten op de eindbeelden?',
+        answer:
+          'U krijgt volledig gebruiksrecht op de geleverde beelden voor eigen doeleinden (delen, sociale media, persoonlijke herinnering). Gebruikte muziek is steeds in licentie.',
+      },
+      {
+        question: 'Komt de fotograaf en videograaf ook filmen voor een evenement in het buitenland?',
+        answer:
+          'Ja: in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, in Wemmel en de Vlaamse rand zonder extra kosten, maar ook overal elders in België en internationaal naargelang uw project.',
+      },
+    ],
     huwelijk: [
       {
         question: 'Hoeveel kost een huwelijksfilm in Brussel?',

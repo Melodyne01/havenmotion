@@ -138,6 +138,19 @@ PLANS: list[Plan] = [
         streak_sway=0.28,
         grain=6.0,
     ),
+    Plan(
+        slug='evenementiel',
+        tint=AMBER,
+        halos=[
+            Halo(x=0.24, y=0.40, dx=0.14, dy=0.09, size=0.22, gain=0.32, turns=1.5),
+            Halo(x=0.66, y=0.58, dx=0.10, dy=0.11, size=0.17, gain=0.20, turns=1.5, phase=2.4),
+        ],
+        streak_gain=0.09,
+        streak_turns=1.5,
+        streak_y=0.50,
+        streak_sway=0.20,
+        grain=7.0,
+    ),
 ]
 
 

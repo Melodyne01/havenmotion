@@ -95,6 +95,7 @@ public static class SeedData
     /// </summary>
     private static readonly (string FrSlug, string NlSlug, string NlName)[] CategoryLocaleMap =
     [
+        ("evenementiel", "evenementen", "Evenementen"),
         ("mariage", "huwelijk", "Huwelijk"),
         ("corporate", "zakelijk", "Zakelijk"),
         ("sport", "sport", "Sport"),
@@ -530,11 +531,12 @@ public static class SeedData
 
     private static List<Category> DefaultCategories() =>
     [
-        Category("mariage", "Mariage", "Le film de votre journée, monté comme une scène de cinéma.", 1),
-        Category("corporate", "Corporate", "Films de marque, portraits de métiers et captations d’événements.", 2),
-        Category("sport", "Sport", "Athlètes, clubs et compétitions filmés au rythme de l’effort.", 3),
-        Category("clip", "Clip", "Clips musicaux et formats courts à forte direction artistique.", 4),
-        Category("lifestyle", "Lifestyle", "Vlogs, séries sociales et contenus de marque au quotidien.", 5),
+        Category("evenementiel", "Événementiel", "Soirées, anniversaires et événements privés, capturés dans l’instant et sans mise en scène.", 1),
+        Category("mariage", "Mariage", "Le film de votre journée, monté comme une scène de cinéma.", 2),
+        Category("corporate", "Corporate", "Films de marque, portraits de métiers et captations d’événements.", 3),
+        Category("sport", "Sport", "Athlètes, clubs et compétitions filmés au rythme de l’effort.", 4),
+        Category("clip", "Clip", "Clips musicaux et formats courts à forte direction artistique.", 5),
+        Category("lifestyle", "Lifestyle", "Vlogs, séries sociales et contenus de marque au quotidien.", 6),
     ];
 
     private static Category Category(string slug, string name, string tagline, int order) => new()

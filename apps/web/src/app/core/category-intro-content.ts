@@ -13,6 +13,8 @@ import { SiteLocale } from './locale';
  */
 export const CATEGORY_INTRO_CONTENT: Record<SiteLocale, Record<string, string>> = {
   fr: {
+    evenementiel:
+      'Photographe et vidéaste événementiel à Bruxelles et à l’international : soirées, anniversaires, fêtes de famille ou lancements privés, captés dans l’instant sans mise en scène ni temps mort imposé aux invités. Déroulé et tarif construits ensemble selon la durée et le nombre de temps forts de votre soirée, dans les 19 communes de la Région de Bruxelles-Capitale, à Wemmel, sa périphérie flamande, ou partout où votre événement vous emmène.',
     mariage:
       'Photographe et vidéaste mariage à Bruxelles et à l’international : le tournage se fait seul ou en équipe réduite pour rester proche des invités sans jamais s’imposer pendant la cérémonie. Repérage du lieu inclus, captation de la journée complète jusqu’à la soirée, dans les 19 communes de la Région de Bruxelles-Capitale, à Wemmel, dans sa périphérie flamande, ou partout où votre mariage vous emmène.',
     corporate:
@@ -25,6 +27,8 @@ export const CATEGORY_INTRO_CONTENT: Record<SiteLocale, Record<string, string>> 
       'Photographe et vidéaste lifestyle à Bruxelles et à l’international : vlogs, séries sociales et contenu de marque tournés pour un rendu naturel plutôt que scénarisé, avec un montage rythmique pensé pour les réseaux sociaux. Disponible dans toute la zone d’intervention du studio, de Bruxelles à Wemmel, sa périphérie flamande, et partout ailleurs selon vos besoins.',
   },
   nl: {
+    evenementen:
+      'Fotograaf en videograaf voor evenementen in Brussel en internationaal: feestjes, verjaardagen, familiefeesten of privélanceringen, vastgelegd in het moment zonder regie of opgelegde stiltes voor de gasten. Verloop en tarief samen bepaald op basis van de duur en de hoogtepunten van uw avond, in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, in Wemmel, de Vlaamse rand, of overal waar uw evenement ons brengt.',
     huwelijk:
       'Fotograaf en videograaf voor huwelijken in Brussel en internationaal: er wordt alleen of met een klein team gefilmd om dicht bij de gasten te blijven zonder de ceremonie te verstoren. Verkenning van de locatie inbegrepen, opname van de volledige dag tot het feest, in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, in Wemmel, de Vlaamse rand, of overal waar uw huwelijk ons brengt.',
     zakelijk:

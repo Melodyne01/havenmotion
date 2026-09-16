@@ -147,7 +147,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       submitPending: 'Envoi…',
       successMessage: 'Demande envoyée. Un accusé de réception vient de partir vers votre boîte mail.',
       genericError: "L'envoi a échoué. Réessayez ou écrivez-nous directement par e-mail.",
-      projectTypes: ['Mariage', 'Corporate', 'Sport & event', 'Clip', 'Lifestyle', 'Autre'],
+      projectTypes: ['Événementiel', 'Mariage', 'Corporate', 'Sport & event', 'Clip', 'Lifestyle', 'Autre'],
       budgetRanges: [
         'moins de 1 000 €',
         '1 000 – 2 000 €',
@@ -229,7 +229,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       submitPending: 'Verzenden…',
       successMessage: 'Aanvraag verzonden. Een bevestiging is net naar uw mailbox gestuurd.',
       genericError: 'Het versturen is mislukt. Probeer opnieuw of schrijf ons rechtstreeks via e-mail.',
-      projectTypes: ['Huwelijk', 'Zakelijk', 'Sport & event', 'Clip', 'Lifestyle', 'Ander'],
+      projectTypes: ['Evenementen', 'Huwelijk', 'Zakelijk', 'Sport & event', 'Clip', 'Lifestyle', 'Ander'],
       budgetRanges: [
         'minder dan € 1 000',
         '€ 1 000 – 2 000',
