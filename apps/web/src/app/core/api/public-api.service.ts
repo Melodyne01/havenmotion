@@ -48,7 +48,10 @@ export class PublicApiService {
    * affichant du contenu figé sans que personne ne s'en aperçoive.
    */
   private fallback<T>(call: string, err: unknown, value: T): Observable<T> {
-    console.error(`[PublicApiService] ${call}() a échoué, contenu de démarrage affiché à la place :`, err);
+    // `warn`, pas `error` : c'est une dégradation gracieuse attendue (poste
+    // de dev sans backend, incident réseau ponctuel), pas un crash — et les
+    // parcours e2e tournent volontairement sans API, sur ce même repli.
+    console.warn(`[PublicApiService] ${call}() a échoué, contenu de démarrage affiché à la place :`, err);
     return of(value);
   }
 
