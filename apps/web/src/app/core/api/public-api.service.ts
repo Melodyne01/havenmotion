@@ -22,7 +22,7 @@ export class PublicApiService {
   site(locale: SiteLocale = 'fr'): Observable<SitePayload> {
     return this.http
       .get<SitePayload>(`${this.base}/public/site`, { params: new HttpParams().set('locale', locale) })
-      .pipe(catchError(() => of(PLACEHOLDER_SITE)));
+      .pipe(catchError((err) => this.fallback('site', err, PLACEHOLDER_SITE)));
   }
 
   categories(locale: SiteLocale = 'fr'): Observable<Category[]> {
@@ -30,7 +30,7 @@ export class PublicApiService {
       .get<Category[]>(`${this.base}/public/categories`, {
         params: new HttpParams().set('locale', locale),
       })
-      .pipe(catchError(() => of(PLACEHOLDER_CATEGORIES)));
+      .pipe(catchError((err) => this.fallback('categories', err, PLACEHOLDER_CATEGORIES)));
   }
 
   films(slug: string, locale: SiteLocale = 'fr'): Observable<Film[]> {
@@ -38,7 +38,18 @@ export class PublicApiService {
       .get<Film[]>(`${this.base}/public/categories/${slug}/films`, {
         params: new HttpParams().set('locale', locale),
       })
-      .pipe(catchError(() => of(PLACEHOLDER_FILMS[slug] ?? [])));
+      .pipe(catchError((err) => this.fallback('films', err, PLACEHOLDER_FILMS[slug] ?? [])));
+  }
+
+  /**
+   * Retombe sur le contenu de démarrage plutôt que sur une page vide, mais
+   * en le signalant : un échec silencieux ici (mauvaise URL d'API, backend
+   * injoignable) rendrait le site "fonctionnel" en apparence tout en
+   * affichant du contenu figé sans que personne ne s'en aperçoive.
+   */
+  private fallback<T>(call: string, err: unknown, value: T): Observable<T> {
+    console.error(`[PublicApiService] ${call}() a échoué, contenu de démarrage affiché à la place :`, err);
+    return of(value);
   }
 
   submitLead(payload: LeadRequest): Observable<{ id: string }> {
