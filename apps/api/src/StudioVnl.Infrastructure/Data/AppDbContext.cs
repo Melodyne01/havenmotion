@@ -27,10 +27,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
         builder.Entity<Category>(entity =>
         {
-            entity.HasIndex(c => c.Slug).IsUnique();
+            entity.HasIndex(c => new { c.Slug, c.Locale }).IsUnique();
             entity.Property(c => c.Name).HasMaxLength(60);
             entity.Property(c => c.Slug).HasMaxLength(60);
             entity.Property(c => c.Tagline).HasMaxLength(200);
+            entity.Property(c => c.Locale).HasMaxLength(5).HasDefaultValue("fr");
             entity.HasOne(c => c.ReelMedia).WithMany().HasForeignKey(c => c.ReelMediaId).OnDelete(DeleteBehavior.SetNull);
             entity.HasOne(c => c.PosterMedia).WithMany().HasForeignKey(c => c.PosterMediaId).OnDelete(DeleteBehavior.SetNull);
         });
@@ -55,7 +56,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
         builder.Entity<SiteSettings>(entity =>
         {
+            entity.HasIndex(s => s.Locale).IsUnique();
+            entity.Property(s => s.Locale).HasMaxLength(5).HasDefaultValue("fr");
             entity.HasOne(s => s.ShowreelMedia).WithMany().HasForeignKey(s => s.ShowreelMediaId).OnDelete(DeleteBehavior.SetNull);
+        });
+
+        builder.Entity<Service>(entity =>
+        {
+            entity.Property(s => s.Locale).HasMaxLength(5).HasDefaultValue("fr");
+        });
+
+        builder.Entity<ProcessStep>(entity =>
+        {
+            entity.Property(p => p.Locale).HasMaxLength(5).HasDefaultValue("fr");
+        });
+
+        builder.Entity<Testimonial>(entity =>
+        {
+            entity.Property(t => t.Locale).HasMaxLength(5).HasDefaultValue("fr");
         });
 
         builder.Entity<Lead>(entity =>

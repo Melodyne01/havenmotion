@@ -27,14 +27,21 @@ public static class AdminCatalogEndpoints
         films.MapDelete("/{id:guid}", DeleteFilmAsync);
     }
 
+    /// <summary>Langues supportées ; toute autre valeur retombe sur "fr".</summary>
+    private static string NormalizeLocale(string? locale) => locale == "nl" ? "nl" : "fr";
+
     private static async Task<IReadOnlyList<CategoryDto>> ListCategoriesAsync(
+        string? locale,
         AppDbContext db,
         IMediaStorage storage,
         CancellationToken cancellationToken)
     {
+        var loc = NormalizeLocale(locale);
+
         var categories = await db.Categories
             .Include(c => c.ReelMedia)
             .Include(c => c.PosterMedia)
+            .Where(c => c.Locale == loc)
             .OrderBy(c => c.SortOrder)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
@@ -67,8 +74,11 @@ public static class AdminCatalogEndpoints
             return Results.NotFound();
         }
 
+        // Le slug n'a besoin d'être unique que dans sa propre langue : Sport,
+        // Clip et Lifestyle partagent volontairement le même slug en FR et en
+        // NL (ce sont les mêmes mots dans les deux langues).
         var slugTaken = await db.Categories
-            .AnyAsync(c => c.Id != id && c.Slug == request.Slug, cancellationToken);
+            .AnyAsync(c => c.Id != id && c.Slug == request.Slug && c.Locale == category.Locale, cancellationToken);
         if (slugTaken)
         {
             return Results.Problem(statusCode: StatusCodes.Status409Conflict, title: "Ce slug est déjà utilisé.");
@@ -121,6 +131,7 @@ public static class AdminCatalogEndpoints
 
     private static async Task<IReadOnlyList<FilmDto>> ListFilmsAsync(
         Guid? categoryId,
+        string? locale,
         AppDbContext db,
         IMediaStorage storage,
         CancellationToken cancellationToken)
@@ -133,6 +144,13 @@ public static class AdminCatalogEndpoints
         if (categoryId.HasValue)
         {
             query = query.Where(f => f.CategoryId == categoryId.Value);
+        }
+        else if (locale is not null)
+        {
+            // Pas de catégorie précisée : la langue filtre la liste complète
+            // (un film n'a pas sa propre langue, elle vient de sa catégorie).
+            var loc = NormalizeLocale(locale);
+            query = query.Where(f => f.Category!.Locale == loc);
         }
         var films = await query.OrderBy(f => f.SortOrder).ToListAsync(cancellationToken);
         return films.Select(f => f.ToDto(storage.GetPublicUrl)).ToList();

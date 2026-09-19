@@ -7,6 +7,10 @@ public class Category
     public string Slug { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Tagline { get; set; } = string.Empty;
+
+    /// <summary>Langue du contenu ("fr" ou "nl"). Une catégorie par langue.</summary>
+    public string Locale { get; set; } = "fr";
+
     public int SortOrder { get; set; }
 
     /// <summary>Compteur affiché s'il est renseigné ; sinon le nombre de films publiés.</summary>

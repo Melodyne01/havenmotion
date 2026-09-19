@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 /**
- * Marque compacte « VNL » : carré ambre, lettres charbon. Utilisée en
+ * Marque compacte « HM » : carré ambre, lettres charbon. Utilisée en
  * watermark vidéo (variante blanc pellicule 40 %) et déclinée en favicon.
  */
 @Component({
   selector: 'app-brand-mark',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<span class="mark" [class.mark--watermark]="watermark()" aria-hidden="true">VNL</span>`,
+  template: `<span class="mark" [class.mark--watermark]="watermark()" aria-hidden="true">HM</span>`,
   styles: [
     `
       @use 'tokens' as *;

@@ -108,7 +108,7 @@ jobs:
             echo ".env déjà présent : valeurs d'environnement réalignées."
             exit 0
           fi
-          ADMIN_PWD="Vnl-$(openssl rand -hex 6)!"
+          ADMIN_PWD="Hm-$(openssl rand -hex 6)!"
           cat > .env <<ENV
           POSTGRES_PASSWORD=$(openssl rand -hex 24)
           JWT_SIGNING_KEY=$(openssl rand -base64 48 | tr -d '\n')
@@ -117,7 +117,7 @@ jobs:
           SMTP_USERNAME=
           SMTP_PASSWORD=
           MAIL_FROM=no-reply@heavenmotion.be
-          ADMIN_EMAIL=admin@studiovnl.fr
+          ADMIN_EMAIL=admin@heavenmotion.be
           ADMIN_PASSWORD=$ADMIN_PWD
           SITE_ORIGIN=$SITE_ORIGIN
           ALLOWED_HOSTS=$ALLOWED_HOSTS
@@ -125,7 +125,7 @@ jobs:
           WEB_PORT=$WEB_PORT
           ENV
           chmod 600 .env
-          printf 'Backoffice %s : admin@studiovnl.fr / %s\n' "$DOMAIN" "$ADMIN_PWD" > BACKOFFICE-ACCES.txt
+          printf 'Backoffice %s : admin@heavenmotion.be / %s\n' "$DOMAIN" "$ADMIN_PWD" > BACKOFFICE-ACCES.txt
           chmod 600 BACKOFFICE-ACCES.txt
           echo ".env généré ; identifiants backoffice dans $DEPLOY_PATH/BACKOFFICE-ACCES.txt"
           REMOTE

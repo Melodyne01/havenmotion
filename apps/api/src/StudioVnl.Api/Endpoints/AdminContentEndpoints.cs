@@ -74,23 +74,29 @@ public static class AdminContentEndpoints
             entity => entity.SortOrder);
     }
 
+    /// <summary>Langues supportées ; toute autre valeur retombe sur "fr".</summary>
+    private static string NormalizeLocale(string? locale) => locale == "nl" ? "nl" : "fr";
+
     private static async Task<SiteSettingsDto> GetSettingsAsync(
+        string? locale,
         AppDbContext db,
         IMediaStorage storage,
         CancellationToken cancellationToken)
     {
-        var settings = await LoadSettingsAsync(db, cancellationToken);
+        var settings = await LoadSettingsAsync(db, NormalizeLocale(locale), cancellationToken);
         return ToDto(settings, storage);
     }
 
     private static async Task<IResult> UpdateSettingsAsync(
+        string? locale,
         UpdateSettingsRequest request,
         AppDbContext db,
         IMediaStorage storage,
         IAuditTrail audit,
         CancellationToken cancellationToken)
     {
-        var settings = await LoadSettingsAsync(db, cancellationToken);
+        var loc = NormalizeLocale(locale);
+        var settings = await LoadSettingsAsync(db, loc, cancellationToken);
         settings.BrandName = request.BrandName;
         settings.Tagline = request.Tagline;
         settings.Email = request.Email;
@@ -100,11 +106,12 @@ public static class AdminContentEndpoints
         settings.LegalText = request.LegalText;
         await db.SaveChangesAsync(cancellationToken);
         await audit.RecordAsync(
-            "SiteSettings", "1", "Update", JsonSerializer.Serialize(request), cancellationToken);
+            "SiteSettings", loc, "Update", JsonSerializer.Serialize(request), cancellationToken);
         return Results.Ok(ToDto(settings, storage));
     }
 
     private static async Task<IResult> SetShowreelAsync(
+        string? locale,
         SetShowreelRequest request,
         AppDbContext db,
         IMediaStorage storage,
@@ -118,7 +125,8 @@ public static class AdminContentEndpoints
             return Results.Problem(statusCode: StatusCodes.Status400BadRequest, title: "Vidéo introuvable.");
         }
 
-        var settings = await LoadSettingsAsync(db, cancellationToken);
+        var loc = NormalizeLocale(locale);
+        var settings = await LoadSettingsAsync(db, loc, cancellationToken);
         settings.ShowreelMediaId = media.Id;
         db.ShowreelHistory.Add(new ShowreelHistoryEntry
         {
@@ -128,7 +136,7 @@ public static class AdminContentEndpoints
         });
         await db.SaveChangesAsync(cancellationToken);
         await audit.RecordAsync(
-            "SiteSettings", "1", "SetShowreel", media.FileName, cancellationToken);
+            "SiteSettings", loc, "SetShowreel", media.FileName, cancellationToken);
 
         settings.ShowreelMedia = media;
         return Results.Ok(ToDto(settings, storage));
@@ -151,16 +159,24 @@ public static class AdminContentEndpoints
             .ToList();
     }
 
+    /// <summary>
+    /// Avec deux fiches en base (FR = Id 1, NL = Id 2, posées par
+    /// EnsureNlTranslationsAsync), lire "la" fiche sans filtre de langue
+    /// renvoyait une ligne au hasard selon l'ordre du moteur — l'admin
+    /// pouvait silencieusement modifier la mauvaise langue. Le filtre est
+    /// donc obligatoire ici, pas une simple optimisation.
+    /// </summary>
     private static async Task<SiteSettings> LoadSettingsAsync(
         AppDbContext db,
+        string locale,
         CancellationToken cancellationToken)
     {
         var settings = await db.SiteSettings
             .Include(s => s.ShowreelMedia)
-            .FirstOrDefaultAsync(cancellationToken);
+            .FirstOrDefaultAsync(s => s.Locale == locale, cancellationToken);
         if (settings is null)
         {
-            settings = new SiteSettings { Id = 1 };
+            settings = new SiteSettings { Id = locale == "nl" ? 2 : 1, Locale = locale };
             db.SiteSettings.Add(settings);
         }
         return settings;
@@ -176,7 +192,13 @@ public static class AdminContentEndpoints
         settings.LegalText,
         settings.ShowreelMedia?.ToDto(storage.GetPublicUrl));
 
-    /// <summary>CRUD générique des blocs de contenu triés par `SortOrder`.</summary>
+    /// <summary>
+    /// CRUD générique des blocs de contenu triés par `SortOrder`. Filtre par
+    /// langue quand l'entité en a une (Service, ProcessStep, Testimonial) ;
+    /// ClientLogo n'en a pas (noms de marque, pas de texte à traduire) et le
+    /// filtre devient un no-op pour elle — même méthode générique pour les
+    /// deux cas plutôt qu'un paramètre par appelant.
+    /// </summary>
     private static void MapCrud<TEntity, TDto, TRequest>(
         RouteGroupBuilder admin,
         string prefix,
@@ -189,14 +211,21 @@ public static class AdminContentEndpoints
         where TRequest : class
     {
         var group = admin.MapGroup(prefix).WithTags(tag);
+        var localeProperty = typeof(TEntity).GetProperty("Locale");
 
-        group.MapGet("/", async (AppDbContext db, CancellationToken cancellationToken) =>
+        group.MapGet("/", async (string? locale, AppDbContext db, CancellationToken cancellationToken) =>
         {
-            var entities = await set(db).AsNoTracking().ToListAsync(cancellationToken);
+            IQueryable<TEntity> query = set(db).AsNoTracking();
+            if (localeProperty is not null)
+            {
+                query = query.Where(e => EF.Property<string>(e, "Locale") == NormalizeLocale(locale));
+            }
+            var entities = await query.ToListAsync(cancellationToken);
             return entities.OrderBy(sortKey).Select(toDto).ToList();
         });
 
         group.MapPost("/", async (
+            string? locale,
             TRequest request,
             AppDbContext db,
             IAuditTrail audit,
@@ -204,6 +233,7 @@ public static class AdminContentEndpoints
         {
             var entity = new TEntity();
             SetId(entity, Guid.NewGuid());
+            localeProperty?.SetValue(entity, NormalizeLocale(locale));
             apply(entity, request);
             set(db).Add(entity);
             await db.SaveChangesAsync(cancellationToken);
