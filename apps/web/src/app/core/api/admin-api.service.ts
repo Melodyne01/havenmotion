@@ -11,10 +11,7 @@ import {
   Lead,
   LeadStatus,
   MediaAsset,
-  ProcessStep,
-  ServiceCard,
   SiteSettings,
-  Testimonial,
 } from '../../models';
 
 export interface LeadFilters {
@@ -107,60 +104,9 @@ export class AdminApiService {
   }
 
   // --- Contenus texte -----------------------------------------------------
-  services(locale: SiteLocale = 'fr'): Observable<ServiceCard[]> {
-    return this.http.get<ServiceCard[]>(`${this.base}/admin/services`, {
-      params: new HttpParams().set('locale', locale),
-    });
-  }
-
-  saveService(body: Partial<ServiceCard>, locale: SiteLocale = 'fr'): Observable<ServiceCard> {
-    return body.id
-      ? this.http.put<ServiceCard>(`${this.base}/admin/services/${body.id}`, body)
-      : this.http.post<ServiceCard>(`${this.base}/admin/services`, body, {
-          params: new HttpParams().set('locale', locale),
-        });
-  }
-
-  deleteService(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.base}/admin/services/${id}`);
-  }
-
-  processSteps(locale: SiteLocale = 'fr'): Observable<ProcessStep[]> {
-    return this.http.get<ProcessStep[]>(`${this.base}/admin/process`, {
-      params: new HttpParams().set('locale', locale),
-    });
-  }
-
-  saveProcessStep(body: Partial<ProcessStep>, locale: SiteLocale = 'fr'): Observable<ProcessStep> {
-    return body.id
-      ? this.http.put<ProcessStep>(`${this.base}/admin/process/${body.id}`, body)
-      : this.http.post<ProcessStep>(`${this.base}/admin/process`, body, {
-          params: new HttpParams().set('locale', locale),
-        });
-  }
-
-  deleteProcessStep(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.base}/admin/process/${id}`);
-  }
-
-  testimonials(locale: SiteLocale = 'fr'): Observable<Testimonial[]> {
-    return this.http.get<Testimonial[]>(`${this.base}/admin/testimonials`, {
-      params: new HttpParams().set('locale', locale),
-    });
-  }
-
-  saveTestimonial(body: Partial<Testimonial>, locale: SiteLocale = 'fr'): Observable<Testimonial> {
-    return body.id
-      ? this.http.put<Testimonial>(`${this.base}/admin/testimonials/${body.id}`, body)
-      : this.http.post<Testimonial>(`${this.base}/admin/testimonials`, body, {
-          params: new HttpParams().set('locale', locale),
-        });
-  }
-
-  deleteTestimonial(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.base}/admin/testimonials/${id}`);
-  }
-
+  // Prestations, process et témoignages ne sont plus éditables ici : le site
+  // public les tient de SITE_CONTENT (code, traduit FR/NL), pas de l'API —
+  // voir le commentaire en tête de ContentAdminComponent.
   logos(): Observable<ClientLogo[]> {
     return this.http.get<ClientLogo[]>(`${this.base}/admin/logos`);
   }
