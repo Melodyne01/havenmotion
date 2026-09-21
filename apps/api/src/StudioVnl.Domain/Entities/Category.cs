@@ -1,6 +1,6 @@
 namespace StudioVnl.Domain.Entities;
 
-/// <summary>Une bande du site public. Les cinq bandes sont la navigation.</summary>
+/// <summary>Une bande du site public. Les bandes forment la navigation.</summary>
 public class Category
 {
     public Guid Id { get; set; }

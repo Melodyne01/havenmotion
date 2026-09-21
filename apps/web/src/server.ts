@@ -4,6 +4,7 @@ import {
   isMainModule,
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
+import compression from 'compression';
 import express from 'express';
 import { request as httpRequest } from 'node:http';
 import { join } from 'node:path';
@@ -26,17 +27,34 @@ const ALLOWED_HOSTS = new Set(
 /** Hôte déclaré dans `angular.json` (`security.allowedHosts`). */
 const CANONICAL_HOST = 'localhost';
 
+/**
+ * Origine canonique publique, aussi utilisée plus bas pour `robots.txt` et
+ * pour la redirection www → apex : dérivée de `VNL_SITE_ORIGIN` plutôt que
+ * reconstruite depuis l'en-tête `Host` (protocole non fiable derrière un
+ * reverse proxy qui termine le TLS).
+ */
+const siteOrigin = process.env['VNL_SITE_ORIGIN'] ?? 'https://heavenmotion.be';
+const isDevEnvironment = new URL(siteOrigin).hostname.startsWith('dev.');
+
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 app.disable('x-powered-by');
+app.use(compression());
 
-// Contrôle d'hôte (protection SSRF) puis normalisation pour le moteur Angular.
+// Contrôle d'hôte (protection SSRF), redirection www → apex, puis
+// normalisation pour le moteur Angular. `www.` reste dans `ALLOWED_HOSTS`
+// (accepté, pas rejeté) mais ne doit jamais être servi tel quel : deux URL
+// pour un même contenu dilue le signal SEO et duplique le canonical.
 app.use((req, res, next) => {
   const host = (req.headers.host ?? '').toLowerCase();
   const hostname = host.split(':')[0];
   if (!ALLOWED_HOSTS.has(host) && !ALLOWED_HOSTS.has(hostname)) {
     res.status(400).type('text/plain').send('Bad Request: unexpected Host header.');
+    return;
+  }
+  if (!isDevEnvironment && hostname.startsWith('www.')) {
+    res.redirect(301, `${siteOrigin}${req.originalUrl}`);
     return;
   }
   req.headers.host = CANONICAL_HOST;
@@ -84,9 +102,6 @@ if (proxyTarget) {
  * plutôt que codée en dur — le fichier statique renvoyait jusqu'ici vers
  * le sitemap de la prod même quand il était servi depuis dev.
  */
-const siteOrigin = process.env['VNL_SITE_ORIGIN'] ?? 'https://heavenmotion.be';
-const isDevEnvironment = new URL(siteOrigin).hostname.startsWith('dev.');
-
 app.get('/robots.txt', (req, res) => {
   const body = isDevEnvironment
     ? 'User-agent: *\nDisallow: /\n'

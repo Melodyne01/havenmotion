@@ -27,7 +27,7 @@ export class SeoService {
 
   apply({ title, description, path, imagePath, locale = 'fr' }: SeoInput): void {
     const url = `${this.origin}${path}`;
-    const image = `${this.origin}${imagePath ?? '/placeholders/showreel-2026.svg'}`;
+    const image = `${this.origin}${imagePath ?? '/ambience/showreel.jpg'}`;
 
     this.titleService.setTitle(title);
     this.setTag('name', 'description', description);
@@ -70,6 +70,7 @@ export class SeoService {
         '@id': `${this.origin}/#studio`,
         name: settings.brandName,
         description: settings.tagline,
+        image: `${this.origin}/ambience/showreel.jpg`,
         email: settings.email,
         url: this.origin,
         areaServed: settings.region,

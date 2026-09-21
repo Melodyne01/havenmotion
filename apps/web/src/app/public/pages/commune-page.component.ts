@@ -49,7 +49,7 @@ import { Category, ServiceCard } from '../../models';
             [muted]="true"
             [loop]="true"
             [controls]="false"
-            [label]="communeName()"
+            [label]="frameLabel()"
             class="commune-page__frame"
           />
 
@@ -177,6 +177,15 @@ export class CommunePageComponent {
     return this.locale === 'nl' ? `Fotograaf & videograaf in ${name}` : `Photographe & vidéaste à ${name}`;
   }
 
+  /**
+   * Texte accessible du cadre vidéo en tête de page : le showreel n'est pas
+   * un tournage propre à la commune, `communeName()` comme alt donnerait
+   * l'impression trompeuse que les images viennent de là.
+   */
+  protected frameLabel(): string {
+    return `Showreel ${this.store.settings().brandName}`;
+  }
+
   protected introText(): string {
     const c = this.commune();
     if (!c) {
@@ -186,10 +195,12 @@ export class CommunePageComponent {
     const landmark = this.locale === 'nl' ? c.landmarkNl : c.landmarkFr;
     const brand = this.store.settings().brandName;
 
+    const list = this.categoriesListText();
+
     if (c.isBrusselsRegion) {
       return this.locale === 'nl'
-        ? `${brand} filmt en fotografeert in ${name}, zoals in de rest van het Brussels Hoofdstedelijk Gewest: huwelijksfilms, bedrijfsvideo's, sportverslagen, clips en lifestyle-content. Niet ver van ${landmark}, net als in elke andere Brusselse gemeente.`
-        : `${brand} photographie et filme à ${name}, comme dans le reste de la Région de Bruxelles-Capitale : films de mariage, vidéos d'entreprise, captations sportives, clips et contenu lifestyle. Non loin de ${landmark}, comme dans chacune des communes bruxelloises.`;
+        ? `${brand} filmt en fotografeert in ${name}, zoals in de rest van het Brussels Hoofdstedelijk Gewest: ${list}. Niet ver van ${landmark}, net als in elke andere Brusselse gemeente.`
+        : `${brand} photographie et filme à ${name}, comme dans le reste de la Région de Bruxelles-Capitale : ${list}. Non loin de ${landmark}, comme dans chacune des communes bruxelloises.`;
     }
 
     // Communes de la périphérie flamande (Wemmel et alentours) : pas partie
@@ -199,19 +210,41 @@ export class CommunePageComponent {
     const suffixFr = landmark ? ` Non loin de ${landmark}.` : '';
     const suffixNl = landmark ? ` Niet ver van ${landmark}.` : '';
     return this.locale === 'nl'
-      ? `${brand} filmt en fotografeert ook in ${name}, in de Brusselse rand: huwelijksfilms, bedrijfsvideo's, sportverslagen, clips en lifestyle-content, net als in Brussel zelf en de omliggende gemeenten.${suffixNl}`
-      : `${brand} photographie et filme aussi à ${name}, dans la périphérie bruxelloise : films de mariage, vidéos d'entreprise, captations sportives, clips et contenu lifestyle, comme à Bruxelles même et dans les communes environnantes.${suffixFr}`;
+      ? `${brand} filmt en fotografeert ook in ${name}, in de Brusselse rand: ${list}, net als in Brussel zelf en de omliggende gemeenten.${suffixNl}`
+      : `${brand} photographie et filme aussi à ${name}, dans la périphérie bruxelloise : ${list}, comme à Bruxelles même et dans les communes environnantes.${suffixFr}`;
+  }
+
+  /**
+   * Liste des catégories réellement publiées, en minuscules et jointe par
+   * une virgule + "et"/"en" — jamais une énumération figée dans le texte
+   * (le studio en a compté 5, puis 6 avec Événementiel ; ce texte doit
+   * rester exact sans qu'on ait à y repenser à chaque changement côté
+   * backoffice, même principe que `intro.component.ts`).
+   */
+  private categoriesListText(): string {
+    const names = this.store.categories().map((c) => c.name.toLowerCase());
+    if (names.length === 0) {
+      return '';
+    }
+    if (names.length === 1) {
+      return names[0];
+    }
+    const last = names[names.length - 1];
+    const rest = names.slice(0, -1).join(', ');
+    const sep = this.locale === 'nl' ? ' en ' : ' et ';
+    return `${rest}${sep}${last}`;
   }
 
   private metaDescription(isBrusselsRegion: boolean, name: string, brandName: string): string {
+    const list = this.categoriesListText();
     if (isBrusselsRegion) {
       return this.locale === 'nl'
-        ? `${brandName}, fotograaf & videograaf in ${name} en de rest van het Brussels Hoofdstedelijk Gewest: huwelijk, bedrijfsvideo, sport, clip. Offerte binnen 48 u.`
-        : `${brandName}, photographe & vidéaste à ${name} et dans le reste de la Région de Bruxelles-Capitale : mariage, vidéo d'entreprise, sport, clip. Devis sous 48 h.`;
+        ? `${brandName}, fotograaf & videograaf in ${name} en de rest van het Brussels Hoofdstedelijk Gewest: ${list}. Offerte binnen 48 u.`
+        : `${brandName}, photographe & vidéaste à ${name} et dans le reste de la Région de Bruxelles-Capitale : ${list}. Devis sous 48 h.`;
     }
     return this.locale === 'nl'
-      ? `${brandName}, fotograaf & videograaf in ${name}, in de Brusselse rand: huwelijk, bedrijfsvideo, sport, clip. Offerte binnen 48 u.`
-      : `${brandName}, photographe & vidéaste à ${name}, dans la périphérie bruxelloise : mariage, vidéo d'entreprise, sport, clip. Devis sous 48 h.`;
+      ? `${brandName}, fotograaf & videograaf in ${name}, in de Brusselse rand: ${list}. Offerte binnen 48 u.`
+      : `${brandName}, photographe & vidéaste à ${name}, dans la périphérie bruxelloise : ${list}. Devis sous 48 h.`;
   }
 
   protected categoryHref(cat: Category): string {
@@ -271,9 +304,10 @@ export class CommunePageComponent {
 
   protected faqAnswer2(): string {
     const name = this.communeName();
+    const list = this.categoriesListText();
     return this.locale === 'nl'
-      ? `Alle vijf categorieën van de studio zijn beschikbaar in ${name}: huwelijk, bedrijfsvideo, sport, muziekclip en lifestyle-content, met dezelfde kwaliteit als in de rest van het werkgebied.`
-      : `Les cinq catégories du studio sont disponibles à ${name} : mariage, vidéo d'entreprise, sport, clip musical et contenu lifestyle, avec le même niveau de qualité que sur le reste de la zone d'intervention.`;
+      ? `Alle categorieën van de studio zijn beschikbaar in ${name}: ${list}, met dezelfde kwaliteit als in de rest van het werkgebied.`
+      : `Toutes les catégories du studio sont disponibles à ${name} : ${list}, avec le même niveau de qualité que sur le reste de la zone d'intervention.`;
   }
 
   /**

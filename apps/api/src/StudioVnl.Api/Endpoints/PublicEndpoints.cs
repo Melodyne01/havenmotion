@@ -152,8 +152,7 @@ public static class PublicEndpoints
         IConfiguration configuration,
         CancellationToken cancellationToken)
     {
-        var origin = (configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [])
-            .FirstOrDefault() ?? "https://heavenmotion.be";
+        var origin = configuration["Site:Origin"] ?? "https://heavenmotion.be";
 
         var frSlugs = await db.Categories
             .Where(c => c.IsPublished && c.Locale == "fr")
@@ -166,45 +165,68 @@ public static class PublicEndpoints
             .Select(c => c.Slug)
             .ToListAsync(cancellationToken);
 
-        var urls = new List<(string Path, string ChangeFreq, string Priority)>
+        // `AltPath` porte l'URL de l'autre langue de la même page : sert à
+        // générer le `xhtml:link rel="alternate" hreflang="…"` de chaque
+        // entrée, pour que les moteurs de recherche relient les deux versions
+        // depuis le sitemap déjà, pas seulement depuis les balises `<head>`.
+        var urls = new List<(string Path, string ChangeFreq, string Priority, string AltPath, string AltHreflang)>
         {
-            ("/", "weekly", "1.0"),
-            ("/nl", "weekly", "1.0"),
-            ("/a-propos", "monthly", "0.5"),
-            ("/nl/over-ons", "monthly", "0.5"),
-            ("/faq", "monthly", "0.5"),
-            ("/nl/faq", "monthly", "0.5"),
-            ("/contact", "monthly", "0.5"),
-            ("/nl/contact", "monthly", "0.5"),
-            ("/mentions-legales", "yearly", "0.2"),
-            ("/nl/wettelijke-vermeldingen", "yearly", "0.2"),
-            ("/confidentialite", "yearly", "0.2"),
-            ("/nl/privacybeleid", "yearly", "0.2"),
+            ("/", "weekly", "1.0", "/nl", "nl"),
+            ("/nl", "weekly", "1.0", "/", "fr"),
+            ("/a-propos", "monthly", "0.5", "/nl/over-ons", "nl"),
+            ("/nl/over-ons", "monthly", "0.5", "/a-propos", "fr"),
+            ("/faq", "monthly", "0.5", "/nl/faq", "nl"),
+            ("/nl/faq", "monthly", "0.5", "/faq", "fr"),
+            ("/contact", "monthly", "0.5", "/nl/contact", "nl"),
+            ("/nl/contact", "monthly", "0.5", "/contact", "fr"),
+            ("/mentions-legales", "yearly", "0.2", "/nl/wettelijke-vermeldingen", "nl"),
+            ("/nl/wettelijke-vermeldingen", "yearly", "0.2", "/mentions-legales", "fr"),
+            ("/confidentialite", "yearly", "0.2", "/nl/privacybeleid", "nl"),
+            ("/nl/privacybeleid", "yearly", "0.2", "/confidentialite", "fr"),
         };
         // Priorité de sitemap relevée pour Clip/Lifestyle et Wemmel : lancement
         // volontairement positionné sur ces mots-clés à faible concurrence
         // plutôt que sur Mariage/Corporate à Bruxelles, déjà saturés par des
         // studios établis et des annuaires (starofservice, sortlist…).
-        urls.AddRange(frSlugs.Select(slug => ($"/realisations/{slug}", "weekly", LaunchPriorityCategorySlugs.Contains(slug) ? "0.9" : "0.8")));
-        urls.AddRange(nlSlugs.Select(slug => ($"/nl/realisaties/{slug}", "weekly", LaunchPriorityCategorySlugs.Contains(slug) ? "0.9" : "0.8")));
-        urls.Add(("/zones", "monthly", "0.6"));
-        urls.Add(("/nl/zones", "monthly", "0.6"));
-        urls.AddRange(CommuneSlugs.Select(c => ($"/zones/{c.Fr}", "monthly", c.Fr == "wemmel" ? "0.8" : "0.6")));
-        urls.AddRange(CommuneSlugs.Select(c => ($"/nl/zones/{c.Nl}", "monthly", c.Nl == "wemmel" ? "0.8" : "0.6")));
+        // `frSlugs`/`nlSlugs` sont triées par le même `SortOrder` (la fiche NL
+        // reprend celui de la fiche FR à sa création) : on peut donc les
+        // apparier par position pour le hreflang, sans mapping de slugs dédié.
+        var categoryPairCount = Math.Min(frSlugs.Count, nlSlugs.Count);
+        for (var i = 0; i < categoryPairCount; i++)
+        {
+            var priority = LaunchPriorityCategorySlugs.Contains(frSlugs[i]) ? "0.9" : "0.8";
+            urls.Add(($"/realisations/{frSlugs[i]}", "weekly", priority, $"/nl/realisaties/{nlSlugs[i]}", "nl"));
+            urls.Add(($"/nl/realisaties/{nlSlugs[i]}", "weekly", priority, $"/realisations/{frSlugs[i]}", "fr"));
+        }
+        urls.Add(("/zones", "monthly", "0.6", "/nl/zones", "nl"));
+        urls.Add(("/nl/zones", "monthly", "0.6", "/zones", "fr"));
+        urls.AddRange(CommuneSlugs.Select(c =>
+            ($"/zones/{c.Fr}", "monthly", c.Fr == "wemmel" ? "0.8" : "0.6", $"/nl/zones/{c.Nl}", "nl")));
+        urls.AddRange(CommuneSlugs.Select(c =>
+            ($"/nl/zones/{c.Nl}", "monthly", c.Nl == "wemmel" ? "0.8" : "0.6", $"/zones/{c.Fr}", "fr")));
+
+        // Pas de date de modification par page suivie en base (catégories,
+        // pages statiques) : `lastmod` reflète l'heure de génération du
+        // sitemap, pas une vraie date de changement de contenu — plus honnête
+        // qu'une date inventée par page, et toujours mieux qu'une balise
+        // absente pour des robots qui s'en servent pour prioriser leur crawl.
+        var lastmod = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
         var body = string.Concat(urls.Select(u =>
             $"""
               <url>
                 <loc>{origin}{u.Path}</loc>
+                <lastmod>{lastmod}</lastmod>
                 <changefreq>{u.ChangeFreq}</changefreq>
                 <priority>{u.Priority}</priority>
+                <xhtml:link rel="alternate" hreflang="{u.AltHreflang}" href="{origin}{u.AltPath}" />
               </url>
             """));
 
         var xml =
             $"""
             <?xml version="1.0" encoding="UTF-8"?>
-            <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+            <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
             {body}</urlset>
             """;
 

@@ -9,7 +9,7 @@ using StudioVnl.Domain.Entities;
 namespace StudioVnl.Infrastructure.Data;
 
 /// <summary>
-/// Contenu de départ : cinq catégories protégées, réglages, prestations,
+/// Contenu de départ : catégories protégées, réglages, prestations,
 /// process, témoignages et comptes de démo. Aligné sur les placeholders du
 /// front (`placeholder-content.ts`).
 ///
@@ -89,7 +89,7 @@ public static class SeedData
     }
 
     /// <summary>
-    /// Correspondance FR → NL pour les cinq catégories : slug et nom réels
+    /// Correspondance FR → NL pour les catégories : slug et nom réels
     /// (utilisés dans les URL et la navigation), pas des lorem — un menu en
     /// faux-latin serait inutilisable, même à titre provisoire.
     /// </summary>

@@ -44,6 +44,7 @@ services:
       MediaStorage__Provider: LocalDisk
       MediaStorage__LocalDisk__RootPath: /data/media
       Cors__AllowedOrigins__0: ${SITE_ORIGIN:-https://heavenmotion.be}
+      Site__Origin: ${SITE_ORIGIN:-https://heavenmotion.be}
     volumes:
       - media-data:/data/media
 

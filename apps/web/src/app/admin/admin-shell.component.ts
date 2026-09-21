@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Meta } from '@angular/platform-browser';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { LogotypeComponent } from '../shared/ui/logotype.component';
 import { AuthService } from '../core/auth/auth.service';
@@ -69,9 +70,17 @@ export class AdminShellComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly adminLocale = inject(AdminLocaleService);
+  private readonly meta = inject(Meta);
 
   protected readonly email = this.auth.email;
   protected readonly locale = this.adminLocale.locale;
+
+  constructor() {
+    // Défense en profondeur : `robots.txt` bloque déjà `/admin`, mais un
+    // robot qui l'ignorerait ne doit pas indexer une page atteinte par un
+    // lien direct.
+    this.meta.updateTag({ name: 'robots', content: 'noindex, nofollow' });
+  }
 
   protected readonly links = [
     { path: 'categories', label: 'Catégories' },

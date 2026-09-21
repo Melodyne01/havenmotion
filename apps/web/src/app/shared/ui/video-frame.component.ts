@@ -15,6 +15,7 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import { MediaAsset, Rendition } from '../../models';
 import { prefersLightMedia, prefersReducedMotion } from '../../core/motion';
+import { SiteLocale } from '../../core/locale';
 
 /**
  * `auto`     — lit en boucle dès que le cadre est visible (hero).
@@ -57,7 +58,13 @@ export type VideoFramePlayback = 'auto' | 'hover' | 'manual' | 'poster';
             <source [src]="source.url" [type]="source.type" />
           }
           @if (captionsUrl(); as track) {
-            <track kind="captions" srclang="fr" label="Français" [src]="track" default />
+            <track
+              kind="captions"
+              [srclang]="captionsLocale()"
+              [label]="captionsLocale() === 'nl' ? 'Nederlands' : 'Français'"
+              [src]="track"
+              default
+            />
           }
         </video>
       } @else {
@@ -98,6 +105,8 @@ export class VideoFrameComponent implements AfterViewInit, OnDestroy {
   /** Marque le média comme critique (hero) : poster chargé en priorité. */
   readonly priority = input(false);
   readonly captionsUrl = input<string | null>(null);
+  /** Langue des sous-titres pointés par `captionsUrl`, "fr" par défaut. */
+  readonly captionsLocale = input<SiteLocale>('fr');
   /** Affiche les contrôles natifs (modale : lecture avec son, pause, volume). */
   readonly controls = input(false);
 

@@ -1,25 +1,40 @@
 # Heaven Motion
 
-> Vidéaste indépendant basé à Bruxelles, spécialisé dans les films de mariage, les vidéos d'entreprise, le sport, les clips musicaux et le contenu lifestyle. Zone d'intervention : Bruxelles et les communes environnantes.
+> Photographe et vidéaste indépendant, basé en Belgique et disponible dans le monde entier. Spécialisé dans l'événementiel, les films de mariage, les vidéos d'entreprise, le sport, les clips musicaux et le contenu lifestyle.
 
-Heaven Motion tourne et monte des films sur mesure, seul ou en petite équipe selon le projet. Devis chiffré sous 48 h après un premier échange.
+Heaven Motion tourne, photographie et monte des projets sur mesure, seul ou en petite équipe selon le projet. Devis chiffré sous 48 h après un premier échange.
 
 ## Pages principales
 
-- [Accueil](https://heavenmotion.be/): présentation du studio, aperçu des cinq catégories de films, showreel.
-- [Mariage](https://heavenmotion.be/realisations/mariage): films de mariage, à partir de 900 €.
-- [Corporate](https://heavenmotion.be/realisations/corporate): vidéos d'entreprise, portraits de métiers, captations d'événements professionnels.
-- [Sport](https://heavenmotion.be/realisations/sport): captation d'athlètes, clubs et compétitions.
-- [Clip](https://heavenmotion.be/realisations/clip): clips musicaux et formats courts à direction artistique.
+- [Accueil](https://heavenmotion.be/): présentation du studio, aperçu des catégories, showreel.
+- [Événementiel](https://heavenmotion.be/realisations/evenementiel): captation photo et vidéo d'événements.
+- [Mariage](https://heavenmotion.be/realisations/mariage): films de mariage, à partir de 1 400 €.
+- [Corporate](https://heavenmotion.be/realisations/corporate): vidéos d'entreprise, portraits de métiers, captations d'événements professionnels, à partir de 1 800 €.
+- [Sport](https://heavenmotion.be/realisations/sport): captation d'athlètes, clubs et compétitions, à partir de 900 €.
+- [Clip](https://heavenmotion.be/realisations/clip): clips musicaux et formats courts à direction artistique, à partir de 1 200 €.
 - [Lifestyle](https://heavenmotion.be/realisations/lifestyle): vlogs, séries sociales, contenu de marque au quotidien.
 - [FAQ](https://heavenmotion.be/faq): tarifs, délais de livraison, zone d'intervention, droits d'usage, déroulé d'une prestation.
-- [À propos](https://heavenmotion.be/a-propos): présentation du vidéaste et de son approche.
+- [À propos](https://heavenmotion.be/a-propos): présentation du studio et de son approche.
 - [Contact](https://heavenmotion.be/contact): formulaire de demande de devis.
-- [Zone d'intervention](https://heavenmotion.be/zones): les 19 communes de la Région de Bruxelles-Capitale, plus Wemmel et sa périphérie flamande (Grimbergen, Meise, Asse, Dilbeek, Vilvorde), chacune avec sa propre page (`/zones/{commune}`, ex. `/zones/uccle`, `/zones/wemmel`).
+- [Zone d'intervention](https://heavenmotion.be/zones): les 19 communes de la Région de Bruxelles-Capitale, plus Wemmel et sa périphérie flamande (Grimbergen, Meise, Asse, Dilbeek, Vilvorde), chacune avec sa propre page (`/zones/{commune}`, ex. `/zones/uccle`, `/zones/wemmel`). Le studio se déplace aussi ailleurs en Belgique et à l'étranger sur demande.
 
 ## Néerlandais (NL)
 
-Le site existe aussi en néerlandais sous [/nl](https://heavenmotion.be/nl), avec les mêmes catégories sous des URL traduites (`/nl/realisaties/huwelijk`, `/nl/realisaties/zakelijk`, etc.).
+> Fotograaf en videograaf, gevestigd in België en beschikbaar wereldwijd. Gespecialiseerd in evenementen, huwelijksfilms, bedrijfsvideo's, sport, muziekclips en lifestyle-content.
+
+Le site existe aussi en néerlandais sous [/nl](https://heavenmotion.be/nl), avec les mêmes catégories sous des URL traduites :
+
+- [Home](https://heavenmotion.be/nl/): overzicht van de categorieën, showreel.
+- [Evenementen](https://heavenmotion.be/nl/realisaties/evenementen)
+- [Huwelijk](https://heavenmotion.be/nl/realisaties/huwelijk)
+- [Zakelijk](https://heavenmotion.be/nl/realisaties/zakelijk)
+- [Sport](https://heavenmotion.be/nl/realisaties/sport)
+- [Clip](https://heavenmotion.be/nl/realisaties/clip)
+- [Lifestyle](https://heavenmotion.be/nl/realisaties/lifestyle)
+- [FAQ](https://heavenmotion.be/nl/faq)
+- [Over ons](https://heavenmotion.be/nl/over-ons)
+- [Contact](https://heavenmotion.be/nl/contact)
+- [Werkgebied](https://heavenmotion.be/nl/zones): dezelfde 19 gemeenten van het Brussels Hoofdstedelijk Gewest, plus Wemmel en de Vlaamse rand.
 
 ## Notes pour les robots
 
