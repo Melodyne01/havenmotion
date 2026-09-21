@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LogotypeComponent } from '../../shared/ui/logotype.component';
 import { AuthService } from '../../core/auth/auth.service';
@@ -74,14 +73,9 @@ export class LoginComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly meta = inject(Meta);
 
   protected readonly pending = signal(false);
   protected readonly error = signal<string | null>(null);
-
-  constructor() {
-    this.meta.updateTag({ name: 'robots', content: 'noindex, nofollow' });
-  }
 
   protected readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],

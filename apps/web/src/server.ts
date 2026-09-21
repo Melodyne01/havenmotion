@@ -42,6 +42,19 @@ const angularApp = new AngularNodeAppEngine();
 app.disable('x-powered-by');
 app.use(compression());
 
+/**
+ * `/admin` est rendu en `RenderMode.Client` (voir `app.routes.server.ts`) :
+ * l'app n'est jamais rendue côté serveur pour ces routes, donc une balise
+ * `<meta name="robots">` posée depuis un composant n'apparaît qu'après
+ * hydratation, côté navigateur — invisible à un robot qui ignorerait déjà
+ * `robots.txt` et n'exécuterait pas son JavaScript. L'en-tête HTTP fait le
+ * même travail sans dépendre du rendu Angular.
+ */
+app.use('/admin', (req, res, next) => {
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+  next();
+});
+
 // Contrôle d'hôte (protection SSRF), redirection www → apex, puis
 // normalisation pour le moteur Angular. `www.` reste dans `ALLOWED_HOSTS`
 // (accepté, pas rejeté) mais ne doit jamais être servi tel quel : deux URL
