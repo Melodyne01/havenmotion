@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SectionTitleComponent } from '../../shared/ui/section-title.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
@@ -52,29 +60,43 @@ import { UI_TEXT } from '../../core/ui-text';
         <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
           <div class="form__row">
             <label class="form__label" for="name">{{ text.nameLabel }}</label>
-            <input id="name" class="form__input" type="text" formControlName="name" autocomplete="name" />
+            <input
+              #nameInput
+              id="name"
+              class="form__input"
+              type="text"
+              formControlName="name"
+              autocomplete="name"
+              required
+              [attr.aria-invalid]="showError('name') ? 'true' : null"
+              [attr.aria-describedby]="showError('name') ? 'name-error' : null"
+            />
             @if (showError('name')) {
-              <p class="form__error">{{ text.nameError }}</p>
+              <p class="form__error" id="name-error">{{ text.nameError }}</p>
             }
           </div>
 
           <div class="form__row">
             <label class="form__label" for="email">{{ text.emailLabel }}</label>
             <input
+              #emailInput
               id="email"
               class="form__input"
               type="email"
               formControlName="email"
               autocomplete="email"
+              required
+              [attr.aria-invalid]="showError('email') ? 'true' : null"
+              [attr.aria-describedby]="showError('email') ? 'email-error' : null"
             />
             @if (showError('email')) {
-              <p class="form__error">{{ text.emailError }}</p>
+              <p class="form__error" id="email-error">{{ text.emailError }}</p>
             }
           </div>
 
           <div class="form__row">
             <label class="form__label" for="projectType">{{ text.projectTypeLabel }}</label>
-            <select id="projectType" class="form__input" formControlName="projectType">
+            <select id="projectType" class="form__input" formControlName="projectType" required>
               @for (type of projectTypes; track type) {
                 <option [value]="type">{{ type }}</option>
               }
@@ -88,7 +110,7 @@ import { UI_TEXT } from '../../core/ui-text';
 
           <div class="form__row">
             <label class="form__label" for="budgetRange">{{ text.budgetLabel }}</label>
-            <select id="budgetRange" class="form__input" formControlName="budgetRange">
+            <select id="budgetRange" class="form__input" formControlName="budgetRange" required>
               @for (range of budgetRanges; track range) {
                 <option [value]="range">{{ range }}</option>
               }
@@ -138,6 +160,9 @@ export class ContactComponent {
   protected readonly pending = signal(false);
   protected readonly error = signal<string | null>(null);
 
+  private readonly nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
+  private readonly emailInput = viewChild<ElementRef<HTMLInputElement>>('emailInput');
+
   protected readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(120)]],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(180)]],
@@ -161,6 +186,14 @@ export class ContactComponent {
     this.error.set(null);
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      // Déplace le focus sur le premier champ en erreur : sans ça, un
+      // utilisateur de lecteur d'écran n'a aucune indication que la
+      // soumission a échoué ni où corriger.
+      if (this.form.controls.name.invalid) {
+        this.nameInput()?.nativeElement.focus();
+      } else if (this.form.controls.email.invalid) {
+        this.emailInput()?.nativeElement.focus();
+      }
       return;
     }
 

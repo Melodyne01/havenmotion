@@ -83,6 +83,7 @@ const STATUS_LABELS: Record<LeadStatus, string> = {
                       [ngModel]="lead.status"
                       (ngModelChange)="setStatus(lead, $event)"
                       name="status-{{ lead.id }}"
+                      [attr.aria-label]="'Statut de la demande de ' + lead.name"
                     >
                       @for (option of statusOptions; track option) {
                         <option [value]="option">{{ statusLabel(option) }}</option>

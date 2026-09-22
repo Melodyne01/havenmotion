@@ -232,6 +232,10 @@ if (app.Services.GetRequiredService<IMediaStorage>() is LocalDiskMediaStorage lo
     {
         FileProvider = new PhysicalFileProvider(localStorage.RootPath),
         RequestPath = "/media",
+        // Défense en profondeur : même si l'extension stockée est désormais dérivée
+        // du Content-Type validé (voir AdminMediaEndpoints.ExtensionFor), empêche un
+        // navigateur de re-détecter un type de contenu différent de celui déclaré.
+        OnPrepareResponse = ctx => ctx.Context.Response.Headers.Append("X-Content-Type-Options", "nosniff"),
     });
 }
 

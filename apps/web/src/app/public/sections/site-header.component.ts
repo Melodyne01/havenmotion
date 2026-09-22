@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  computed,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { LogotypeComponent } from '../../shared/ui/logotype.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
 import { SITE_LOCALE } from '../../core/locale';
@@ -39,6 +48,7 @@ interface NavLink {
       </div>
 
       <button
+        #burgerButton
         class="header__burger"
         type="button"
         [attr.aria-expanded]="menuOpen()"
@@ -67,6 +77,7 @@ interface NavLink {
 })
 export class SiteHeaderComponent {
   private readonly locale = inject(SITE_LOCALE);
+  private readonly burgerButton = viewChild<ElementRef<HTMLButtonElement>>('burgerButton');
 
   protected readonly menuOpen = signal(false);
 
@@ -110,7 +121,20 @@ export class SiteHeaderComponent {
     this.menuOpen.update((open) => !open);
   }
 
+  /** Ferme le menu et rend le focus au bouton burger qui l'a ouvert —
+   * sinon, au clavier, le focus se retrouve perdu en haut de page. */
   protected close(): void {
+    const wasOpen = this.menuOpen();
     this.menuOpen.set(false);
+    if (wasOpen) {
+      this.burgerButton()?.nativeElement.focus();
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  protected onEscape(): void {
+    if (this.menuOpen()) {
+      this.close();
+    }
   }
 }
