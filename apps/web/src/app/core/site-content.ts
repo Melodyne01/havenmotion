@@ -32,10 +32,14 @@ export const SITE_CONTENT: Record<SiteLocale, SiteContent> = {
     region: 'Bruxelles-Capitale',
     legalText: 'Heaven Motion — micro-entreprise. Mentions légales à compléter.',
     aboutParagraphs: [
-      'Heaven Motion est un studio photo et vidéo indépendant, basé à Bruxelles et disponible dans le monde entier.',
-      'Je filme seul ou en équipe réduite, pour rester au plus près des gens.',
-      'Le montage cherche le rythme d’un film, pas celui d’un résumé.',
-      'Chaque projet part d’un échange, jamais d’un catalogue.',
+      'Chaque histoire mérite d’être vécue. Chaque moment mérite d’être gardé.',
+      'Chez Heaven Motion, nous créons des images qui racontent ce que vous vivez. Vidéo, photographie ou les deux, nous cherchons à capturer bien plus qu’un simple instant : une émotion, une ambiance, un regard, une énergie, tous ces détails qui rendent un moment unique.',
+      'Un événement, un mariage, une soirée, un anniversaire, un restaurant, un projet professionnel, un voyage, une marque, un événement ou simplement une histoire que vous souhaitez raconter… peu importe le projet, nous pensons que chacun a quelque chose à montrer et que tout le monde mérite de belles images.',
+      'Parce qu’une image ne sert pas seulement à montrer ce qui s’est passé. Elle permet de le ressentir à nouveau.',
+      'Basé en Belgique et disponible partout dans le monde, Heaven Motion se déplace là où vos histoires nous emmènent. Nous avons déjà réalisé des projets au-delà de nos frontières et sommes toujours prêts à découvrir de nouveaux lieux, de nouvelles personnes et de nouvelles histoires.',
+      'Chaque projet commence par un échange pour comprendre votre vision, vos envies et ce que vous souhaitez transmettre.',
+      'Heaven Motion couvre 6 types de projets — événementiel, mariage, corporate, sport, lifestyle (vlog, interview) & clips — chacun avec son propre déroulé de tournage et de montage, détaillé dans le détail des prestations et des tarifs.',
+      'Chaque projet démarre par un échange pour cadrer l’intention, le budget et la date, avec un devis chiffré sous 48 h. Le tournage se fait seul ou en équipe réduite, pour rester au plus près des personnes, et le montage suit deux allers-retours avant la livraison en ligne.',
     ],
     services: [
       {
@@ -92,10 +96,14 @@ export const SITE_CONTENT: Record<SiteLocale, SiteContent> = {
     region: 'Brussels Hoofdstedelijk Gewest',
     legalText: 'Heaven Motion — eenmanszaak. Wettelijke vermeldingen aan te vullen.',
     aboutParagraphs: [
-      'Heaven Motion is een onafhankelijke foto- en videostudio, gevestigd in Brussel en wereldwijd beschikbaar.',
-      'Ik film alleen of met een klein team, om dicht bij de mensen te blijven.',
-      'De montage zoekt het ritme van een film, niet dat van een samenvatting.',
-      'Elk project vertrekt van een gesprek, nooit van een catalogus.',
+      'Elk verhaal verdient het om beleefd te worden. Elk moment verdient het om bewaard te blijven.',
+      'Bij Heaven Motion maken we beelden die vertellen wat u beleeft. Video, fotografie of beide: we zoeken naar veel meer dan een simpel moment — een emotie, een sfeer, een blik, een energie, al die details die een moment uniek maken.',
+      'Een evenement, een huwelijk, een feestavond, een verjaardag, een restaurant, een professioneel project, een reis, een merk, of gewoon een verhaal dat u wilt vertellen… welk project het ook is, wij denken dat iedereen iets te tonen heeft en dat iedereen mooie beelden verdient.',
+      'Want een beeld toont niet alleen wat er is gebeurd. Het laat u dat moment opnieuw beleven.',
+      'Gevestigd in België en wereldwijd beschikbaar, reist Heaven Motion overal waar uw verhalen ons brengen. We realiseerden al projecten buiten onze landsgrenzen en zijn altijd klaar om nieuwe plekken, nieuwe mensen en nieuwe verhalen te ontdekken.',
+      'Elk project begint met een gesprek om uw visie, uw wensen en wat u wilt overbrengen te begrijpen.',
+      'Heaven Motion behandelt 6 soorten projecten — evenementen, huwelijk, zakelijk, sport, lifestyle (vlog, interview) & clips — elk met een eigen verloop van opname en montage, in detail beschreven bij de diensten en tarieven.',
+      'Elk project start met een gesprek om de intentie, het budget en de datum te bepalen, met een offerte binnen 48 u. De opname gebeurt alleen of met een klein team, om dicht bij de mensen te blijven, en de montage doorloopt twee rondes feedback voor de levering online.',
     ],
     services: [
       {

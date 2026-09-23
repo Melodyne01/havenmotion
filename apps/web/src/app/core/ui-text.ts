@@ -94,7 +94,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     keyFigures: {
       eyebrow: 'En chiffres',
       titleSuffix: 'en quelques chiffres',
-      worldwideValue: 'Monde entier',
+      worldwideValue: 'Partout au monde',
       worldwideLabel: "zone d'intervention, en plus de la Belgique",
       categoriesLabel: 'catégories de films',
       quoteDelayValue: '48 h',
