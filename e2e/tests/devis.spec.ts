@@ -7,7 +7,14 @@ import { expect, test } from '@playwright/test';
 test('du hero à la demande de devis', async ({ page }) => {
   const consoleErrors: string[] = [];
   page.on('console', (message) => {
-    if (message.type() === 'error') {
+    // Le test est hermétique (aucun backend réel, voir playwright.config.ts) :
+    // SiteStore.load() appelle /api/public/site et /api/public/categories,
+    // qui échouent toujours ici et retombent sur le contenu de démarrage —
+    // un comportement voulu, pas une erreur applicative. Depuis que /api/*
+    // renvoie un vrai 404 (au lieu de l'ancien soft-404 qui masquait
+    // l'échec derrière une redirection 200), le navigateur journalise ces
+    // deux appels comme des erreurs réseau : bruit attendu, pas un bug.
+    if (message.type() === 'error' && !/Failed to load resource/.test(message.text())) {
       consoleErrors.push(message.text());
     }
   });

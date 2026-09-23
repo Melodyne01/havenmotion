@@ -93,6 +93,14 @@ export const routes: Routes = [
           import('./public/legal-page.component').then((m) => m.LegalPageComponent),
         data: { document: 'confidentialite' },
       },
+      {
+        // Catch-all propre à la sous-arborescence NL : sans lui, une URL NL
+        // inconnue retomberait sur le `**` racine ci-dessous et perdrait la
+        // langue (page 404 en français sous une URL /nl/...).
+        path: '**',
+        loadComponent: () =>
+          import('./public/pages/not-found.component').then((m) => m.NotFoundComponent),
+      },
     ],
   },
   {
@@ -111,5 +119,12 @@ export const routes: Routes = [
     path: 'admin',
     loadChildren: () => import('./admin/admin.routes').then((m) => m.adminRoutes),
   },
-  { path: '**', redirectTo: '' },
+  {
+    // Vraie page 404 plutôt qu'une redirection silencieuse vers la home :
+    // le statut HTTP correspondant (404) est posé côté serveur dans
+    // `app.routes.server.ts`, sur ce même `**`.
+    path: '**',
+    loadComponent: () =>
+      import('./public/pages/not-found.component').then((m) => m.NotFoundComponent),
+  },
 ];
