@@ -34,7 +34,7 @@ export const SITE_CONTENT: Record<SiteLocale, SiteContent> = {
     aboutParagraphs: [
       'Chaque histoire mérite d’être vécue. Chaque moment mérite d’être gardé.',
       'Chez Heaven Motion, nous créons des images qui racontent ce que vous vivez. Vidéo, photographie ou les deux, nous cherchons à capturer bien plus qu’un simple instant : une émotion, une ambiance, un regard, une énergie, tous ces détails qui rendent un moment unique.',
-      'Un événement, un mariage, une soirée, un anniversaire, un restaurant, un projet professionnel, un voyage, une marque, un événement ou simplement une histoire que vous souhaitez raconter… peu importe le projet, nous pensons que chacun a quelque chose à montrer et que tout le monde mérite de belles images.',
+      'Un événement, un mariage, une soirée, un anniversaire, un restaurant, un projet professionnel, un voyage, une marque, ou simplement une histoire que vous souhaitez raconter… peu importe le projet, nous pensons que chacun a quelque chose à montrer et que tout le monde mérite de belles images.',
       'Parce qu’une image ne sert pas seulement à montrer ce qui s’est passé. Elle permet de le ressentir à nouveau.',
       'Basé en Belgique et disponible partout dans le monde, Heaven Motion se déplace là où vos histoires nous emmènent. Nous avons déjà réalisé des projets au-delà de nos frontières et sommes toujours prêts à découvrir de nouveaux lieux, de nouvelles personnes et de nouvelles histoires.',
       'Chaque projet commence par un échange pour comprendre votre vision, vos envies et ce que vous souhaitez transmettre.',
