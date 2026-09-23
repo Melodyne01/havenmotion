@@ -27,7 +27,10 @@ export class SeoService {
 
   apply({ title, description, path, imagePath, locale = 'fr' }: SeoInput): void {
     const url = `${this.origin}${path}`;
-    const image = `${this.origin}${imagePath ?? '/ambience/showreel.jpg'}`;
+    // Recadrage 1200×630 (ratio standard des aperçus de lien) du vrai
+    // showreel.jpg (2.39:1, cinémascope) : un format non standard se fait
+    // recadrer différemment par chaque réseau, parfois en perdant le sujet.
+    const image = `${this.origin}${imagePath ?? '/ambience/showreel-og.jpg'}`;
 
     this.titleService.setTitle(title);
     this.setTag('name', 'description', description);
@@ -70,7 +73,8 @@ export class SeoService {
         '@id': `${this.origin}/#studio`,
         name: settings.brandName,
         description: settings.tagline,
-        image: `${this.origin}/ambience/showreel.jpg`,
+        image: `${this.origin}/ambience/showreel-og.jpg`,
+        logo: `${this.origin}/icons/icon-512.png`,
         email: settings.email,
         url: this.origin,
         areaServed: settings.region,
