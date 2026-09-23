@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { LogotypeComponent } from '../../shared/ui/logotype.component';
 import { SiteStore } from '../site-store';
 import { SITE_LOCALE } from '../../core/locale';
@@ -14,18 +15,18 @@ import { SITE_LOCALE } from '../../core/locale';
 @Component({
   selector: 'app-site-footer',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LogotypeComponent],
+  imports: [LogotypeComponent, RouterLink],
   template: `
     <footer class="footer">
       <app-logotype />
       <p class="footer__legal">{{ settings().legalText }}</p>
       <nav class="footer__nav" aria-label="Navigation du pied de page">
-        <a class="footer__link" [href]="aboutHref()">{{ aboutLabel() }}</a>
-        <a class="footer__link" [href]="faqHref()">FAQ</a>
-        <a class="footer__link" [href]="zonesHref()">{{ zonesLabel() }}</a>
-        <a class="footer__link" [href]="contactHref()">Contact</a>
-        <a class="footer__link" [href]="mentionsHref()">{{ mentionsLabel() }}</a>
-        <a class="footer__link" [href]="confidentialiteHref()">{{ confidentialiteLabel() }}</a>
+        <a class="footer__link" [routerLink]="aboutHref()">{{ aboutLabel() }}</a>
+        <a class="footer__link" [routerLink]="faqHref()">FAQ</a>
+        <a class="footer__link" [routerLink]="zonesHref()">{{ zonesLabel() }}</a>
+        <a class="footer__link" [routerLink]="contactHref()">Contact</a>
+        <a class="footer__link" [routerLink]="mentionsHref()">{{ mentionsLabel() }}</a>
+        <a class="footer__link" [routerLink]="confidentialiteHref()">{{ confidentialiteLabel() }}</a>
       </nav>
       <p class="footer__copy">© {{ year }} {{ settings().brandName }} — {{ settings().city }}</p>
     </footer>

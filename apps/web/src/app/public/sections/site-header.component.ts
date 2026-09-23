@@ -8,42 +8,45 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { LogotypeComponent } from '../../shared/ui/logotype.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
 import { SITE_LOCALE } from '../../core/locale';
 
 interface NavLink {
-  href: string;
+  fragment: string;
   label: string;
 }
 
 /**
  * En-tête collant + menu burger plein écran sur mobile.
  *
- * Les liens de section (`#realisations`…) ne fonctionnaient que sur la home :
- * partagé avec les pages catégorie/à propos/contact/FAQ depuis leur création,
- * cet en-tête pointait vers des ancres absentes de ces pages. Les liens sont
- * maintenant préfixés par le chemin de la home (`/` ou `/nl`), ce qui
- * fonctionne depuis n'importe quelle page.
+ * Les liens de section (`#realisations`…) pointent tous vers la home, quelle
+ * que soit la page courante : `routerLink` + `fragment` plutôt qu'un `href`
+ * classique, pour une navigation côté client (pas de rechargement complet)
+ * avec défilement automatique jusqu'à l'ancre (`withInMemoryScrolling` dans
+ * `app.config.ts`). Le CTA (`app-cta-button`) garde un `href` classique : ce
+ * composant partagé ne porte pas de variante `routerLink`, et le changer
+ * toucherait tous ses autres usages sur le site — hors périmètre ici.
  */
 @Component({
   selector: 'app-site-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LogotypeComponent, CtaButtonComponent],
+  imports: [LogotypeComponent, CtaButtonComponent, RouterLink],
   template: `
     <header class="header">
-      <a class="header__brand" [href]="homePath()" aria-label="Heaven Motion — accueil">
+      <a class="header__brand" [routerLink]="homePath()" aria-label="Heaven Motion — accueil">
         <app-logotype />
       </a>
 
       <nav class="header__nav" aria-label="Navigation principale">
-        @for (link of links(); track link.href) {
-          <a class="header__link" [href]="link.href">{{ link.label }}</a>
+        @for (link of links(); track link.fragment) {
+          <a class="header__link" [routerLink]="homePath()" [fragment]="link.fragment">{{ link.label }}</a>
         }
       </nav>
 
       <div class="header__cta">
-        <a class="header__lang" [href]="otherLocaleHref()">{{ otherLocaleLabel() }}</a>
+        <a class="header__lang" [routerLink]="otherLocaleHref()">{{ otherLocaleLabel() }}</a>
         <app-cta-button [href]="contactHref()">{{ ctaLabel() }}</app-cta-button>
       </div>
 
@@ -62,11 +65,17 @@ interface NavLink {
     @if (menuOpen()) {
       <div id="menu-mobile" class="menu">
         <nav class="menu__nav" aria-label="Navigation mobile">
-          @for (link of links(); track link.href) {
-            <a class="menu__link" [href]="link.href" (click)="close()">{{ link.label }}</a>
+          @for (link of links(); track link.fragment) {
+            <a
+              class="menu__link"
+              [routerLink]="homePath()"
+              [fragment]="link.fragment"
+              (click)="close()"
+              >{{ link.label }}</a
+            >
           }
         </nav>
-        <a class="menu__link" [href]="otherLocaleHref()" (click)="close()">{{ otherLocaleLabel() }}</a>
+        <a class="menu__link" [routerLink]="otherLocaleHref()" (click)="close()">{{ otherLocaleLabel() }}</a>
         <div class="menu__cta">
           <app-cta-button [href]="contactHref()">{{ ctaLabel() }}</app-cta-button>
         </div>
@@ -96,26 +105,25 @@ export class SiteHeaderComponent {
   protected readonly otherLocaleHref = computed(() => (this.locale === 'nl' ? '/' : '/nl'));
   protected readonly otherLocaleLabel = computed(() => (this.locale === 'nl' ? 'FR' : 'NL'));
 
-  protected readonly links = computed<NavLink[]>(() => {
-    const home = this.locale === 'nl' ? '/nl/' : '/';
-    return this.locale === 'nl'
+  protected readonly links = computed<NavLink[]>(() =>
+    this.locale === 'nl'
       ? [
-          { href: `${home}#realisations`, label: 'Realisaties' },
-          { href: `${home}#prestations`, label: 'Diensten' },
-          { href: `${home}#process`, label: 'Werkwijze' },
-          { href: `${home}#studio`, label: 'Studio' },
-          { href: `${home}#contact`, label: 'Contact' },
-          { href: `${home}#faq`, label: 'FAQ' },
+          { fragment: 'realisations', label: 'Realisaties' },
+          { fragment: 'prestations', label: 'Diensten' },
+          { fragment: 'process', label: 'Werkwijze' },
+          { fragment: 'studio', label: 'Studio' },
+          { fragment: 'contact', label: 'Contact' },
+          { fragment: 'faq', label: 'FAQ' },
         ]
       : [
-          { href: `${home}#realisations`, label: 'Réalisations' },
-          { href: `${home}#prestations`, label: 'Prestations' },
-          { href: `${home}#process`, label: 'Process' },
-          { href: `${home}#studio`, label: 'Studio' },
-          { href: `${home}#contact`, label: 'Contact' },
-          { href: `${home}#faq`, label: 'FAQ' },
-        ];
-  });
+          { fragment: 'realisations', label: 'Réalisations' },
+          { fragment: 'prestations', label: 'Prestations' },
+          { fragment: 'process', label: 'Process' },
+          { fragment: 'studio', label: 'Studio' },
+          { fragment: 'contact', label: 'Contact' },
+          { fragment: 'faq', label: 'FAQ' },
+        ],
+  );
 
   protected toggle(): void {
     this.menuOpen.update((open) => !open);
