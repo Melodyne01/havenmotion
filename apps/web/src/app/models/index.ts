@@ -121,6 +121,12 @@ export interface LeadRequest {
   name: string;
   email: string;
   projectType: string;
+  /** Code de la formule choisie (`photo`, `video`, `combo`, `custom`) ou vide. */
+  pack: string;
+  /** Identifiant de la région du tournage (slug FR, voir `regions.ts`) ou vide. */
+  region: string;
+  /** Langue du formulaire d'origine (`fr`, `nl`, `en`). */
+  locale: string;
   eventDate: string | null;
   budgetRange: string;
   message: string;

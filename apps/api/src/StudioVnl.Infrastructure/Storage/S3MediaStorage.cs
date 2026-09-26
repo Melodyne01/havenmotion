@@ -62,6 +62,10 @@ public class S3MediaStorage : IMediaStorage, IDisposable
 
     public string GetPublicUrl(string key)
     {
+        if (MediaKeys.IsAlreadyPublic(key))
+        {
+            return key;
+        }
         if (!string.IsNullOrEmpty(_options.CdnBaseUrl))
         {
             return $"{_options.CdnBaseUrl.TrimEnd('/')}/{key}";

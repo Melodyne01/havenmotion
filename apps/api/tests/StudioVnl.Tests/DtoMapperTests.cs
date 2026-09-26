@@ -71,4 +71,27 @@ public class DtoMapperTests
         Assert.Equal("/media/renditions/y/poster.jpg", dto.PosterUrl);
         Assert.Equal("Ready", dto.ProcessingStatus);
     }
+
+    [Fact]
+    public void Un_lead_expose_sa_formule_sa_region_et_sa_langue()
+    {
+        var lead = new Lead
+        {
+            Id = Guid.NewGuid(),
+            Name = "Camille",
+            Email = "camille@example.fr",
+            ProjectType = "Mariage",
+            Pack = "combo",
+            Region = "lille-nord",
+            Locale = "en",
+            BudgetRange = "2 000 – 5 000 €",
+            CreatedAt = DateTime.UtcNow,
+        };
+
+        var dto = lead.ToDto();
+
+        Assert.Equal("combo", dto.Pack);
+        Assert.Equal("lille-nord", dto.Region);
+        Assert.Equal("en", dto.Locale);
+    }
 }

@@ -12,9 +12,12 @@ public class CreateLeadValidatorTests
         Name: "Camille Martin",
         Email: "camille@example.fr",
         ProjectType: "Mariage",
+        Pack: "combo",
+        Region: "brabant-wallon",
+        Locale: "fr",
         EventDate: "2026-09-12",
         BudgetRange: "2 000 – 5 000 €",
-        Message: "Cérémonie à Lyon.",
+        Message: "Cérémonie à Wavre.",
         Website: "");
 
     [Fact]
@@ -62,5 +65,54 @@ public class CreateLeadValidatorTests
     {
         var result = _validator.Validate(Valid() with { EventDate = null });
         Assert.True(result.IsValid);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("photo")]
+    [InlineData("video")]
+    [InlineData("combo")]
+    [InlineData("custom")]
+    public void Accepte_une_formule_connue_ou_absente(string? pack)
+    {
+        var result = _validator.Validate(Valid() with { Pack = pack });
+        Assert.True(result.IsValid);
+    }
+
+    [Fact]
+    public void Rejette_une_formule_inconnue()
+    {
+        var result = _validator.Validate(Valid() with { Pack = "premium" });
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(CreateLeadRequest.Pack));
+    }
+
+    [Theory]
+    [InlineData("Brabant Wallon")]
+    [InlineData("paris/idf")]
+    public void Rejette_une_region_qui_n_est_pas_un_identifiant(string region)
+    {
+        var result = _validator.Validate(Valid() with { Region = region });
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == nameof(CreateLeadRequest.Region));
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("fr")]
+    [InlineData("nl")]
+    [InlineData("en")]
+    public void Accepte_les_trois_langues_du_site(string? locale)
+    {
+        var result = _validator.Validate(Valid() with { Locale = locale });
+        Assert.True(result.IsValid);
+    }
+
+    [Fact]
+    public void Rejette_une_langue_inconnue()
+    {
+        var result = _validator.Validate(Valid() with { Locale = "de" });
+        Assert.False(result.IsValid);
     }
 }

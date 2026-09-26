@@ -4,6 +4,7 @@ import {
   isMainModule,
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
+import compression from 'compression';
 import express from 'express';
 import { request as httpRequest } from 'node:http';
 import { join } from 'node:path';
@@ -26,12 +27,38 @@ const ALLOWED_HOSTS = new Set(
 /** Hôte déclaré dans `angular.json` (`security.allowedHosts`). */
 const CANONICAL_HOST = 'localhost';
 
+/**
+ * Origine canonique publique, aussi utilisée plus bas pour `robots.txt` et
+ * pour la redirection www → apex : dérivée de `VNL_SITE_ORIGIN` plutôt que
+ * reconstruite depuis l'en-tête `Host` (protocole non fiable derrière un
+ * reverse proxy qui termine le TLS).
+ */
+const siteOrigin = process.env['VNL_SITE_ORIGIN'] ?? 'https://heavenmotion.be';
+const isDevEnvironment = new URL(siteOrigin).hostname.startsWith('dev.');
+
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 app.disable('x-powered-by');
+app.use(compression());
 
-// Contrôle d'hôte (protection SSRF) puis normalisation pour le moteur Angular.
+/**
+ * `/admin` est rendu en `RenderMode.Client` (voir `app.routes.server.ts`) :
+ * l'app n'est jamais rendue côté serveur pour ces routes, donc une balise
+ * `<meta name="robots">` posée depuis un composant n'apparaît qu'après
+ * hydratation, côté navigateur — invisible à un robot qui ignorerait déjà
+ * `robots.txt` et n'exécuterait pas son JavaScript. L'en-tête HTTP fait le
+ * même travail sans dépendre du rendu Angular.
+ */
+app.use('/admin', (req, res, next) => {
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+  next();
+});
+
+// Contrôle d'hôte (protection SSRF), redirection www → apex, puis
+// normalisation pour le moteur Angular. `www.` reste dans `ALLOWED_HOSTS`
+// (accepté, pas rejeté) mais ne doit jamais être servi tel quel : deux URL
+// pour un même contenu dilue le signal SEO et duplique le canonical.
 app.use((req, res, next) => {
   const host = (req.headers.host ?? '').toLowerCase();
   const hostname = host.split(':')[0];
@@ -39,7 +66,34 @@ app.use((req, res, next) => {
     res.status(400).type('text/plain').send('Bad Request: unexpected Host header.');
     return;
   }
+  if (!isDevEnvironment && hostname.startsWith('www.')) {
+    res.redirect(301, `${siteOrigin}${req.originalUrl}`);
+    return;
+  }
   req.headers.host = CANONICAL_HOST;
+  next();
+});
+
+/**
+ * Anciennes adresses des pages catégorie : `/realisations/…` est devenu
+ * `/prestations/…` (NL : `/nl/realisaties/…` → `/nl/diensten/…`) avec
+ * l'arrivée des packs. Redirection permanente côté serveur, avant le rendu
+ * Angular, pour que les moteurs transfèrent le référencement acquis vers la
+ * nouvelle adresse plutôt que d'indexer deux fois le même contenu.
+ */
+const LEGACY_PREFIXES: readonly [RegExp, string][] = [
+  [/^\/realisations(\/|$)/, '/prestations/'],
+  [/^\/nl\/realisaties(\/|$)/, '/nl/diensten/'],
+];
+app.use((req, res, next) => {
+  for (const [pattern, target] of LEGACY_PREFIXES) {
+    if (pattern.test(req.path)) {
+      const rest = req.path.replace(pattern, '').replace(/^\/+/, '');
+      const query = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
+      res.redirect(301, `${target}${rest}${query}`.replace(/\/+$/, '') || '/');
+      return;
+    }
+  }
   next();
 });
 
@@ -74,6 +128,56 @@ if (proxyTarget) {
   });
 }
 
+/**
+ * `robots.txt` servi dynamiquement plutôt que comme fichier statique dans
+ * `public/` : un fichier statique unique serait identique sur la prod et
+ * sur dev.heavenmotion.be, qui partage la même image. Un hôte préfixé
+ * `dev.` bloque toute indexation (l'environnement de test n'a rien à faire
+ * dans les résultats de recherche) ; les autres reprennent le
+ * comportement normal, avec l'URL de sitemap dérivée de VNL_SITE_ORIGIN
+ * plutôt que codée en dur — le fichier statique renvoyait jusqu'ici vers
+ * le sitemap de la prod même quand il était servi depuis dev.
+ */
+app.get('/robots.txt', (req, res) => {
+  const body = isDevEnvironment
+    ? 'User-agent: *\nDisallow: /\n'
+    : `User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${siteOrigin}/sitemap.xml\n`;
+  res.type('text/plain').send(body);
+});
+
+/**
+ * Le sitemap est généré par l'API depuis la base (voir
+ * GetSitemapAsync côté StudioVnl.Api) : il doit rester joignable à la racine
+ * (`/sitemap.xml`), là où les moteurs de recherche le cherchent, alors que
+ * l'API le sert sous `/api/public/sitemap.xml`. Route ajoutée avant les
+ * fichiers statiques pour ne pas être court-circuitée par un éventuel
+ * fichier `sitemap.xml` posé dans `public/`.
+ */
+if (proxyTarget) {
+  app.get('/sitemap.xml', (req, res) => {
+    const target = new URL(proxyTarget);
+    const upstream = httpRequest(
+      {
+        hostname: target.hostname,
+        port: target.port,
+        path: '/api/public/sitemap.xml',
+        method: 'GET',
+        headers: { host: target.host },
+      },
+      (response) => {
+        res.writeHead(response.statusCode ?? 502, response.headers);
+        response.pipe(res);
+      },
+    );
+    upstream.on('error', () => {
+      if (!res.headersSent) {
+        res.status(502).type('text/plain').send('API indisponible.');
+      }
+    });
+    upstream.end();
+  });
+}
+
 // Fichiers statiques du bundle navigateur.
 app.use(
   express.static(browserDistFolder, {
@@ -104,7 +208,7 @@ if (isMainModule(import.meta.url) || process.env['pm_id']) {
     if (error) {
       throw error;
     }
-    console.log(`Studio VNL — SSR à l'écoute sur http://localhost:${port}`);
+    console.log(`Heaven Motion — SSR à l'écoute sur http://localhost:${port}`);
   });
 }
 

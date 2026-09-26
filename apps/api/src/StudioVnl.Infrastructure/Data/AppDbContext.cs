@@ -27,10 +27,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
         builder.Entity<Category>(entity =>
         {
-            entity.HasIndex(c => c.Slug).IsUnique();
+            entity.HasIndex(c => new { c.Slug, c.Locale }).IsUnique();
             entity.Property(c => c.Name).HasMaxLength(60);
             entity.Property(c => c.Slug).HasMaxLength(60);
             entity.Property(c => c.Tagline).HasMaxLength(200);
+            entity.Property(c => c.Locale).HasMaxLength(5).HasDefaultValue("fr");
             entity.HasOne(c => c.ReelMedia).WithMany().HasForeignKey(c => c.ReelMediaId).OnDelete(DeleteBehavior.SetNull);
             entity.HasOne(c => c.PosterMedia).WithMany().HasForeignKey(c => c.PosterMediaId).OnDelete(DeleteBehavior.SetNull);
         });
@@ -55,7 +56,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
         builder.Entity<SiteSettings>(entity =>
         {
+            entity.HasIndex(s => s.Locale).IsUnique();
+            entity.Property(s => s.Locale).HasMaxLength(5).HasDefaultValue("fr");
             entity.HasOne(s => s.ShowreelMedia).WithMany().HasForeignKey(s => s.ShowreelMediaId).OnDelete(DeleteBehavior.SetNull);
+        });
+
+        builder.Entity<Service>(entity =>
+        {
+            entity.Property(s => s.Locale).HasMaxLength(5).HasDefaultValue("fr");
+        });
+
+        builder.Entity<ProcessStep>(entity =>
+        {
+            entity.Property(p => p.Locale).HasMaxLength(5).HasDefaultValue("fr");
+        });
+
+        builder.Entity<Testimonial>(entity =>
+        {
+            entity.Property(t => t.Locale).HasMaxLength(5).HasDefaultValue("fr");
         });
 
         builder.Entity<Lead>(entity =>
@@ -63,6 +81,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             entity.Property(l => l.Name).HasMaxLength(120);
             entity.Property(l => l.Email).HasMaxLength(180);
             entity.Property(l => l.ProjectType).HasMaxLength(60);
+            entity.Property(l => l.Pack).HasMaxLength(20).HasDefaultValue(string.Empty);
+            entity.Property(l => l.Region).HasMaxLength(80).HasDefaultValue(string.Empty);
+            entity.Property(l => l.Locale).HasMaxLength(5).HasDefaultValue("fr");
             entity.Property(l => l.BudgetRange).HasMaxLength(60);
             entity.Property(l => l.Message).HasMaxLength(2000);
             entity.Property(l => l.UserAgent).HasMaxLength(400);

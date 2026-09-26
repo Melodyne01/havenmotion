@@ -10,6 +10,8 @@
   padding: 0;
   text-align: left;
   background: $color-black;
+  color: inherit;
+  text-decoration: none;
   cursor: pointer;
 
   &:focus-visible {

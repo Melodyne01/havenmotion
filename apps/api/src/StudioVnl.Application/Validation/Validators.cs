@@ -1,15 +1,27 @@
 using FluentValidation;
+using StudioVnl.Application;
 using StudioVnl.Application.Dtos;
 
 namespace StudioVnl.Application.Validation;
 
 public class CreateLeadValidator : AbstractValidator<CreateLeadRequest>
 {
+    /// <summary>Codes des formules, alignés sur `PackType` côté front (`packs.ts`).</summary>
+    public static readonly string[] PackTypes = ["photo", "video", "combo", "custom"];
+
     public CreateLeadValidator()
     {
         RuleFor(x => x.Name).NotEmpty().MaximumLength(120);
         RuleFor(x => x.Email).NotEmpty().EmailAddress().MaximumLength(180);
         RuleFor(x => x.ProjectType).NotEmpty().MaximumLength(60);
+        RuleFor(x => x.Pack)
+            .Must(pack => string.IsNullOrEmpty(pack) || PackTypes.Contains(pack))
+            .WithMessage("Formule inconnue : photo, video, combo ou custom.");
+        RuleFor(x => x.Region).MaximumLength(80).Matches("^[a-z0-9-]*$")
+            .WithMessage("La région doit être un identifiant en minuscules, chiffres et tirets.");
+        RuleFor(x => x.Locale)
+            .Must(locale => string.IsNullOrEmpty(locale) || Locales.All.Contains(locale))
+            .WithMessage("Langue inconnue : fr, nl ou en.");
         RuleFor(x => x.BudgetRange).NotEmpty().MaximumLength(60);
         RuleFor(x => x.Message).MaximumLength(2000);
         RuleFor(x => x.EventDate)

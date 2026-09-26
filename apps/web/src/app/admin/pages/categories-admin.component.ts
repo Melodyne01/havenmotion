@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AdminApiService } from '../../core/api/admin-api.service';
+import { AdminLocaleService } from '../admin-locale.service';
 import { MediaPickerComponent } from '../components/media-picker.component';
 import { Category, MediaAsset } from '../../models';
 
@@ -115,13 +116,17 @@ import { Category, MediaAsset } from '../../models';
 })
 export class CategoriesAdminComponent {
   private readonly api = inject(AdminApiService);
+  private readonly adminLocale = inject(AdminLocaleService);
 
   protected readonly categories = signal<Category[]>([]);
   protected readonly status = signal<string | null>(null);
   protected readonly draggedIndex = signal<number | null>(null);
 
   constructor() {
-    this.load();
+    effect(() => {
+      this.adminLocale.locale();
+      this.load();
+    });
   }
 
   protected pad(index: number): string {
@@ -188,7 +193,7 @@ export class CategoriesAdminComponent {
   }
 
   private load(): void {
-    this.api.categories().subscribe({
+    this.api.categories(this.adminLocale.locale()).subscribe({
       next: (categories) => this.categories.set(categories),
       error: () => this.categories.set([]),
     });

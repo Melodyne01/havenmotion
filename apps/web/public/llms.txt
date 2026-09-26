@@ -1,0 +1,66 @@
+# Heaven Motion
+
+> Photographe et vidéaste indépendant basé à Bruxelles — une seule personne pour la photo et la vidéo. Belgique, nord de la France jusqu'à Paris, Luxembourg, Pays-Bas. Six catégories : mariage, événementiel, corporate, sport, clip musical, lifestyle. Prix affichés.
+
+Heaven Motion tourne, photographie et monte des projets sur mesure. Le site existe en français (racine), néerlandais (/nl) et anglais (/en). Devis chiffré sous 48 h, deux allers-retours de montage inclus, aperçu photo sous 7 jours, livraison complète sous 2 à 4 semaines.
+
+## Faits clés
+
+- Basé à Bruxelles (Wemmel). Travaille en français, néerlandais et anglais.
+- Photo ET vidéo par la même personne : un seul style, un seul interlocuteur, prix combiné inférieur aux deux prestations séparées. Second opérateur en option (490 €) au-delà de 120 invités.
+- Quatre formules par catégorie : Photo + retouche, Vidéo + montage, Photo + vidéo, Sur mesure (devis).
+- Prix TTC pour les particuliers (mariage, événementiel, lifestyle), HTVA pour les professionnels (corporate, sport, clip).
+- Déplacement inclus jusqu'à 60 km de Bruxelles ; forfait 90 € (60–150 km : Liège, Lille, Maastricht, Eindhoven), 190 € (150–250 km : Luxembourg, Amsterdam, Reims, Côte d'Opale), 290 € (250–350 km : Paris). Au-delà et à l'étranger : sur devis.
+- Réservation : acompte de 30 %, solde à la livraison. Devis gratuit, valable 30 jours.
+
+## Tarifs (à partir de)
+
+| Catégorie | Photo | Vidéo | Photo + vidéo | TVA |
+| --- | --- | --- | --- | --- |
+| Mariage (journée complète, ~400 photos, film 5–8 min + teaser) | 1 290 € | 1 590 € | 2 690 € | TTC |
+| Événementiel (3 h, ~150 photos, aftermovie 2–3 min) | 390 € | 590 € | 890 € | TTC |
+| Corporate (demi-journée, portraits, film 1–2 min + formats réseaux) | 490 € | 990 € | 1 390 € | HTVA |
+| Sport (un match, ~100 photos, résumé 1–2 min) | 350 € | 590 € | 850 € | HTVA |
+| Clip (1 jour, clip jusqu'à 4 min ; 15 photos promo) | 290 € | 890 € | 1 090 € | HTVA |
+| Lifestyle (1 h 30, 25 photos ; 2 reels) | 250 € | 450 € | 640 € | TTC |
+
+Options : drone 190 €, heure supplémentaire 150 € (220 € photo + vidéo), livraison express 190 €, album imprimé dès 390 €, second opérateur 490 €, nuit d'hôtel 150 €.
+
+## Pages principales (FR)
+
+- [Accueil](https://heavenmotion.be/)
+- [Tarifs](https://heavenmotion.be/tarifs) : grille complète, options, zones de déplacement, conditions, FAQ tarifs.
+- [Mariage](https://heavenmotion.be/prestations/mariage)
+- [Événementiel](https://heavenmotion.be/prestations/evenementiel) : communions, baptêmes, anniversaires, soirées.
+- [Corporate](https://heavenmotion.be/prestations/corporate) : vidéo d'entreprise, portraits LinkedIn, événements.
+- [Sport](https://heavenmotion.be/prestations/sport)
+- [Clip](https://heavenmotion.be/prestations/clip)
+- [Lifestyle](https://heavenmotion.be/prestations/lifestyle) : séances couple, famille, grossesse, contenu réseaux sociaux.
+- [FAQ](https://heavenmotion.be/faq)
+- [À propos](https://heavenmotion.be/a-propos)
+- [Contact](https://heavenmotion.be/contact)
+- [Zone d'intervention](https://heavenmotion.be/zones) : les 19 communes de Bruxelles-Capitale, Wemmel et sa périphérie (pages `/zones/{commune}`).
+
+## Nederlands (NL)
+
+> Onafhankelijke fotograaf en videograaf in Brussel — één persoon voor foto en video. België, Noord-Frankrijk, Luxemburg, Nederland. Transparante prijzen.
+
+- [Home](https://heavenmotion.be/nl)
+- [Tarieven](https://heavenmotion.be/nl/tarieven)
+- [Huwelijk](https://heavenmotion.be/nl/diensten/huwelijk), [Evenementen](https://heavenmotion.be/nl/diensten/evenementen), [Zakelijk](https://heavenmotion.be/nl/diensten/zakelijk), [Sport](https://heavenmotion.be/nl/diensten/sport), [Clip](https://heavenmotion.be/nl/diensten/clip), [Lifestyle](https://heavenmotion.be/nl/diensten/lifestyle)
+- [FAQ](https://heavenmotion.be/nl/faq), [Over ons](https://heavenmotion.be/nl/over-ons), [Contact](https://heavenmotion.be/nl/contact), [Werkgebied](https://heavenmotion.be/nl/zones)
+
+## English (EN)
+
+> Independent photographer and videographer based in Brussels — one person for both photo and video. Belgium, northern France up to Paris, Luxembourg, the Netherlands. Published prices.
+
+- [Home](https://heavenmotion.be/en)
+- [Pricing](https://heavenmotion.be/en/pricing)
+- [Wedding](https://heavenmotion.be/en/services/wedding), [Events](https://heavenmotion.be/en/services/events), [Corporate](https://heavenmotion.be/en/services/corporate), [Sport](https://heavenmotion.be/en/services/sport), [Music video](https://heavenmotion.be/en/services/music-video), [Lifestyle](https://heavenmotion.be/en/services/lifestyle)
+- [FAQ](https://heavenmotion.be/en/faq), [About](https://heavenmotion.be/en/about), [Contact](https://heavenmotion.be/en/contact)
+
+## Notes pour les robots
+
+- Le backoffice (`/admin`) n'est pas destiné à l'indexation.
+- Le sitemap complet (FR + NL + EN) est disponible sur [/sitemap.xml](https://heavenmotion.be/sitemap.xml).
+- Les anciennes adresses `/realisations/…` et `/nl/realisaties/…` redirigent (301) vers `/prestations/…` et `/nl/diensten/…`.

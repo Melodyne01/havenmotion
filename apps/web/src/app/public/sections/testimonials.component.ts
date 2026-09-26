@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SectionTitleComponent } from '../../shared/ui/section-title.component';
 import { RevealDirective } from '../../shared/directives/reveal.directive';
 import { SiteStore } from '../site-store';
+import { SITE_LOCALE } from '../../core/locale';
+import { UI_TEXT } from '../../core/ui-text';
 
 /** Témoignages : trois citations puis un bandeau de logos clients. */
 @Component({
@@ -11,8 +13,8 @@ import { SiteStore } from '../site-store';
   template: `
     <section class="testimonials" id="temoignages" aria-labelledby="titre-temoignages">
       <app-section-title
-        eyebrow="Ils ont tourné avec le studio"
-        title="Retours"
+        [eyebrow]="text.testimonials.eyebrow"
+        [title]="text.testimonials.title"
         titleId="titre-temoignages"
       />
 
@@ -29,7 +31,7 @@ import { SiteStore } from '../site-store';
       </div>
 
       @if (logos().length > 0) {
-        <ul class="logos" aria-label="Clients">
+        <ul class="logos" [attr.aria-label]="text.testimonials.clientsAriaLabel">
           @for (logo of logos(); track logo.id) {
             <li class="logos__item">
               @if (logo.imageUrl; as image) {
@@ -47,6 +49,8 @@ import { SiteStore } from '../site-store';
 })
 export class TestimonialsComponent {
   private readonly store = inject(SiteStore);
+  private readonly locale = inject(SITE_LOCALE);
   protected readonly testimonials = this.store.testimonials;
   protected readonly logos = this.store.logos;
+  protected readonly text = UI_TEXT[this.locale];
 }

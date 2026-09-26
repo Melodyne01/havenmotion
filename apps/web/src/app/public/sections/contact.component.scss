@@ -128,3 +128,9 @@ textarea.form__input {
     grid-column: 1 / -1;
   }
 }
+
+.form__hint {
+  color: $color-amber;
+  font-family: $font-body;
+  font-size: $fs-13;
+}

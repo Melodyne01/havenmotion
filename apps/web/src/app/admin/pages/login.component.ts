@@ -23,6 +23,7 @@ import { AuthService } from '../../core/auth/auth.service';
             type="email"
             formControlName="email"
             autocomplete="username"
+            required
           />
         </div>
 
@@ -34,6 +35,7 @@ import { AuthService } from '../../core/auth/auth.service';
             type="password"
             formControlName="password"
             autocomplete="current-password"
+            required
           />
         </div>
 
