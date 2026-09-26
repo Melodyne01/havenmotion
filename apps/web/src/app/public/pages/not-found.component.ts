@@ -4,7 +4,8 @@ import { SiteHeaderComponent } from '../sections/site-header.component';
 import { SiteFooterComponent } from '../sections/site-footer.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
 import { SiteStore } from '../site-store';
-import { SITE_LOCALE } from '../../core/locale';
+import { SITE_LOCALE, homePath } from '../../core/locale';
+import { UI_TEXT } from '../../core/ui-text';
 
 /**
  * Page 404 réelle : jusqu'ici, toute URL inconnue retombait sur la home
@@ -75,27 +76,24 @@ export class NotFoundComponent {
   private readonly store = inject(SiteStore);
   private readonly locale = inject(SITE_LOCALE);
   private readonly titleService = inject(Title);
+  private readonly uiText = UI_TEXT[this.locale];
 
   constructor() {
     this.store.load(this.locale);
-    this.titleService.setTitle(
-      this.locale === 'nl' ? 'Pagina niet gevonden — Heaven Motion' : 'Page introuvable — Heaven Motion',
-    );
+    this.titleService.setTitle(`${this.uiText.notFound.title} — Heaven Motion`);
   }
 
-  protected readonly homeHref = () => (this.locale === 'nl' ? '/nl' : '/');
+  protected readonly homeHref = () => homePath(this.locale);
 
   protected title(): string {
-    return this.locale === 'nl' ? 'Pagina niet gevonden' : 'Page introuvable';
+    return this.uiText.notFound.title;
   }
 
   protected text(): string {
-    return this.locale === 'nl'
-      ? 'Deze pagina bestaat niet of is verplaatst.'
-      : "Cette page n'existe pas ou a été déplacée.";
+    return this.uiText.notFound.text;
   }
 
   protected ctaLabel(): string {
-    return this.locale === 'nl' ? 'Terug naar home' : "Retour à l'accueil";
+    return this.uiText.notFound.cta;
   }
 }

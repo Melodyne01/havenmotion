@@ -4,7 +4,7 @@ import { AboutComponent } from '../sections/about.component';
 import { SiteFooterComponent } from '../sections/site-footer.component';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
-import { SITE_LOCALE } from '../../core/locale';
+import { SITE_LOCALE, SITE_LOCALES, homePath, pick, routePath } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 
 /** Page « À propos » dédiée : même contenu que la section home, sa propre URL. */
@@ -32,22 +32,26 @@ export class AboutPageComponent {
 
     effect(() => {
       const settings = this.store.settings();
-      const path = this.locale === 'nl' ? '/nl/over-ons' : '/a-propos';
-      const title = this.locale === 'nl' ? 'Over ons' : 'À propos';
+      const path = routePath(this.locale, 'about');
+      const title = this.text.about.pageTitle;
       this.seo.apply({
         title: `${title} — ${settings.brandName}`,
-        description:
-          this.locale === 'nl'
-            ? `${settings.tagline} Studio gevestigd in ${settings.city}.`
-            : `${settings.tagline} Studio installé à ${settings.city}.`,
+        description: pick(this.locale, {
+          fr: `${settings.tagline} Studio installé à ${settings.city}.`,
+          nl: `${settings.tagline} Studio gevestigd in ${settings.city}.`,
+          en: `${settings.tagline} Studio based in ${settings.city}.`,
+        }),
         path,
         locale: this.locale,
       });
       this.seo.applyBreadcrumbs([
-        { name: this.text.home, path: this.locale === 'nl' ? '/nl' : '/' },
+        { name: this.text.home, path: homePath(this.locale) },
         { name: title, path },
       ]);
-      this.seo.applyHreflang({ fr: '/a-propos', nl: '/nl/over-ons' });
+      this.seo.applyHreflang({
+        fr: routePath('fr', 'about'),
+        ...Object.fromEntries(SITE_LOCALES.filter((l) => l !== 'fr').map((l) => [l, routePath(l, 'about')])),
+      });
     });
   }
 }

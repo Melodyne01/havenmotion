@@ -1,8 +1,20 @@
 # Heaven Motion — site « Cinéma »
 
-Site vitrine de **Heaven Motion**, vidéaste freelance (mariages, corporate, sport,
-clips, lifestyle) à Lyon / Auvergne-Rhône-Alpes. Direction artistique
-« Cinéma » (noir & ambre), objectif unique : **décrocher des demandes de devis**.
+Site vitrine de **Heaven Motion**, photographe et vidéaste indépendant basé à
+Bruxelles (une seule personne pour la photo et la vidéo), qui travaille en
+Belgique, dans le nord de la France jusqu'à Paris, au Luxembourg et aux
+Pays-Bas. Six catégories (événementiel, mariage, corporate, sport, clip,
+lifestyle), chacune vendue en quatre formules à prix affiché (photo, vidéo,
+photo + vidéo, sur mesure). Site en français (racine), néerlandais (`/nl`) et
+anglais (`/en`). Direction artistique « Cinéma » (noir & ambre), objectif
+unique : **décrocher des demandes de devis**.
+
+La stratégie SEO/GEO et le découpage en chantiers sont dans
+[`docs/plan-chantiers-seo.md`](docs/plan-chantiers-seo.md). Les prix, options,
+zones de déplacement et régions sont des dictionnaires typés dans
+`apps/web/src/app/core/` (`packs.ts`, `pricing-options.ts`, `travel-zones.ts`,
+`regions.ts`) : un changement de prix est un changement de code + déploiement,
+comme pour le reste du contenu marketing (`site-content.ts`).
 
 | Dossier | Contenu |
 | --- | --- |

@@ -14,9 +14,8 @@ import { SiteFooterComponent } from './sections/site-footer.component';
 import { CtaButtonComponent } from '../shared/ui/cta-button.component';
 import { SiteStore } from './site-store';
 import { SeoService } from '../core/seo.service';
-import { SITE_LOCALE } from '../core/locale';
+import { SITE_LOCALE, SITE_LOCALES, homePath, pick } from '../core/locale';
 import { UI_TEXT } from '../core/ui-text';
-import { SITE_CONTENT } from '../core/site-content';
 import { FAQ_CONTENT } from '../core/faq-content';
 
 /**
@@ -97,39 +96,27 @@ export class PublicPageComponent {
 
     effect(() => {
       const settings = this.store.settings();
-      const path = this.locale === 'nl' ? '/nl' : '/';
       this.seo.apply({
-        title:
-          this.locale === 'nl'
-            ? `${settings.brandName} — Fotograaf & videograaf, België en wereldwijd`
-            : `${settings.brandName} — Photographe & vidéaste, Belgique et international`,
-        description:
-          this.locale === 'nl'
-            ? `${settings.tagline} Brussel, Wemmel, de Vlaamse rand — en overal waar uw verhaal ons brengt. Offerte binnen 48 u.`
-            : `${settings.tagline} Bruxelles, Wemmel, la périphérie flamande — et partout où votre histoire nous emmène. Devis sous 48 h.`,
-        path,
+        title: pick(this.locale, {
+          fr: `${settings.brandName} — Photographe & vidéaste indépendant, Bruxelles · Belgique · France · Luxembourg · Pays-Bas`,
+          nl: `${settings.brandName} — Onafhankelijke fotograaf & videograaf, Brussel · België · Frankrijk · Luxemburg · Nederland`,
+          en: `${settings.brandName} — Independent photographer & videographer, Brussels · Belgium · France · Luxembourg · Netherlands`,
+        }),
+        description: pick(this.locale, {
+          fr: `${settings.tagline} Prix affichés, photo, vidéo ou les deux par la même personne. Devis sous 48 h.`,
+          nl: `${settings.tagline} Transparante prijzen, foto, video of beide door dezelfde persoon. Offerte binnen 48 u.`,
+          en: `${settings.tagline} Published prices, photo, video or both by the same person. Quote within 48 h.`,
+        }),
+        path: homePath(this.locale),
         imagePath: settings.showreel?.posterUrl ?? undefined,
         locale: this.locale,
       });
-      this.seo.applyHreflang({ fr: '/', nl: '/nl' });
-      this.seo.applyStructuredData(settings, this.store.categories(), this.priceRange());
+      this.seo.applyHreflang({
+        fr: '/',
+        ...Object.fromEntries(SITE_LOCALES.filter((l) => l !== 'fr').map((l) => [l, homePath(l)])),
+      });
+      this.seo.applyStructuredData(settings, this.store.categories(), this.locale);
       this.seo.applyFaq(FAQ_CONTENT[this.locale]);
     });
-  }
-
-  /**
-   * "900€–1800€" calculé depuis les vrais tarifs de départ (SITE_CONTENT),
-   * jamais une fourchette inventée — répond à l'intention de recherche
-   * "combien coûte un photographe et vidéaste" dès les résultats enrichis
-   * de Google.
-   */
-  private priceRange(): string | undefined {
-    const prices = SITE_CONTENT[this.locale].services
-      .map((s) => Number(s.startingPrice.replace(/[^\d]/g, '')))
-      .filter((n) => Number.isFinite(n) && n > 0);
-    if (!prices.length) {
-      return undefined;
-    }
-    return `${Math.min(...prices)}€–${Math.max(...prices)}€`;
   }
 }

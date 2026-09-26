@@ -7,6 +7,16 @@ public class Lead
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string ProjectType { get; set; } = string.Empty;
+
+    /// <summary>Formule choisie : `photo`, `video`, `combo`, `custom`, ou vide si indécis.</summary>
+    public string Pack { get; set; } = string.Empty;
+
+    /// <summary>Région du tournage (slug FR de `regions.ts` côté front), ou vide.</summary>
+    public string Region { get; set; } = string.Empty;
+
+    /// <summary>Langue du formulaire d'origine (`fr`, `nl`, `en`).</summary>
+    public string Locale { get; set; } = "fr";
+
     public DateOnly? EventDate { get; set; }
     public string BudgetRange { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;

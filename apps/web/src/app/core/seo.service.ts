@@ -2,17 +2,25 @@ import { DOCUMENT } from '@angular/common';
 import { Injectable, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { APP_CONFIG } from './app-config';
-import { SiteLocale } from './locale';
-import { Category, ServiceCard, SiteSettings } from '../models';
+import { CategoryKey, SITE_LOCALES, SiteLocale, categoryKeyFromSlug } from './locale';
+import { Category, SiteSettings } from '../models';
+import { CategoryPricing, PACK_LABELS, PRICING, pricingFor } from './packs';
+import { COUNTRIES, REGIONS } from './regions';
+import { CATEGORY_NAMES } from './site-content';
 
 export interface SeoInput {
   title: string;
   description: string;
   path: string;
   imagePath?: string;
-  /** Sert à `og:locale` (fr_BE / nl_BE). Par défaut "fr". */
+  /** Sert à `og:locale` (fr_BE / nl_BE / en_GB). Par défaut "fr". */
   locale?: SiteLocale;
 }
+
+/** Chemins d'une même page dans chaque langue où elle existe ; FR obligatoire. */
+export type HreflangPaths = { fr: string } & Partial<Record<SiteLocale, string>>;
+
+const OG_LOCALES: Readonly<Record<SiteLocale, string>> = { fr: 'fr_BE', nl: 'nl_BE', en: 'en_GB' };
 
 /**
  * Métadonnées, OpenGraph et JSON-LD. Le rendu se fait pendant le SSR, ce qui
@@ -39,7 +47,7 @@ export class SeoService {
     this.setTag('property', 'og:description', description);
     this.setTag('property', 'og:url', url);
     this.setTag('property', 'og:image', image);
-    this.setTag('property', 'og:locale', locale === 'nl' ? 'nl_BE' : 'fr_BE');
+    this.setTag('property', 'og:locale', OG_LOCALES[locale]);
     this.setTag('name', 'twitter:card', 'summary_large_image');
     this.setTag('name', 'twitter:title', title);
     this.setTag('name', 'twitter:description', description);
@@ -49,24 +57,36 @@ export class SeoService {
   }
 
   /**
-   * Balises `hreflang` reliant les deux versions d'une même page. `paths`
-   * doit contenir le chemin FR et le chemin NL — l'appelant sait déjà lequel
-   * est lequel (mapping de slugs pour les catégories, chemin fixe sinon).
-   * Le FR sert de `x-default` : c'est le marché majoritaire et la version
-   * non préfixée.
+   * Balises `hreflang` reliant les versions d'une même page. Seules les
+   * langues fournies sont déclarées : une page qui n'existe qu'en FR et NL
+   * (pages commune) ne doit pas annoncer un `/en/…` inexistant. Le FR sert
+   * de `x-default` : c'est le marché majoritaire et la version non
+   * préfixée. Les balises des langues absentes sont retirées, pour qu'une
+   * navigation côté client d'une page trilingue vers une page bilingue ne
+   * laisse pas traîner un `hreflang="en"` périmé.
    */
-  applyHreflang(paths: { fr: string; nl: string }): void {
-    this.setAlternate('fr', `${this.origin}${paths.fr}`);
-    this.setAlternate('nl', `${this.origin}${paths.nl}`);
+  applyHreflang(paths: HreflangPaths): void {
+    for (const locale of SITE_LOCALES) {
+      const path = paths[locale];
+      if (path) {
+        this.setAlternate(locale, `${this.origin}${path}`);
+      } else {
+        this.removeAlternate(locale);
+      }
+    }
     this.setAlternate('x-default', `${this.origin}${paths.fr}`);
   }
 
   /**
    * Publie le bloc JSON-LD `LocalBusiness` + `VideoObject` du showreel.
-   * `priceRange` est optionnel et doit être calculé depuis les vrais tarifs
-   * (SITE_CONTENT) par l'appelant — jamais une fourchette inventée.
+   * `areaServed` liste les quatre pays et chaque région couverte (voir
+   * `regions.ts`) : c'est ce qui dit aux moteurs que le studio travaille à
+   * Lille ou à Luxembourg-Ville, pas seulement à Bruxelles. `priceRange`
+   * est calculé depuis la grille tarifaire, jamais une fourchette inventée.
    */
-  applyStructuredData(settings: SiteSettings, categories: Category[], priceRange?: string): void {
+  applyStructuredData(settings: SiteSettings, categories: Category[], locale: SiteLocale = 'fr'): void {
+    const prices = PRICING.flatMap((p) => p.packs.flatMap((pack) => (pack.price === null ? [] : [pack.price])));
+    const priceRange = `${Math.min(...prices)}-${Math.max(...prices)} EUR`;
     const graph: unknown[] = [
       {
         '@type': 'LocalBusiness',
@@ -77,9 +97,17 @@ export class SeoService {
         logo: `${this.origin}/icons/icon-512.png`,
         email: settings.email,
         url: this.origin,
-        areaServed: settings.region,
+        areaServed: [
+          ...COUNTRIES.filter((c) => c.code !== 'INT').map((c) => ({ '@type': 'Country', name: c.name[locale] })),
+          ...REGIONS.filter((r) => r.country !== 'INT').map((r) => ({
+            '@type': 'AdministrativeArea',
+            name: r.name[locale],
+            containedInPlace: { '@type': 'Country', name: COUNTRIES.find((c) => c.code === r.country)?.name[locale] },
+          })),
+        ],
+        knowsLanguage: ['fr', 'nl', 'en'],
         address: { '@type': 'PostalAddress', addressLocality: settings.city, addressCountry: 'BE' },
-        ...(priceRange ? { priceRange } : {}),
+        priceRange,
         sameAs: settings.instagram
           ? [`https://instagram.com/${settings.instagram.replace('@', '')}`]
           : [],
@@ -115,20 +143,18 @@ export class SeoService {
   }
 
   /**
-   * Publie le bloc JSON-LD `Service` d'une page catégorie, quand une fiche
-   * tarifaire correspondante existe (elles ne sont pas nommées à l'identique
-   * — "Sport & event" couvre la catégorie "Sport", "Clip & lifestyle" couvre
-   * "Clip" et "Lifestyle" — d'où le rapprochement souple plutôt qu'une
-   * correspondance exacte).
+   * Publie le bloc JSON-LD `Service` d'une page catégorie, avec une `Offer`
+   * par formule à prix affiché (photo, vidéo, photo + vidéo) et le régime de
+   * TVA de chacune (`valueAddedTaxIncluded`). Le sur mesure n'a pas de
+   * prix : il n'apparaît pas, plutôt qu'avec un montant inventé.
    */
-  applyService(settings: SiteSettings, category: Category, services: readonly ServiceCard[]): void {
-    const needle = category.name.toLowerCase();
-    const match = services.find(
-      (s) => s.name.toLowerCase().includes(needle) || needle.includes(s.name.toLowerCase()),
-    );
-    if (!match) {
+  applyService(settings: SiteSettings, category: Category, locale: SiteLocale = 'fr'): void {
+    const key = categoryKeyFromSlug(locale, category.slug);
+    if (!key) {
+      this.removeJsonLd('vnl-service');
       return;
     }
+    const pricing = pricingFor(key);
     const graph = {
       '@context': 'https://schema.org',
       '@type': 'Service',
@@ -136,15 +162,49 @@ export class SeoService {
       name: `${settings.brandName} — ${category.name}`,
       description: category.tagline,
       provider: { '@type': 'LocalBusiness', name: settings.brandName, '@id': `${this.origin}/#studio` },
-      areaServed: settings.region,
-      offers: {
-        '@type': 'Offer',
-        priceCurrency: 'EUR',
-        price: this.extractPrice(match.startingPrice),
-        description: match.startingPrice,
-      },
+      areaServed: COUNTRIES.filter((c) => c.code !== 'INT').map((c) => ({ '@type': 'Country', name: c.name[locale] })),
+      offers: this.offersOf(pricing, locale),
     };
     this.writeJsonLd('vnl-service', graph);
+  }
+
+  /**
+   * Publie le catalogue complet de la page tarifs : un `OfferCatalog` avec
+   * une `Offer` par formule à prix affiché, sur les six catégories.
+   */
+  applyPricingCatalog(settings: SiteSettings, locale: SiteLocale): void {
+    const graph = {
+      '@context': 'https://schema.org',
+      '@type': 'OfferCatalog',
+      name: `${settings.brandName} — ${{ fr: 'Tarifs', nl: 'Tarieven', en: 'Pricing' }[locale]}`,
+      itemListElement: PRICING.map((pricing) => ({
+        '@type': 'OfferCatalog',
+        name: CATEGORY_NAMES[pricing.key][locale],
+        itemListElement: this.offersOf(pricing, locale),
+      })),
+    };
+    this.writeJsonLd('vnl-pricing', graph);
+  }
+
+  private offersOf(pricing: CategoryPricing, locale: SiteLocale): unknown[] {
+    const name = CATEGORY_NAMES[pricing.key as CategoryKey][locale];
+    return pricing.packs
+      .filter((pack) => pack.price !== null)
+      .map((pack) => ({
+        '@type': 'Offer',
+        name: `${name} — ${PACK_LABELS[pack.type][locale]}`,
+        description: pack.deliverables[locale],
+        priceCurrency: 'EUR',
+        price: pack.price,
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: pack.price,
+          priceCurrency: 'EUR',
+          valueAddedTaxIncluded: pricing.vat === 'ttc',
+        },
+        availability: 'https://schema.org/InStock',
+        eligibleRegion: COUNTRIES.filter((c) => c.code !== 'INT').map((c) => c.code),
+      }));
   }
 
   /**
@@ -161,13 +221,15 @@ export class SeoService {
     postalCode: string,
     locale: SiteLocale = 'fr',
   ): void {
+    const serviceType = {
+      fr: 'Photographe et vidéaste événementiel et corporate',
+      nl: 'Fotograaf en videograaf voor evenementen en bedrijven',
+      en: 'Event and corporate photographer and videographer',
+    }[locale];
     const graph = {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      serviceType:
-        locale === 'nl'
-          ? 'Fotograaf en videograaf voor evenementen en bedrijven'
-          : 'Photographe et vidéaste événementiel et corporate',
+      serviceType,
       name: `${settings.brandName} — ${communeName}`,
       provider: { '@type': 'LocalBusiness', name: settings.brandName, '@id': `${this.origin}/#studio` },
       areaServed: {
@@ -219,15 +281,8 @@ export class SeoService {
     script.textContent = JSON.stringify(payload);
   }
 
-  /**
-   * "à partir de 1 400 €" → "1400". Les prix du site sont toujours des
-   * montants entiers en euros avec un espace comme séparateur de milliers
-   * (jamais de décimales) : ne garder que les chiffres suffit, pas besoin
-   * de gérer virgule décimale ou autre devise.
-   */
-  private extractPrice(text: string): string | undefined {
-    const digits = text.replace(/[^\d]/g, '');
-    return digits || undefined;
+  private removeJsonLd(id: string): void {
+    this.document.getElementById(id)?.remove();
   }
 
   private absolute(path: string | null): string | undefined {
@@ -262,5 +317,9 @@ export class SeoService {
       this.document.head.appendChild(link);
     }
     link.href = href;
+  }
+
+  private removeAlternate(hreflang: string): void {
+    this.document.querySelector(`link[rel='alternate'][hreflang='${hreflang}']`)?.remove();
   }
 }

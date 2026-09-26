@@ -7,7 +7,7 @@ import { VideoFrameComponent } from '../../shared/ui/video-frame.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
-import { SITE_LOCALE } from '../../core/locale';
+import { SITE_LOCALE, categoryPath, homePath, pick, routePath } from '../../core/locale';
 import { findCommune } from '../../core/communes';
 import { UI_TEXT } from '../../core/ui-text';
 import { SITE_CONTENT } from '../../core/site-content';
@@ -104,24 +104,24 @@ export class CommunePageComponent {
 
   private readonly paramMap = toSignal(this.route.paramMap, { initialValue: this.route.snapshot.paramMap });
 
+  // Ces pages n'existent qu'en FR et NL (les régions en trois langues
+  // arrivent avec le chantier 5) : l'anglais retombe sur les slugs FR.
+  private readonly communeLocale: 'fr' | 'nl' = this.locale === 'nl' ? 'nl' : 'fr';
+
   protected readonly commune = computed(() =>
-    findCommune(this.paramMap().get('commune') ?? '', this.locale),
+    findCommune(this.paramMap().get('commune') ?? '', this.communeLocale),
   );
 
-  protected readonly homePath = computed(() => (this.locale === 'nl' ? '/nl' : '/'));
-  protected readonly zonesPath = computed(() => (this.locale === 'nl' ? '/nl/zones' : '/zones'));
-  protected readonly zonesLabel = computed(() =>
-    this.locale === 'nl' ? 'Werkgebied' : "Zone d'intervention",
-  );
-  protected readonly contactHref = computed(() => (this.locale === 'nl' ? '/nl/contact' : '/contact'));
-  protected readonly ctaLabel = computed(() =>
-    this.locale === 'nl' ? 'Offerte aanvragen' : 'Demander un devis',
-  );
+  protected readonly homePath = computed(() => homePath(this.locale));
+  protected readonly zonesPath = computed(() => routePath(this.locale, 'zones'));
+  protected readonly zonesLabel = computed(() => this.text.zones.eyebrow);
+  protected readonly contactHref = computed(() => routePath(this.locale, 'contact'));
+  protected readonly ctaLabel = computed(() => this.text.quoteCta);
 
-  protected readonly communeName = computed(
-    () => (this.locale === 'nl' ? this.commune()?.nameNl : this.commune()?.nameFr) ?? '',
-  );
   protected readonly text = UI_TEXT[this.locale];
+  protected readonly communeName = computed(
+    () => (this.communeLocale === 'nl' ? this.commune()?.nameNl : this.commune()?.nameFr) ?? '',
+  );
   private readonly services = SITE_CONTENT[this.locale].services;
 
   constructor() {
@@ -142,14 +142,11 @@ export class CommunePageComponent {
         return;
       }
       const settings = this.store.settings();
-      const slug = this.locale === 'nl' ? c.slugNl : c.slugFr;
+      const slug = this.communeLocale === 'nl' ? c.slugNl : c.slugFr;
       const path = `${this.zonesPath()}/${slug}`;
       const name = this.communeName();
       this.seo.apply({
-        title:
-          this.locale === 'nl'
-            ? `Fotograaf & videograaf in ${name} (${c.postalCode}) — ${settings.brandName}`
-            : `Photographe & vidéaste à ${name} (${c.postalCode}) — ${settings.brandName}`,
+        title: `${this.heroTitle()} (${c.postalCode}) — ${settings.brandName}`,
         description: this.metaDescription(c.isBrusselsRegion, name, settings.brandName),
         path,
         locale: this.locale,
@@ -166,15 +163,19 @@ export class CommunePageComponent {
         { question: this.faqQuestion3(), answer: this.faqAnswer3() },
       ]);
       this.seo.applyHreflang({
-        fr: `/zones/${c.slugFr}`,
-        nl: `/nl/zones/${c.slugNl}`,
+        fr: `${routePath('fr', 'zones')}/${c.slugFr}`,
+        nl: `${routePath('nl', 'zones')}/${c.slugNl}`,
       });
     });
   }
 
   protected heroTitle(): string {
     const name = this.communeName();
-    return this.locale === 'nl' ? `Fotograaf & videograaf in ${name}` : `Photographe & vidéaste à ${name}`;
+    return pick(this.locale, {
+      fr: `Photographe & vidéaste à ${name}`,
+      nl: `Fotograaf & videograaf in ${name}`,
+      en: `Photographer & videographer in ${name}`,
+    });
   }
 
   /**
@@ -192,15 +193,17 @@ export class CommunePageComponent {
       return '';
     }
     const name = this.communeName();
-    const landmark = this.locale === 'nl' ? c.landmarkNl : c.landmarkFr;
+    const landmark = this.communeLocale === 'nl' ? c.landmarkNl : c.landmarkFr;
     const brand = this.store.settings().brandName;
 
     const list = this.categoriesListText();
 
     if (c.isBrusselsRegion) {
-      return this.locale === 'nl'
-        ? `${brand} filmt en fotografeert in ${name}, zoals in de rest van het Brussels Hoofdstedelijk Gewest: ${list}. Niet ver van ${landmark}, net als in elke andere Brusselse gemeente.`
-        : `${brand} photographie et filme à ${name}, comme dans le reste de la Région de Bruxelles-Capitale : ${list}. Non loin de ${landmark}, comme dans chacune des communes bruxelloises.`;
+      return pick(this.locale, {
+        fr: `${brand} photographie et filme à ${name}, comme dans le reste de la Région de Bruxelles-Capitale : ${list}. Non loin de ${landmark}, comme dans chacune des communes bruxelloises.`,
+        nl: `${brand} filmt en fotografeert in ${name}, zoals in de rest van het Brussels Hoofdstedelijk Gewest: ${list}. Niet ver van ${landmark}, net als in elke andere Brusselse gemeente.`,
+        en: `${brand} photographs and films in ${name}, as in the rest of the Brussels-Capital Region: ${list}. Not far from ${landmark}, as in every Brussels municipality.`,
+      });
     }
 
     // Communes de la périphérie flamande (Wemmel et alentours) : pas partie
@@ -209,9 +212,12 @@ export class CommunePageComponent {
     // un que l'on connaisse avec certitude).
     const suffixFr = landmark ? ` Non loin de ${landmark}.` : '';
     const suffixNl = landmark ? ` Niet ver van ${landmark}.` : '';
-    return this.locale === 'nl'
-      ? `${brand} filmt en fotografeert ook in ${name}, in de Brusselse rand: ${list}, net als in Brussel zelf en de omliggende gemeenten.${suffixNl}`
-      : `${brand} photographie et filme aussi à ${name}, dans la périphérie bruxelloise : ${list}, comme à Bruxelles même et dans les communes environnantes.${suffixFr}`;
+    const suffixEn = landmark ? ` Not far from ${landmark}.` : '';
+    return pick(this.locale, {
+      fr: `${brand} photographie et filme aussi à ${name}, dans la périphérie bruxelloise : ${list}, comme à Bruxelles même et dans les communes environnantes.${suffixFr}`,
+      nl: `${brand} filmt en fotografeert ook in ${name}, in de Brusselse rand: ${list}, net als in Brussel zelf en de omliggende gemeenten.${suffixNl}`,
+      en: `${brand} also photographs and films in ${name}, on the outskirts of Brussels: ${list}, as in Brussels itself and the surrounding municipalities.${suffixEn}`,
+    });
   }
 
   /**
@@ -231,30 +237,33 @@ export class CommunePageComponent {
     }
     const last = names[names.length - 1];
     const rest = names.slice(0, -1).join(', ');
-    const sep = this.locale === 'nl' ? ' en ' : ' et ';
+    const sep = pick(this.locale, { fr: ' et ', nl: ' en ', en: ' and ' });
     return `${rest}${sep}${last}`;
   }
 
   private metaDescription(isBrusselsRegion: boolean, name: string, brandName: string): string {
     const list = this.categoriesListText();
     if (isBrusselsRegion) {
-      return this.locale === 'nl'
-        ? `${brandName}, fotograaf & videograaf in ${name} en de rest van het Brussels Hoofdstedelijk Gewest: ${list}. Offerte binnen 48 u.`
-        : `${brandName}, photographe & vidéaste à ${name} et dans le reste de la Région de Bruxelles-Capitale : ${list}. Devis sous 48 h.`;
+      return pick(this.locale, {
+        fr: `${brandName}, photographe & vidéaste à ${name} et dans le reste de la Région de Bruxelles-Capitale : ${list}. Devis sous 48 h.`,
+        nl: `${brandName}, fotograaf & videograaf in ${name} en de rest van het Brussels Hoofdstedelijk Gewest: ${list}. Offerte binnen 48 u.`,
+        en: `${brandName}, photographer & videographer in ${name} and the rest of the Brussels-Capital Region: ${list}. Quote within 48 h.`,
+      });
     }
-    return this.locale === 'nl'
-      ? `${brandName}, fotograaf & videograaf in ${name}, in de Brusselse rand: ${list}. Offerte binnen 48 u.`
-      : `${brandName}, photographe & vidéaste à ${name}, dans la périphérie bruxelloise : ${list}. Devis sous 48 h.`;
+    return pick(this.locale, {
+      fr: `${brandName}, photographe & vidéaste à ${name}, dans la périphérie bruxelloise : ${list}. Devis sous 48 h.`,
+      nl: `${brandName}, fotograaf & videograaf in ${name}, in de Brusselse rand: ${list}. Offerte binnen 48 u.`,
+      en: `${brandName}, photographer & videographer in ${name}, on the outskirts of Brussels: ${list}. Quote within 48 h.`,
+    });
   }
 
   protected categoryHref(cat: Category): string {
-    const base = this.locale === 'nl' ? '/nl/realisaties' : '/realisations';
-    return `${base}/${cat.slug}`;
+    return categoryPath(this.locale, cat.slug);
   }
 
   protected servicesSectionTitle(): string {
     const name = this.communeName();
-    return this.locale === 'nl' ? `Diensten in ${name}` : `Prestations à ${name}`;
+    return pick(this.locale, { fr: `Prestations à ${name}`, nl: `Diensten in ${name}`, en: `Services in ${name}` });
   }
 
   /**
@@ -265,9 +274,11 @@ export class CommunePageComponent {
    */
   protected serviceHeading(cat: Category): string {
     const name = this.communeName();
-    return this.locale === 'nl'
-      ? `Fotograaf & videograaf ${cat.name} in ${name}`
-      : `Photographe & vidéaste ${cat.name} à ${name}`;
+    return pick(this.locale, {
+      fr: `Photographe & vidéaste ${cat.name} à ${name}`,
+      nl: `Fotograaf & videograaf ${cat.name} in ${name}`,
+      en: `${cat.name} photographer & videographer in ${name}`,
+    });
   }
 
   /**
@@ -285,29 +296,39 @@ export class CommunePageComponent {
 
   protected faqQuestion(): string {
     const name = this.communeName();
-    return this.locale === 'nl' ? `Komt u filmen in ${name}?` : `Est-ce que vous vous déplacez à ${name} ?`;
+    return pick(this.locale, {
+      fr: `Est-ce que vous vous déplacez à ${name} ?`,
+      nl: `Komt u filmen in ${name}?`,
+      en: `Do you travel to ${name}?`,
+    });
   }
 
   protected faqAnswer(): string {
     const name = this.communeName();
-    return this.locale === 'nl'
-      ? `Ja, ${name} maakt deel uit van ons werkgebied (Brussel en omliggende gemeenten). De verplaatsing zit inbegrepen in de offerte, zonder toeslag.`
-      : `Oui, ${name} fait partie de notre zone d'intervention (Bruxelles et communes environnantes). Le déplacement est inclus dans le devis, sans supplément.`;
+    return pick(this.locale, {
+      fr: `Oui, ${name} fait partie de notre zone d'intervention (Bruxelles et communes environnantes). Le déplacement est inclus dans le devis, sans supplément.`,
+      nl: `Ja, ${name} maakt deel uit van ons werkgebied (Brussel en omliggende gemeenten). De verplaatsing zit inbegrepen in de offerte, zonder toeslag.`,
+      en: `Yes, ${name} is part of our core area (Brussels and surrounding municipalities). Travel is included in the quote, at no extra cost.`,
+    });
   }
 
   protected faqQuestion2(): string {
     const name = this.communeName();
-    return this.locale === 'nl'
-      ? `Welke soorten video's kan ik in ${name} laten maken?`
-      : `Quels types de vidéos peut-on tourner à ${name} ?`;
+    return pick(this.locale, {
+      fr: `Quels types de vidéos peut-on tourner à ${name} ?`,
+      nl: `Welke soorten video's kan ik in ${name} laten maken?`,
+      en: `What kinds of videos can be shot in ${name}?`,
+    });
   }
 
   protected faqAnswer2(): string {
     const name = this.communeName();
     const list = this.categoriesListText();
-    return this.locale === 'nl'
-      ? `Alle categorieën van de studio zijn beschikbaar in ${name}: ${list}, met dezelfde kwaliteit als in de rest van het werkgebied.`
-      : `Toutes les catégories du studio sont disponibles à ${name} : ${list}, avec le même niveau de qualité que sur le reste de la zone d'intervention.`;
+    return pick(this.locale, {
+      fr: `Toutes les catégories du studio sont disponibles à ${name} : ${list}, avec le même niveau de qualité que sur le reste de la zone d'intervention.`,
+      nl: `Alle categorieën van de studio zijn beschikbaar in ${name}: ${list}, met dezelfde kwaliteit als in de rest van het werkgebied.`,
+      en: `Every category of the studio is available in ${name}: ${list}, with the same quality as across the rest of the area.`,
+    });
   }
 
   /**
@@ -318,13 +339,19 @@ export class CommunePageComponent {
    */
   protected faqQuestion3(): string {
     const name = this.communeName();
-    return this.locale === 'nl' ? `Is de opname discreet in ${name}?` : `Le tournage est-il discret à ${name} ?`;
+    return pick(this.locale, {
+      fr: `Le tournage est-il discret à ${name} ?`,
+      nl: `Is de opname discreet in ${name}?`,
+      en: `Is the shoot unobtrusive in ${name}?`,
+    });
   }
 
   protected faqAnswer3(): string {
     const name = this.communeName();
-    return this.locale === 'nl'
-      ? `Ja: ik film alleen of met een klein team, om dicht bij de gasten en de echte momenten te blijven, in ${name} net als elders.`
-      : `Oui : le tournage se fait seul ou en équipe réduite, pour rester au plus près des invités et des moments réels, à ${name} comme ailleurs.`;
+    return pick(this.locale, {
+      fr: `Oui : le tournage se fait seul ou en équipe réduite, pour rester au plus près des invités et des moments réels, à ${name} comme ailleurs.`,
+      nl: `Ja: ik film alleen of met een klein team, om dicht bij de gasten en de echte momenten te blijven, in ${name} net als elders.`,
+      en: `Yes: I shoot alone or with a very small team, to stay close to the guests and the real moments, in ${name} as anywhere else.`,
+    });
   }
 }

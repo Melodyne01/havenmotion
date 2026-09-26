@@ -4,7 +4,7 @@ import { PublicApiService } from '../core/api/public-api.service';
 import { SiteLocale } from '../core/locale';
 import { SITE_CONTENT } from '../core/site-content';
 import { Category, SitePayload } from '../models';
-import { PLACEHOLDER_CATEGORIES, PLACEHOLDER_SITE } from '../core/placeholder-content';
+import { PLACEHOLDER_SITE, placeholderCategories } from '../core/placeholder-content';
 
 /**
  * État du site public. Un seul chargement (`/public/site` + `/public/categories`)
@@ -27,7 +27,7 @@ export class SiteStore {
   private readonly api = inject(PublicApiService);
 
   private readonly payload = signal<SitePayload>(PLACEHOLDER_SITE);
-  private readonly categoryList = signal<Category[]>(PLACEHOLDER_CATEGORIES);
+  private readonly categoryList = signal<Category[]>(placeholderCategories('fr'));
   private readonly loaded = signal(false);
 
   readonly settings = computed(() => this.payload().settings);
@@ -61,7 +61,7 @@ export class SiteStore {
           testimonials: [...content.testimonials],
           logos: site.logos,
         });
-        this.categoryList.set(categories.length > 0 ? categories : PLACEHOLDER_CATEGORIES);
+        this.categoryList.set(categories.length > 0 ? categories : placeholderCategories(locale));
         this.loaded.set(true);
       },
     );

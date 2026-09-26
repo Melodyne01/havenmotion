@@ -4,7 +4,7 @@ import { ContactComponent } from '../sections/contact.component';
 import { SiteFooterComponent } from '../sections/site-footer.component';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
-import { SITE_LOCALE } from '../../core/locale';
+import { SITE_LOCALE, SITE_LOCALES, homePath, pick, routePath } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 
 /** Page « Contact » dédiée : même formulaire que la section home, sa propre URL. */
@@ -32,21 +32,25 @@ export class ContactPageComponent {
 
     effect(() => {
       const settings = this.store.settings();
-      const path = this.locale === 'nl' ? '/nl/contact' : '/contact';
+      const path = routePath(this.locale, 'contact');
       this.seo.apply({
         title: `Contact — ${settings.brandName}`,
-        description:
-          this.locale === 'nl'
-            ? `Een project in ${settings.city} en omstreken? Offerte binnen 48 u.`
-            : `Un projet à ${settings.city} et ses environs ? Devis sous 48 h.`,
+        description: pick(this.locale, {
+          fr: 'Un projet en Belgique, en France, au Luxembourg ou aux Pays-Bas ? Devis chiffré sous 48 h, forfait de déplacement compris.',
+          nl: 'Een project in België, Frankrijk, Luxemburg of Nederland? Concrete offerte binnen 48 u, verplaatsing inbegrepen.',
+          en: 'A project in Belgium, France, Luxembourg or the Netherlands? Itemised quote within 48 h, travel fee included.',
+        }),
         path,
         locale: this.locale,
       });
       this.seo.applyBreadcrumbs([
-        { name: this.text.home, path: this.locale === 'nl' ? '/nl' : '/' },
+        { name: this.text.home, path: homePath(this.locale) },
         { name: 'Contact', path },
       ]);
-      this.seo.applyHreflang({ fr: '/contact', nl: '/nl/contact' });
+      this.seo.applyHreflang({
+        fr: routePath('fr', 'contact'),
+        ...Object.fromEntries(SITE_LOCALES.filter((l) => l !== 'fr').map((l) => [l, routePath(l, 'contact')])),
+      });
     });
   }
 }

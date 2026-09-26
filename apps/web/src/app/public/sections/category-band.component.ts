@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { VideoFrameComponent } from '../../shared/ui/video-frame.component';
-import { SITE_LOCALE } from '../../core/locale';
+import { SITE_LOCALE, categoryPath } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 import { Category } from '../../models';
 
@@ -47,7 +47,6 @@ import { Category } from '../../models';
       >
         <span class="band__veil" aria-hidden="true"></span>
         <span class="band__scrim" aria-hidden="true"></span>
-
         <span class="band__body">
           <span class="band__index">{{ indexLabel() }}</span>
           <span class="band__name">{{ category().name }}</span>
@@ -57,7 +56,6 @@ import { Category } from '../../models';
           </span>
           <span class="band__invite" aria-hidden="true">{{ text.categoryBand.viewCategory }} &#8594;</span>
         </span>
-
         <span class="band__progress" aria-hidden="true">
           <span class="band__progress-bar" [style.width.%]="progress()"></span>
         </span>
@@ -72,23 +70,22 @@ export class CategoryBandComponent {
 
   private readonly locale = inject(SITE_LOCALE);
   private readonly frame = viewChild.required<VideoFrameComponent>('frame');
-  protected readonly text = UI_TEXT[this.locale];
 
-  protected readonly categoryLink = computed(() =>
-    this.locale === 'nl'
-      ? ['/nl/realisaties', this.category().slug]
-      : ['/realisations', this.category().slug],
-  );
+  protected readonly text = UI_TEXT[this.locale];
+  protected readonly categoryLink = computed(() => categoryPath(this.locale, this.category().slug));
   protected readonly indexLabel = computed(() => String(this.index() + 1).padStart(2, '0'));
   protected readonly reverseTravelling = computed(() => this.index() % 2 === 1);
+
   protected readonly filmCountLabel = computed(() => {
     const count = this.category().filmCount;
     const noun = count > 1 ? this.text.categoryBand.filmPlural : this.text.categoryBand.filmSingular;
     return `${count} ${noun}`;
   });
+
   protected readonly ariaLabel = computed(
     () => `${this.category().name} — ${this.filmCountLabel()}. ${this.text.categoryBand.openCategorySuffix}`,
   );
+
   protected readonly videoLabel = computed(
     () => `${this.text.categoryBand.excerptPrefix} ${this.category().name}`,
   );

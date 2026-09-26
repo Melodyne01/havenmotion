@@ -16,6 +16,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { MediaAsset, Rendition } from '../../models';
 import { prefersLightMedia, prefersReducedMotion } from '../../core/motion';
 import { SiteLocale } from '../../core/locale';
+import { UI_TEXT } from '../../core/ui-text';
 
 /**
  * `auto`     — lit en boucle dès que le cadre est visible (hero).
@@ -61,7 +62,7 @@ export type VideoFramePlayback = 'auto' | 'hover' | 'manual' | 'poster';
             <track
               kind="captions"
               [srclang]="captionsLocale()"
-              [label]="captionsLocale() === 'nl' ? 'Nederlands' : 'Français'"
+              [label]="captionsLabel()"
               [src]="track"
               default
             />
@@ -107,6 +108,7 @@ export class VideoFrameComponent implements AfterViewInit, OnDestroy {
   readonly captionsUrl = input<string | null>(null);
   /** Langue des sous-titres pointés par `captionsUrl`, "fr" par défaut. */
   readonly captionsLocale = input<SiteLocale>('fr');
+  protected readonly captionsLabel = computed(() => UI_TEXT[this.captionsLocale()].captions);
   /** Affiche les contrôles natifs (modale : lecture avec son, pause, volume). */
   readonly controls = input(false);
 

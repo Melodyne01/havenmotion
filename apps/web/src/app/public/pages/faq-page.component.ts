@@ -4,7 +4,7 @@ import { SiteFooterComponent } from '../sections/site-footer.component';
 import { SectionTitleComponent } from '../../shared/ui/section-title.component';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
-import { SITE_LOCALE } from '../../core/locale';
+import { SITE_LOCALE, SITE_LOCALES, homePath, routePath } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 import { FAQ_CONTENT } from '../../core/faq-content';
 
@@ -86,26 +86,26 @@ export class FaqPageComponent {
 
     effect(() => {
       const settings = this.store.settings();
-      const path = this.locale === 'nl' ? '/nl/faq' : '/faq';
+      const path = routePath(this.locale, 'faq');
       this.seo.apply({
         title: `FAQ — ${settings.brandName}`,
-        description:
-          this.locale === 'nl'
-            ? 'Prijzen, levertijden, werkgebied: antwoorden op de meest gestelde vragen.'
-            : 'Tarifs, délais, zone d’intervention : les réponses aux questions les plus fréquentes.',
+        description: this.text.faqPage.description,
         path,
         locale: this.locale,
       });
       this.seo.applyBreadcrumbs([
-        { name: this.text.home, path: this.locale === 'nl' ? '/nl' : '/' },
+        { name: this.text.home, path: homePath(this.locale) },
         { name: 'FAQ', path },
       ]);
       this.seo.applyFaq(this.entries);
-      this.seo.applyHreflang({ fr: '/faq', nl: '/nl/faq' });
+      this.seo.applyHreflang({
+        fr: routePath('fr', 'faq'),
+        ...Object.fromEntries(SITE_LOCALES.filter((l) => l !== 'fr').map((l) => [l, routePath(l, 'faq')])),
+      });
     });
   }
 
   protected faqTitle(): string {
-    return this.locale === 'nl' ? 'Veelgestelde vragen' : 'Questions fréquentes';
+    return this.text.faqPage.title;
   }
 }

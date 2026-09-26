@@ -3,7 +3,6 @@ import {
   Component,
   ElementRef,
   HostListener,
-  computed,
   inject,
   signal,
   viewChild,
@@ -11,12 +10,8 @@ import {
 import { RouterLink } from '@angular/router';
 import { LogotypeComponent } from '../../shared/ui/logotype.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
-import { SITE_LOCALE } from '../../core/locale';
-
-interface NavLink {
-  fragment: string;
-  label: string;
-}
+import { SITE_LOCALE, SITE_LOCALES, contactAnchor, homePath, routePath } from '../../core/locale';
+import { UI_TEXT } from '../../core/ui-text';
 
 /**
  * En-tête collant + menu burger plein écran sur mobile.
@@ -25,9 +20,12 @@ interface NavLink {
  * que soit la page courante : `routerLink` + `fragment` plutôt qu'un `href`
  * classique, pour une navigation côté client (pas de rechargement complet)
  * avec défilement automatique jusqu'à l'ancre (`withInMemoryScrolling` dans
- * `app.config.ts`). Le CTA (`app-cta-button`) garde un `href` classique : ce
- * composant partagé ne porte pas de variante `routerLink`, et le changer
- * toucherait tous ses autres usages sur le site — hors périmètre ici.
+ * `app.config.ts`). Le lien « Tarifs » est la seule page dédiée du menu :
+ * c'est la page la plus rentable du site, elle mérite sa place partout.
+ *
+ * Sélecteur de langue : les deux autres langues, vers leur home. Pas de
+ * mapping de slug ici, volontairement simple — chaque page qui a un vrai
+ * équivalent affine ce lien via ses balises hreflang, destinées aux robots.
  */
 @Component({
   selector: 'app-site-header',
@@ -35,19 +33,25 @@ interface NavLink {
   imports: [LogotypeComponent, CtaButtonComponent, RouterLink],
   template: `
     <header class="header">
-      <a class="header__brand" [routerLink]="homePath()" aria-label="Heaven Motion — accueil">
+      <a class="header__brand" [routerLink]="homePath" [attr.aria-label]="text.header.brandAriaLabel">
         <app-logotype />
       </a>
 
       <nav class="header__nav" aria-label="Navigation principale">
-        @for (link of links(); track link.fragment) {
-          <a class="header__link" [routerLink]="homePath()" [fragment]="link.fragment">{{ link.label }}</a>
+        @for (link of text.header.links; track link.fragment) {
+          @if (link.fragment === 'prestations') {
+            <a class="header__link" [routerLink]="pricingPath">{{ link.label }}</a>
+          } @else {
+            <a class="header__link" [routerLink]="homePath" [fragment]="link.fragment">{{ link.label }}</a>
+          }
         }
       </nav>
 
       <div class="header__cta">
-        <a class="header__lang" [routerLink]="otherLocaleHref()">{{ otherLocaleLabel() }}</a>
-        <app-cta-button [href]="contactHref()">{{ ctaLabel() }}</app-cta-button>
+        @for (other of otherLocales; track other) {
+          <a class="header__lang" [routerLink]="homeOf(other)" [attr.hreflang]="other">{{ other.toUpperCase() }}</a>
+        }
+        <app-cta-button [href]="contactHref">{{ text.quoteCta }}</app-cta-button>
       </div>
 
       <button
@@ -58,26 +62,32 @@ interface NavLink {
         aria-controls="menu-mobile"
         (click)="toggle()"
       >
-        {{ menuOpen() ? closeLabel() : 'Menu' }}
+        {{ menuOpen() ? text.header.closeMenu : text.header.openMenu }}
       </button>
     </header>
 
     @if (menuOpen()) {
       <div id="menu-mobile" class="menu">
         <nav class="menu__nav" aria-label="Navigation mobile">
-          @for (link of links(); track link.fragment) {
-            <a
-              class="menu__link"
-              [routerLink]="homePath()"
-              [fragment]="link.fragment"
-              (click)="close()"
-              >{{ link.label }}</a
-            >
+          @for (link of text.header.links; track link.fragment) {
+            @if (link.fragment === 'prestations') {
+              <a class="menu__link" [routerLink]="pricingPath" (click)="close()">{{ link.label }}</a>
+            } @else {
+              <a
+                class="menu__link"
+                [routerLink]="homePath"
+                [fragment]="link.fragment"
+                (click)="close()"
+                >{{ link.label }}</a
+              >
+            }
           }
         </nav>
-        <a class="menu__link" [routerLink]="otherLocaleHref()" (click)="close()">{{ otherLocaleLabel() }}</a>
+        @for (other of otherLocales; track other) {
+          <a class="menu__link" [routerLink]="homeOf(other)" (click)="close()">{{ other.toUpperCase() }}</a>
+        }
         <div class="menu__cta">
-          <app-cta-button [href]="contactHref()">{{ ctaLabel() }}</app-cta-button>
+          <app-cta-button [href]="contactHref">{{ text.quoteCta }}</app-cta-button>
         </div>
       </div>
     }
@@ -89,41 +99,16 @@ export class SiteHeaderComponent {
   private readonly burgerButton = viewChild<ElementRef<HTMLButtonElement>>('burgerButton');
 
   protected readonly menuOpen = signal(false);
+  protected readonly text = UI_TEXT[this.locale];
 
-  protected readonly homePath = computed(() => (this.locale === 'nl' ? '/nl' : '/'));
-  protected readonly contactHref = computed(() =>
-    this.locale === 'nl' ? '/nl/#contact' : '/#contact',
-  );
-  protected readonly ctaLabel = computed(() => (this.locale === 'nl' ? 'Offerte aanvragen' : 'Demander un devis'));
-  protected readonly closeLabel = computed(() => (this.locale === 'nl' ? 'Sluiten' : 'Fermer'));
+  protected readonly homePath = homePath(this.locale);
+  protected readonly pricingPath = routePath(this.locale, 'pricing');
+  protected readonly contactHref = contactAnchor(this.locale);
+  protected readonly otherLocales = SITE_LOCALES.filter((l) => l !== this.locale);
 
-  /** Bascule vers l'équivalent home de l'autre langue — pas de mapping de
-   * slug ici : c'est volontairement simple, chaque page qui a un vrai
-   * équivalent (catégorie, à propos, contact, FAQ) affine ce lien via ses
-   * propres balises hreflang, destinées aux robots plutôt qu'au clic humain.
-   */
-  protected readonly otherLocaleHref = computed(() => (this.locale === 'nl' ? '/' : '/nl'));
-  protected readonly otherLocaleLabel = computed(() => (this.locale === 'nl' ? 'FR' : 'NL'));
-
-  protected readonly links = computed<NavLink[]>(() =>
-    this.locale === 'nl'
-      ? [
-          { fragment: 'realisations', label: 'Realisaties' },
-          { fragment: 'prestations', label: 'Diensten' },
-          { fragment: 'process', label: 'Werkwijze' },
-          { fragment: 'studio', label: 'Studio' },
-          { fragment: 'contact', label: 'Contact' },
-          { fragment: 'faq', label: 'FAQ' },
-        ]
-      : [
-          { fragment: 'realisations', label: 'Réalisations' },
-          { fragment: 'prestations', label: 'Prestations' },
-          { fragment: 'process', label: 'Process' },
-          { fragment: 'studio', label: 'Studio' },
-          { fragment: 'contact', label: 'Contact' },
-          { fragment: 'faq', label: 'FAQ' },
-        ],
-  );
+  protected homeOf(locale: (typeof SITE_LOCALES)[number]): string {
+    return homePath(locale);
+  }
 
   protected toggle(): void {
     this.menuOpen.update((open) => !open);

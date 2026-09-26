@@ -1,120 +1,118 @@
 import { Routes } from '@angular/router';
-import { SITE_LOCALE } from './core/locale';
+import { ROUTE_SEGMENTS, SITE_LOCALE, SiteLocale } from './core/locale';
 
-export const routes: Routes = [
-  {
-    path: '',
-    loadComponent: () =>
-      import('./public/public-page.component').then((m) => m.PublicPageComponent),
-  },
-  {
-    path: 'realisations/:slug',
-    loadComponent: () =>
-      import('./public/pages/category-page.component').then((m) => m.CategoryPageComponent),
-  },
-  {
-    path: 'a-propos',
-    loadComponent: () =>
-      import('./public/pages/about-page.component').then((m) => m.AboutPageComponent),
-  },
-  {
-    path: 'contact',
-    loadComponent: () =>
-      import('./public/pages/contact-page.component').then((m) => m.ContactPageComponent),
-  },
-  {
-    path: 'faq',
-    loadComponent: () =>
-      import('./public/pages/faq-page.component').then((m) => m.FaqPageComponent),
-  },
-  {
-    path: 'zones',
-    loadComponent: () =>
-      import('./public/pages/zones-page.component').then((m) => m.ZonesPageComponent),
-  },
-  {
-    path: 'zones/:commune',
-    loadComponent: () =>
-      import('./public/pages/commune-page.component').then((m) => m.CommunePageComponent),
-  },
-  {
-    // Racine FR non préfixée (marché majoritaire, aucune migration d'URL à
-    // faire sur l'existant) ; le NL vit sous /nl avec ses propres slugs
-    // traduits. `providers` fixe SITE_LOCALE à 'nl' pour toute la sous-arborescence
-    // — les composants (partagés avec la FR) le lisent pour charger le bon
-    // contenu et construire leurs liens.
-    path: 'nl',
-    providers: [{ provide: SITE_LOCALE, useValue: 'nl' }],
-    children: [
+/**
+ * Pages publiques d'une langue, avec leurs segments d'URL traduits (voir
+ * `ROUTE_SEGMENTS`). Une seule fonction pour les trois langues : la liste
+ * des pages est la même partout, seuls les mots changent — et une page
+ * ajoutée ici existe d'office dans les trois langues.
+ *
+ * Exceptions : les pages zones/commune n'existent qu'en FR et NL (les
+ * pages région en trois langues arrivent avec le chantier 5).
+ */
+function publicRoutes(locale: SiteLocale): Routes {
+  const seg = ROUTE_SEGMENTS[locale];
+  const routes: Routes = [
+    {
+      path: '',
+      loadComponent: () =>
+        import('./public/public-page.component').then((m) => m.PublicPageComponent),
+    },
+    {
+      path: `${seg.services}/:slug`,
+      loadComponent: () =>
+        import('./public/pages/category-page.component').then((m) => m.CategoryPageComponent),
+    },
+    {
+      path: seg.pricing,
+      loadComponent: () =>
+        import('./public/pages/pricing-page.component').then((m) => m.PricingPageComponent),
+    },
+    {
+      path: seg.about,
+      loadComponent: () =>
+        import('./public/pages/about-page.component').then((m) => m.AboutPageComponent),
+    },
+    {
+      path: seg.contact,
+      loadComponent: () =>
+        import('./public/pages/contact-page.component').then((m) => m.ContactPageComponent),
+    },
+    {
+      path: seg.faq,
+      loadComponent: () =>
+        import('./public/pages/faq-page.component').then((m) => m.FaqPageComponent),
+    },
+    {
+      path: seg.legal,
+      loadComponent: () =>
+        import('./public/legal-page.component').then((m) => m.LegalPageComponent),
+      data: { document: 'mentions' },
+    },
+    {
+      path: seg.privacy,
+      loadComponent: () =>
+        import('./public/legal-page.component').then((m) => m.LegalPageComponent),
+      data: { document: 'confidentialite' },
+    },
+  ];
+
+  if (locale !== 'en') {
+    routes.push(
       {
-        path: '',
-        loadComponent: () =>
-          import('./public/public-page.component').then((m) => m.PublicPageComponent),
-      },
-      {
-        path: 'realisaties/:slug',
-        loadComponent: () =>
-          import('./public/pages/category-page.component').then((m) => m.CategoryPageComponent),
-      },
-      {
-        path: 'over-ons',
-        loadComponent: () =>
-          import('./public/pages/about-page.component').then((m) => m.AboutPageComponent),
-      },
-      {
-        path: 'contact',
-        loadComponent: () =>
-          import('./public/pages/contact-page.component').then((m) => m.ContactPageComponent),
-      },
-      {
-        path: 'faq',
-        loadComponent: () =>
-          import('./public/pages/faq-page.component').then((m) => m.FaqPageComponent),
-      },
-      {
-        path: 'zones',
+        path: seg.zones,
         loadComponent: () =>
           import('./public/pages/zones-page.component').then((m) => m.ZonesPageComponent),
       },
       {
-        path: 'zones/:commune',
+        path: `${seg.zones}/:commune`,
         loadComponent: () =>
           import('./public/pages/commune-page.component').then((m) => m.CommunePageComponent),
       },
+    );
+  }
+
+  // Anciennes adresses des pages catégorie (`/realisations/…`), remplacées
+  // par `/prestations/…` avec l'arrivée des packs. Le serveur répond déjà
+  // par un 301 (voir `server.ts`) ; cette redirection couvre la navigation
+  // côté client depuis un lien externe encore ancien.
+  const legacyServices = { fr: 'realisations', nl: 'realisaties', en: null }[locale];
+  if (legacyServices) {
+    routes.push({ path: `${legacyServices}/:slug`, redirectTo: `${seg.services}/:slug` });
+  }
+
+  return routes;
+}
+
+/**
+ * Racine FR non préfixée (marché majoritaire, aucune migration d'URL à
+ * faire sur l'existant) ; le NL vit sous /nl et l'EN sous /en avec leurs
+ * propres slugs traduits. `providers` fixe SITE_LOCALE pour toute la
+ * sous-arborescence — les composants (partagés entre les langues) le
+ * lisent pour charger le bon contenu et construire leurs liens.
+ */
+function localizedSubtree(locale: 'nl' | 'en'): Routes[number] {
+  return {
+    path: locale,
+    providers: [{ provide: SITE_LOCALE, useValue: locale }],
+    children: [
+      ...publicRoutes(locale),
       {
-        path: 'wettelijke-vermeldingen',
-        loadComponent: () =>
-          import('./public/legal-page.component').then((m) => m.LegalPageComponent),
-        data: { document: 'mentions' },
-      },
-      {
-        path: 'privacybeleid',
-        loadComponent: () =>
-          import('./public/legal-page.component').then((m) => m.LegalPageComponent),
-        data: { document: 'confidentialite' },
-      },
-      {
-        // Catch-all propre à la sous-arborescence NL : sans lui, une URL NL
-        // inconnue retomberait sur le `**` racine ci-dessous et perdrait la
-        // langue (page 404 en français sous une URL /nl/...).
+        // Catch-all propre à la sous-arborescence : sans lui, une URL
+        // inconnue retomberait sur le `**` racine ci-dessous et perdrait
+        // la langue (page 404 en français sous une URL /nl/… ou /en/…).
         path: '**',
         loadComponent: () =>
           import('./public/pages/not-found.component').then((m) => m.NotFoundComponent),
       },
     ],
-  },
-  {
-    path: 'mentions-legales',
-    loadComponent: () =>
-      import('./public/legal-page.component').then((m) => m.LegalPageComponent),
-    data: { document: 'mentions' },
-  },
-  {
-    path: 'confidentialite',
-    loadComponent: () =>
-      import('./public/legal-page.component').then((m) => m.LegalPageComponent),
-    data: { document: 'confidentialite' },
-  },
+  };
+}
+
+export const routes: Routes = [
+  ...publicRoutes('fr'),
+  localizedSubtree('nl'),
+  localizedSubtree('en'),
   {
     path: 'admin',
     loadChildren: () => import('./admin/admin.routes').then((m) => m.adminRoutes),

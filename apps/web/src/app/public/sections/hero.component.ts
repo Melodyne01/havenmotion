@@ -58,14 +58,10 @@ export class HeroComponent {
 
   /**
    * Sous-titre dans le H1 : le nom de marque seul n'aide pas le
-   * référencement. Sur demande du client, plus aucune ville n'apparaît ici —
-   * le studio se présente d'emblée comme disponible partout dans le monde ;
-   * l'ancrage local (communes, JSON-LD LocalBusiness) reste réel et affiché
-   * ailleurs sur la page (intro, pied de page, données structurées).
+   * référencement. Les quatre pays couverts y figurent — c'est le
+   * positionnement du site depuis la stratégie par régions.
    */
   protected titleSubtitle(): string {
-    return this.locale === 'nl'
-      ? 'Fotograaf & videograaf, wereldwijd beschikbaar'
-      : 'Photographe & vidéaste, disponible dans le monde entier';
+    return this.text.hero.subtitle;
   }
 }

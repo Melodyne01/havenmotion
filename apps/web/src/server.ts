@@ -75,6 +75,29 @@ app.use((req, res, next) => {
 });
 
 /**
+ * Anciennes adresses des pages catégorie : `/realisations/…` est devenu
+ * `/prestations/…` (NL : `/nl/realisaties/…` → `/nl/diensten/…`) avec
+ * l'arrivée des packs. Redirection permanente côté serveur, avant le rendu
+ * Angular, pour que les moteurs transfèrent le référencement acquis vers la
+ * nouvelle adresse plutôt que d'indexer deux fois le même contenu.
+ */
+const LEGACY_PREFIXES: readonly [RegExp, string][] = [
+  [/^\/realisations(\/|$)/, '/prestations/'],
+  [/^\/nl\/realisaties(\/|$)/, '/nl/diensten/'],
+];
+app.use((req, res, next) => {
+  for (const [pattern, target] of LEGACY_PREFIXES) {
+    if (pattern.test(req.path)) {
+      const rest = req.path.replace(pattern, '').replace(/^\/+/, '');
+      const query = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
+      res.redirect(301, `${target}${rest}${query}`.replace(/\/+$/, '') || '/');
+      return;
+    }
+  }
+  next();
+});
+
+/**
  * Proxy /api et /media vers le conteneur .NET quand `VNL_API_PROXY_TARGET`
  * est défini (production Docker). Le conteneur web devient l'unique point
  * d'entrée : le reverse proxy de l'hôte n'a qu'une cible.

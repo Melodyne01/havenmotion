@@ -5,7 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { APP_CONFIG } from '../app-config';
 import { SiteLocale } from '../locale';
 import { Category, Film, LeadRequest, SitePayload } from '../../models';
-import { PLACEHOLDER_CATEGORIES, PLACEHOLDER_FILMS, PLACEHOLDER_SITE } from '../placeholder-content';
+import { PLACEHOLDER_SITE, placeholderCategories, placeholderFilms } from '../placeholder-content';
 
 /**
  * Lecture du contenu publié.
@@ -30,7 +30,7 @@ export class PublicApiService {
       .get<Category[]>(`${this.base}/public/categories`, {
         params: new HttpParams().set('locale', locale),
       })
-      .pipe(catchError((err) => this.fallback('categories', err, PLACEHOLDER_CATEGORIES)));
+      .pipe(catchError((err) => this.fallback('categories', err, placeholderCategories(locale))));
   }
 
   films(slug: string, locale: SiteLocale = 'fr'): Observable<Film[]> {
@@ -38,7 +38,7 @@ export class PublicApiService {
       .get<Film[]>(`${this.base}/public/categories/${slug}/films`, {
         params: new HttpParams().set('locale', locale),
       })
-      .pipe(catchError((err) => this.fallback('films', err, PLACEHOLDER_FILMS[slug] ?? [])));
+      .pipe(catchError((err) => this.fallback('films', err, placeholderFilms(slug, locale))));
   }
 
   /**

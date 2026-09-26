@@ -1,5 +1,7 @@
 import { Category, Film, SitePayload } from '../models';
 import { AMBIENCE_CLIPS, ambienceMedia } from './ambience';
+import { CategoryKey, SiteLocale, categoryKeyFromSlug, categorySlug } from './locale';
+import { CATEGORY_NAMES, CATEGORY_TAGLINES, SITE_CONTENT } from './site-content';
 
 /**
  * Contenu de démarrage. Il sert de repli si l'API est injoignable et de
@@ -80,6 +82,25 @@ export const PLACEHOLDER_CATEGORIES: Category[] = [
 ];
 
 /**
+ * Les mêmes catégories de départ dans la langue demandée : slug, nom et
+ * accroche traduits (voir `CATEGORY_SLUG_MAP`, `CATEGORY_NAMES`,
+ * `CATEGORY_TAGLINES`). Sans ça, un poste de dev sans backend — ou les
+ * parcours e2e, hermétiques — affichait les slugs FR sur /nl et /en, et une
+ * page catégorie traduite ne trouvait jamais sa catégorie.
+ */
+export function placeholderCategories(locale: SiteLocale): Category[] {
+  return PLACEHOLDER_CATEGORIES.map((category) => {
+    const key = category.slug as CategoryKey;
+    return {
+      ...category,
+      slug: categorySlug(locale, key),
+      name: CATEGORY_NAMES[key][locale],
+      tagline: CATEGORY_TAGLINES[key][locale],
+    };
+  });
+}
+
+/**
  * Films de démonstration affichés dans la modale quand l'API n'est pas
  * joignable. Ils rejouent l'extrait de banque de leur catégorie : la modale
  * montre une vraie liste plutôt qu'un panneau vide.
@@ -93,6 +114,12 @@ export const PLACEHOLDER_FILMS: Record<string, Film[]> = Object.fromEntries(
     ],
   ]),
 );
+
+/** Films de démonstration d'une catégorie, quelle que soit la langue du slug. */
+export function placeholderFilms(slug: string, locale: SiteLocale): Film[] {
+  const key = categoryKeyFromSlug(locale, slug);
+  return key ? (PLACEHOLDER_FILMS[key] ?? []) : [];
+}
 
 function film(category: Category, index: number, title: string, client: string, duration: string): Film {
   return {
@@ -123,44 +150,8 @@ export const PLACEHOLDER_SITE: SitePayload = {
     legalText: 'Heaven Motion — micro-entreprise. Mentions légales à compléter.',
     showreel: ambienceMedia(AMBIENCE_CLIPS.showreel),
   },
-  services: [
-    {
-      id: 'placeholder-service-mariage',
-      name: 'Mariage',
-      included: ['Repérage', 'Captation cérémonie et soirée', 'Étalonnage', 'Musique sous licence'],
-      duration: 'Journée complète',
-      deliverables: 'Film 5–8 min + teaser 60 s',
-      startingPrice: 'à partir de 1 400 €',
-      sortOrder: 1,
-    },
-    {
-      id: 'placeholder-service-corporate',
-      name: 'Corporate',
-      included: ['Script', 'Tournage', 'Interviews', 'Habillage graphique'],
-      duration: '1 à 2 jours',
-      deliverables: 'Film 2–3 min + formats réseaux',
-      startingPrice: 'à partir de 1 800 €',
-      sortOrder: 2,
-    },
-    {
-      id: 'placeholder-service-sport',
-      name: 'Sport & event',
-      included: ['Captation multi-focale', 'Ralentis', 'Sound design'],
-      duration: 'Demi-journée à 2 jours',
-      deliverables: 'Aftermovie 2 min + 3 formats verticaux',
-      startingPrice: 'à partir de 900 €',
-      sortOrder: 3,
-    },
-    {
-      id: 'placeholder-service-clip',
-      name: 'Clip & lifestyle',
-      included: ['Direction artistique', 'Tournage', 'Montage rythmique'],
-      duration: '1 journée',
-      deliverables: 'Clip complet + déclinaisons courtes',
-      startingPrice: 'à partir de 1 200 €',
-      sortOrder: 4,
-    },
-  ],
+  // Les fiches prestation viennent de la grille tarifaire, comme sur le site.
+  services: [...SITE_CONTENT.fr.services],
   process: [
     {
       id: 'placeholder-step-1',

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SectionTitleComponent } from '../../shared/ui/section-title.component';
-import { SITE_LOCALE } from '../../core/locale';
+import { SITE_LOCALE, routePath } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 import { FAQ_CONTENT } from '../../core/faq-content';
 
@@ -44,6 +44,6 @@ export class HomeFaqComponent {
   protected readonly entries = FAQ_CONTENT[this.locale];
 
   protected faqPath(): string {
-    return this.locale === 'nl' ? '/nl/faq' : '/faq';
+    return routePath(this.locale, 'faq');
   }
 }

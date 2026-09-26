@@ -5,7 +5,7 @@ import { SiteFooterComponent } from '../sections/site-footer.component';
 import { SectionTitleComponent } from '../../shared/ui/section-title.component';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
-import { SITE_LOCALE } from '../../core/locale';
+import { SITE_LOCALE, homePath, pick, routePath } from '../../core/locale';
 import { BRUSSELS_COMMUNES, PERIPHERY_COMMUNES, CommuneInfo } from '../../core/communes';
 import { UI_TEXT } from '../../core/ui-text';
 
@@ -119,50 +119,49 @@ export class ZonesPageComponent {
 
     effect(() => {
       const settings = this.store.settings();
-      const path = this.locale === 'nl' ? '/nl/zones' : '/zones';
+      const path = routePath(this.locale, 'zones');
       this.seo.apply({
-        title:
-          this.locale === 'nl'
-            ? `Werkgebied — ${settings.brandName}`
-            : `Zone d'intervention — ${settings.brandName}`,
-        description:
-          this.locale === 'nl'
-            ? 'De 19 gemeenten van het Brussels Hoofdstedelijk Gewest, plus Wemmel en de Vlaamse rand, waar we filmen.'
-            : "Les 19 communes de la Région de Bruxelles-Capitale, plus Wemmel et sa périphérie, où nous tournons.",
+        title: `${this.text.zones.eyebrow} — ${settings.brandName}`,
+        description: pick(this.locale, {
+          fr: "Les 19 communes de la Région de Bruxelles-Capitale, plus Wemmel et sa périphérie, où nous tournons sans frais de déplacement — et les forfaits pour la Belgique, la France, le Luxembourg et les Pays-Bas.",
+          nl: 'De 19 gemeenten van het Brussels Hoofdstedelijk Gewest, plus Wemmel en de Vlaamse rand, waar we filmen zonder verplaatsingskosten — en de tarieven voor België, Frankrijk, Luxemburg en Nederland.',
+          en: 'The 19 municipalities of the Brussels-Capital Region, plus Wemmel and its periphery, where we shoot with no travel fee — and the flat fees for Belgium, France, Luxembourg and the Netherlands.',
+        }),
         path,
         locale: this.locale,
       });
       this.seo.applyBreadcrumbs([
-        { name: this.text.home, path: this.locale === 'nl' ? '/nl' : '/' },
+        { name: this.text.home, path: homePath(this.locale) },
         { name: this.eyebrow(), path },
       ]);
-      this.seo.applyHreflang({ fr: '/zones', nl: '/nl/zones' });
+      // Pas encore de version anglaise de cette page (chantier 5).
+      this.seo.applyHreflang({ fr: routePath('fr', 'zones'), nl: routePath('nl', 'zones') });
     });
   }
 
   protected eyebrow(): string {
-    return this.locale === 'nl' ? 'Werkgebied' : "Zone d'intervention";
+    return this.text.zones.eyebrow;
   }
 
   protected title(): string {
-    return this.locale === 'nl' ? 'Waar we filmen' : 'Où nous tournons';
+    return this.text.zones.title;
   }
 
   protected intro(): string {
     const brand = this.store.settings().brandName;
-    return this.locale === 'nl'
-      ? `${brand} filmt in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, en ook in Wemmel en de omliggende gemeenten van de Vlaamse rand: huwelijk, bedrijfsvideo, sport, clip en lifestyle-content, zonder extra verplaatsingskosten.`
-      : `${brand} tourne dans les 19 communes de la Région de Bruxelles-Capitale, ainsi qu'à Wemmel et dans les communes environnantes de la périphérie flamande : mariage, vidéo d'entreprise, sport, clip et contenu lifestyle, sans frais de déplacement supplémentaires.`;
+    return pick(this.locale, {
+      fr: `${brand} tourne dans les 19 communes de la Région de Bruxelles-Capitale, ainsi qu'à Wemmel et dans les communes environnantes de la périphérie flamande : mariage, vidéo d'entreprise, sport, clip et contenu lifestyle, sans frais de déplacement supplémentaires. Au-delà, un forfait fixe par zone couvre la Belgique, le nord de la France, le Luxembourg et les Pays-Bas.`,
+      nl: `${brand} filmt in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, en ook in Wemmel en de omliggende gemeenten van de Vlaamse rand: huwelijk, bedrijfsvideo, sport, clip en lifestyle-content, zonder extra verplaatsingskosten. Daarbuiten dekt een vast tarief per zone België, Noord-Frankrijk, Luxemburg en Nederland.`,
+      en: `${brand} shoots in the 19 municipalities of the Brussels-Capital Region, plus Wemmel and its surrounding municipalities: weddings, corporate video, sport, music videos and lifestyle content, with no extra travel fee. Beyond that, a flat fee per zone covers Belgium, northern France, Luxembourg and the Netherlands.`,
+    });
   }
 
   protected brusselsGroupTitle(): string {
-    return this.locale === 'nl'
-      ? 'Brussels Hoofdstedelijk Gewest'
-      : 'Région de Bruxelles-Capitale';
+    return this.text.zones.brusselsGroup;
   }
 
   protected peripheryGroupTitle(): string {
-    return this.locale === 'nl' ? 'Vlaamse rand (rond Wemmel)' : 'Périphérie flamande (autour de Wemmel)';
+    return this.text.zones.peripheryGroup;
   }
 
   protected communeName(commune: CommuneInfo): string {
@@ -170,8 +169,7 @@ export class ZonesPageComponent {
   }
 
   protected communeHref(commune: CommuneInfo): string {
-    const base = this.locale === 'nl' ? '/nl/zones' : '/zones';
     const slug = this.locale === 'nl' ? commune.slugNl : commune.slugFr;
-    return `${base}/${slug}`;
+    return `${routePath(this.locale, 'zones')}/${slug}`;
   }
 }

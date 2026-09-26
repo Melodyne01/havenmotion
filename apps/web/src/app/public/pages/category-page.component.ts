@@ -13,24 +13,42 @@ import { SiteHeaderComponent } from '../sections/site-header.component';
 import { SiteFooterComponent } from '../sections/site-footer.component';
 import { VideoFrameComponent } from '../../shared/ui/video-frame.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
+import { PackGridComponent } from '../../shared/ui/pack-grid.component';
 import { PublicApiService } from '../../core/api/public-api.service';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
-import { CATEGORY_SLUG_MAP, SITE_LOCALE } from '../../core/locale';
+import {
+  CATEGORY_SLUG_MAP,
+  SITE_LOCALE,
+  SITE_LOCALES,
+  categoryKeyFromSlug,
+  categoryPath,
+  homePath,
+  routePath,
+} from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 import { CATEGORY_FAQ_CONTENT } from '../../core/category-faq-content';
 import { CATEGORY_INTRO_CONTENT } from '../../core/category-intro-content';
 import { Film } from '../../models';
 
 /**
- * Page catégorie : une URL indexable par catégorie (mariage, corporate…),
- * remplace l'ancienne modale. Même contenu (reel, films, CTA), mais crawlable
- * et positionnable — c'est tout l'enjeu du passage en pages.
+ * Page catégorie (`/prestations/:slug`) : une URL indexable par catégorie
+ * (mariage, corporate…) avec le reel, les films, l'intro rédigée, la
+ * grille des quatre formules et la FAQ. Renommée de `/realisations/` à
+ * `/prestations/` avec l'arrivée des packs : la page vend désormais une
+ * prestation à prix affiché, le portfolio en fait partie.
  */
 @Component({
   selector: 'app-category-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SiteHeaderComponent, SiteFooterComponent, VideoFrameComponent, CtaButtonComponent, RouterLink],
+  imports: [
+    SiteHeaderComponent,
+    SiteFooterComponent,
+    VideoFrameComponent,
+    CtaButtonComponent,
+    PackGridComponent,
+    RouterLink,
+  ],
   template: `
     <a class="skip-link" href="#contenu">{{ text.skipLink }}</a>
     <app-site-header />
@@ -39,7 +57,7 @@ import { Film } from '../../models';
       @if (category(); as cat) {
         <article class="category-page">
           <nav class="category-page__breadcrumb" [attr.aria-label]="text.breadcrumbAriaLabel">
-            <a [routerLink]="homePath()">{{ text.home }}</a>
+            <a [routerLink]="homePath">{{ text.home }}</a>
             <span aria-hidden="true">/</span>
             <span>{{ cat.name }}</span>
           </nav>
@@ -81,10 +99,18 @@ import { Film } from '../../models';
               </ul>
             }
 
-            <app-cta-button [href]="contactHref()">{{ ctaLabel() }}</app-cta-button>
+            @if (categoryKey(); as key) {
+              <section class="category-page__packs" id="formules" aria-labelledby="titre-formules">
+                <h2 id="titre-formules" class="category-page__section-title">{{ text.packs.title }}</h2>
+                <p class="category-page__intro">{{ text.packs.lead }}</p>
+                <app-pack-grid [category]="key" />
+              </section>
+            }
+
+            <app-cta-button [href]="contactHref">{{ text.categoryPage.cta }}</app-cta-button>
 
             @if (categoryFaq().length > 0) {
-              <h2 class="category-page__faq-title">{{ faqSectionTitle() }}</h2>
+              <h2 class="category-page__faq-title">{{ text.categoryPage.faqTitle }} {{ cat.name }}</h2>
               <dl class="category-page__faq">
                 @for (entry of categoryFaq(); track entry.question) {
                   <div class="category-page__faq-item">
@@ -118,6 +144,12 @@ export class CategoryPageComponent {
     return this.store.categories().find((c) => c.slug === slug) ?? null;
   });
 
+  /** Clé neutre (slug FR) de la catégorie courante, pour les contenus statiques. */
+  protected readonly categoryKey = computed(() => {
+    const cat = this.category();
+    return cat ? categoryKeyFromSlug(this.locale, cat.slug) : null;
+  });
+
   private readonly selected = signal<Film | null>(null);
 
   protected readonly films = toSignal(
@@ -129,18 +161,15 @@ export class CategoryPageComponent {
 
   protected readonly text = UI_TEXT[this.locale];
   protected readonly categoryFaq = computed(() => {
-    const cat = this.category();
-    return cat ? (CATEGORY_FAQ_CONTENT[this.locale][cat.slug] ?? []) : [];
+    const key = this.categoryKey();
+    return key ? CATEGORY_FAQ_CONTENT[this.locale][key] : [];
   });
   protected readonly introText = computed(() => {
-    const cat = this.category();
-    return cat ? (CATEGORY_INTRO_CONTENT[this.locale][cat.slug] ?? '') : '';
+    const key = this.categoryKey();
+    return key ? CATEGORY_INTRO_CONTENT[this.locale][key] : '';
   });
-  protected readonly homePath = computed(() => (this.locale === 'nl' ? '/nl' : '/'));
-  protected readonly contactHref = computed(() => (this.locale === 'nl' ? '/nl/#contact' : '/#contact'));
-  protected readonly ctaLabel = computed(() =>
-    this.locale === 'nl' ? 'Zo’n project? Offerte aanvragen' : 'Un projet comme ça ? Devis',
-  );
+  protected readonly homePath = homePath(this.locale);
+  protected readonly contactHref = routePath(this.locale, 'contact');
 
   constructor() {
     this.store.load(this.locale);
@@ -150,7 +179,7 @@ export class CategoryPageComponent {
       // slug de l'URL : on revient à la home plutôt que de laisser une page
       // vide indexable.
       if (this.store.isLoaded() && !this.category()) {
-        this.router.navigateByUrl(this.homePath());
+        this.router.navigateByUrl(this.homePath);
       }
     });
 
@@ -160,34 +189,29 @@ export class CategoryPageComponent {
         return;
       }
       const settings = this.store.settings();
-      const base = this.locale === 'nl' ? '/nl/realisaties' : '/realisations';
-      const path = `${base}/${cat.slug}`;
-      const roleLabel = this.locale === 'nl' ? 'Fotograaf & Videograaf' : 'Photographe & Vidéaste';
-      const quoteSuffix = this.locale === 'nl' ? 'Offerte binnen 48 u.' : 'Devis sous 48 h.';
+      const path = categoryPath(this.locale, cat.slug);
       this.seo.apply({
-        title: `${cat.name} — ${settings.brandName} — ${roleLabel} ${settings.city}`,
-        description: `${cat.tagline} ${quoteSuffix}`,
+        title: `${cat.name} — ${this.text.categoryPage.roleLabel} — ${settings.brandName}`,
+        description: `${cat.tagline} ${this.text.quoteDelay}`,
         path,
         imagePath: cat.poster?.posterUrl ?? undefined,
         locale: this.locale,
       });
       this.seo.applyBreadcrumbs([
-        { name: this.text.home, path: this.homePath() },
+        { name: this.text.home, path: this.homePath },
         { name: cat.name, path },
       ]);
-      this.seo.applyService(settings, cat, this.store.services());
+      this.seo.applyService(settings, cat, this.locale);
       const faq = this.categoryFaq();
       if (faq.length > 0) {
         this.seo.applyFaq(faq);
       }
 
-      const pair = CATEGORY_SLUG_MAP.find((entry) =>
-        this.locale === 'nl' ? entry.nl === cat.slug : entry.fr === cat.slug,
-      );
+      const pair = CATEGORY_SLUG_MAP.find((entry) => entry[this.locale] === cat.slug);
       if (pair) {
         this.seo.applyHreflang({
-          fr: `/realisations/${pair.fr}`,
-          nl: `/nl/realisaties/${pair.nl}`,
+          fr: categoryPath('fr', pair.fr),
+          ...Object.fromEntries(SITE_LOCALES.filter((l) => l !== 'fr').map((l) => [l, categoryPath(l, pair[l])])),
         });
       }
     });
@@ -220,10 +244,5 @@ export class CategoryPageComponent {
 
   protected selectFilm(film: Film): void {
     this.selected.set(film.id === this.selected()?.id ? null : film);
-  }
-
-  protected faqSectionTitle(): string {
-    const name = this.category()?.name ?? '';
-    return this.locale === 'nl' ? `Veelgestelde vragen over ${name}` : `Questions fréquentes sur ${name}`;
   }
 }

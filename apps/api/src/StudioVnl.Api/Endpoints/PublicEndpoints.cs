@@ -1,4 +1,6 @@
+using System.Text;
 using Microsoft.EntityFrameworkCore;
+using StudioVnl.Application;
 using StudioVnl.Application.Abstractions;
 using StudioVnl.Application.Dtos;
 using StudioVnl.Application.Mapping;
@@ -23,8 +25,7 @@ public static class PublicEndpoints
             .AddEndpointFilter<ValidationFilter<CreateLeadRequest>>();
     }
 
-    /// <summary>Langues supportées ; toute autre valeur retombe sur "fr".</summary>
-    private static string NormalizeLocale(string? locale) => locale == "nl" ? "nl" : "fr";
+    private static string NormalizeLocale(string? locale) => Locales.Normalize(locale);
 
     /// <summary>
     /// Slugs de catégorie à prioriser au lancement (même valeur FR/NL) : Clip
@@ -143,9 +144,12 @@ public static class PublicEndpoints
 
     /// <summary>
     /// Sitemap généré depuis la base plutôt qu'un fichier statique : une
-    /// catégorie ajoutée ou dépubliée s'y reflète sans déploiement. Toutes
-    /// les pages existent désormais dans les deux langues, mentions légales
-    /// et confidentialité incluses.
+    /// catégorie ajoutée ou dépubliée s'y reflète sans déploiement. Chaque
+    /// page existe en FR, NL et EN (sauf les pages zones/commune, FR et NL
+    /// seulement pour l'instant) : chaque entrée déclare les versions des
+    /// autres langues en `xhtml:link rel="alternate" hreflang="…"`, pour que
+    /// les moteurs relient les versions depuis le sitemap déjà, pas
+    /// seulement depuis les balises `<head>`.
     /// </summary>
     private static async Task<IResult> GetSitemapAsync(
         AppDbContext db,
@@ -154,56 +158,53 @@ public static class PublicEndpoints
     {
         var origin = configuration["Site:Origin"] ?? "https://heavenmotion.be";
 
-        var frSlugs = await db.Categories
-            .Where(c => c.IsPublished && c.Locale == "fr")
-            .OrderBy(c => c.SortOrder)
-            .Select(c => c.Slug)
-            .ToListAsync(cancellationToken);
-        var nlSlugs = await db.Categories
-            .Where(c => c.IsPublished && c.Locale == "nl")
-            .OrderBy(c => c.SortOrder)
-            .Select(c => c.Slug)
-            .ToListAsync(cancellationToken);
-
-        // `AltPath` porte l'URL de l'autre langue de la même page : sert à
-        // générer le `xhtml:link rel="alternate" hreflang="…"` de chaque
-        // entrée, pour que les moteurs de recherche relient les deux versions
-        // depuis le sitemap déjà, pas seulement depuis les balises `<head>`.
-        var urls = new List<(string Path, string ChangeFreq, string Priority, string AltPath, string AltHreflang)>
+        // Slugs de catégorie par langue, triés par `SortOrder` (la fiche NL et
+        // la fiche EN reprennent celui de la fiche FR à leur création) : on
+        // peut donc les apparier par position pour le hreflang, sans mapping
+        // de slugs dédié.
+        var slugsByLocale = new Dictionary<string, List<string>>();
+        foreach (var locale in Locales.All)
         {
-            ("/", "weekly", "1.0", "/nl", "nl"),
-            ("/nl", "weekly", "1.0", "/", "fr"),
-            ("/a-propos", "monthly", "0.5", "/nl/over-ons", "nl"),
-            ("/nl/over-ons", "monthly", "0.5", "/a-propos", "fr"),
-            ("/faq", "monthly", "0.5", "/nl/faq", "nl"),
-            ("/nl/faq", "monthly", "0.5", "/faq", "fr"),
-            ("/contact", "monthly", "0.5", "/nl/contact", "nl"),
-            ("/nl/contact", "monthly", "0.5", "/contact", "fr"),
-            ("/mentions-legales", "yearly", "0.2", "/nl/wettelijke-vermeldingen", "nl"),
-            ("/nl/wettelijke-vermeldingen", "yearly", "0.2", "/mentions-legales", "fr"),
-            ("/confidentialite", "yearly", "0.2", "/nl/privacybeleid", "nl"),
-            ("/nl/privacybeleid", "yearly", "0.2", "/confidentialite", "fr"),
-        };
-        // Priorité de sitemap relevée pour Clip/Lifestyle et Wemmel : lancement
-        // volontairement positionné sur ces mots-clés à faible concurrence
-        // plutôt que sur Mariage/Corporate à Bruxelles, déjà saturés par des
-        // studios établis et des annuaires (starofservice, sortlist…).
-        // `frSlugs`/`nlSlugs` sont triées par le même `SortOrder` (la fiche NL
-        // reprend celui de la fiche FR à sa création) : on peut donc les
-        // apparier par position pour le hreflang, sans mapping de slugs dédié.
-        var categoryPairCount = Math.Min(frSlugs.Count, nlSlugs.Count);
-        for (var i = 0; i < categoryPairCount; i++)
-        {
-            var priority = LaunchPriorityCategorySlugs.Contains(frSlugs[i]) ? "0.9" : "0.8";
-            urls.Add(($"/realisations/{frSlugs[i]}", "weekly", priority, $"/nl/realisaties/{nlSlugs[i]}", "nl"));
-            urls.Add(($"/nl/realisaties/{nlSlugs[i]}", "weekly", priority, $"/realisations/{frSlugs[i]}", "fr"));
+            slugsByLocale[locale] = await db.Categories
+                .Where(c => c.IsPublished && c.Locale == locale)
+                .OrderBy(c => c.SortOrder)
+                .Select(c => c.Slug)
+                .ToListAsync(cancellationToken);
         }
-        urls.Add(("/zones", "monthly", "0.6", "/nl/zones", "nl"));
-        urls.Add(("/nl/zones", "monthly", "0.6", "/zones", "fr"));
-        urls.AddRange(CommuneSlugs.Select(c =>
-            ($"/zones/{c.Fr}", "monthly", c.Fr == "wemmel" ? "0.8" : "0.6", $"/nl/zones/{c.Nl}", "nl")));
-        urls.AddRange(CommuneSlugs.Select(c =>
-            ($"/nl/zones/{c.Nl}", "monthly", c.Nl == "wemmel" ? "0.8" : "0.6", $"/zones/{c.Fr}", "fr")));
+
+        // Une entrée = un chemin par langue (null quand la page n'existe pas
+        // dans cette langue) ; chaque chemin non nul devient une URL du
+        // sitemap, avec les autres comme alternates.
+        var entries = new List<(Dictionary<string, string?> Paths, string ChangeFreq, string Priority)>
+        {
+            (Localized("", "", ""), "weekly", "1.0"),
+            (Localized("/tarifs", "/nl/tarieven", "/en/pricing"), "weekly", "0.9"),
+            (Localized("/a-propos", "/nl/over-ons", "/en/about"), "monthly", "0.5"),
+            (Localized("/faq", "/nl/faq", "/en/faq"), "monthly", "0.5"),
+            (Localized("/contact", "/nl/contact", "/en/contact"), "monthly", "0.5"),
+            (Localized("/mentions-legales", "/nl/wettelijke-vermeldingen", "/en/legal-notice"), "yearly", "0.2"),
+            (Localized("/confidentialite", "/nl/privacybeleid", "/en/privacy"), "yearly", "0.2"),
+            (Localized("/zones", "/nl/zones", null), "monthly", "0.6"),
+        };
+
+        var categoryCount = slugsByLocale.Values.Min(list => list.Count);
+        for (var i = 0; i < categoryCount; i++)
+        {
+            var fr = slugsByLocale[Locales.French][i];
+            var priority = LaunchPriorityCategorySlugs.Contains(fr) ? "0.9" : "0.8";
+            entries.Add((
+                Localized(
+                    $"/prestations/{fr}",
+                    $"/nl/diensten/{slugsByLocale[Locales.Dutch][i]}",
+                    $"/en/services/{slugsByLocale[Locales.English][i]}"),
+                "weekly",
+                priority));
+        }
+
+        entries.AddRange(CommuneSlugs.Select(c => (
+            Localized($"/zones/{c.Fr}", $"/nl/zones/{c.Nl}", null),
+            "monthly",
+            c.Fr == "wemmel" ? "0.8" : "0.6")));
 
         // Pas de date de modification par page suivie en base (catégories,
         // pages statiques) : `lastmod` reflète l'heure de génération du
@@ -212,16 +213,36 @@ public static class PublicEndpoints
         // absente pour des robots qui s'en servent pour prioriser leur crawl.
         var lastmod = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
-        var body = string.Concat(urls.Select(u =>
-            $"""
-              <url>
-                <loc>{origin}{u.Path}</loc>
-                <lastmod>{lastmod}</lastmod>
-                <changefreq>{u.ChangeFreq}</changefreq>
-                <priority>{u.Priority}</priority>
-                <xhtml:link rel="alternate" hreflang="{u.AltHreflang}" href="{origin}{u.AltPath}" />
-              </url>
-            """));
+        var body = new StringBuilder();
+        foreach (var (paths, changeFreq, priority) in entries)
+        {
+            foreach (var locale in Locales.All)
+            {
+                var path = paths[locale];
+                if (path is null)
+                {
+                    continue;
+                }
+                var alternates = string.Concat(Locales.All
+                    .Where(other => other != locale && paths[other] is not null)
+                    .Select(other =>
+                        $"""
+                            <xhtml:link rel="alternate" hreflang="{other}" href="{origin}{paths[other]}" />
+
+                        """));
+                body.Append(
+                    $"""
+                      <url>
+                        <loc>{origin}{path}</loc>
+                        <lastmod>{lastmod}</lastmod>
+                        <changefreq>{changeFreq}</changefreq>
+                        <priority>{priority}</priority>
+                    {alternates}    <xhtml:link rel="alternate" hreflang="x-default" href="{origin}{paths[Locales.French]}" />
+                      </url>
+
+                    """);
+            }
+        }
 
         var xml =
             $"""
@@ -232,6 +253,14 @@ public static class PublicEndpoints
 
         return Results.Text(xml, "application/xml");
     }
+
+    /// <summary>Chemins d'une même page en FR, NL et EN (`null` = pas de version dans cette langue). La home NL/EN est `/nl` et `/en`.</summary>
+    private static Dictionary<string, string?> Localized(string fr, string? nl, string? en) => new()
+    {
+        [Locales.French] = fr == "" ? "/" : fr,
+        [Locales.Dutch] = nl == "" ? "/nl" : nl,
+        [Locales.English] = en == "" ? "/en" : en,
+    };
 
     private static async Task<IResult> GetFilmsAsync(
         string slug,
@@ -274,6 +303,9 @@ public static class PublicEndpoints
             Name = request.Name.Trim(),
             Email = request.Email.Trim(),
             ProjectType = request.ProjectType.Trim(),
+            Pack = request.Pack?.Trim() ?? string.Empty,
+            Region = request.Region?.Trim() ?? string.Empty,
+            Locale = Locales.Normalize(request.Locale),
             EventDate = string.IsNullOrEmpty(request.EventDate)
                 ? null
                 : DateOnly.ParseExact(request.EventDate, "yyyy-MM-dd"),

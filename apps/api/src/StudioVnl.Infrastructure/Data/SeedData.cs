@@ -85,6 +85,7 @@ public static class SeedData
         await RenameLegacyBrandAsync(db, logger, cancellationToken);
         await FixLegacyLocationAsync(db, logger, cancellationToken);
         await EnsureNlTranslationsAsync(db, logger, cancellationToken);
+        await EnsureEnCategoriesAsync(db, logger, cancellationToken);
         await AttachAmbienceFootageAsync(db, logger, cancellationToken);
     }
 
@@ -101,6 +102,21 @@ public static class SeedData
         ("sport", "sport", "Sport"),
         ("clip", "clip", "Clip"),
         ("lifestyle", "lifestyle", "Lifestyle"),
+    ];
+
+    /// <summary>
+    /// Correspondance FR → EN des catégories : slug (URL sous /en/services/),
+    /// nom et accroche réels. Doit rester alignée sur `CATEGORY_SLUG_MAP` et
+    /// `CATEGORY_NAMES` côté front (`locale.ts`, `site-content.ts`).
+    /// </summary>
+    private static readonly (string FrSlug, string EnSlug, string EnName, string EnTagline)[] CategoryEnglishMap =
+    [
+        ("evenementiel", "events", "Events", "Parties, birthdays and private events, captured as they happen with no staging."),
+        ("mariage", "wedding", "Wedding", "The film of your day, edited like a scene from a movie."),
+        ("corporate", "corporate", "Corporate", "Brand films, team portraits and coverage of professional events."),
+        ("sport", "sport", "Sport", "Athletes, clubs and competitions filmed at the pace of the effort."),
+        ("clip", "music-video", "Music video", "Music videos and short formats with strong art direction."),
+        ("lifestyle", "lifestyle", "Lifestyle", "Couple, family and brand content, natural rather than scripted."),
     ];
 
     private const string LoremShort = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
@@ -274,6 +290,63 @@ public static class SeedData
         {
             await db.SaveChangesAsync(cancellationToken);
             logger.LogInformation("{Count} fiche(s) néerlandaise(s) créée(s) (contenu provisoire).", created);
+        }
+    }
+
+    /// <summary>
+    /// Pose la version anglaise des six catégories, une fois par catégorie
+    /// française déjà en place, avec un vrai nom et une vraie accroche (pas de
+    /// lorem : la page /en est publique dès le déploiement). Reprend les
+    /// médias de la fiche FR. Ne touche jamais une fiche EN déjà créée.
+    /// Seules les catégories ont besoin d'exister en anglais côté base : le
+    /// reste du contenu EN (prestations, étapes, à propos) vient du
+    /// dictionnaire statique du front, comme pour le NL.
+    /// </summary>
+    private static async Task EnsureEnCategoriesAsync(
+        AppDbContext db,
+        ILogger logger,
+        CancellationToken cancellationToken)
+    {
+        var frCategories = await db.Categories
+            .Where(c => c.Locale == "fr")
+            .ToListAsync(cancellationToken);
+        var existingEnSlugs = await db.Categories
+            .Where(c => c.Locale == "en")
+            .Select(c => c.Slug)
+            .ToListAsync(cancellationToken);
+
+        var created = 0;
+        foreach (var (frSlug, enSlug, enName, enTagline) in CategoryEnglishMap)
+        {
+            if (existingEnSlugs.Contains(enSlug))
+            {
+                continue;
+            }
+            var fr = frCategories.FirstOrDefault(c => c.Slug == frSlug);
+            if (fr is null)
+            {
+                continue;
+            }
+            db.Categories.Add(new Category
+            {
+                Id = Guid.NewGuid(),
+                Slug = enSlug,
+                Name = enName,
+                Tagline = enTagline,
+                Locale = "en",
+                SortOrder = fr.SortOrder,
+                ReelMediaId = fr.ReelMediaId,
+                PosterMediaId = fr.PosterMediaId,
+                IsPublished = fr.IsPublished,
+                IsProtected = fr.IsProtected,
+            });
+            created++;
+        }
+
+        if (created > 0)
+        {
+            await db.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("{Count} catégorie(s) anglaise(s) créée(s).", created);
         }
     }
 

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using StudioVnl.Application;
 using StudioVnl.Application.Abstractions;
 using StudioVnl.Application.Dtos;
 using StudioVnl.Application.Mapping;
@@ -74,8 +75,7 @@ public static class AdminContentEndpoints
             entity => entity.SortOrder);
     }
 
-    /// <summary>Langues supportées ; toute autre valeur retombe sur "fr".</summary>
-    private static string NormalizeLocale(string? locale) => locale == "nl" ? "nl" : "fr";
+    private static string NormalizeLocale(string? locale) => Locales.Normalize(locale);
 
     private static async Task<SiteSettingsDto> GetSettingsAsync(
         string? locale,
@@ -176,11 +176,19 @@ public static class AdminContentEndpoints
             .FirstOrDefaultAsync(s => s.Locale == locale, cancellationToken);
         if (settings is null)
         {
-            settings = new SiteSettings { Id = locale == "nl" ? 2 : 1, Locale = locale };
+            settings = new SiteSettings { Id = SettingsIdFor(locale), Locale = locale };
             db.SiteSettings.Add(settings);
         }
         return settings;
     }
+
+    /// <summary>FR = 1, NL = 2, EN = 3 : `Id` n'est pas auto-généré sur cette table.</summary>
+    private static int SettingsIdFor(string locale) => locale switch
+    {
+        Locales.Dutch => 2,
+        Locales.English => 3,
+        _ => 1,
+    };
 
     private static SiteSettingsDto ToDto(SiteSettings settings, IMediaStorage storage) => new(
         settings.BrandName,

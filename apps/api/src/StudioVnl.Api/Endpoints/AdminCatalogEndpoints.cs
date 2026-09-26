@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using StudioVnl.Application;
 using StudioVnl.Application.Abstractions;
 using StudioVnl.Application.Dtos;
 using StudioVnl.Application.Mapping;
@@ -27,8 +28,7 @@ public static class AdminCatalogEndpoints
         films.MapDelete("/{id:guid}", DeleteFilmAsync);
     }
 
-    /// <summary>Langues supportées ; toute autre valeur retombe sur "fr".</summary>
-    private static string NormalizeLocale(string? locale) => locale == "nl" ? "nl" : "fr";
+    private static string NormalizeLocale(string? locale) => Locales.Normalize(locale);
 
     private static async Task<IReadOnlyList<CategoryDto>> ListCategoriesAsync(
         string? locale,

@@ -47,6 +47,14 @@ import { SiteLocale } from '../core/locale';
           >
             NL
           </button>
+          <button
+            type="button"
+            class="shell__lang-btn"
+            [class.is-active]="locale() === 'en'"
+            (click)="setLocale('en')"
+          >
+            EN
+          </button>
         </div>
 
         <div class="shell__foot">

@@ -144,3 +144,19 @@
   font-size: $fs-14;
   line-height: $lh-body;
 }
+
+.category-page__packs {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  padding-top: 24px;
+  margin-top: 8px;
+  border-top: $rule-width solid $color-rule-10;
+}
+
+.category-page__section-title {
+  @include display-caps($fs-26, $ls-14);
+
+  color: $color-film;
+  margin: 0;
+}
