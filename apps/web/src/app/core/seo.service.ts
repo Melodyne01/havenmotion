@@ -6,7 +6,7 @@ import { CategoryKey, SITE_LOCALES, SiteLocale, categoryKeyFromSlug } from './lo
 import { Category, SiteSettings } from '../models';
 import { CategoryPricing, PACK_LABELS, PRICING, pricingFor } from './packs';
 import { COUNTRIES, REGIONS } from './regions';
-import { CATEGORY_NAMES } from './site-content';
+import { CATEGORY_NAMES, COMPANY } from './site-content';
 
 export interface SeoInput {
   title: string;
@@ -92,6 +92,8 @@ export class SeoService {
         '@type': 'LocalBusiness',
         '@id': `${this.origin}/#studio`,
         name: settings.brandName,
+        legalName: COMPANY.legalName,
+        vatID: COMPANY.vat.replace(/[\s.]/g, ''),
         description: settings.tagline,
         image: `${this.origin}/ambience/showreel-og.jpg`,
         logo: `${this.origin}/icons/icon-512.png`,
@@ -106,7 +108,13 @@ export class SeoService {
           })),
         ],
         knowsLanguage: ['fr', 'nl', 'en'],
-        address: { '@type': 'PostalAddress', addressLocality: settings.city, addressCountry: 'BE' },
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: COMPANY.street,
+          postalCode: COMPANY.postalCode,
+          addressLocality: COMPANY.city,
+          addressCountry: COMPANY.countryCode,
+        },
         priceRange,
         sameAs: settings.instagram
           ? [`https://instagram.com/${settings.instagram.replace('@', '')}`]

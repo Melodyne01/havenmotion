@@ -6,6 +6,7 @@ import { SiteFooterComponent } from './sections/site-footer.component';
 import { SiteStore } from './site-store';
 import { SeoService } from '../core/seo.service';
 import { RouteKey, SITE_LOCALE, SITE_LOCALES, pick, routePath } from '../core/locale';
+import { COMPANY } from '../core/site-content';
 
 interface LegalSection {
   title: string;
@@ -175,7 +176,7 @@ export class LegalPageComponent {
 
     return pick<LegalSection[]>(this.locale, {
       fr: [
-        { title: 'Éditeur', body: [settings.legalText, `${settings.city} — ${settings.region}`, settings.email] },
+        { title: 'Éditeur', body: [COMPANY.legalName, `${COMPANY.street}, ${COMPANY.postalCode} ${COMPANY.city}, Belgique`, `TVA ${COMPANY.vat}`, settings.email] },
         { title: 'Hébergement', body: ['Hébergeur à préciser dans le backoffice avant la mise en ligne.'] },
         {
           title: 'Propriété intellectuelle',
@@ -183,7 +184,7 @@ export class LegalPageComponent {
         },
       ],
       nl: [
-        { title: 'Uitgever', body: [settings.legalText, `${settings.city} — ${settings.region}`, settings.email] },
+        { title: 'Uitgever', body: [COMPANY.legalName, `${COMPANY.street}, ${COMPANY.postalCode} ${COMPANY.city}, België`, `Btw ${COMPANY.vat}`, settings.email] },
         { title: 'Hosting', body: ['Hostingprovider te vermelden in het backoffice vóór de livegang.'] },
         {
           title: 'Intellectuele eigendom',
@@ -191,7 +192,7 @@ export class LegalPageComponent {
         },
       ],
       en: [
-        { title: 'Publisher', body: [settings.legalText, `${settings.city} — ${settings.region}`, settings.email] },
+        { title: 'Publisher', body: [COMPANY.legalName, `${COMPANY.street}, ${COMPANY.postalCode} ${COMPANY.city}, Belgium`, `VAT ${COMPANY.vat}`, settings.email] },
         { title: 'Hosting', body: ['Hosting provider to be specified in the back office before going live.'] },
         {
           title: 'Intellectual property',

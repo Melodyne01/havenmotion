@@ -43,7 +43,7 @@ public static class SeedData
                 Instagram = "@heavenmotion",
                 City = "Bruxelles",
                 Region = "Bruxelles-Capitale",
-                LegalText = "Heaven Motion — micro-entreprise. Mentions légales à compléter.",
+                LegalText = "HEAVEN Event SRL — Avenue Limburg Stirum 252/1B, 1780 Wemmel, Belgique — TVA BE 1009.781.480",
                 AboutPortraitUrl = "/placeholders/portrait.svg",
                 AboutParagraphsJson = DtoMapper.ToJson(
                 [

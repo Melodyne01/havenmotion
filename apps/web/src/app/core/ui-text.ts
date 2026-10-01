@@ -179,8 +179,8 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       categoriesLabel: 'catégories de prestations',
       quoteDelayValue: '48 h',
       quoteDelayLabel: 'pour recevoir un devis chiffré',
-      revisionsValue: '2',
-      revisionsLabel: 'allers-retours de retouche inclus',
+      revisionsValue: '100+',
+      revisionsLabel: 'projets réalisés, de la Belgique à la Grèce',
       note: '* Basé à Bruxelles, déplacement au forfait par zone — voir les tarifs.',
     },
     categoryBand: {
@@ -331,8 +331,8 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       categoriesLabel: 'soorten diensten',
       quoteDelayValue: '48 u',
       quoteDelayLabel: 'om een concrete offerte te ontvangen',
-      revisionsValue: '2',
-      revisionsLabel: 'rondes feedback inbegrepen',
+      revisionsValue: '100+',
+      revisionsLabel: 'projecten gerealiseerd, van België tot Griekenland',
       note: '* Gevestigd in Brussel, verplaatsing per zone aan een vast tarief — zie tarieven.',
     },
     categoryBand: {
@@ -483,8 +483,8 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       categoriesLabel: 'types of services',
       quoteDelayValue: '48 h',
       quoteDelayLabel: 'to receive an itemised quote',
-      revisionsValue: '2',
-      revisionsLabel: 'rounds of edits included',
+      revisionsValue: '100+',
+      revisionsLabel: 'projects completed, from Belgium to Greece',
       note: '* Based in Brussels, travel charged as a flat fee per zone — see pricing.',
     },
     categoryBand: {

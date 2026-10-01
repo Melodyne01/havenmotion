@@ -147,7 +147,7 @@ export const PLACEHOLDER_SITE: SitePayload = {
     instagram: '@heavenmotion',
     city: 'Bruxelles',
     region: 'Bruxelles-Capitale',
-    legalText: 'Heaven Motion — micro-entreprise. Mentions légales à compléter.',
+    legalText: SITE_CONTENT.fr.legalText,
     showreel: ambienceMedia(AMBIENCE_CLIPS.showreel),
   },
   // Les fiches prestation viennent de la grille tarifaire, comme sur le site.
