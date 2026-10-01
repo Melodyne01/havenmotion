@@ -68,7 +68,7 @@ public static class AdminLeadEndpoints
         var leads = await query.OrderByDescending(l => l.CreatedAt).ToListAsync(cancellationToken);
 
         var builder = new StringBuilder();
-        builder.AppendLine("recue_le;nom;email;projet;date_evenement;budget;statut;message");
+        builder.AppendLine("recue_le;nom;email;projet;formule;region;langue;date_evenement;budget;statut;message");
         foreach (var lead in leads)
         {
             builder.AppendLine(string.Join(';',
@@ -76,6 +76,9 @@ public static class AdminLeadEndpoints
                 Csv(lead.Name),
                 Csv(lead.Email),
                 Csv(lead.ProjectType),
+                Csv(lead.Pack),
+                Csv(lead.Region),
+                Csv(lead.Locale),
                 lead.EventDate?.ToString("yyyy-MM-dd") ?? string.Empty,
                 Csv(lead.BudgetRange),
                 lead.Status.ToString(),

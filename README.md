@@ -1,8 +1,20 @@
-# Studio VNL — site « Cinéma »
+# Heaven Motion — site « Cinéma »
 
-Site vitrine de **Studio VNL**, vidéaste freelance (mariages, corporate, sport,
-clips, lifestyle) à Lyon / Auvergne-Rhône-Alpes. Direction artistique
-« Cinéma » (noir & ambre), objectif unique : **décrocher des demandes de devis**.
+Site vitrine de **Heaven Motion**, photographe et vidéaste indépendant basé à
+Bruxelles (une seule personne pour la photo et la vidéo), qui travaille en
+Belgique, dans le nord de la France jusqu'à Paris, au Luxembourg et aux
+Pays-Bas. Six catégories (événementiel, mariage, corporate, sport, clip,
+lifestyle), chacune vendue en quatre formules à prix affiché (photo, vidéo,
+photo + vidéo, sur mesure). Site en français (racine), néerlandais (`/nl`) et
+anglais (`/en`). Direction artistique « Cinéma » (noir & ambre), objectif
+unique : **décrocher des demandes de devis**.
+
+La stratégie SEO/GEO et le découpage en chantiers sont dans
+[`docs/plan-chantiers-seo.md`](docs/plan-chantiers-seo.md). Les prix, options,
+zones de déplacement et régions sont des dictionnaires typés dans
+`apps/web/src/app/core/` (`packs.ts`, `pricing-options.ts`, `travel-zones.ts`,
+`regions.ts`) : un changement de prix est un changement de code + déploiement,
+comme pour le reste du contenu marketing (`site-content.ts`).
 
 | Dossier | Contenu |
 | --- | --- |
@@ -36,14 +48,45 @@ dotnet run --project src/StudioVnl.Api    # http://localhost:5080 (Swagger en de
 ```
 
 Sans backend démarré, le site public retombe automatiquement sur le contenu
-placeholder (cadres 2.39:1 noirs portant le nom du fichier attendu).
+placeholder.
+
+### Boucles d'ambiance (provisoire)
+
+En attendant les vraies vidéos du studio, les cinq bandes et le showreel
+jouent des boucles fabriquées pour le site : dérive lumineuse ambre sur fond
+charbon, grain argentique, halo anamorphique. Elles sont servies par le site
+lui-même — aucun CDN tiers, donc aucun lien qui puisse mourir, et le rendu est
+identique hors ligne.
+
+| Où | Fichier |
+| --- | --- |
+| Fichiers servis | `apps/web/public/ambience/*.webm` + `*.jpg` (poster) |
+| Générateur | `apps/web/tools/generate-ambience.py` |
+| Front (repli hors API) | `apps/web/src/app/core/ambience.ts` |
+| API (seed) | `apps/api/src/StudioVnl.Infrastructure/Data/AmbienceFootage.cs` |
+
+Pour régénérer les boucles (les paramètres de chaque plan sont en tête du
+script) :
+
+```bash
+cd apps/web
+pip install numpy pillow
+python3 tools/generate-ambience.py
+```
+
+Format : VP8/WebM muet, 8 s bouclées. Les navigateurs sans WebM (iOS antérieur
+à 14.4) affichent le poster — le cadre reste habillé, il ne bouge pas.
+
+Côté API, une boucle n'est posée que sur un emplacement vide, et plus aucune
+n'est ajoutée dès qu'un fichier a été déposé dans la bibliothèque : le contenu
+du studio reprend la main sans manipulation.
 
 ### Comptes de démo
 
 Le seed crée un compte admin si `Seed:AdminPassword` est défini. En dev
 (`appsettings.Development.json` et `docker-compose.yml`) :
 
-- **admin@studiovnl.fr** / `Admin-Demo-2026!` → rôle `Admin`
+- **admin@heavenmotion.be** / `Admin-Demo-2026!` → rôle `Admin`
 
 Backoffice : http://localhost:4200/admin — e-mails visibles dans Mailpit :
 http://localhost:8025.

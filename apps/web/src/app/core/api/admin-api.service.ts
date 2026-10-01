@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { APP_CONFIG } from '../app-config';
+import { SiteLocale } from '../locale';
 import {
   AuditLogEntry,
   Category,
@@ -10,10 +11,7 @@ import {
   Lead,
   LeadStatus,
   MediaAsset,
-  ProcessStep,
-  ServiceCard,
   SiteSettings,
-  Testimonial,
 } from '../../models';
 
 export interface LeadFilters {
@@ -31,8 +29,10 @@ export class AdminApiService {
   private readonly base = inject(APP_CONFIG).apiBaseUrl;
 
   // --- Catégories ---------------------------------------------------------
-  categories(): Observable<Category[]> {
-    return this.http.get<Category[]>(`${this.base}/admin/categories`);
+  categories(locale: SiteLocale = 'fr'): Observable<Category[]> {
+    return this.http.get<Category[]>(`${this.base}/admin/categories`, {
+      params: new HttpParams().set('locale', locale),
+    });
   }
 
   updateCategory(id: string, body: Partial<Category>): Observable<Category> {
@@ -79,16 +79,24 @@ export class AdminApiService {
   }
 
   // --- Réglages -----------------------------------------------------------
-  settings(): Observable<SiteSettings> {
-    return this.http.get<SiteSettings>(`${this.base}/admin/settings`);
+  settings(locale: SiteLocale = 'fr'): Observable<SiteSettings> {
+    return this.http.get<SiteSettings>(`${this.base}/admin/settings`, {
+      params: new HttpParams().set('locale', locale),
+    });
   }
 
-  updateSettings(body: Partial<SiteSettings>): Observable<SiteSettings> {
-    return this.http.put<SiteSettings>(`${this.base}/admin/settings`, body);
+  updateSettings(body: Partial<SiteSettings>, locale: SiteLocale = 'fr'): Observable<SiteSettings> {
+    return this.http.put<SiteSettings>(`${this.base}/admin/settings`, body, {
+      params: new HttpParams().set('locale', locale),
+    });
   }
 
-  setShowreel(mediaId: string): Observable<SiteSettings> {
-    return this.http.put<SiteSettings>(`${this.base}/admin/settings/showreel`, { mediaId });
+  setShowreel(mediaId: string, locale: SiteLocale = 'fr'): Observable<SiteSettings> {
+    return this.http.put<SiteSettings>(
+      `${this.base}/admin/settings/showreel`,
+      { mediaId },
+      { params: new HttpParams().set('locale', locale) },
+    );
   }
 
   showreelHistory(): Observable<MediaAsset[]> {
@@ -96,48 +104,9 @@ export class AdminApiService {
   }
 
   // --- Contenus texte -----------------------------------------------------
-  services(): Observable<ServiceCard[]> {
-    return this.http.get<ServiceCard[]>(`${this.base}/admin/services`);
-  }
-
-  saveService(body: Partial<ServiceCard>): Observable<ServiceCard> {
-    return body.id
-      ? this.http.put<ServiceCard>(`${this.base}/admin/services/${body.id}`, body)
-      : this.http.post<ServiceCard>(`${this.base}/admin/services`, body);
-  }
-
-  deleteService(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.base}/admin/services/${id}`);
-  }
-
-  processSteps(): Observable<ProcessStep[]> {
-    return this.http.get<ProcessStep[]>(`${this.base}/admin/process`);
-  }
-
-  saveProcessStep(body: Partial<ProcessStep>): Observable<ProcessStep> {
-    return body.id
-      ? this.http.put<ProcessStep>(`${this.base}/admin/process/${body.id}`, body)
-      : this.http.post<ProcessStep>(`${this.base}/admin/process`, body);
-  }
-
-  deleteProcessStep(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.base}/admin/process/${id}`);
-  }
-
-  testimonials(): Observable<Testimonial[]> {
-    return this.http.get<Testimonial[]>(`${this.base}/admin/testimonials`);
-  }
-
-  saveTestimonial(body: Partial<Testimonial>): Observable<Testimonial> {
-    return body.id
-      ? this.http.put<Testimonial>(`${this.base}/admin/testimonials/${body.id}`, body)
-      : this.http.post<Testimonial>(`${this.base}/admin/testimonials`, body);
-  }
-
-  deleteTestimonial(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.base}/admin/testimonials/${id}`);
-  }
-
+  // Prestations, process et témoignages ne sont plus éditables ici : le site
+  // public les tient de SITE_CONTENT (code, traduit FR/NL), pas de l'API —
+  // voir le commentaire en tête de ContentAdminComponent.
   logos(): Observable<ClientLogo[]> {
     return this.http.get<ClientLogo[]>(`${this.base}/admin/logos`);
   }

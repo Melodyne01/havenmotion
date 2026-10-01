@@ -15,6 +15,8 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import { MediaAsset, Rendition } from '../../models';
 import { prefersLightMedia, prefersReducedMotion } from '../../core/motion';
+import { SiteLocale } from '../../core/locale';
+import { UI_TEXT } from '../../core/ui-text';
 
 /**
  * `auto`     — lit en boucle dès que le cadre est visible (hero).
@@ -35,7 +37,7 @@ export type VideoFramePlayback = 'auto' | 'hover' | 'manual' | 'poster';
   selector: 'app-video-frame',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <span class="frame" [style.aspect-ratio]="ratio()">
+    <span class="frame" [style.aspect-ratio]="ratio()" [style.min-height.px]="minHeight()">
       @if (shouldMount()) {
         <video
           #video
@@ -57,7 +59,13 @@ export type VideoFramePlayback = 'auto' | 'hover' | 'manual' | 'poster';
             <source [src]="source.url" [type]="source.type" />
           }
           @if (captionsUrl(); as track) {
-            <track kind="captions" srclang="fr" label="Français" [src]="track" default />
+            <track
+              kind="captions"
+              [srclang]="captionsLocale()"
+              [label]="captionsLabel()"
+              [src]="track"
+              default
+            />
           }
         </video>
       } @else {
@@ -78,6 +86,14 @@ export type VideoFramePlayback = 'auto' | 'hover' | 'manual' | 'poster';
 export class VideoFrameComponent implements AfterViewInit, OnDestroy {
   /** Ratio du cadre, `2.39` par défaut (cinémascope). */
   readonly ratio = input(2.39);
+  /**
+   * Hauteur plancher en pixels. Le ratio seul ne suffit pas quand le cadre
+   * porte du texte : sur un téléphone, un 2.39:1 ne fait que 163 px de haut et
+   * le contenu superposé déborde. Ce plancher ne mord que sur les écrans trop
+   * étroits — dès que la largeur redonne au ratio une hauteur suffisante, le
+   * cinémascope reprend exactement.
+   */
+  readonly minHeight = input<number | null>(null);
   readonly asset = input<MediaAsset | null>(null);
   readonly playback = input<VideoFramePlayback>('hover');
   readonly muted = input(true);
@@ -90,6 +106,9 @@ export class VideoFrameComponent implements AfterViewInit, OnDestroy {
   /** Marque le média comme critique (hero) : poster chargé en priorité. */
   readonly priority = input(false);
   readonly captionsUrl = input<string | null>(null);
+  /** Langue des sous-titres pointés par `captionsUrl`, "fr" par défaut. */
+  readonly captionsLocale = input<SiteLocale>('fr');
+  protected readonly captionsLabel = computed(() => UI_TEXT[this.captionsLocale()].captions);
   /** Affiche les contrôles natifs (modale : lecture avec son, pause, volume). */
   readonly controls = input(false);
 

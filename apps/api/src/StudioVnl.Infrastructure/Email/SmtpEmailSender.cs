@@ -15,11 +15,11 @@ public class EmailOptions
     public bool UseSsl { get; set; }
     public string? UserName { get; set; }
     public string? Password { get; set; }
-    public string FromAddress { get; set; } = "no-reply@studiovnl.fr";
-    public string FromName { get; set; } = "Studio VNL";
+    public string FromAddress { get; set; } = "no-reply@heavenmotion.be";
+    public string FromName { get; set; } = "Heaven Motion";
 
     /// <summary>Boîte du studio, destinataire des notifications de devis.</summary>
-    public string StudioAddress { get; set; } = "contact@studiovnl.fr";
+    public string StudioAddress { get; set; } = "contact@heavenmotion.be";
 }
 
 /// <summary>Envoi SMTP (Mailpit en dev, relais du fournisseur en prod).</summary>

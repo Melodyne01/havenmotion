@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DatePipe } from '@angular/common';
+import { DatePipe, UpperCasePipe } from '@angular/common';
 import { AdminApiService, LeadFilters } from '../../core/api/admin-api.service';
 import { Lead, LeadStatus } from '../../models';
+import { PACK_LABELS, PackType, PACK_TYPES } from '../../core/packs';
+import { findRegion } from '../../core/regions';
 
 const STATUS_LABELS: Record<LeadStatus, string> = {
   New: 'Nouveau',
@@ -15,7 +17,7 @@ const STATUS_LABELS: Record<LeadStatus, string> = {
 @Component({
   selector: 'app-leads-admin',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, DatePipe],
+  imports: [FormsModule, DatePipe, UpperCasePipe],
   template: `
     <section class="a-page">
       <header class="a-page__head">
@@ -61,6 +63,8 @@ const STATUS_LABELS: Record<LeadStatus, string> = {
                 <th scope="col">Nom</th>
                 <th scope="col">E-mail</th>
                 <th scope="col">Projet</th>
+                <th scope="col">Formule</th>
+                <th scope="col">Région</th>
                 <th scope="col">Date</th>
                 <th scope="col">Budget</th>
                 <th scope="col">Message</th>
@@ -73,7 +77,9 @@ const STATUS_LABELS: Record<LeadStatus, string> = {
                   <td>{{ lead.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
                   <td>{{ lead.name }}</td>
                   <td><a [href]="'mailto:' + lead.email">{{ lead.email }}</a></td>
-                  <td>{{ lead.projectType }}</td>
+                  <td>{{ lead.projectType }} <span class="lang">{{ lead.locale | uppercase }}</span></td>
+                  <td>{{ packLabel(lead.pack) }}</td>
+                  <td>{{ regionLabel(lead.region) }}</td>
                   <td>{{ lead.eventDate ? (lead.eventDate | date: 'dd/MM/yyyy') : '—' }}</td>
                   <td>{{ lead.budgetRange }}</td>
                   <td class="message">{{ lead.message || '—' }}</td>
@@ -83,6 +89,7 @@ const STATUS_LABELS: Record<LeadStatus, string> = {
                       [ngModel]="lead.status"
                       (ngModelChange)="setStatus(lead, $event)"
                       name="status-{{ lead.id }}"
+                      [attr.aria-label]="'Statut de la demande de ' + lead.name"
                     >
                       @for (option of statusOptions; track option) {
                         <option [value]="option">{{ statusLabel(option) }}</option>
@@ -102,6 +109,12 @@ const STATUS_LABELS: Record<LeadStatus, string> = {
       .message {
         max-width: 320px;
       }
+
+      .lang {
+        margin-left: 6px;
+        opacity: 0.6;
+        font-size: 11px;
+      }
     `,
   ],
 })
@@ -119,6 +132,16 @@ export class LeadsAdminComponent {
 
   protected statusLabel(value: LeadStatus): string {
     return STATUS_LABELS[value];
+  }
+
+  /** Code de formule (`combo`) → libellé FR ; vide = le prospect n'a pas choisi. */
+  protected packLabel(pack: string): string {
+    return PACK_TYPES.includes(pack as PackType) ? PACK_LABELS[pack as PackType].fr : '—';
+  }
+
+  /** Identifiant de région (`lille-nord`) → nom FR ; vide = à préciser. */
+  protected regionLabel(region: string): string {
+    return findRegion(region)?.name.fr ?? (region || '—');
   }
 
   protected load(): void {

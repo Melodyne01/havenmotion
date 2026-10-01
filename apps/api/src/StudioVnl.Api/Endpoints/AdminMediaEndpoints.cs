@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using StudioVnl.Application.Abstractions;
 using StudioVnl.Application.Dtos;
 using StudioVnl.Application.Mapping;
+using StudioVnl.Application.Validation;
 using StudioVnl.Domain.Entities;
 using StudioVnl.Infrastructure.Data;
 
@@ -162,7 +163,13 @@ public static class AdminMediaEndpoints
 
         var isVideo = session.ContentType.StartsWith("video/", StringComparison.Ordinal);
         var assetId = Guid.NewGuid();
-        var extension = Path.GetExtension(session.FileName);
+        // L'extension du fichier stocké vient du `ContentType` validé à l'ouverture
+        // de la session (allowlist dans StartUploadValidator), jamais du nom de
+        // fichier fourni par le client : `/media` sert les fichiers statiquement en
+        // déduisant leur Content-Type HTTP de l'extension, donc un nom de fichier
+        // trompeur (ex. `.html`) associé à un contenu arbitraire pourrait sinon être
+        // servi comme tel — XSS stocké potentiel derrière un compte admin compromis.
+        var extension = ExtensionFor(session.ContentType);
         var originalKey = $"originals/{assetId:N}{extension}";
 
         // Assemblage des morceaux dans l'ordre.
@@ -217,4 +224,21 @@ public static class AdminMediaEndpoints
         await audit.RecordAsync("MediaAsset", assetId.ToString(), "Upload", session.FileName, cancellationToken);
         return Results.Ok(asset.ToDto(storage.GetPublicUrl));
     }
+
+    /// <summary>
+    /// Extension canonique pour un type de contenu de l'allowlist
+    /// (<see cref="StartUploadValidator.AllowedContentTypes"/>). `contentType` est
+    /// déjà validé à ce stade ; une valeur hors liste ne devrait jamais arriver.
+    /// </summary>
+    private static string ExtensionFor(string contentType) => contentType switch
+    {
+        "video/mp4" => ".mp4",
+        "video/quicktime" => ".mov",
+        "video/x-matroska" => ".mkv",
+        "image/jpeg" => ".jpg",
+        "image/png" => ".png",
+        "image/webp" => ".webp",
+        "image/avif" => ".avif",
+        _ => throw new InvalidOperationException($"Type de contenu non pris en charge : {contentType}."),
+    };
 }

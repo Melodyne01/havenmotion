@@ -18,6 +18,9 @@ public static class LeadEmailTemplates
         {Row("Nom", lead.Name)}
         {Row("E-mail", lead.Email)}
         {Row("Projet", lead.ProjectType)}
+        {Row("Formule", PackLabel(lead.Pack))}
+        {Row("Région", string.IsNullOrEmpty(lead.Region) ? "à préciser" : lead.Region)}
+        {Row("Langue", lead.Locale.ToUpperInvariant())}
         {Row("Date", lead.EventDate?.ToString("dd/MM/yyyy") ?? "non précisée")}
         {Row("Budget", lead.BudgetRange)}
         {Row("Message", string.IsNullOrWhiteSpace(lead.Message) ? "—" : lead.Message)}
@@ -34,6 +37,16 @@ public static class LeadEmailTemplates
         </p>
         <p style="margin:0">À très vite,<br />{WebUtility.HtmlEncode(brandName)}</p>
         """);
+
+    /// <summary>Libellé FR d'un code de formule, pour la notification au studio.</summary>
+    public static string PackLabel(string pack) => pack switch
+    {
+        "photo" => "Photo + retouche",
+        "video" => "Vidéo + montage",
+        "combo" => "Photo + vidéo",
+        "custom" => "Sur mesure",
+        _ => "pas encore choisie",
+    };
 
     private static string Row(string label, string value) =>
         $"""

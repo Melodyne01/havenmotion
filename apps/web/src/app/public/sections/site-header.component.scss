@@ -40,9 +40,22 @@
 
 .header__cta {
   display: none;
+  align-items: center;
+  gap: 16px;
 
   @include desktop {
-    display: block;
+    display: flex;
+  }
+}
+
+.header__lang {
+  @include display-caps($fs-11, $ls-28, $weight-semibold);
+
+  color: $color-muted-60;
+  transition: color $dur-fast $ease;
+
+  &:hover {
+    color: $color-amber;
   }
 }
 

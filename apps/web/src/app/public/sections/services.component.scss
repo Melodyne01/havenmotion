@@ -15,7 +15,30 @@
   }
 
   @include desktop {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.services__lead {
+  max-width: 62ch;
+  margin: -24px 0 32px;
+  color: $color-muted-60;
+  font-size: $fs-15;
+  line-height: $lh-body;
+}
+
+.services__all {
+  margin: 24px 0 0;
+
+  a {
+    @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+    color: $color-amber;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-film;
+    }
   }
 }
 
@@ -44,6 +67,9 @@
 
 .card__item {
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
   padding-left: 16px;
   color: $color-muted-60;
   font-size: $fs-14;
@@ -81,4 +107,20 @@
   @include display-caps($fs-18, $ls-14);
 
   color: $color-amber;
+}
+
+.card__item-price {
+  color: $color-film;
+  white-space: nowrap;
+}
+
+.card__cta {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  color: $color-amber;
+  text-decoration: none;
+
+  &:hover {
+    color: $color-film;
+  }
 }

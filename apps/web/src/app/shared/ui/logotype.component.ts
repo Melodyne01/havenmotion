@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-/** Logotype horizontal : « STUDIO » blanc pellicule + « VNL » ambre. */
+/** Logotype horizontal : « HEAVEN » blanc pellicule + « MOTION » ambre. */
 @Component({
   selector: 'app-logotype',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <span class="logotype" [class.logotype--small]="small()">
-      <span class="logotype__studio">Studio</span><span class="logotype__vnl">VNL</span>
+      <span class="logotype__heaven">Heaven</span><span class="logotype__motion">Motion</span>
     </span>
   `,
   styles: [
@@ -33,11 +33,11 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
         font-size: $fs-13;
       }
 
-      .logotype__studio {
+      .logotype__heaven {
         color: $color-film;
       }
 
-      .logotype__vnl {
+      .logotype__motion {
         color: $color-amber;
       }
     `,

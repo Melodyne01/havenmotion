@@ -14,7 +14,8 @@ import { Category, Film, MediaAsset } from '../../models';
       <header class="a-page__head">
         <h1 class="a-title">Films</h1>
         <div class="a-actions">
-          <select class="a-input" [(ngModel)]="filter" (ngModelChange)="load()" name="filter">
+          <label class="sr-only" for="filter">Filtrer par catégorie</label>
+          <select id="filter" class="a-input" [(ngModel)]="filter" (ngModelChange)="load()" name="filter">
             <option value="">Toutes les catégories</option>
             @for (category of categories(); track category.id) {
               <option [value]="category.id">{{ category.name }}</option>

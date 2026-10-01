@@ -48,6 +48,28 @@
   }
 }
 
+.shell__lang {
+  display: flex;
+  gap: 4px;
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: $rule-width solid $color-rule-10;
+}
+
+.shell__lang-btn {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  flex: 1;
+  padding: 8px;
+  color: $color-muted-60;
+  border: $rule-width solid $color-rule-16;
+
+  &.is-active {
+    color: $color-amber;
+    border-color: $color-amber;
+  }
+}
+
 .shell__foot {
   display: grid;
   gap: 10px;

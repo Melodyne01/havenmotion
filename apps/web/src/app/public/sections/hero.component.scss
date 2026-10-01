@@ -13,6 +13,18 @@
     rgba(11, 11, 12, 0.1) 45%,
     rgba(11, 11, 12, 0.85) 100%
   );
+
+  // Sur téléphone le cadre est bien plus haut que son 2.39:1 : l'image est
+  // recadrée de près et son centre remonte derrière le titre. Le voile est
+  // donc plus dense au milieu, là où le texte se pose.
+  @include mobile {
+    background: linear-gradient(
+      180deg,
+      rgba(11, 11, 12, 0.35) 0%,
+      rgba(11, 11, 12, 0.5) 45%,
+      rgba(11, 11, 12, 0.9) 100%
+    );
+  }
 }
 
 .hero__watermark {
@@ -50,6 +62,21 @@
   @include desktop {
     font-size: $fs-106;
   }
+}
+
+// Le nom de marque reste le repère visuel du hero ; ce sous-titre, dans le
+// même H1, porte la phrase que Google et un visiteur pressé lisent en
+// premier pour comprendre le métier et la zone — un H1 réduit au seul nom
+// de marque n'aide pas le référencement, aussi grand soit-il à l'écran.
+.hero__title-sub {
+  display: block;
+  margin-top: 8px;
+  font-family: $font-body;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: $weight-regular;
+  font-size: $fs-18;
+  color: $color-muted-60;
 }
 
 .hero__tagline {
