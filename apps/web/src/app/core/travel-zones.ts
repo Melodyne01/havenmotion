@@ -38,9 +38,9 @@ export const TRAVEL_ZONES: readonly TravelZone[] = [
     fee: 90,
     distance: tr('60 à 150 km', '60 tot 150 km', '60 to 150 km'),
     examples: tr(
-      'Liège, Namur, Mons, Bruges, Limbourg, Durbuy, Lille, Maastricht, Eindhoven, Breda, Zélande',
-      'Luik, Namen, Bergen, Brugge, Limburg, Durbuy, Rijsel, Maastricht, Eindhoven, Breda, Zeeland',
-      'Liège, Namur, Mons, Bruges, Limburg, Durbuy, Lille, Maastricht, Eindhoven, Breda, Zeeland',
+      'Liège, Namur, Mons, Bruges, Limbourg, Durbuy, Lille, Maastricht, Eindhoven, Breda, Zélande, Aix-la-Chapelle',
+      'Luik, Namen, Bergen, Brugge, Limburg, Durbuy, Rijsel, Maastricht, Eindhoven, Breda, Zeeland, Aken',
+      'Liège, Namur, Mons, Bruges, Limburg, Durbuy, Lille, Maastricht, Eindhoven, Breda, Zeeland, Aachen',
     ),
   },
   {
@@ -48,16 +48,16 @@ export const TRAVEL_ZONES: readonly TravelZone[] = [
     fee: 190,
     distance: tr('150 à 250 km', '150 tot 250 km', '150 to 250 km'),
     examples: tr(
-      'Luxembourg, Arlon, Bouillon, Rotterdam, La Haye, Utrecht, Amsterdam, Côte d’Opale, Amiens, Reims',
-      'Luxemburg, Aarlen, Bouillon, Rotterdam, Den Haag, Utrecht, Amsterdam, Opaalkust, Amiens, Reims',
-      'Luxembourg, Arlon, Bouillon, Rotterdam, The Hague, Utrecht, Amsterdam, Opal Coast, Amiens, Reims',
+      'Luxembourg, Arlon, Bouillon, Rotterdam, La Haye, Utrecht, Amsterdam, Côte d’Opale, Amiens, Reims, Cologne, Düsseldorf, Trèves',
+      'Luxemburg, Aarlen, Bouillon, Rotterdam, Den Haag, Utrecht, Amsterdam, Opaalkust, Amiens, Reims, Keulen, Düsseldorf, Trier',
+      'Luxembourg, Arlon, Bouillon, Rotterdam, The Hague, Utrecht, Amsterdam, Opal Coast, Amiens, Reims, Cologne, Düsseldorf, Trier',
     ),
   },
   {
     id: 4,
     fee: 290,
     distance: tr('250 à 350 km', '250 tot 350 km', '250 to 350 km'),
-    examples: tr('Paris, Île-de-France, Chantilly', 'Parijs, Île-de-France, Chantilly', 'Paris, Île-de-France, Chantilly'),
+    examples: tr('Paris, Île-de-France, Chantilly, Sarrebruck', 'Parijs, Île-de-France, Chantilly, Saarbrücken', 'Paris, Île-de-France, Chantilly, Saarbrücken'),
   },
   {
     id: 5,

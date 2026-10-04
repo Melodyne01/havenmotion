@@ -61,7 +61,7 @@ export class HeroComponent {
 
   /**
    * Sous-titre dans le H1 : le nom de marque seul n'aide pas le
-   * référencement. Les quatre pays couverts y figurent — c'est le
+   * référencement. Les cinq pays couverts y figurent — c'est le
    * positionnement du site depuis la stratégie par régions.
    */
   /**

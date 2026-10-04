@@ -8,16 +8,30 @@
   border-top: $rule-width solid $color-rule-10;
 
   @include tablet-up {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
-    gap: 32px;
+    gap: 24px 32px;
     padding: 44px $pad-x-desktop;
+  }
+
+  @include desktop {
+    grid-template-columns: auto minmax(0, 1fr) auto;
   }
 }
 
 .footer__legal {
+  max-width: 60ch;
   color: $color-muted-45;
   font-size: $fs-13;
+  line-height: $lh-body;
+
+  @include tablet-up {
+    grid-column: 1 / -1;
+  }
+
+  @include desktop {
+    grid-column: auto;
+  }
 }
 
 .footer__nav {

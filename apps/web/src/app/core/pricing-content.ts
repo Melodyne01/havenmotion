@@ -48,7 +48,7 @@ const lifestyle = formatPrice(startingPrice('lifestyle'));
 export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
   fr: {
     title: 'Tarifs photo & vidéo 2026',
-    metaTitle: 'Tarifs photographe & vidéaste 2026 — Belgique, France, Luxembourg, Pays-Bas',
+    metaTitle: 'Tarifs photographe & vidéaste 2026 — Belgique, France, Luxembourg, Pays-Bas, Allemagne',
     metaDescription: `Prix affichés, TTC ou HTVA : photo, vidéo ou photo + vidéo par la même personne, dans 6 catégories. Mariage dès ${mariage}, séance lifestyle dès ${lifestyle}. Options, forfaits de déplacement, conditions.`,
     eyebrow: 'Tarifs',
     inBrief: [
@@ -92,7 +92,7 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
     why: [
       'Une seule personne, pas d’agence : pas de marge intermédiaire, pas de sous-traitance du montage, pas de commercial. Vous parlez à celui qui tient la caméra.',
       'La photo et la vidéo par la même personne coûtent moins cher que deux prestataires : un seul déplacement, un seul repérage, un seul jour de travail. L’économie vous est reversée sur le combo.',
-      'Les prix sont les mêmes dans les quatre pays. Seul le forfait de déplacement change, et il est affiché. Au Luxembourg, où le marché est 15 à 30 % plus cher, c’est un avantage réel.',
+      'Les prix sont les mêmes dans les cinq pays. Seul le forfait de déplacement change, et il est affiché. Au Luxembourg, où le marché est 15 à 30 % plus cher, c’est un avantage réel.',
       'Le matériel, les sauvegardes doubles, les licences musicales et les assurances sont compris. Ce qui est en option est listé ci-dessus, avec son prix.',
     ],
     marketTitle: 'Pour comparer : les fourchettes du marché',
@@ -154,7 +154,7 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
   },
   nl: {
     title: 'Tarieven foto & video 2026',
-    metaTitle: 'Tarieven fotograaf & videograaf 2026 — België, Frankrijk, Luxemburg, Nederland',
+    metaTitle: 'Tarieven fotograaf & videograaf 2026 — België, Frankrijk, Luxemburg, Nederland, Duitsland',
     metaDescription: `Transparante prijzen, incl. of excl. btw: foto, video of foto + video door dezelfde persoon, in 6 categorieën. Huwelijk vanaf ${mariage}, lifestyle-sessie vanaf ${lifestyle}. Opties, verplaatsingstarieven, voorwaarden.`,
     eyebrow: 'Tarieven',
     inBrief: [
@@ -198,7 +198,7 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
     why: [
       'Eén persoon, geen agentschap: geen tussenmarge, geen uitbestede montage, geen verkoper. U praat met wie de camera vasthoudt.',
       'Foto en video door dezelfde persoon kosten minder dan twee leveranciers: één verplaatsing, één verkenning, één werkdag. Die besparing krijgt u terug op de combinatie.',
-      'De prijzen zijn dezelfde in de vier landen. Alleen het verplaatsingstarief verandert, en dat staat online. In Luxemburg, waar de markt 15 tot 30 % duurder is, is dat een echt voordeel.',
+      'De prijzen zijn dezelfde in de vijf landen. Alleen het verplaatsingstarief verandert, en dat staat online. In Luxemburg, waar de markt 15 tot 30 % duurder is, is dat een echt voordeel.',
       'Materiaal, dubbele back-ups, muzieklicenties en verzekeringen zijn inbegrepen. Wat optioneel is, staat hierboven, met zijn prijs.',
     ],
     marketTitle: 'Ter vergelijking: de marktprijzen',
@@ -236,7 +236,7 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
   },
   en: {
     title: 'Photo & video pricing 2026',
-    metaTitle: 'Photographer & videographer pricing 2026 — Belgium, France, Luxembourg, Netherlands',
+    metaTitle: 'Photographer & videographer pricing 2026 — Belgium, France, Luxembourg, Netherlands, Germany',
     metaDescription: `Published prices, incl. or excl. VAT: photo, video or photo + video by the same person, across 6 categories. Weddings from ${mariage}, lifestyle sessions from ${lifestyle}. Extras, travel fees, terms.`,
     eyebrow: 'Pricing',
     inBrief: [
@@ -268,7 +268,7 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
     why: [
       'One person, no agency: no middle margin, no outsourced editing, no sales rep. You talk to the one holding the camera.',
       'Photo and video by the same person cost less than two suppliers: one trip, one scouting visit, one day of work. That saving goes back to you on the combo.',
-      'Prices are the same in all four countries. Only the travel fee changes, and it is published. In Luxembourg, where the market is 15 to 30% more expensive, that is a real advantage.',
+      'Prices are the same in all five countries. Only the travel fee changes, and it is published. In Luxembourg, where the market is 15 to 30% more expensive, that is a real advantage.',
       'Equipment, double backups, music licences and insurance are included. What is optional is listed above, with its price.',
     ],
     marketTitle: 'For comparison: market ranges',

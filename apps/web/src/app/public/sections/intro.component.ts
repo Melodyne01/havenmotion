@@ -24,7 +24,8 @@ import { UI_TEXT } from '../../core/ui-text';
   template: `
     <section class="intro" aria-labelledby="titre-intro">
       <app-section-title [eyebrow]="text.intro.eyebrow" [title]="text.intro.title" titleId="titre-intro" />
-      <p class="intro__line">{{ openingText() }}</p>
+      <div class="intro__body">
+      <p class="intro__line intro__line--lead">{{ openingText() }}</p>
       <p class="intro__line">{{ anyProjectText() }}</p>
       <p class="intro__line">{{ feelAgainText() }}</p>
       <p class="intro__line">{{ onePersonText() }}</p>
@@ -37,6 +38,7 @@ import { UI_TEXT } from '../../core/ui-text';
         {{ categoriesTextBefore() }}<a [routerLink]="pricingPath">{{ text.intro.prestationsLinkLabel }}</a>.
       </p>
       <p class="intro__line">{{ processText() }}</p>
+      </div>
     </section>
   `,
   styleUrl: './intro.component.scss',
@@ -86,9 +88,9 @@ export class IntroComponent {
   protected zonesText(): string {
     const brand = this.store.settings().brandName;
     return pick(this.locale, {
-      fr: `Basé à Bruxelles, ${brand} travaille en français, en néerlandais et en anglais, en Belgique, dans le nord de la France jusqu'à Paris, au Luxembourg et aux Pays-Bas, avec un forfait de déplacement fixe par zone — et plus loin encore là où vos histoires nous emmènent.`,
-      nl: `Gevestigd in Brussel werkt ${brand} in het Nederlands, het Frans en het Engels, in België, in Noord-Frankrijk tot Parijs, in Luxemburg en in Nederland, met een vast verplaatsingstarief per zone — en nog verder, overal waar uw verhalen ons brengen.`,
-      en: `Based in Brussels, ${brand} works in English, French and Dutch, across Belgium, northern France up to Paris, Luxembourg and the Netherlands, with a flat travel fee per zone — and further still, wherever your stories take us.`,
+      fr: `Basé à Bruxelles, ${brand} travaille en français, en néerlandais et en anglais, en Belgique, dans le nord de la France jusqu'à Paris, au Luxembourg, aux Pays-Bas et en Allemagne frontalière, avec un forfait de déplacement fixe par zone — et plus loin encore là où vos histoires nous emmènent.`,
+      nl: `Gevestigd in Brussel werkt ${brand} in het Nederlands, het Frans en het Engels, in België, in Noord-Frankrijk tot Parijs, in Luxemburg, in Nederland en in het Duitse grensgebied, met een vast verplaatsingstarief per zone — en nog verder, overal waar uw verhalen ons brengen.`,
+      en: `Based in Brussels, ${brand} works in English, French and Dutch, across Belgium, northern France up to Paris, Luxembourg, the Netherlands and the German border regions, with a flat travel fee per zone — and further still, wherever your stories take us.`,
     });
   }
 

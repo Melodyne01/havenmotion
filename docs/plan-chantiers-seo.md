@@ -361,6 +361,36 @@ Sans ça, les pages région ne rankeront pas en France, au Luxembourg ni aux Pay
 
 ---
 
+## Chantier 12 — Allemagne (demande client, octobre 2026)
+
+Ajouter l'Allemagne frontalière à la zone d'intervention, sans version allemande du site : les pages visent les couples frontaliers, les expatriés et les entreprises qui cherchent en français ou en anglais. L'allemand n'est pas revendiqué comme langue de travail.
+
+- **Régions** : Aix-la-Chapelle – Eifel (zone 2, FR/EN), Cologne – Düsseldorf (zone 3, EN, expats et salons), Trèves – Sarre (zone 3, Sarrebruck en zone 4, FR, frontaliers luxembourgeois et lorrains).
+- **Mots-clés** : photographe mariage Aix-la-Chapelle · wedding photographer Cologne English-speaking · photographe Trèves Moselle · Belgian photographer Düsseldorf.
+- **Pages** : `/zones/allemagne` (FR/NL/EN) + 3 pages région, areaServed, sitemap, llms.txt, « 5 pays » partout où « 4 pays » était affiché.
+- **Spécificités** : Standesamt (inscription dans la commune de résidence, mariage possible dans tout Standesamt allemand), cérémonie en allemand avec interprète, TVA belge B2C et autoliquidation B2B, musique sous licence (pas de GEMA).
+- **Décision ouverte** : une version allemande du site (quatrième langue) n'est pas prévue ; elle ne se justifie que si les leads allemands dépassent 10 % des demandes.
+
+**Critère de sortie** : les 4 pages Allemagne en ligne, « 5 pays » cohérent sur tout le site, test unitaire de couverture à jour.
+
+---
+
+## Chantier 13 — Responsive et mise en page (demande client, octobre 2026)
+
+Revue de tous les gabarits sur quatre largeurs (360, 390, 768, 1024 px et bureau), avec un contrôle automatique du débordement horizontal.
+
+- **Accueil** : la section « Présentation » n'occupait que la moitié gauche de l'écran sur bureau ; elle coule désormais sur deux colonnes avec un paragraphe d'accroche en tête.
+- **Tablette (768 px)** : la section « Le studio » débordait (portrait trop large, titre de 64 px) ; colonne portrait réduite et titres de section à 52 px entre 768 et 1279 px, 64 px au-delà. Même règle sur toutes les pages qui utilisent le titre de section.
+- **Pied de page** : le texte légal était comprimé dans une colonne étroite sur tablette ; il prend toute la largeur jusqu'au bureau.
+- **Hero mobile** : interlignage du sous-titre et de l'accroche corrigé (lignes qui se chevauchaient).
+- **CTA fixe mobile** : la page réserve sa hauteur en bas pour ne pas masquer le pied de page.
+- **Grands titres sur petit téléphone** : taille fluide de 28 à 40 px sous 445 px de large, et coupure des mots plus larges que l'écran en dernier recours (« Düsseldorf » débordait à 360 px).
+- **Contrôle** : le test `e2e/tests/responsive.spec.ts` parcourt vingt pages à 360, 768, 1024 et 1440 px et nomme l'élément qui dépasse ; il tourne avec le reste de la suite e2e.
+
+**Critère de sortie** : aucun débordement horizontal sur les vingt pages de référence, captures validées par le client sur mobile, tablette et bureau.
+
+---
+
 ## Calendrier
 
 | Période | Chantiers | Pages livrées |

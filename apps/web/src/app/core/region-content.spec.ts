@@ -46,9 +46,9 @@ describe('REGION_CONTENT', () => {
     }
   });
 
-  it('couvre les six régions de phase 3 dans toutes leurs langues', () => {
+  it('couvre les neuf régions de phase 3 dans toutes leurs langues', () => {
     const phaseThree = REGIONS.filter((r) => r.phase === 3);
-    expect(phaseThree.length).toBe(6);
+    expect(phaseThree.length).toBe(9);
     for (const region of phaseThree) {
       for (const locale of region.languages) {
         expect(REGION_CONTENT[region.slug.fr]?.[locale]).withContext(`${region.slug.fr} ${locale}`).toBeDefined();

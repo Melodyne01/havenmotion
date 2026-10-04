@@ -71,6 +71,15 @@ import { FAQ_CONTENT } from '../core/faq-content';
     `
       @use 'tokens' as *;
 
+      :host {
+        display: block;
+        padding-bottom: 76px; // hauteur du CTA fixe, pour ne pas masquer le pied de page
+
+        @include desktop {
+          padding-bottom: 0;
+        }
+      }
+
       .sticky-cta {
         position: fixed;
         inset: auto 0 0 0;

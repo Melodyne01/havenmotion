@@ -10,7 +10,7 @@ import { TravelZoneId } from './travel-zones';
  * cette même liste. Un dictionnaire statique, comme `communes.ts` : une
  * liste administrative fixe n'a rien à faire en base.
  */
-export type CountryCode = 'BE' | 'FR' | 'LU' | 'NL' | 'INT';
+export type CountryCode = 'BE' | 'FR' | 'LU' | 'NL' | 'DE' | 'INT';
 
 export interface Country {
   readonly code: CountryCode;
@@ -37,6 +37,7 @@ export const COUNTRIES: readonly Country[] = [
   { code: 'FR', slug: tr('france', 'frankrijk', 'france'), name: tr('France', 'Frankrijk', 'France') },
   { code: 'LU', slug: tr('luxembourg', 'luxemburg', 'luxembourg'), name: tr('Luxembourg', 'Luxemburg', 'Luxembourg') },
   { code: 'NL', slug: tr('pays-bas', 'nederland', 'netherlands'), name: tr('Pays-Bas', 'Nederland', 'Netherlands') },
+  { code: 'DE', slug: tr('allemagne', 'duitsland', 'germany'), name: tr('Allemagne', 'Duitsland', 'Germany') },
   { code: 'INT', slug: tr('international', 'internationaal', 'international'), name: tr('International', 'Internationaal', 'International') },
 ];
 
@@ -68,6 +69,11 @@ export const REGIONS: readonly Region[] = [
   { country: 'NL', slug: tr('hollande-meridionale', 'zuid-holland', 'south-holland'), name: tr('Hollande-Méridionale (Rotterdam, La Haye)', 'Zuid-Holland', 'South Holland'), zone: 3, languages: ['nl'], phase: 3 },
   { country: 'NL', slug: tr('utrecht', 'utrecht', 'utrecht'), name: same('Utrecht'), zone: 3, languages: ['nl'], phase: 3 },
   { country: 'NL', slug: tr('hollande-septentrionale', 'noord-holland', 'amsterdam'), name: tr('Hollande-Septentrionale (Amsterdam)', 'Noord-Holland', 'Amsterdam'), zone: 3, languages: ['nl', 'en'], phase: 3 },
+  // --- International ---
+  // --- Allemagne (Rhénanie frontalière, Moselle et Sarre ; le site n'existe pas en allemand) ---
+  { country: 'DE', slug: tr('aix-la-chapelle-eifel', 'aken-eifel', 'aachen-eifel'), name: tr('Aix-la-Chapelle – Eifel', 'Aken – Eifel', 'Aachen & Eifel'), zone: 2, languages: ['fr', 'en'], phase: 3 },
+  { country: 'DE', slug: tr('cologne-dusseldorf', 'keulen-dusseldorf', 'cologne-dusseldorf'), name: tr('Cologne – Düsseldorf', 'Keulen – Düsseldorf', 'Cologne & Düsseldorf'), zone: 3, languages: ['en'], phase: 3 },
+  { country: 'DE', slug: tr('treves-sarre', 'trier-saarland', 'trier-saarland'), name: tr('Trèves – Sarre', 'Trier – Saarland', 'Trier & Saarland'), zone: 3, languages: ['fr'], phase: 3 },
   // --- International ---
   { country: 'INT', slug: tr('etranger', 'buitenland', 'destination'), name: tr('Ailleurs à l’étranger', 'Elders in het buitenland', 'Elsewhere abroad'), zone: 5, languages: ['fr', 'nl', 'en'], phase: 2 },
 ];

@@ -4,15 +4,38 @@
   @include section-padding;
 }
 
+// Sur tablette et bureau, les paragraphes coulent sur deux colonnes : la
+// section occupait auparavant la moitié gauche de l'écran et laissait la
+// droite vide. Le premier paragraphe, en tête, garde toute la largeur.
+.intro__body {
+  @include tablet-up {
+    columns: 2;
+    column-gap: 56px;
+    max-width: 1180px;
+  }
+}
+
 .intro__line {
   max-width: 68ch;
   margin: 0 0 16px;
+  break-inside: avoid;
+
+  @include tablet-up {
+    max-width: none;
+  }
   color: $color-muted-60;
   font-size: $fs-15;
   line-height: $lh-body;
 
   &:last-child {
     margin-bottom: 0;
+  }
+
+  &--lead {
+    column-span: all;
+    color: $color-film;
+    font-size: $fs-18;
+    margin-bottom: 24px;
   }
 
   a {

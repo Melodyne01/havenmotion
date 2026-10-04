@@ -39,13 +39,19 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       }
 
       .head__title {
-        @include display-caps($fs-40, $ls-14);
+        @include display-caps($fs-40-fluid, $ls-14);
 
         color: $color-film;
 
+        overflow-wrap: anywhere;
+
         @include tablet-up {
-          font-size: $fs-64;
+          font-size: $fs-52;
           line-height: $lh-tight;
+        }
+
+        @include desktop {
+          font-size: $fs-64;
         }
       }
     `,

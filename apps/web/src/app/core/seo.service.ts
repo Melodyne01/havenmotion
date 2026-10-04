@@ -84,7 +84,7 @@ export class SeoService {
 
   /**
    * Publie le bloc JSON-LD `LocalBusiness` + `VideoObject` du showreel.
-   * `areaServed` liste les quatre pays et chaque région couverte (voir
+   * `areaServed` liste les cinq pays et chaque région couverte (voir
    * `regions.ts`) : c'est ce qui dit aux moteurs que le studio travaille à
    * Lille ou à Luxembourg-Ville, pas seulement à Bruxelles. `priceRange`
    * est calculé depuis la grille tarifaire, jamais une fourchette inventée.

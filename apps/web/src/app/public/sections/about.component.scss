@@ -8,9 +8,14 @@
   @include section-padding;
 
   @include tablet-up {
+    grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+
+  @include desktop {
     grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
     gap: 48px;
-    align-items: start;
   }
 }
 

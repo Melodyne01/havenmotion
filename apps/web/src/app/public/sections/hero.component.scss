@@ -76,6 +76,7 @@
   letter-spacing: normal;
   font-weight: $weight-regular;
   font-size: $fs-18;
+  line-height: $lh-body;
   color: $color-muted-60;
 }
 
@@ -83,6 +84,7 @@
   max-width: 46ch;
   color: $color-muted-60;
   font-size: $fs-14;
+  line-height: $lh-body;
 
   @include tablet-up {
     font-size: $fs-18;

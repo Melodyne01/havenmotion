@@ -4,6 +4,7 @@ import { CountryCode } from './regions';
 import { REGION_CONTENT_PHASE_2_ABROAD } from './region-content-phase2-abroad';
 import { REGION_CONTENT_PHASE_2_BE } from './region-content-phase2-be';
 import { REGION_CONTENT_PHASE_3 } from './region-content-phase3';
+import { REGION_CONTENT_DE } from './region-content-de';
 
 /**
  * Contenu rédactionnel d'une page région, dans une langue. Une page région
@@ -378,6 +379,7 @@ export const REGION_CONTENT: Readonly<Record<string, Partial<Record<SiteLocale, 
   ...REGION_CONTENT_PHASE_2_BE,
   ...REGION_CONTENT_PHASE_2_ABROAD,
   ...REGION_CONTENT_PHASE_3,
+  ...REGION_CONTENT_DE,
 };
 
 /** Texte des pages pays (`/zones/belgique`…), dans les trois langues. */
@@ -436,6 +438,20 @@ export const COUNTRY_CONTENT: Readonly<Record<CountryCode, Readonly<Record<SiteL
     en: {
       intro: 'Photographer and videographer in the Netherlands from Brussels: Maastricht, Eindhoven, Breda and Zeeland in zone 2 (€90), Rotterdam, The Hague, Utrecht and Amsterdam in zone 3 (€190). Belgian prices, well below the €3,100 to €4,700 asked in the Netherlands for a photo + video duo; English and Dutch spoken.',
       practical: ['Travel fee: €90 for the south, €190 for the Randstad.', 'Hotel night (€150) for a wedding in zone 3.', 'Reverse-charge VAT for a VAT-registered Dutch company.'],
+    },
+  },
+  DE: {
+    fr: {
+      intro: 'Photographe et vidéaste en Allemagne frontalière depuis Bruxelles : Aix-la-Chapelle et l’Eifel en zone 2 (90 €), Cologne, Düsseldorf et Trèves en zone 3 (190 €), Sarrebruck en zone 4 (290 €). Le site n’existe pas en allemand : ces pages s’adressent aux couples frontaliers, aux expatriés et aux entreprises qui travaillent en français ou en anglais. Grille belge, facture intracommunautaire, musique sous licence.',
+      practical: ['Forfait de déplacement fixe par zone : 90 €, 190 € ou 290 €.', 'Nuit d’hôtel (150 €) pour un mariage en zone 3 ou 4.', 'Reportage en français ou en anglais ; l’allemand n’est pas une langue de travail.', 'Autoliquidation de TVA pour une entreprise allemande assujettie.'],
+    },
+    nl: {
+      intro: 'Fotograaf en videograaf in het Duitse grensgebied vanuit Brussel: Aken en de Eifel in zone 2 (€ 90), Keulen, Düsseldorf en Trier in zone 3 (€ 190), Saarbrücken in zone 4 (€ 290). De site bestaat niet in het Duits: deze pagina’s richten zich tot grenskoppels, expats en bedrijven die in het Engels of Frans werken. Belgische prijzen, intracommunautaire factuur, muziek in licentie.',
+      practical: ['Vast verplaatsingstarief per zone: € 90, € 190 of € 290.', 'Hotelovernachting (€ 150) voor een huwelijk in zone 3 of 4.', 'Reportage in het Engels of Frans; Duits is geen werktaal.', 'Verlegde btw voor een btw-plichtig Duits bedrijf.'],
+    },
+    en: {
+      intro: 'Photographer and videographer in the German border regions from Brussels: Aachen and the Eifel in zone 2 (€90), Cologne, Düsseldorf and Trier in zone 3 (€190), Saarbrücken in zone 4 (€290). The site does not exist in German: these pages are for cross-border couples, expats and companies working in English or French. Belgian prices, intra-EU invoice, licensed music.',
+      practical: ['Flat travel fee per zone: €90, €190 or €290.', 'Hotel night (€150) for a wedding in zone 3 or 4.', 'The day is run in English or French; German is not a working language.', 'Reverse-charge VAT for a VAT-registered German company.'],
     },
   },
   INT: {

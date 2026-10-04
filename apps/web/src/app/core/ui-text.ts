@@ -190,7 +190,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       cta: 'Demander un devis',
       role: 'Photographe / Vidéaste',
       tagline: 'Capturer l’instant. Raconter l’histoire.',
-      subtitle: 'Photographe & vidéaste — Belgique, France, Luxembourg, Pays-Bas',
+      subtitle: 'Photographe & vidéaste — Belgique, France, Luxembourg, Pays-Bas, Allemagne',
     },
     categories: { eyebrow: 'Prestations', title: 'Nos prestations' },
     intro: {
@@ -202,8 +202,8 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     keyFigures: {
       eyebrow: 'En chiffres',
       titleSuffix: 'en quelques chiffres',
-      worldwideValue: '4 pays',
-      worldwideLabel: 'Belgique, France, Luxembourg, Pays-Bas — et au-delà sur demande',
+      worldwideValue: '5 pays',
+      worldwideLabel: 'Belgique, France, Luxembourg, Pays-Bas, Allemagne — et au-delà sur demande',
       categoriesLabel: 'catégories de prestations',
       quoteDelayValue: '48 h',
       quoteDelayLabel: 'pour recevoir un devis chiffré',
@@ -380,7 +380,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       cta: 'Offerte aanvragen',
       role: 'Fotograaf / Videograaf',
       tagline: 'Het moment vastleggen. Het verhaal vertellen.',
-      subtitle: 'Fotograaf & videograaf — België, Frankrijk, Luxemburg, Nederland',
+      subtitle: 'Fotograaf & videograaf — België, Frankrijk, Luxemburg, Nederland, Duitsland',
     },
     categories: { eyebrow: 'Diensten', title: 'Onze diensten' },
     intro: {
@@ -392,8 +392,8 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     keyFigures: {
       eyebrow: 'In cijfers',
       titleSuffix: 'in enkele cijfers',
-      worldwideValue: '4 landen',
-      worldwideLabel: 'België, Frankrijk, Luxemburg, Nederland — en verder op aanvraag',
+      worldwideValue: '5 landen',
+      worldwideLabel: 'België, Frankrijk, Luxemburg, Nederland, Duitsland — en verder op aanvraag',
       categoriesLabel: 'soorten diensten',
       quoteDelayValue: '48 u',
       quoteDelayLabel: 'om een concrete offerte te ontvangen',
@@ -570,7 +570,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       cta: 'Request a quote',
       role: 'Photographer / Videographer',
       tagline: 'Capture the moment. Tell the story.',
-      subtitle: 'Photographer & videographer — Belgium, France, Luxembourg, Netherlands',
+      subtitle: 'Photographer & videographer — Belgium, France, Luxembourg, Netherlands, Germany',
     },
     categories: { eyebrow: 'Services', title: 'What we do' },
     intro: {
@@ -582,8 +582,8 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     keyFigures: {
       eyebrow: 'In numbers',
       titleSuffix: 'in a few numbers',
-      worldwideValue: '4 countries',
-      worldwideLabel: 'Belgium, France, Luxembourg, Netherlands — and beyond on request',
+      worldwideValue: '5 countries',
+      worldwideLabel: 'Belgium, France, Luxembourg, Netherlands, Germany — and beyond on request',
       categoriesLabel: 'types of services',
       quoteDelayValue: '48 h',
       quoteDelayLabel: 'to receive an itemised quote',

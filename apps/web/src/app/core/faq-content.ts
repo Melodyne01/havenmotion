@@ -35,7 +35,7 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
         'Un aperçu photo sous 7 jours, la galerie complète et le film sous 2 à 4 semaines selon la période. Le devis précise toujours une date ferme ; une option express divise le délai par deux.',
     },
     {
-      question: 'Vous déplacez-vous en France, au Luxembourg ou aux Pays-Bas ?',
+      question: 'Vous déplacez-vous en France, au Luxembourg, aux Pays-Bas ou en Allemagne ?',
       answer:
         'Oui. Le déplacement est inclus jusqu’à 60 km de Bruxelles, puis facturé au forfait : 90 € (Liège, Lille, Maastricht…), 190 € (Luxembourg, Amsterdam, Reims…), 290 € (Paris). Au-delà de 350 km et à l’étranger, sur devis.',
     },
@@ -71,7 +71,7 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
         'Een voorproefje van de foto’s binnen 7 dagen, de volledige galerij en de film binnen 2 tot 4 weken naargelang het seizoen. De offerte vermeldt altijd een vaste datum; een expresoptie halveert de termijn.',
     },
     {
-      question: 'Komt u ook naar Frankrijk, Luxemburg of Nederland?',
+      question: 'Komt u ook naar Frankrijk, Luxemburg, Nederland of Duitsland?',
       answer:
         'Ja. De verplaatsing is inbegrepen tot 60 km van Brussel, daarna een vast tarief: € 90 (Luik, Rijsel, Maastricht…), € 190 (Luxemburg, Amsterdam, Reims…), € 290 (Parijs). Verder dan 350 km en in het buitenland: op offerte.',
     },
@@ -107,7 +107,7 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
         'A photo sneak peek within 7 days, the full gallery and the film within 2 to 4 weeks depending on the season. The quote always states a firm date; an express option halves the wait.',
     },
     {
-      question: 'Do you travel to France, Luxembourg or the Netherlands?',
+      question: 'Do you travel to France, Luxembourg, the Netherlands or Germany?',
       answer:
         'Yes. Travel is included up to 60 km from Brussels, then charged as a flat fee: €90 (Liège, Lille, Maastricht…), €190 (Luxembourg, Amsterdam, Reims…), €290 (Paris). Beyond 350 km and abroad, on quote.',
     },

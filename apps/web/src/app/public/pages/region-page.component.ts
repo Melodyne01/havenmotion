@@ -200,13 +200,17 @@ export function countryPath(locale: SiteLocale, country: Country): string {
       }
 
       .region__title {
-        @include display-caps($fs-40, $ls-14);
+        @include display-caps($fs-40-fluid, $ls-14);
 
         color: $color-film;
         line-height: $lh-tight;
         margin: 0;
 
         @include tablet-up {
+          font-size: $fs-52;
+        }
+
+        @include desktop {
           font-size: $fs-64;
         }
       }

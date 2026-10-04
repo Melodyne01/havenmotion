@@ -37,6 +37,9 @@ $fs-72: 72px;
 $fs-64: 64px; // H2
 $fs-52: 52px; // H1 hero mobile
 $fs-40: 40px; // nom de catégorie mobile
+// Titre display sur mobile : 40 px au-delà de 445 px de large, jusqu'à 28 px
+// sur un petit téléphone, pour qu'un mot comme « PHOTOGRAPHER » tienne entier.
+$fs-40-fluid: clamp(28px, 9vw, 40px);
 $fs-26: 26px;
 $fs-18: 18px;
 $fs-15: 15px;
@@ -109,6 +112,12 @@ $bp-tablet: 768px;
   letter-spacing: $tracking;
   line-height: $lh-flat;
   text-transform: uppercase;
+  // Un mot plus large que l'écran (« Düsseldorf » en 40 px sur 360 px) est
+  // coupé plutôt que de faire défiler la page horizontalement. `anywhere` et
+  // non `break-word` : seul `anywhere` réduit aussi la largeur minimale, sans
+  // quoi une colonne de grille s'élargit quand même jusqu'au mot entier.
+  overflow-wrap: anywhere;
+  hyphens: auto;
 }
 
 @mixin section-padding {
