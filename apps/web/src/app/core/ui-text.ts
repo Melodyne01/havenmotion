@@ -115,7 +115,7 @@ export interface UiText {
   };
   readonly reviews: { readonly eyebrow: string; readonly title: string; readonly source: string };
   readonly facts: { readonly title: string; readonly lead: string };
-  readonly guides: { readonly eyebrow: string; readonly title: string; readonly lead: string; readonly reading: string; readonly published: string; readonly sources: string };
+  readonly guides: { readonly eyebrow: string; readonly title: string; readonly lead: string; readonly reading: string; readonly published: string; readonly sources: string; readonly related: string };
   readonly notFound: { readonly title: string; readonly text: string; readonly cta: string };
   readonly captions: string;
   readonly contact: {
@@ -301,6 +301,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       reading: 'min de lecture',
       published: 'Publié le',
       sources: 'Fourchettes relevées sur les sites cités, septembre 2026.',
+      related: 'Pour aller plus loin',
     },
     facts: {
       title: 'Faits vérifiables',
@@ -490,6 +491,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       reading: 'min leestijd',
       published: 'Gepubliceerd op',
       sources: 'Prijsvorken opgetekend op de vermelde sites, september 2026.',
+      related: 'Verder lezen',
     },
     facts: {
       title: 'Verifieerbare feiten',
@@ -679,6 +681,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       reading: 'min read',
       published: 'Published on',
       sources: 'Ranges recorded on the sites cited, September 2026.',
+      related: 'Further reading',
     },
     facts: {
       title: 'Verifiable facts',

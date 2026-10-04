@@ -179,12 +179,14 @@ test('plus de témoignage d’attente ; pages faits et projets en trois langues'
 test('les trois guides prix se rendent, avec FAQ et grille, et un slug inconnu répond 404', async ({ page, request }) => {
   await page.goto('/guides');
   await expect(page.getByRole('heading', { level: 1, name: /guides/i })).toBeVisible();
-  await expect(page.locator('.guides__item')).toHaveCount(1);
+  await expect(page.locator('.guides__item')).toHaveCount(4);
 
   for (const [path, heading] of [
     ['/guides/prix-photographe-videaste-mariage-belgique-2026', /combien coûte/i],
     ['/nl/gidsen/wat-kost-een-huwelijksfotograaf-en-videograaf-belgie-2026', /wat kost/i],
     ['/en/guides/wedding-photographer-cost-belgium-2026', /how much/i],
+    ['/guides/prix-video-entreprise-belgique-2026', /vidéo d’entreprise/i],
+    ['/en/guides/getting-married-in-brussels-expat-guide', /getting married in brussels/i],
   ] as const) {
     await page.goto(path);
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
@@ -193,6 +195,9 @@ test('les trois guides prix se rendent, avec FAQ et grille, et un slug inconnu r
     await expect(page.locator('app-pack-grid')).toBeVisible();
     expect(await page.content()).toContain('"@type":"Article"');
   }
+
+  await page.goto('/guides/prix-photographe-videaste-mariage-belgique-2026');
+  await expect(page.locator("link[rel='alternate'][hreflang='nl']")).toHaveAttribute('href', /\/nl\/gidsen\/wat-kost-een-huwelijksfotograaf-en-videograaf-belgie-2026$/);
 
   const missing = await request.get('/guides/guide-qui-n-existe-pas');
   expect(missing.status()).toBe(404);

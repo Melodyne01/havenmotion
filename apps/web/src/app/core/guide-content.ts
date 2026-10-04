@@ -1,6 +1,10 @@
 import { FaqEntry } from './faq-content';
-import { SiteLocale } from './locale';
+import { CategoryKey, SiteLocale } from './locale';
 import { formatPrice, pricingFor } from './packs';
+import { GUIDES_BRABANT_WALLON_VENUES } from './guides/brabant-wallon-venues';
+import { GUIDES_BRUSSELS_EXPAT } from './guides/brussels-expat';
+import { GUIDES_CHOOSE } from './guides/photo-or-video';
+import { GUIDES_CORPORATE_PRICE } from './guides/corporate-video-price';
 
 export interface GuideTable {
   readonly columns: readonly string[];
@@ -15,9 +19,22 @@ export interface GuideSection {
   readonly table?: GuideTable;
 }
 
+export interface GuideLink {
+  readonly label: string;
+  readonly path: string;
+}
+
 export interface Guide {
   readonly slug: string;
   readonly locale: SiteLocale;
+  /**
+   * Clé commune aux versions d'un même guide dans plusieurs langues : sert
+   * aux hreflang. Un guide n'est pas traduit mot à mot, mais répond à la
+   * même intention sur chaque marché.
+   */
+  readonly group: string;
+  /** Catégorie dont la grille est affichée et préremplie dans le devis. */
+  readonly category: CategoryKey;
   readonly title: string;
   readonly metaTitle: string;
   readonly metaDescription: string;
@@ -30,6 +47,8 @@ export interface Guide {
   readonly faq: readonly FaqEntry[];
   readonly ctaTitle: string;
   readonly ctaBody: string;
+  /** Maillage vers les pages commerciales que le guide alimente. */
+  readonly related: readonly GuideLink[];
 }
 
 const m = pricingFor('mariage');
@@ -46,10 +65,17 @@ const saving = formatPrice(
  * viennent de l'analyse concurrentielle de septembre 2026, citées avec
  * leur source ; nos prix viennent de la grille (`packs.ts`).
  */
-export const GUIDES: readonly Guide[] = [
+const PRICE_GUIDES: readonly Guide[] = [
   {
     slug: 'prix-photographe-videaste-mariage-belgique-2026',
     locale: 'fr',
+    group: 'prix-mariage',
+    category: 'mariage',
+    related: [
+      { label: 'La grille complète et les options', path: '/tarifs' },
+      { label: 'Photographe & vidéaste de mariage', path: '/prestations/mariage' },
+      { label: 'Photo et vidéo par une seule personne', path: '/photo-et-video-une-seule-personne' },
+    ],
     title: 'Combien coûte un photographe-vidéaste de mariage en Belgique en 2026 ?',
     metaTitle: 'Prix d’un photographe et vidéaste de mariage en Belgique (2026)',
     metaDescription: `Fourchettes réelles du marché belge, ce qui fait varier le prix, combien de photos et quelle durée de film attendre, les frais cachés, et ce que coûte une seule personne pour les deux : ${price('combo')} TTC.`,
@@ -158,6 +184,13 @@ export const GUIDES: readonly Guide[] = [
   {
     slug: 'wat-kost-een-huwelijksfotograaf-en-videograaf-belgie-2026',
     locale: 'nl',
+    group: 'prix-mariage',
+    category: 'mariage',
+    related: [
+      { label: 'De volledige tarieven en opties', path: '/nl/tarieven' },
+      { label: 'Huwelijksfotograaf & videograaf', path: '/nl/diensten/huwelijk' },
+      { label: 'Foto en video door één persoon', path: '/nl/foto-en-video-door-een-persoon' },
+    ],
     title: 'Wat kost een huwelijksfotograaf én videograaf in België in 2026?',
     metaTitle: 'Prijs van een trouwfotograaf en trouwvideograaf in België (2026)',
     metaDescription: `Echte prijsvorken van de Belgische markt, wat de prijs doet schommelen, hoeveel foto’s en welke trouwfilm u mag verwachten, de verborgen kosten, en wat één persoon voor beide kost: ${price('combo')} incl. btw.`,
@@ -264,6 +297,13 @@ export const GUIDES: readonly Guide[] = [
   {
     slug: 'wedding-photographer-cost-belgium-2026',
     locale: 'en',
+    group: 'prix-mariage',
+    category: 'mariage',
+    related: [
+      { label: 'Full pricing and options', path: '/en/pricing' },
+      { label: 'Wedding photographer & videographer', path: '/en/services/wedding' },
+      { label: 'Photo and video by one person', path: '/en/one-photographer-videographer' },
+    ],
     title: 'How much does a wedding photographer cost in Belgium in 2026?',
     metaTitle: 'Wedding photographer and videographer prices in Belgium (2026)',
     metaDescription: `Real price ranges on the Belgian market, what moves the price, how many photos and what film to expect, the hidden costs, and what one person for both costs: ${price('combo')} incl. VAT. Written for international couples marrying in Belgium.`,
@@ -378,10 +418,18 @@ export const GUIDES: readonly Guide[] = [
   },
 ];
 
+/** Tous les guides publiés, dans l'ordre d'affichage du hub. */
+export const GUIDES: readonly Guide[] = [...PRICE_GUIDES, ...GUIDES_CHOOSE, ...GUIDES_CORPORATE_PRICE, ...GUIDES_BRUSSELS_EXPAT, ...GUIDES_BRABANT_WALLON_VENUES];
+
 export function guidesFor(locale: SiteLocale): readonly Guide[] {
   return GUIDES.filter((g) => g.locale === locale);
 }
 
 export function findGuide(locale: SiteLocale, slug: string): Guide | null {
   return GUIDES.find((g) => g.locale === locale && g.slug === slug) ?? null;
+}
+
+/** Les versions d'un guide dans les autres langues, pour les hreflang. */
+export function guideAlternates(guide: Guide): readonly Guide[] {
+  return GUIDES.filter((g) => g.group === guide.group);
 }

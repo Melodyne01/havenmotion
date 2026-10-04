@@ -11,7 +11,7 @@ import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
 import { SITE_LOCALE, SiteLocale, homePath, routePath } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
-import { findGuide } from '../../core/guide-content';
+import { findGuide, guideAlternates } from '../../core/guide-content';
 
 /** Chemin d'un guide : `/guides/prix-…`, `/nl/gidsen/wat-kost-…`. */
 export function guidePath(locale: SiteLocale, slug: string): string {
@@ -105,7 +105,7 @@ export function guidePath(locale: SiteLocale, slug: string): string {
 
         <section class="guide__section" aria-labelledby="titre-grille-guide">
           <h2 id="titre-grille-guide" class="guide__h2">{{ text.packs.title }}</h2>
-          <app-pack-grid category="mariage" [showOptions]="false" />
+          <app-pack-grid [category]="g.category" [showOptions]="false" />
         </section>
 
         <section class="guide__section" aria-labelledby="titre-faq-guide">
@@ -122,10 +122,19 @@ export function guidePath(locale: SiteLocale, slug: string): string {
 
         <p class="guide__note">{{ text.guides.sources }}</p>
 
+        <section class="guide__section" aria-labelledby="titre-related-guide">
+          <h2 id="titre-related-guide" class="guide__h2">{{ text.guides.related }}</h2>
+          <ul class="guide__list">
+            @for (link of g.related; track link.path) {
+              <li><a [routerLink]="link.path">{{ link.label }}</a></li>
+            }
+          </ul>
+        </section>
+
         <section class="guide__cta" aria-labelledby="titre-cta-guide">
           <h2 id="titre-cta-guide" class="guide__h2">{{ g.ctaTitle }}</h2>
           <p class="guide__p">{{ g.ctaBody }}</p>
-          <app-cta-button [href]="contactPath">{{ text.quoteCta }}</app-cta-button>
+          <app-cta-button [href]="contactPath()">{{ text.quoteCta }}</app-cta-button>
         </section>
       </main>
 
@@ -172,6 +181,15 @@ export function guidePath(locale: SiteLocale, slug: string): string {
 
       .guide__list {
         @include editorial-list;
+
+        a {
+          color: $color-amber;
+          text-decoration: none;
+
+          &:hover {
+            color: $color-film;
+          }
+        }
       }
 
       .guide__faq {
@@ -239,8 +257,8 @@ export class GuidePageComponent {
   protected readonly text = UI_TEXT[this.locale];
   protected readonly homePath = homePath(this.locale);
   protected readonly guidesPath = routePath(this.locale, 'guides');
-  protected readonly contactPath = `${routePath(this.locale, 'contact')}?categorie=mariage`;
   protected readonly guide = computed(() => findGuide(this.locale, this.paramMap().get('slug') ?? ''));
+  protected readonly contactPath = computed(() => `${routePath(this.locale, 'contact')}?categorie=${this.guide()?.category ?? 'mariage'}`);
 
   constructor() {
     this.store.load(this.locale);
@@ -267,7 +285,8 @@ export class GuidePageComponent {
         { name: this.text.guides.eyebrow, path: this.guidesPath },
         { name: g.eyebrow, path },
       ]);
-      this.seo.applyHreflang({ [this.locale]: path });
+      const alternates = Object.fromEntries(guideAlternates(g).map((alt) => [alt.locale, guidePath(alt.locale, alt.slug)]));
+      this.seo.applyHreflang({ [this.locale]: path, ...alternates });
       this.seo.applyArticle(settings, { title: g.title, description: g.metaDescription, path, published: g.published, locale: this.locale });
       this.seo.applyFaq(g.faq);
     });

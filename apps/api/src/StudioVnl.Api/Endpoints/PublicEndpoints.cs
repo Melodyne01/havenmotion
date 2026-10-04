@@ -210,12 +210,15 @@ public static class PublicEndpoints
                 priority));
         }
 
-        // Guides : chacun n'existe que dans sa langue (voir `guide-content.ts`
+        // Guides : un guide par langue de marché, reliés par groupe pour les
+        // alternates quand la même intention existe dans plusieurs langues (voir `guide-content.ts`
         // côté front, à garder synchronisé).
         entries.Add((Localized("/guides", "/nl/gidsen", "/en/guides"), "weekly", "0.6"));
-        entries.Add((Localized("/guides/prix-photographe-videaste-mariage-belgique-2026", null, null), "monthly", "0.8"));
-        entries.Add((Localized(null, "/nl/gidsen/wat-kost-een-huwelijksfotograaf-en-videograaf-belgie-2026", null), "monthly", "0.8"));
-        entries.Add((Localized(null, null, "/en/guides/wedding-photographer-cost-belgium-2026"), "monthly", "0.8"));
+        entries.Add((Localized("/guides/prix-photographe-videaste-mariage-belgique-2026", "/nl/gidsen/wat-kost-een-huwelijksfotograaf-en-videograaf-belgie-2026", "/en/guides/wedding-photographer-cost-belgium-2026"), "monthly", "0.8"));
+        entries.Add((Localized("/guides/photographe-ou-videaste-mariage-lequel-choisir", "/nl/gidsen/trouwfotograaf-of-videograaf-wat-kiezen", "/en/guides/wedding-photographer-or-videographer-which-to-choose"), "monthly", "0.7"));
+        entries.Add((Localized("/guides/prix-video-entreprise-belgique-2026", "/nl/gidsen/wat-kost-een-bedrijfsvideo-belgie-2026", null), "monthly", "0.8"));
+        entries.Add((Localized(null, null, "/en/guides/getting-married-in-brussels-expat-guide"), "monthly", "0.7"));
+        entries.Add((Localized("/guides/lieux-mariage-brabant-wallon", null, null), "monthly", "0.7"));
 
         var projects = await db.Projects.AsNoTracking()
             .Where(p => p.Status == PublishStatus.Published)
