@@ -117,6 +117,72 @@ export interface SitePayload {
   logos: ClientLogo[];
 }
 
+/** Texte d'un projet dans une langue ; absent quand la langue n'est pas remplie. */
+export interface ProjectText {
+  title: string;
+  summary: string;
+  paragraphs: string[];
+}
+
+/** Un projet réel publié (voir `Project.cs`). */
+export interface Project {
+  id: string;
+  slug: string;
+  categoryKey: string;
+  regionId: string;
+  venue: string;
+  city: string;
+  countryCode: string;
+  date: string | null;
+  pack: string;
+  fr: ProjectText | null;
+  nl: ProjectText | null;
+  en: ProjectText | null;
+  cover: MediaAsset | null;
+  video: MediaAsset | null;
+  gallery: MediaAsset[];
+  isFeatured: boolean;
+  sortOrder: number;
+  status: PublishStatus;
+  createdAt: string;
+}
+
+/** Charge utile d'enregistrement d'un projet (backoffice). */
+export interface SaveProject {
+  slug: string;
+  categoryKey: string;
+  regionId: string;
+  venue: string;
+  city: string;
+  countryCode: string;
+  date: string | null;
+  pack: string;
+  fr: { title: string; summary: string; body: string };
+  nl: { title: string; summary: string; body: string };
+  en: { title: string; summary: string; body: string };
+  cover: { id: string } | null;
+  video: { id: string } | null;
+  gallery: string[];
+  isFeatured: boolean;
+  status: PublishStatus;
+}
+
+/** Un avis client réel (voir `Review.cs`). */
+export interface Review {
+  id: string;
+  author: string;
+  city: string;
+  categoryKey: string;
+  rating: number;
+  locale: string;
+  quote: string;
+  date: string | null;
+  source: string;
+  projectId: string | null;
+  isPublished: boolean;
+  sortOrder: number;
+}
+
 export interface LeadRequest {
   name: string;
   email: string;

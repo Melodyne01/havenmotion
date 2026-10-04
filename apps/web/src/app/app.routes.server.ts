@@ -28,6 +28,9 @@ function serverRoutesFor(locale: SiteLocale): ServerRoute[] {
     at(seg.legal),
     at(seg.privacy),
     at(seg.onePerson),
+    at(seg.projects),
+    at(`${seg.projects}/:slug`),
+    at(seg.facts),
     at(seg.zones),
     // Pays et régions : routes paramétrées (le moteur SSR exige la même forme
     // que `app.routes.ts`). Un pays inconnu ou une région sans contenu dans

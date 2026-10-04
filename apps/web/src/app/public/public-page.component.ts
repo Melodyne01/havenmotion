@@ -10,6 +10,7 @@ import { AboutComponent } from './sections/about.component';
 import { TestimonialsComponent } from './sections/testimonials.component';
 import { ContactComponent } from './sections/contact.component';
 import { HomeFaqComponent } from './sections/home-faq.component';
+import { RecentProjectsComponent } from './sections/recent-projects.component';
 import { SiteFooterComponent } from './sections/site-footer.component';
 import { CtaButtonComponent } from '../shared/ui/cta-button.component';
 import { SiteStore } from './site-store';
@@ -37,6 +38,7 @@ import { FAQ_CONTENT } from '../core/faq-content';
     TestimonialsComponent,
     ContactComponent,
     HomeFaqComponent,
+    RecentProjectsComponent,
     SiteFooterComponent,
     CtaButtonComponent,
   ],
@@ -49,6 +51,7 @@ import { FAQ_CONTENT } from '../core/faq-content';
       <app-intro />
       <app-key-figures />
       <app-categories />
+      <app-recent-projects />
       <app-services />
       <app-process />
       <app-about />

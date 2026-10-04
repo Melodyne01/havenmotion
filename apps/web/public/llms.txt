@@ -38,7 +38,8 @@ Options : drone 190 €, heure supplémentaire 150 € (220 € photo + vidéo),
 - [Clip](https://heavenmotion.be/prestations/clip)
 - [Lifestyle](https://heavenmotion.be/prestations/lifestyle) : séances couple, famille, grossesse, contenu réseaux sociaux.
 - [FAQ](https://heavenmotion.be/faq)
-- [À propos](https://heavenmotion.be/a-propos)
+- [À propos](https://heavenmotion.be/a-propos) et [Faits vérifiables](https://heavenmotion.be/a-propos/faits) : identité, offre, prix, zones, délais, en texte brut.
+- [Projets réalisés](https://heavenmotion.be/projets) : mariages, tournages et événements réels, avec le lieu et ce qui a été livré (pages `/projets/{slug}`).
 - [Contact](https://heavenmotion.be/contact)
 - [Photo et vidéo par une seule personne](https://heavenmotion.be/photo-et-video-une-seule-personne) : la méthode sur les cinq moments clés d'un mariage, les avantages, les limites, le second opérateur.
 - [Zone d'intervention](https://heavenmotion.be/zones) : les 5 zones de déplacement et les pays. Pages pays (`/zones/belgique`, `/zones/france`, `/zones/luxembourg`, `/zones/pays-bas`, `/zones/international`) et pages région : [Bruxelles](https://heavenmotion.be/zones/belgique/bruxelles), [Brabant flamand](https://heavenmotion.be/zones/belgique/brabant-flamand), [Brabant wallon](https://heavenmotion.be/zones/belgique/brabant-wallon), [Luxembourg](https://heavenmotion.be/zones/luxembourg/luxembourg), [Lille – Nord](https://heavenmotion.be/zones/france/lille-nord). D'autres régions suivent.
@@ -50,7 +51,7 @@ Options : drone 190 €, heure supplémentaire 150 € (220 € photo + vidéo),
 - [Home](https://heavenmotion.be/nl)
 - [Tarieven](https://heavenmotion.be/nl/tarieven)
 - [Huwelijk](https://heavenmotion.be/nl/diensten/huwelijk), [Evenementen](https://heavenmotion.be/nl/diensten/evenementen), [Zakelijk](https://heavenmotion.be/nl/diensten/zakelijk), [Sport](https://heavenmotion.be/nl/diensten/sport), [Clip](https://heavenmotion.be/nl/diensten/clip), [Lifestyle](https://heavenmotion.be/nl/diensten/lifestyle)
-- [Foto en video door één persoon](https://heavenmotion.be/nl/foto-en-video-door-een-persoon)
+- [Foto en video door één persoon](https://heavenmotion.be/nl/foto-en-video-door-een-persoon), [Feiten](https://heavenmotion.be/nl/over-ons/feiten), [Projecten](https://heavenmotion.be/nl/projecten)
 - [FAQ](https://heavenmotion.be/nl/faq), [Over ons](https://heavenmotion.be/nl/over-ons), [Contact](https://heavenmotion.be/nl/contact), [Werkgebied](https://heavenmotion.be/nl/zones) met de regio's [Brussel](https://heavenmotion.be/nl/zones/belgie/brussel), [Vlaams-Brabant](https://heavenmotion.be/nl/zones/belgie/vlaams-brabant), [Waals-Brabant](https://heavenmotion.be/nl/zones/belgie/waals-brabant), [Luxemburg](https://heavenmotion.be/nl/zones/luxemburg/luxembourg)
 
 ## English (EN)
@@ -60,7 +61,7 @@ Options : drone 190 €, heure supplémentaire 150 € (220 € photo + vidéo),
 - [Home](https://heavenmotion.be/en)
 - [Pricing](https://heavenmotion.be/en/pricing)
 - [Wedding](https://heavenmotion.be/en/services/wedding), [Events](https://heavenmotion.be/en/services/events), [Corporate](https://heavenmotion.be/en/services/corporate), [Sport](https://heavenmotion.be/en/services/sport), [Music video](https://heavenmotion.be/en/services/music-video), [Lifestyle](https://heavenmotion.be/en/services/lifestyle)
-- [Photo and video by one person](https://heavenmotion.be/en/one-photographer-videographer)
+- [Photo and video by one person](https://heavenmotion.be/en/one-photographer-videographer), [Facts](https://heavenmotion.be/en/about/facts), [Projects](https://heavenmotion.be/en/projects)
 - [FAQ](https://heavenmotion.be/en/faq), [About](https://heavenmotion.be/en/about), [Contact](https://heavenmotion.be/en/contact), [Areas](https://heavenmotion.be/en/areas) with [Brussels](https://heavenmotion.be/en/areas/belgium/brussels), [Luxembourg](https://heavenmotion.be/en/areas/luxembourg/luxembourg), [Lille](https://heavenmotion.be/en/areas/france/lille)
 
 ## Notes pour les robots

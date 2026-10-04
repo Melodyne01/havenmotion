@@ -249,6 +249,7 @@ admin.MapAdminCatalogEndpoints();
 admin.MapAdminMediaEndpoints();
 admin.MapAdminContentEndpoints();
 admin.MapAdminLeadEndpoints();
+admin.MapAdminProjectEndpoints();
 
 app.Run();
 

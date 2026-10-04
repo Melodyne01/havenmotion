@@ -62,6 +62,21 @@ function publicRoutes(locale: SiteLocale): Routes {
         import('./public/pages/one-person-page.component').then((m) => m.OnePersonPageComponent),
     },
     {
+      path: seg.projects,
+      loadComponent: () =>
+        import('./public/pages/projects-page.component').then((m) => m.ProjectsPageComponent),
+    },
+    {
+      path: `${seg.projects}/:slug`,
+      loadComponent: () =>
+        import('./public/pages/project-page.component').then((m) => m.ProjectPageComponent),
+    },
+    {
+      path: seg.facts,
+      loadComponent: () =>
+        import('./public/pages/facts-page.component').then((m) => m.FactsPageComponent),
+    },
+    {
       path: seg.zones,
       loadComponent: () =>
         import('./public/pages/zones-page.component').then((m) => m.ZonesPageComponent),

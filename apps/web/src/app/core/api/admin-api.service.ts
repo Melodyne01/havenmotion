@@ -11,6 +11,9 @@ import {
   Lead,
   LeadStatus,
   MediaAsset,
+  Project,
+  Review,
+  SaveProject,
   SiteSettings,
 } from '../../models';
 
@@ -119,6 +122,42 @@ export class AdminApiService {
 
   deleteLogo(id: string): Observable<void> {
     return this.http.delete<void>(`${this.base}/admin/logos/${id}`);
+  }
+
+  // --- Projets ------------------------------------------------------------
+  projects(): Observable<Project[]> {
+    return this.http.get<Project[]>(`${this.base}/admin/projects`);
+  }
+
+  createProject(body: SaveProject): Observable<Project> {
+    return this.http.post<Project>(`${this.base}/admin/projects`, body);
+  }
+
+  updateProject(id: string, body: SaveProject): Observable<Project> {
+    return this.http.put<Project>(`${this.base}/admin/projects/${id}`, body);
+  }
+
+  deleteProject(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.base}/admin/projects/${id}`);
+  }
+
+  reorderProjects(ids: string[]): Observable<void> {
+    return this.http.put<void>(`${this.base}/admin/projects/reorder`, { ids });
+  }
+
+  // --- Avis ---------------------------------------------------------------
+  reviews(): Observable<Review[]> {
+    return this.http.get<Review[]>(`${this.base}/admin/reviews`);
+  }
+
+  saveReview(body: Partial<Review>): Observable<Review> {
+    return body.id
+      ? this.http.put<Review>(`${this.base}/admin/reviews/${body.id}`, body)
+      : this.http.post<Review>(`${this.base}/admin/reviews`, body);
+  }
+
+  deleteReview(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.base}/admin/reviews/${id}`);
   }
 
   // --- Demandes de devis --------------------------------------------------

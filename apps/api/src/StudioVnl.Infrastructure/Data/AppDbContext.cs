@@ -17,6 +17,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<Testimonial> Testimonials => Set<Testimonial>();
     public DbSet<ClientLogo> ClientLogos => Set<ClientLogo>();
     public DbSet<Lead> Leads => Set<Lead>();
+    public DbSet<Project> Projects => Set<Project>();
+    public DbSet<Review> Reviews => Set<Review>();
     public DbSet<AuditLogEntry> AuditLog => Set<AuditLogEntry>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<UploadSession> UploadSessions => Set<UploadSession>();
@@ -74,6 +76,38 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
         builder.Entity<Testimonial>(entity =>
         {
             entity.Property(t => t.Locale).HasMaxLength(5).HasDefaultValue("fr");
+        });
+
+        builder.Entity<Project>(entity =>
+        {
+            entity.HasIndex(p => p.Slug).IsUnique();
+            entity.Property(p => p.Slug).HasMaxLength(120);
+            entity.Property(p => p.CategoryKey).HasMaxLength(40);
+            entity.Property(p => p.RegionId).HasMaxLength(80);
+            entity.Property(p => p.Venue).HasMaxLength(160);
+            entity.Property(p => p.City).HasMaxLength(120);
+            entity.Property(p => p.CountryCode).HasMaxLength(2).HasDefaultValue("BE");
+            entity.Property(p => p.Pack).HasMaxLength(20);
+            entity.Property(p => p.TitleFr).HasMaxLength(160);
+            entity.Property(p => p.TitleNl).HasMaxLength(160);
+            entity.Property(p => p.TitleEn).HasMaxLength(160);
+            entity.Property(p => p.SummaryFr).HasMaxLength(400);
+            entity.Property(p => p.SummaryNl).HasMaxLength(400);
+            entity.Property(p => p.SummaryEn).HasMaxLength(400);
+            entity.HasOne(p => p.CoverMedia).WithMany().HasForeignKey(p => p.CoverMediaId).OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(p => p.VideoMedia).WithMany().HasForeignKey(p => p.VideoMediaId).OnDelete(DeleteBehavior.SetNull);
+            entity.HasIndex(p => new { p.Status, p.SortOrder });
+        });
+
+        builder.Entity<Review>(entity =>
+        {
+            entity.Property(r => r.Author).HasMaxLength(120);
+            entity.Property(r => r.City).HasMaxLength(120);
+            entity.Property(r => r.CategoryKey).HasMaxLength(40);
+            entity.Property(r => r.Locale).HasMaxLength(5).HasDefaultValue("fr");
+            entity.Property(r => r.Quote).HasMaxLength(1200);
+            entity.Property(r => r.Source).HasMaxLength(60);
+            entity.HasOne(r => r.Project).WithMany().HasForeignKey(r => r.ProjectId).OnDelete(DeleteBehavior.SetNull);
         });
 
         builder.Entity<Lead>(entity =>

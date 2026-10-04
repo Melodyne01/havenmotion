@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { APP_CONFIG } from '../app-config';
 import { SiteLocale } from '../locale';
-import { Category, Film, LeadRequest, SitePayload } from '../../models';
+import { Category, Film, LeadRequest, Project, Review, SitePayload } from '../../models';
 import { PLACEHOLDER_SITE, placeholderCategories, placeholderFilms } from '../placeholder-content';
 
 /**
@@ -39,6 +39,37 @@ export class PublicApiService {
         params: new HttpParams().set('locale', locale),
       })
       .pipe(catchError((err) => this.fallback('films', err, placeholderFilms(slug, locale))));
+  }
+
+  /** Projets publiés dans la langue, les mis en avant d'abord ; `[]` sans API. */
+  projects(locale: SiteLocale, filters: { category?: string; region?: string; limit?: number } = {}): Observable<Project[]> {
+    let params = new HttpParams().set('locale', locale);
+    for (const [key, value] of Object.entries(filters)) {
+      if (value) {
+        params = params.set(key, String(value));
+      }
+    }
+    return this.http
+      .get<Project[]>(`${this.base}/public/projects`, { params })
+      .pipe(catchError((err) => this.fallback('projects', err, [] as Project[])));
+  }
+
+  /** Un projet publié par slug ; `null` s'il n'existe pas ou sans API. */
+  project(slug: string): Observable<Project | null> {
+    return this.http
+      .get<Project>(`${this.base}/public/projects/${slug}`)
+      .pipe(catchError((err) => this.fallback('project', err, null as Project | null)));
+  }
+
+  /** Avis publiés, ceux de la langue d'abord ; `[]` sans API. */
+  reviews(locale: SiteLocale, category?: string): Observable<Review[]> {
+    let params = new HttpParams().set('locale', locale);
+    if (category) {
+      params = params.set('category', category);
+    }
+    return this.http
+      .get<Review[]>(`${this.base}/public/reviews`, { params })
+      .pipe(catchError((err) => this.fallback('reviews', err, [] as Review[])));
   }
 
   /**

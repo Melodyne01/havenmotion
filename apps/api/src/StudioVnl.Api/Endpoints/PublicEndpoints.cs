@@ -19,6 +19,9 @@ public static class PublicEndpoints
         group.MapGet("/site", GetSiteAsync);
         group.MapGet("/categories", GetCategoriesAsync);
         group.MapGet("/categories/{slug}/films", GetFilmsAsync);
+        group.MapGet("/projects", GetProjectsAsync);
+        group.MapGet("/projects/{slug}", GetProjectAsync);
+        group.MapGet("/reviews", GetReviewsAsync);
         group.MapGet("/sitemap.xml", GetSitemapAsync);
         group.MapPost("/leads", CreateLeadAsync)
             .RequireRateLimiting("leads")
@@ -186,6 +189,22 @@ public static class PublicEndpoints
                 priority));
         }
 
+        var projects = await db.Projects.AsNoTracking()
+            .Where(p => p.Status == PublishStatus.Published)
+            .Select(p => new { p.Slug, HasFr = p.TitleFr != "", HasNl = p.TitleNl != "", HasEn = p.TitleEn != "" })
+            .ToListAsync(cancellationToken);
+        if (projects.Count > 0)
+        {
+            entries.Add((Localized("/projets", "/nl/projecten", "/en/projects"), "weekly", "0.7"));
+        }
+        entries.AddRange(projects.Select(p => (
+            Localized(
+                p.HasFr ? $"/projets/{p.Slug}" : null,
+                p.HasNl ? $"/nl/projecten/{p.Slug}" : null,
+                p.HasEn ? $"/en/projects/{p.Slug}" : null),
+            "monthly",
+            "0.7")));
+
         entries.AddRange(ZonePages.Select(z => (
             Localized(z.Fr, z.Nl, z.En),
             "monthly",
@@ -247,6 +266,93 @@ public static class PublicEndpoints
         [Locales.Dutch] = nl == "" ? "/nl" : nl,
         [Locales.English] = en == "" ? "/en" : en,
     };
+
+    /// <summary>
+    /// Projets publiés qui ont un titre dans la langue demandée, les mis en
+    /// avant d'abord, puis par ordre puis date. Filtres optionnels par
+    /// catégorie (clé neutre) et par région.
+    /// </summary>
+    private static async Task<IReadOnlyList<ProjectDto>> GetProjectsAsync(
+        string? locale,
+        string? category,
+        string? region,
+        int? limit,
+        AppDbContext db,
+        IMediaStorage storage,
+        CancellationToken cancellationToken)
+    {
+        var loc = NormalizeLocale(locale);
+        var query = db.Projects
+            .Include(p => p.CoverMedia)
+            .Include(p => p.VideoMedia)
+            .AsNoTracking()
+            .Where(p => p.Status == PublishStatus.Published);
+        query = loc switch
+        {
+            Locales.Dutch => query.Where(p => p.TitleNl != ""),
+            Locales.English => query.Where(p => p.TitleEn != ""),
+            _ => query.Where(p => p.TitleFr != ""),
+        };
+        if (!string.IsNullOrEmpty(category))
+        {
+            query = query.Where(p => p.CategoryKey == category);
+        }
+        if (!string.IsNullOrEmpty(region))
+        {
+            query = query.Where(p => p.RegionId == region);
+        }
+        query = query.OrderByDescending(p => p.IsFeatured).ThenBy(p => p.SortOrder).ThenByDescending(p => p.Date);
+        if (limit is > 0)
+        {
+            query = query.Take(limit.Value);
+        }
+        var projects = await query.ToListAsync(cancellationToken);
+        var gallery = await AdminProjectEndpoints.LoadGalleryAsync(db, projects, cancellationToken);
+        return projects.Select(p => p.ToDto(storage.GetPublicUrl, gallery)).ToList();
+    }
+
+    private static async Task<IResult> GetProjectAsync(
+        string slug,
+        AppDbContext db,
+        IMediaStorage storage,
+        CancellationToken cancellationToken)
+    {
+        var project = await db.Projects
+            .Include(p => p.CoverMedia)
+            .Include(p => p.VideoMedia)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Slug == slug && p.Status == PublishStatus.Published, cancellationToken);
+        if (project is null)
+        {
+            return Results.NotFound();
+        }
+        var gallery = await AdminProjectEndpoints.LoadGalleryAsync(db, [project], cancellationToken);
+        return Results.Ok(project.ToDto(storage.GetPublicUrl, gallery));
+    }
+
+    /// <summary>
+    /// Avis publiés : ceux dans la langue demandée d'abord, puis les autres
+    /// (un avis en anglais vaut mieux qu'aucun sur la page NL).
+    /// </summary>
+    private static async Task<IReadOnlyList<ReviewDto>> GetReviewsAsync(
+        string? locale,
+        string? category,
+        AppDbContext db,
+        CancellationToken cancellationToken)
+    {
+        var loc = NormalizeLocale(locale);
+        var query = db.Reviews.AsNoTracking().Where(r => r.IsPublished);
+        if (!string.IsNullOrEmpty(category))
+        {
+            query = query.Where(r => r.CategoryKey == category);
+        }
+        var reviews = await query.OrderBy(r => r.SortOrder).ThenByDescending(r => r.Date).ToListAsync(cancellationToken);
+        return reviews
+            .OrderBy(r => r.Locale == loc ? 0 : 1)
+            .ThenBy(r => r.SortOrder)
+            .Select(r => r.ToDto())
+            .ToList();
+    }
 
     private static async Task<IResult> GetFilmsAsync(
         string slug,

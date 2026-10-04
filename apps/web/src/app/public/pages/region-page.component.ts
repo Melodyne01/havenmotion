@@ -6,6 +6,7 @@ import { SiteHeaderComponent } from '../sections/site-header.component';
 import { SiteFooterComponent } from '../sections/site-footer.component';
 import { VideoFrameComponent } from '../../shared/ui/video-frame.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
+import { RecentProjectsComponent } from '../sections/recent-projects.component';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
 import {
@@ -48,7 +49,7 @@ export function countryPath(locale: SiteLocale, country: Country): string {
 @Component({
   selector: 'app-region-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [SiteHeaderComponent, SiteFooterComponent, VideoFrameComponent, CtaButtonComponent, RouterLink, NotFoundComponent],
+  imports: [SiteHeaderComponent, SiteFooterComponent, VideoFrameComponent, CtaButtonComponent, RouterLink, NotFoundComponent, RecentProjectsComponent],
   template: `
     @if (!view()) {
       <app-not-found />
@@ -148,6 +149,7 @@ export function countryPath(locale: SiteLocale, country: Country): string {
             <app-cta-button [href]="v.contactHref">{{ text.quoteCta }}</app-cta-button>
           </div>
         </article>
+        <app-recent-projects [region]="v.regionId" [title]="text.projects.inRegion" />
       }
     </main>
 
@@ -365,6 +367,7 @@ export class RegionPageComponent {
     const fee = travelZone(region.zone).fee;
     return {
       region,
+      regionId: regionId(region),
       content,
       name: region.name[this.locale],
       countryName: country.name[this.locale],

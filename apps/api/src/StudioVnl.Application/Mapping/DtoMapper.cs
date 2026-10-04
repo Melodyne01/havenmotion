@@ -30,6 +30,73 @@ public static class DtoMapper
 
     public static string ToJson(IReadOnlyList<string> values) => JsonSerializer.Serialize(values, Json);
 
+    public static IReadOnlyList<Guid> ParseGuidList(string json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return [];
+        }
+        try
+        {
+            return JsonSerializer.Deserialize<List<Guid>>(json, Json) ?? [];
+        }
+        catch (JsonException)
+        {
+            return [];
+        }
+    }
+
+    /// <summary>Récit stocké en texte brut → paragraphes (séparés par une ligne vide).</summary>
+    public static IReadOnlyList<string> SplitParagraphs(string body) =>
+        body.Replace("\r\n", "\n")
+            .Split("\n\n", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .ToList();
+
+    /// <summary>Texte d'un projet dans une langue ; `null` quand le titre n'est pas rempli (pas de page dans cette langue).</summary>
+    private static ProjectTextDto? ProjectText(string title, string summary, string body) =>
+        string.IsNullOrWhiteSpace(title) ? null : new ProjectTextDto(title, summary, SplitParagraphs(body));
+
+    public static ProjectDto ToDto(
+        this Project project,
+        Func<string, string> resolveUrl,
+        IReadOnlyDictionary<Guid, MediaAsset> galleryAssets) => new(
+        project.Id,
+        project.Slug,
+        project.CategoryKey,
+        project.RegionId,
+        project.Venue,
+        project.City,
+        project.CountryCode,
+        project.Date?.ToString("yyyy-MM-dd"),
+        project.Pack,
+        ProjectText(project.TitleFr, project.SummaryFr, project.BodyFr),
+        ProjectText(project.TitleNl, project.SummaryNl, project.BodyNl),
+        ProjectText(project.TitleEn, project.SummaryEn, project.BodyEn),
+        project.CoverMedia?.ToDto(resolveUrl),
+        project.VideoMedia?.ToDto(resolveUrl),
+        ParseGuidList(project.GalleryJson)
+            .Where(galleryAssets.ContainsKey)
+            .Select(id => galleryAssets[id].ToDto(resolveUrl))
+            .ToList(),
+        project.IsFeatured,
+        project.SortOrder,
+        project.Status.ToString(),
+        project.CreatedAt);
+
+    public static ReviewDto ToDto(this Review review) => new(
+        review.Id,
+        review.Author,
+        review.City,
+        review.CategoryKey,
+        review.Rating,
+        review.Locale,
+        review.Quote,
+        review.Date?.ToString("yyyy-MM-dd"),
+        review.Source,
+        review.ProjectId,
+        review.IsPublished,
+        review.SortOrder);
+
     public static IReadOnlyList<RenditionDto> ParseRenditions(string json, Func<string, string> resolveUrl)
     {
         if (string.IsNullOrWhiteSpace(json))

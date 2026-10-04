@@ -33,6 +33,16 @@ export const adminRoutes: Routes = [
           import('./pages/media-admin.component').then((m) => m.MediaAdminComponent),
       },
       {
+        path: 'projets',
+        loadComponent: () =>
+          import('./pages/projects-admin.component').then((m) => m.ProjectsAdminComponent),
+      },
+      {
+        path: 'avis',
+        loadComponent: () =>
+          import('./pages/reviews-admin.component').then((m) => m.ReviewsAdminComponent),
+      },
+      {
         path: 'contenus',
         loadComponent: () =>
           import('./pages/content-admin.component').then((m) => m.ContentAdminComponent),

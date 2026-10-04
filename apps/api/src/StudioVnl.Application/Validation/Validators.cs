@@ -171,3 +171,61 @@ public class UpdateLeadStatusValidator : AbstractValidator<UpdateLeadStatusReque
             .WithMessage("Statut inconnu : New, Handled, Won ou Lost.");
     }
 }
+
+public class SaveProjectValidator : AbstractValidator<SaveProjectRequest>
+{
+    private static readonly string[] CategoryKeys = ["evenementiel", "mariage", "corporate", "sport", "clip", "lifestyle"];
+
+    public SaveProjectValidator()
+    {
+        RuleFor(x => x.Slug)
+            .NotEmpty()
+            .MaximumLength(120)
+            .Matches("^[a-z0-9][a-z0-9-]*$")
+            .WithMessage("Le slug ne peut contenir que des minuscules, chiffres et tirets.");
+        RuleFor(x => x.CategoryKey)
+            .Must(CategoryKeys.Contains)
+            .WithMessage("Catégorie inconnue.");
+        RuleFor(x => x.RegionId).MaximumLength(80).Matches("^[a-z0-9-]*$");
+        RuleFor(x => x.Venue).MaximumLength(160);
+        RuleFor(x => x.City).MaximumLength(120);
+        RuleFor(x => x.CountryCode).Length(2);
+        RuleFor(x => x.Pack)
+            .Must(pack => string.IsNullOrEmpty(pack) || CreateLeadValidator.PackTypes.Contains(pack))
+            .WithMessage("Formule inconnue : photo, video, combo ou custom.");
+        RuleFor(x => x.Date)
+            .Must(value => string.IsNullOrEmpty(value) || DateOnly.TryParseExact(value, "yyyy-MM-dd", out _))
+            .WithMessage("La date doit être au format yyyy-MM-dd.");
+        RuleFor(x => x.Status)
+            .Must(status => status is "Draft" or "Published")
+            .WithMessage("Statut inconnu : Draft ou Published.");
+        // Au moins une langue remplie : un projet sans titre n'a de page nulle part.
+        RuleFor(x => x)
+            .Must(x => !string.IsNullOrWhiteSpace(x.Fr.Title) || !string.IsNullOrWhiteSpace(x.Nl.Title) || !string.IsNullOrWhiteSpace(x.En.Title))
+            .WithMessage("Renseignez le titre dans au moins une langue.");
+        foreach (var text in new Func<SaveProjectRequest, ProjectTextRequest>[] { x => x.Fr, x => x.Nl, x => x.En })
+        {
+            RuleFor(x => text(x).Title).MaximumLength(160);
+            RuleFor(x => text(x).Summary).MaximumLength(400);
+            RuleFor(x => text(x).Body).MaximumLength(12000);
+        }
+        RuleFor(x => x.Gallery).Must(g => g.Count <= 60).WithMessage("60 médias maximum dans la galerie.");
+    }
+}
+
+public class SaveReviewValidator : AbstractValidator<SaveReviewRequest>
+{
+    public SaveReviewValidator()
+    {
+        RuleFor(x => x.Author).NotEmpty().MaximumLength(120);
+        RuleFor(x => x.City).MaximumLength(120);
+        RuleFor(x => x.CategoryKey).MaximumLength(40);
+        RuleFor(x => x.Rating).InclusiveBetween(1, 5);
+        RuleFor(x => x.Locale).Must(Locales.All.Contains).WithMessage("Langue inconnue : fr, nl ou en.");
+        RuleFor(x => x.Quote).NotEmpty().MaximumLength(1200);
+        RuleFor(x => x.Source).MaximumLength(60);
+        RuleFor(x => x.Date)
+            .Must(value => string.IsNullOrEmpty(value) || DateOnly.TryParseExact(value, "yyyy-MM-dd", out _))
+            .WithMessage("La date doit être au format yyyy-MM-dd.");
+    }
+}

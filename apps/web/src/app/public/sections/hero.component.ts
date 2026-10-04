@@ -5,6 +5,8 @@ import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
 import { SiteStore } from '../site-store';
 import { SITE_LOCALE } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
+import { pick } from '../../core/locale';
+import { formatPrice, startingPrice } from '../../core/packs';
 
 /**
  * Hero : showreel plein cadre en 2.39:1, muet et en boucle.
@@ -35,6 +37,7 @@ import { UI_TEXT } from '../../core/ui-text';
             <span class="hero__title-sub">{{ titleSubtitle() }}</span>
           </h1>
           <p class="hero__tagline">{{ text.hero.tagline }}</p>
+          <p class="hero__facts">{{ factsLine() }}</p>
           <app-cta-button href="#contact">{{ text.hero.cta }}</app-cta-button>
         </div>
       </app-video-frame>
@@ -61,6 +64,20 @@ export class HeroComponent {
    * référencement. Les quatre pays couverts y figurent — c'est le
    * positionnement du site depuis la stratégie par régions.
    */
+  /**
+   * Une ligne de faits sous l'accroche : une seule personne pour les deux,
+   * le prix d'appel réel. C'est ce qu'un visiteur doit savoir en dix
+   * secondes, et ce que les moteurs citent.
+   */
+  protected factsLine(): string {
+    const from = formatPrice(startingPrice('lifestyle'));
+    return pick(this.locale, {
+      fr: `Une seule personne pour la photo et la vidéo · prix affichés, à partir de ${from}`,
+      nl: `Eén persoon voor foto en video · prijzen online, vanaf ${from}`,
+      en: `One person for photo and video · published prices, from ${from}`,
+    });
+  }
+
   protected titleSubtitle(): string {
     return this.text.hero.subtitle;
   }

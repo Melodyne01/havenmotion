@@ -98,6 +98,22 @@ export interface UiText {
     readonly inBrief: string;
     readonly allZones: string;
   };
+  readonly projects: {
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly lead: string;
+    readonly homeTitle: string;
+    readonly seeAll: string;
+    readonly inCategory: string;
+    readonly inRegion: string;
+    readonly venue: string;
+    readonly packDelivered: string;
+    readonly gallery: string;
+    readonly empty: string;
+    readonly similar: string;
+  };
+  readonly reviews: { readonly eyebrow: string; readonly title: string; readonly source: string };
+  readonly facts: { readonly title: string; readonly lead: string };
   readonly notFound: { readonly title: string; readonly text: string; readonly cta: string };
   readonly captions: string;
   readonly contact: {
@@ -260,6 +276,25 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       inBrief: 'En bref',
       allZones: 'Toutes les zones et forfaits',
     },
+    projects: {
+      eyebrow: 'Projets',
+      title: 'Projets réalisés',
+      lead: 'Des mariages, des tournages et des événements réels, avec le lieu, la ville et ce qui a été livré. C’est ce qui prouve que le studio travaille là où le site le dit.',
+      homeTitle: 'Derniers projets',
+      seeAll: 'Voir tous les projets',
+      inCategory: 'Projets dans cette catégorie',
+      inRegion: 'Projets dans la région',
+      venue: 'Lieu',
+      packDelivered: 'Formule livrée',
+      gallery: 'Galerie',
+      empty: 'Les premiers projets arrivent. En attendant, le showreel et les pages prestations montrent le style.',
+      similar: 'Un projet comme celui-ci ?',
+    },
+    reviews: { eyebrow: 'Avis', title: 'Ce qu’ils en disent', source: 'via' },
+    facts: {
+      title: 'Faits vérifiables',
+      lead: 'Tout ce que ce site affirme, en texte brut : identité, offre, prix, zones, langues, délais. Pour les moteurs de recherche, les assistants IA et les clients pressés.',
+    },
     notFound: {
       title: 'Page introuvable',
       text: "Cette page n'existe pas ou a été déplacée.",
@@ -421,6 +456,25 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       inBrief: 'In het kort',
       allZones: 'Alle zones en tarieven',
     },
+    projects: {
+      eyebrow: 'Projecten',
+      title: 'Gerealiseerde projecten',
+      lead: 'Echte huwelijken, opnames en evenementen, met de locatie, de stad en wat er geleverd werd. Het bewijs dat de studio werkt waar de site het zegt.',
+      homeTitle: 'Laatste projecten',
+      seeAll: 'Alle projecten bekijken',
+      inCategory: 'Projecten in deze categorie',
+      inRegion: 'Projecten in de regio',
+      venue: 'Locatie',
+      packDelivered: 'Geleverde formule',
+      gallery: 'Galerij',
+      empty: 'De eerste projecten komen eraan. Intussen tonen de showreel en de dienstenpagina’s de stijl.',
+      similar: 'Zo’n project?',
+    },
+    reviews: { eyebrow: 'Reacties', title: 'Wat ze erover zeggen', source: 'via' },
+    facts: {
+      title: 'Verifieerbare feiten',
+      lead: 'Alles wat deze site beweert, in platte tekst: identiteit, aanbod, prijzen, zones, talen, termijnen. Voor zoekmachines, AI-assistenten en gehaaste klanten.',
+    },
     notFound: {
       title: 'Pagina niet gevonden',
       text: 'Deze pagina bestaat niet of is verplaatst.',
@@ -581,6 +635,25 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       faqTitle: 'Frequently asked questions',
       inBrief: 'In brief',
       allZones: 'Every zone and fee',
+    },
+    projects: {
+      eyebrow: 'Projects',
+      title: 'Completed projects',
+      lead: 'Real weddings, shoots and events, with the venue, the town and what was delivered. The proof that the studio works where the site says it does.',
+      homeTitle: 'Latest projects',
+      seeAll: 'See every project',
+      inCategory: 'Projects in this category',
+      inRegion: 'Projects in the region',
+      venue: 'Venue',
+      packDelivered: 'Package delivered',
+      gallery: 'Gallery',
+      empty: 'The first projects are on their way. Meanwhile, the showreel and the services pages show the style.',
+      similar: 'A project like this one?',
+    },
+    reviews: { eyebrow: 'Reviews', title: 'What they say', source: 'via' },
+    facts: {
+      title: 'Verifiable facts',
+      lead: 'Everything this site claims, in plain text: identity, offer, prices, areas, languages, lead times. For search engines, AI assistants and clients in a hurry.',
     },
     notFound: {
       title: 'Page not found',

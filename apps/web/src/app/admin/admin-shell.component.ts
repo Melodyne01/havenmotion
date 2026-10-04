@@ -86,6 +86,8 @@ export class AdminShellComponent {
     { path: 'films', label: 'Films' },
     { path: 'showreel', label: 'Showreel' },
     { path: 'medias', label: 'Médias' },
+    { path: 'projets', label: 'Projets' },
+    { path: 'avis', label: 'Avis' },
     { path: 'contenus', label: 'Contenus' },
     { path: 'devis', label: 'Demandes de devis' },
     { path: 'journal', label: 'Journal' },

@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { APP_CONFIG } from './app-config';
 import { CategoryKey, SITE_LOCALES, SiteLocale, categoryKeyFromSlug } from './locale';
-import { Category, SiteSettings } from '../models';
+import { Category, Project, Review, SiteSettings } from '../models';
 import { CategoryPricing, PACK_LABELS, PRICING, pricingFor } from './packs';
 import { COUNTRIES, REGIONS, Region } from './regions';
 import { CATEGORY_NAMES, COMPANY } from './site-content';
@@ -243,6 +243,73 @@ export class SeoService {
       offers: PRICING.flatMap((pricing) => this.offersOf(pricing, locale)),
     };
     this.writeJsonLd('vnl-area', graph);
+  }
+
+  /**
+   * Publie le JSON-LD d'un projet réel : un `CreativeWork` (photo et/ou
+   * vidéo) situé dans un lieu nommé, lié au studio. C'est ce qui relie
+   * « mariage au château X » au site dans les résultats enrichis.
+   */
+  applyProject(settings: SiteSettings, project: Project, locale: SiteLocale): void {
+    const text = project[locale] ?? project.fr ?? project.nl ?? project.en;
+    const graph = {
+      '@context': 'https://schema.org',
+      '@type': project.video ? 'VideoObject' : 'ImageGallery',
+      name: text?.title ?? project.slug,
+      description: text?.summary,
+      inLanguage: locale,
+      dateCreated: project.date ?? undefined,
+      thumbnailUrl: this.absolute(project.cover?.posterUrl ?? null),
+      ...(project.video
+        ? {
+            uploadDate: project.video.createdAt,
+            contentUrl: this.absolute(project.video.renditions[0]?.url ?? null),
+          }
+        : {}),
+      contentLocation: project.venue || project.city
+        ? {
+            '@type': 'Place',
+            name: project.venue || project.city,
+            address: { '@type': 'PostalAddress', addressLocality: project.city, addressCountry: project.countryCode },
+          }
+        : undefined,
+      creator: { '@type': 'LocalBusiness', name: settings.brandName, '@id': `${this.origin}/#studio` },
+    };
+    this.writeJsonLd('vnl-project', graph);
+  }
+
+  /**
+   * Ajoute les avis réels au `LocalBusiness` de la page courante : note
+   * moyenne et dernières citations. Rien n'est publié sans avis : un
+   * `AggregateRating` vide ou inventé serait une erreur de données.
+   */
+  applyReviews(settings: SiteSettings, reviews: readonly Review[]): void {
+    if (reviews.length === 0) {
+      this.removeJsonLd('vnl-reviews');
+      return;
+    }
+    const average = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+    const graph = {
+      '@context': 'https://schema.org',
+      '@type': 'LocalBusiness',
+      '@id': `${this.origin}/#studio`,
+      name: settings.brandName,
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: Math.round(average * 10) / 10,
+        bestRating: 5,
+        reviewCount: reviews.length,
+      },
+      review: reviews.slice(0, 10).map((r) => ({
+        '@type': 'Review',
+        author: { '@type': 'Person', name: r.author },
+        reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 },
+        reviewBody: r.quote,
+        inLanguage: r.locale,
+        ...(r.date ? { datePublished: r.date } : {}),
+      })),
+    };
+    this.writeJsonLd('vnl-reviews', graph);
   }
 
   /** Publie le bloc JSON-LD `BreadcrumbList` de la page courante. */

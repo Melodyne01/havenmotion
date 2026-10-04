@@ -62,6 +62,26 @@ public static class AdminContentEndpoints
             },
             entity => entity.SortOrder);
 
+        MapCrud<Review, ReviewDto, SaveReviewRequest>(
+            admin, "/reviews", "Admin · Avis",
+            db => db.Reviews,
+            entity => entity.ToDto(),
+            (entity, request) =>
+            {
+                entity.Author = request.Author.Trim();
+                entity.City = request.City.Trim();
+                entity.CategoryKey = request.CategoryKey.Trim();
+                entity.Rating = request.Rating;
+                entity.Locale = Locales.Normalize(request.Locale);
+                entity.Quote = request.Quote.Trim();
+                entity.Date = string.IsNullOrEmpty(request.Date) ? null : DateOnly.ParseExact(request.Date, "yyyy-MM-dd");
+                entity.Source = request.Source.Trim();
+                entity.ProjectId = request.ProjectId;
+                entity.IsPublished = request.IsPublished;
+                entity.SortOrder = request.SortOrder;
+            },
+            entity => entity.SortOrder);
+
         MapCrud<ClientLogo, ClientLogoDto, SaveClientLogoRequest>(
             admin, "/logos", "Admin · Logos",
             db => db.ClientLogos,
@@ -219,7 +239,9 @@ public static class AdminContentEndpoints
         where TRequest : class
     {
         var group = admin.MapGroup(prefix).WithTags(tag);
-        var localeProperty = typeof(TEntity).GetProperty("Locale");
+        // Les avis portent une langue mais se gèrent tous ensemble dans le
+        // backoffice : pas de filtre par langue pour eux.
+        var localeProperty = typeof(TEntity) == typeof(Review) ? null : typeof(TEntity).GetProperty("Locale");
 
         group.MapGet("/", async (string? locale, AppDbContext db, CancellationToken cancellationToken) =>
         {

@@ -132,3 +132,28 @@ test('les pages commune redirigent vers leur région et les pages région se ren
   await page.goto('/nl/foto-en-video-door-een-persoon');
   await expect(page.getByRole('heading', { level: 1, name: /één persoon/i })).toBeVisible();
 });
+
+/**
+ * Chantiers 6, 7, 9 : la home n'affiche plus de témoignage d'attente, la
+ * page des faits et la liste des projets existent dans les trois langues
+ * (vides sans API, sans erreur), un projet inconnu répond 404.
+ */
+test('plus de témoignage d’attente ; pages faits et projets en trois langues', async ({ page, request }) => {
+  await page.goto('/');
+  await expect(page.getByText('Témoignage à compléter')).toHaveCount(0);
+  await expect(page.locator('.hero__facts')).toContainText(/une seule personne/i);
+
+  for (const [path, heading] of [
+    ['/a-propos/faits', /faits vérifiables/i],
+    ['/nl/over-ons/feiten', /verifieerbare feiten/i],
+    ['/en/about/facts', /verifiable facts/i],
+    ['/projets', /projets réalisés/i],
+    ['/en/projects', /completed projects/i],
+  ] as const) {
+    await page.goto(path);
+    await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
+  }
+
+  const missing = await request.get('/projets/mariage-qui-n-existe-pas');
+  expect(missing.status()).toBe(404);
+});

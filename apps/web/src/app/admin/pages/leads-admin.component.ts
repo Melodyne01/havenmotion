@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, UpperCasePipe } from '@angular/common';
 import { AdminApiService, LeadFilters } from '../../core/api/admin-api.service';
@@ -50,6 +50,17 @@ const STATUS_LABELS: Record<LeadStatus, string> = {
 
       @if (status()) {
         <p class="a-status" role="status">{{ status() }}</p>
+      }
+
+      @if (leads().length > 0) {
+        <div class="a-card stats">
+          <p class="a-label">{{ leads().length }} demande(s) — par formule et par région</p>
+          <ul class="stats__list">
+            @for (row of stats(); track row.label) {
+              <li><span>{{ row.label }}</span><strong>{{ row.count }}</strong></li>
+            }
+          </ul>
+        </div>
       }
 
       @if (leads().length === 0) {
@@ -110,6 +121,23 @@ const STATUS_LABELS: Record<LeadStatus, string> = {
         max-width: 320px;
       }
 
+      .stats__list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 4px 24px;
+        padding: 0;
+        margin: 8px 0 0;
+        list-style: none;
+
+        li {
+          display: flex;
+          justify-content: space-between;
+          padding: 4px 0;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          font-size: 13px;
+        }
+      }
+
       .lang {
         margin-left: 6px;
         opacity: 0.6;
@@ -124,6 +152,23 @@ export class LeadsAdminComponent {
   protected readonly leads = signal<Lead[]>([]);
   protected readonly status = signal<string | null>(null);
   protected readonly statusOptions: LeadStatus[] = ['New', 'Handled', 'Won', 'Lost'];
+
+  /** Répartition des demandes chargées par formule puis par région : la mesure qui dit quelles pages convertissent. */
+  protected readonly stats = computed(() => {
+    const count = (key: (lead: Lead) => string) => {
+      const map = new Map<string, number>();
+      for (const lead of this.leads()) {
+        const k = key(lead);
+        map.set(k, (map.get(k) ?? 0) + 1);
+      }
+      return [...map.entries()].sort((a, b) => b[1] - a[1]).map(([label, n]) => ({ label, count: n }));
+    };
+    return [
+      ...count((l) => `Formule : ${this.packLabel(l.pack)}`),
+      ...count((l) => `Région : ${this.regionLabel(l.region)}`),
+      ...count((l) => `Langue : ${l.locale.toUpperCase()}`),
+    ];
+  });
   protected filters: LeadFilters = {};
 
   constructor() {
