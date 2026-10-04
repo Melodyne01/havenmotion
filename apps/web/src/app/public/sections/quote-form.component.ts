@@ -1,184 +1,294 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  OnInit,
-  computed,
-  inject,
-  input,
-  signal,
-  viewChild,
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, computed, inject, input, signal, viewChild } from '@angular/core';
 import { SiteStore } from '../site-store';
 import { CategoryKey, SITE_LOCALE } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 import { CATEGORY_NAMES, COMPANY } from '../../core/site-content';
-import { PACK_LABELS, PACK_TYPES, PackType, formatPrice } from '../../core/packs';
-import { COUNTRIES, REGIONS, findRegion, regionId } from '../../core/regions';
+import { PACK_LABELS, PACK_TYPES, PackType, VAT_LABELS, formatPrice, pricingFor } from '../../core/packs';
+import { COUNTRIES, CountryCode, REGIONS, findRegion, regionId } from '../../core/regions';
 import { travelZone } from '../../core/travel-zones';
 import { CATEGORY_KEYS, QuotePrefill, buildQuoteMessage, mailtoUrl, whatsappUrl } from '../../core/quote';
 
+/** Valeur « Autre » du type de projet. */
+const OTHER = 'autre';
+
 /**
- * Formulaire de devis en deux temps. D'abord cinq questions (nom, projet,
- * formule, lieu, budget) et un message libre ; ensuite le message composé,
- * modifiable, avec un bouton WhatsApp et un bouton e-mail qui l'ouvrent
- * prêt à envoyer. Pas de date (décision client) et pas d'e-mail demandé :
- * le visiteur écrit depuis son propre WhatsApp ou sa propre messagerie, le
- * studio a donc déjà de quoi lui répondre. Rien n'est envoyé au serveur.
+ * Tunnel de devis en trois étapes, sur le modèle du tunnel Beetee : chaque
+ * choix est un bouton à cocher (un vrai bouton radio, stylé), jamais une
+ * liste déroulante. 1. Projet et formule. 2. Pays, région et budget.
+ * 3. Nom, message libre, aperçu du message qui se compose en direct, et
+ * envoi par WhatsApp ou e-mail. Rien n'est envoyé au serveur.
  */
 @Component({
   selector: 'app-quote-form',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, CtaButtonComponent],
   template: `
-    @if (message() === null) {
-      <form class="form" [formGroup]="form" (ngSubmit)="prepare()" novalidate>
-        <div class="form__row form__row--wide">
-          <label class="form__label" [for]="id('name')">{{ text.nameLabel }}</label>
-          <input
-            #nameInput
-            [id]="id('name')"
-            class="form__input"
-            type="text"
-            formControlName="name"
-            autocomplete="name"
-            required
-            [attr.aria-invalid]="nameInvalid() ? 'true' : null"
-            [attr.aria-describedby]="nameInvalid() ? id('name-error') : null"
-          />
-          @if (nameInvalid()) {
-            <p class="form__error" [id]="id('name-error')">{{ text.nameError }}</p>
-          }
-        </div>
+    <div class="funnel">
+      <ol class="progress" [attr.aria-label]="text.progressLabel">
+        @for (label of text.steps; track $index) {
+          <li
+            class="progress__item"
+            [class.is-active]="step() === $index + 1"
+            [class.is-complete]="step() > $index + 1"
+            [attr.aria-current]="step() === $index + 1 ? 'step' : null"
+          >
+            <span class="progress__dot">{{ $index + 1 }}</span>
+            <span class="progress__label">{{ label }}</span>
+          </li>
+        }
+      </ol>
 
-        <div class="form__row">
-          <label class="form__label" [for]="id('category')">{{ text.projectTypeLabel }}</label>
-          <select [id]="id('category')" class="form__input" formControlName="category">
-            @for (type of projectTypes; track type.value) {
-              <option [value]="type.value">{{ type.label }}</option>
-            }
-          </select>
-        </div>
+      @switch (step()) {
+        @case (1) {
+          <fieldset class="step">
+            <legend class="step__legend">
+              <span class="step__count">{{ stepCount(1) }}</span>
+              {{ text.stepTitles[0] }}
+            </legend>
+            <p class="step__copy">{{ text.stepCopies[0] }}</p>
 
-        <div class="form__row">
-          <label class="form__label" [for]="id('pack')">{{ text.packLabel }}</label>
-          <select [id]="id('pack')" class="form__input" formControlName="pack">
-            <option value="">{{ text.packUndecided }}</option>
-            @for (pack of packTypes; track pack) {
-              <option [value]="pack">{{ packLabel(pack) }}</option>
-            }
-          </select>
-        </div>
-
-        <div class="form__row">
-          <label class="form__label" [for]="id('region')">{{ text.regionLabel }}</label>
-          <select [id]="id('region')" class="form__input" formControlName="region">
-            <option value="">{{ text.regionUndecided }}</option>
-            @for (group of regionGroups; track group.code) {
-              <optgroup [label]="group.name">
-                @for (region of group.regions; track region.id) {
-                  <option [value]="region.id">{{ region.name }}</option>
+            <div class="group" [class.has-error]="categoryError()">
+              <p class="group__label" [id]="id('category-label')">{{ text.projectTypeLabel }}</p>
+              <div class="choices" role="radiogroup" [attr.aria-labelledby]="id('category-label')">
+                @for (type of projectTypes; track type.value) {
+                  <label class="choice">
+                    <input
+                      type="radio"
+                      [name]="id('category')"
+                      [value]="type.value"
+                      [checked]="category() === type.value"
+                      (change)="pickCategory(type.value)"
+                    />
+                    <span>{{ type.label }}</span>
+                  </label>
                 }
-              </optgroup>
+              </div>
+              @if (categoryError()) {
+                <p class="group__error" role="alert">{{ text.categoryError }}</p>
+              }
+            </div>
+
+            <div class="group">
+              <p class="group__label" [id]="id('pack-label')">{{ text.packLabel }}</p>
+              <div class="choices choices--wide" role="radiogroup" [attr.aria-labelledby]="id('pack-label')">
+                @for (option of packOptions(); track option.value) {
+                  <label class="choice">
+                    <input
+                      type="radio"
+                      [name]="id('pack')"
+                      [value]="option.value"
+                      [checked]="pack() === option.value"
+                      (change)="pack.set(option.value)"
+                    />
+                    <span>
+                      {{ option.label }}
+                      @if (option.price) {
+                        <small>{{ option.price }}</small>
+                      }
+                    </span>
+                  </label>
+                }
+              </div>
+            </div>
+
+            <div class="nav">
+              <button type="button" class="btn btn--primary" (click)="next()">{{ text.next }}</button>
+            </div>
+          </fieldset>
+        }
+
+        @case (2) {
+          <fieldset class="step">
+            <legend class="step__legend">
+              <span class="step__count">{{ stepCount(2) }}</span>
+              {{ text.stepTitles[1] }}
+            </legend>
+            <p class="step__copy">{{ text.stepCopies[1] }}</p>
+
+            <div class="group">
+              <p class="group__label" [id]="id('country-label')">{{ text.countryLabel }}</p>
+              <div class="choices" role="radiogroup" [attr.aria-labelledby]="id('country-label')">
+                @for (item of countries; track item.code) {
+                  <label class="choice">
+                    <input
+                      type="radio"
+                      [name]="id('country')"
+                      [value]="item.code"
+                      [checked]="country() === item.code"
+                      (change)="pickCountry(item.code)"
+                    />
+                    <span>{{ item.name }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+
+            @if (countryRegions().length > 1) {
+              <div class="group">
+                <p class="group__label" [id]="id('region-label')">{{ text.regionLabel }}</p>
+                <div class="choices choices--wide" role="radiogroup" [attr.aria-labelledby]="id('region-label')">
+                  @for (item of countryRegions(); track item.id) {
+                    <label class="choice">
+                      <input
+                        type="radio"
+                        [name]="id('region')"
+                        [value]="item.id"
+                        [checked]="region() === item.id"
+                        (change)="region.set(item.id)"
+                      />
+                      <span>{{ item.name }}</span>
+                    </label>
+                  }
+                </div>
+              </div>
             }
-          </select>
-          @if (travelLine(); as travel) {
-            <p class="form__hint" [id]="id('travel-hint')">{{ travel }}</p>
-          }
-        </div>
-
-        <div class="form__row">
-          <label class="form__label" [for]="id('budget')">{{ text.budgetLabel }}</label>
-          <select [id]="id('budget')" class="form__input" formControlName="budget">
-            @for (range of budgetRanges; track range) {
-              <option [value]="range">{{ range }}</option>
+            @if (travelLine(); as travel) {
+              <p class="group__hint" [id]="id('travel-hint')">{{ travel }}</p>
             }
-          </select>
-        </div>
 
-        <div class="form__row form__row--wide">
-          <label class="form__label" [for]="id('message')">{{ text.messageLabel }}</label>
-          <textarea [id]="id('message')" class="form__input" rows="3" formControlName="message"></textarea>
-        </div>
+            <div class="group">
+              <p class="group__label" [id]="id('budget-label')">{{ text.budgetLabel }}</p>
+              <div class="choices" role="radiogroup" [attr.aria-labelledby]="id('budget-label')">
+                @for (range of budgetRanges; track range) {
+                  <label class="choice">
+                    <input
+                      type="radio"
+                      [name]="id('budget')"
+                      [value]="range"
+                      [checked]="budget() === range"
+                      (change)="budget.set(range)"
+                    />
+                    <span>{{ range }}</span>
+                  </label>
+                }
+              </div>
+            </div>
 
-        <div class="form__actions">
-          <app-cta-button type="submit">{{ text.submitIdle }}</app-cta-button>
-        </div>
-      </form>
-    } @else {
-      <div class="preview">
-        <p class="preview__title" role="status">{{ text.previewTitle }}</p>
-        <p class="preview__hint">{{ text.previewHint }}</p>
-        <label class="sr-only" [for]="id('preview')">{{ text.previewTitle }}</label>
-        <textarea
-          [id]="id('preview')"
-          class="form__input preview__text"
-          rows="12"
-          [value]="message()"
-          (input)="edit($event)"
-        ></textarea>
+            <div class="nav">
+              <button type="button" class="btn" (click)="go(1)">{{ text.back }}</button>
+              <button type="button" class="btn btn--primary" (click)="go(3)">{{ text.next }}</button>
+            </div>
+          </fieldset>
+        }
 
-        <div class="preview__actions">
-          @if (whatsappHref(); as href) {
-            <a class="send send--whatsapp" [href]="href" target="_blank" rel="noopener">{{ text.sendWhatsapp }}</a>
-          }
-          <a class="send" [class.send--whatsapp]="!whatsappHref()" [href]="mailHref()">{{ text.sendEmail }}</a>
-          <button type="button" class="link" (click)="copy()">{{ copied() ? text.copied : text.copy }}</button>
-          <button type="button" class="link" (click)="message.set(null)">{{ text.back }}</button>
-        </div>
-      </div>
-    }
+        @case (3) {
+          <fieldset class="step">
+            <legend class="step__legend">
+              <span class="step__count">{{ stepCount(3) }}</span>
+              {{ text.stepTitles[2] }}
+            </legend>
+            <p class="step__copy">{{ text.stepCopies[2] }}</p>
+
+            <div class="group" [class.has-error]="nameError()">
+              <label class="group__label" [for]="id('name')">{{ text.nameLabel }}</label>
+              <input
+                #nameInput
+                [id]="id('name')"
+                class="input"
+                type="text"
+                maxlength="120"
+                autocomplete="name"
+                [value]="name()"
+                (input)="typeName($event)"
+                [attr.aria-invalid]="nameError() ? 'true' : null"
+                [attr.aria-describedby]="nameError() ? id('name-error') : null"
+              />
+              @if (nameError()) {
+                <p class="group__error" [id]="id('name-error')" role="alert">{{ text.nameError }}</p>
+              }
+            </div>
+
+            <div class="group">
+              <label class="group__label" [for]="id('message')">{{ text.messageLabel }}</label>
+              <textarea
+                [id]="id('message')"
+                class="input input--area"
+                rows="3"
+                maxlength="2000"
+                [value]="details()"
+                (input)="details.set(value($event))"
+              ></textarea>
+            </div>
+
+            <div class="group">
+              <p class="group__label">{{ text.previewLabel }}</p>
+              <blockquote class="preview" [id]="id('preview')" aria-live="polite">{{ message() }}</blockquote>
+              <p class="group__hint group__hint--muted">{{ text.previewHint }}</p>
+            </div>
+
+            <div class="nav nav--send">
+              <button type="button" class="btn" (click)="go(2)">{{ text.back }}</button>
+              <button type="button" class="link" (click)="copy()">{{ copied() ? text.copied : text.copy }}</button>
+              <a class="btn" [class.btn--primary]="!whatsappHref()" [href]="mailHref()" (click)="guardSend($event)">{{
+                text.sendEmail
+              }}</a>
+              @if (whatsappHref(); as href) {
+                <a class="btn btn--primary" [href]="href" target="_blank" rel="noopener" (click)="guardSend($event)">{{
+                  text.sendWhatsapp
+                }}</a>
+              }
+            </div>
+          </fieldset>
+        }
+      }
+    </div>
   `,
   styleUrl: './quote-form.component.scss',
 })
 export class QuoteFormComponent implements OnInit {
   /** Valeurs préremplies (catégorie, formule, région) lues dans le lien cliqué. */
   readonly prefill = input<QuotePrefill>({});
-  /** Préfixe des identifiants : deux formulaires peuvent coexister sur la page de contact. */
+  /** Préfixe des identifiants : le popup et la page Contact ne se marchent pas dessus. */
   readonly idPrefix = input('quote');
 
-  private readonly fb = inject(FormBuilder);
   private readonly store = inject(SiteStore);
   private readonly locale = inject(SITE_LOCALE);
 
   protected readonly text = UI_TEXT[this.locale].contact;
-  protected readonly packTypes = PACK_TYPES;
   protected readonly budgetRanges = this.text.budgetRanges;
   protected readonly projectTypes: readonly { value: string; label: string }[] = [
-    ...CATEGORY_KEYS.map((key) => ({ value: key, label: CATEGORY_NAMES[key][this.locale] })),
-    { value: 'autre', label: this.text.otherProjectType },
+    ...CATEGORY_KEYS.map((key) => ({ value: key as string, label: CATEGORY_NAMES[key][this.locale] })),
+    { value: OTHER, label: this.text.otherProjectType },
   ];
-  protected readonly regionGroups = COUNTRIES.map((country) => ({
-    code: country.code,
-    name: country.name[this.locale],
-    regions: REGIONS.filter((r) => r.country === country.code).map((r) => ({ id: regionId(r), name: r.name[this.locale] })),
-  }));
+  protected readonly countries = COUNTRIES.map((c) => ({ code: c.code, name: c.name[this.locale] }));
 
-  protected readonly form = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.maxLength(120)]],
-    category: [CATEGORY_KEYS[1] as string],
-    pack: [''],
-    region: [''],
-    budget: [this.budgetRanges[this.budgetRanges.length - 1]],
-    message: ['', Validators.maxLength(2000)],
+  protected readonly step = signal(1);
+  protected readonly category = signal<string | null>(null);
+  protected readonly pack = signal<string>('');
+  protected readonly country = signal<CountryCode | null>(null);
+  protected readonly region = signal<string>('');
+  protected readonly budget = signal(this.budgetRanges[this.budgetRanges.length - 1]);
+  protected readonly name = signal('');
+  protected readonly details = signal('');
+  protected readonly copied = signal(false);
+  protected readonly categoryError = signal(false);
+  protected readonly nameError = signal(false);
+
+  private readonly nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+
+  /** Formules, avec le prix de départ de la catégorie choisie ; « Je ne sais pas encore » en premier. */
+  protected readonly packOptions = computed(() => {
+    const key = this.categoryKey();
+    const pricing = key ? pricingFor(key) : null;
+    return [
+      { value: '', label: this.text.packUndecided, price: '' },
+      ...PACK_TYPES.map((type) => {
+        const price = pricing?.packs.find((p) => p.type === type)?.price;
+        return {
+          value: type as string,
+          label: PACK_LABELS[type][this.locale],
+          price: price && pricing ? `${formatPrice(price)} ${VAT_LABELS[pricing.vat][this.locale]}` : '',
+        };
+      }),
+    ];
   });
 
-  /** Message composé ; `null` tant que le formulaire n'a pas été validé. */
-  protected readonly message = signal<string | null>(null);
-  protected readonly copied = signal(false);
-  private readonly submitted = signal(false);
-  private readonly nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
-
-  private readonly nameStatus = toSignal(this.form.controls.name.statusChanges, { initialValue: 'INVALID' });
-  private readonly regionValue = toSignal(this.form.controls.region.valueChanges, { initialValue: '' });
-
-  protected readonly nameInvalid = computed(() => this.submitted() && this.nameStatus() === 'INVALID');
+  protected readonly countryRegions = computed(() =>
+    REGIONS.filter((r) => r.country === this.country()).map((r) => ({ id: regionId(r), name: r.name[this.locale] })),
+  );
 
   protected readonly travelLine = computed(() => {
-    const region = findRegion(this.regionValue());
+    const region = findRegion(this.region());
     if (!region) {
       return '';
     }
@@ -187,25 +297,41 @@ export class QuoteFormComponent implements OnInit {
     return `${this.text.travelLabel} : ${value}`;
   });
 
-  protected readonly whatsappHref = computed(() => {
-    const text = this.message();
-    return COMPANY.whatsapp && text ? whatsappUrl(COMPANY.whatsapp, text) : null;
-  });
+  /** Message composé en direct, à partir de tous les choix. */
+  protected readonly message = computed(() =>
+    buildQuoteMessage(this.locale, this.store.settings().brandName, {
+      name: this.name().trim() || this.text.namePlaceholder,
+      category: this.categoryKey(),
+      pack: (this.pack() || null) as PackType | null,
+      region: this.region() || null,
+      budget: this.budget(),
+      message: this.details(),
+    }),
+  );
+
+  protected readonly whatsappHref = computed(() => (COMPANY.whatsapp ? whatsappUrl(COMPANY.whatsapp, this.message()) : null));
 
   protected readonly mailHref = computed(() =>
-    mailtoUrl(this.store.settings().email, `${this.text.emailSubject} — ${this.form.controls.name.value}`, this.message() ?? ''),
+    mailtoUrl(this.store.settings().email, `${this.text.emailSubject} — ${this.name().trim()}`, this.message()),
   );
+
+  private readonly categoryKey = computed(() => {
+    const value = this.category();
+    return value && value !== OTHER ? (value as CategoryKey) : null;
+  });
 
   ngOnInit(): void {
     const { category, pack, region } = this.prefill();
     if (category) {
-      this.form.controls.category.setValue(category);
+      this.category.set(category);
     }
     if (pack) {
-      this.form.controls.pack.setValue(pack);
+      this.pack.set(pack);
     }
-    if (region) {
-      this.form.controls.region.setValue(region);
+    const found = region ? findRegion(region) : null;
+    if (found) {
+      this.country.set(found.country);
+      this.region.set(region!);
     }
   }
 
@@ -213,40 +339,66 @@ export class QuoteFormComponent implements OnInit {
     return `${this.idPrefix()}-${name}`;
   }
 
-  protected packLabel(pack: PackType): string {
-    return PACK_LABELS[pack][this.locale];
+  protected stepCount(current: number): string {
+    return this.text.stepCount.replace('{current}', String(current)).replace('{total}', '3');
   }
 
-  protected prepare(): void {
-    this.submitted.set(true);
-    this.form.controls.name.updateValueAndValidity();
-    if (this.form.invalid) {
-      this.nameInput()?.nativeElement.focus();
+  protected value(event: Event): string {
+    return (event.target as HTMLInputElement | HTMLTextAreaElement).value;
+  }
+
+  protected pickCategory(value: string): void {
+    this.category.set(value);
+    this.categoryError.set(false);
+  }
+
+  /** Un pays à une seule région (Luxembourg, étranger) la sélectionne d'office. */
+  protected pickCountry(code: CountryCode): void {
+    this.country.set(code);
+    const regions = REGIONS.filter((r) => r.country === code);
+    this.region.set(regions.length === 1 ? regionId(regions[0]) : '');
+  }
+
+  protected next(): void {
+    if (!this.category()) {
+      this.categoryError.set(true);
       return;
     }
-    const value = this.form.getRawValue();
-    this.copied.set(false);
-    this.message.set(
-      buildQuoteMessage(this.locale, this.store.settings().brandName, {
-        name: value.name.trim(),
-        category: value.category === 'autre' ? null : (value.category as CategoryKey),
-        pack: (value.pack || null) as PackType | null,
-        region: value.region || null,
-        budget: value.budget,
-        message: value.message,
-      }),
-    );
+    this.go(2);
   }
 
-  protected edit(event: Event): void {
-    this.message.set((event.target as HTMLTextAreaElement).value);
+  /** Change d'étape et remonte en haut : sinon la nouvelle étape s'ouvre défilée vers le bas. */
+  protected go(step: number): void {
+    this.step.set(step);
+    const element = this.host.nativeElement;
+    const dialog = element.closest('dialog');
+    if (dialog) {
+      dialog.scrollTop = 0;
+    } else if (typeof element.scrollIntoView === 'function') {
+      element.scrollIntoView({ block: 'start' });
+    }
+  }
+
+  protected typeName(event: Event): void {
+    this.name.set(this.value(event));
+    if (this.name().trim()) {
+      this.nameError.set(false);
+    }
     this.copied.set(false);
+  }
+
+  /** Les liens d'envoi ne partent pas sans nom : le studio doit savoir à qui il répond. */
+  protected guardSend(event: Event): void {
+    if (!this.name().trim()) {
+      event.preventDefault();
+      this.nameError.set(true);
+      this.nameInput()?.nativeElement.focus();
+    }
   }
 
   protected copy(): void {
-    const text = this.message();
-    if (text && typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(text).then(() => this.copied.set(true));
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(this.message()).then(() => this.copied.set(true));
     }
   }
 }

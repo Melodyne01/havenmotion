@@ -134,14 +134,24 @@ export interface UiText {
     readonly travelOnQuote: string;
     readonly budgetLabel: string;
     readonly messageLabel: string;
-    readonly submitIdle: string;
     readonly otherProjectType: string;
     /** Bouton qui ouvre le popup depuis la section contact. */
     readonly openQuote: string;
     readonly dialogTitle: string;
     readonly close: string;
-    readonly previewTitle: string;
+    readonly previewLabel: string;
     readonly previewHint: string;
+    /** Libellés courts de la barre de progression, une entrée par étape. */
+    readonly steps: readonly string[];
+    readonly stepCount: string;
+    readonly stepTitles: readonly string[];
+    readonly stepCopies: readonly string[];
+    readonly progressLabel: string;
+    readonly countryLabel: string;
+    readonly next: string;
+    readonly categoryError: string;
+    /** Remplace le nom dans l'aperçu tant qu'il n'est pas saisi. */
+    readonly namePlaceholder: string;
     readonly sendWhatsapp: string;
     readonly sendEmail: string;
     readonly copy: string;
@@ -334,18 +344,30 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       travelOnQuote: 'sur devis',
       budgetLabel: 'Budget',
       messageLabel: 'Message (optionnel)',
-      submitIdle: 'Préparer mon message',
       otherProjectType: 'Autre',
       openQuote: 'Demander un devis',
       dialogTitle: 'Votre demande de devis',
       close: 'Fermer',
-      previewTitle: 'Votre message est prêt',
-      previewHint: 'Relisez-le, modifiez-le si besoin, puis envoyez-le par le canal de votre choix.',
+      previewLabel: 'Votre message',
+      previewHint: 'Il se met à jour pendant que vous écrivez. Il ne reste qu’à l’envoyer.',
+      steps: ['Projet', 'Lieu & budget', 'Vous'],
+      stepCount: 'Étape {current} sur {total}',
+      stepTitles: ['Quel projet ?', 'Où, et pour quel budget ?', 'Votre message est prêt'],
+      stepCopies: [
+        'Choisissez le type de projet et, si vous le savez déjà, la formule.',
+        'Le lieu fixe le forfait de déplacement ; le budget nous aide à vous proposer la bonne formule.',
+        'Ajoutez votre nom et, si vous voulez, un mot sur le projet. Puis envoyez.',
+      ],
+      progressLabel: 'Progression de la demande',
+      countryLabel: 'Pays',
+      next: 'Continuer',
+      categoryError: 'Choisissez un type de projet.',
+      namePlaceholder: '[votre nom]',
       sendWhatsapp: 'Envoyer sur WhatsApp',
       sendEmail: 'Envoyer par e-mail',
       copy: 'Copier le message',
       copied: 'Message copié',
-      back: 'Modifier ma demande',
+      back: 'Retour',
       emailSubject: 'Demande de devis',
       budgetRanges: [
         'moins de 1 000 €',
@@ -528,18 +550,30 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       travelOnQuote: 'op offerte',
       budgetLabel: 'Budget',
       messageLabel: 'Bericht (optioneel)',
-      submitIdle: 'Mijn bericht voorbereiden',
       otherProjectType: 'Ander',
       openQuote: 'Offerte aanvragen',
       dialogTitle: 'Uw offerteaanvraag',
       close: 'Sluiten',
-      previewTitle: 'Uw bericht is klaar',
-      previewHint: 'Lees het na, pas het aan indien nodig, en verstuur het via het kanaal van uw keuze.',
+      previewLabel: 'Uw bericht',
+      previewHint: 'Het past zich aan terwijl u typt. U hoeft het alleen nog te versturen.',
+      steps: ['Project', 'Locatie & budget', 'U'],
+      stepCount: 'Stap {current} van {total}',
+      stepTitles: ['Welk project?', 'Waar, en voor welk budget?', 'Uw bericht is klaar'],
+      stepCopies: [
+        'Kies het soort project en, als u het al weet, de formule.',
+        'De locatie bepaalt de verplaatsingskost; het budget helpt ons de juiste formule voor te stellen.',
+        'Voeg uw naam toe en, als u wilt, een woord over het project. Verstuur het daarna.',
+      ],
+      progressLabel: 'Voortgang van de aanvraag',
+      countryLabel: 'Land',
+      next: 'Verder',
+      categoryError: 'Kies een soort project.',
+      namePlaceholder: '[uw naam]',
       sendWhatsapp: 'Versturen via WhatsApp',
       sendEmail: 'Versturen per e-mail',
       copy: 'Bericht kopiëren',
       copied: 'Bericht gekopieerd',
-      back: 'Mijn aanvraag wijzigen',
+      back: 'Terug',
       emailSubject: 'Offerteaanvraag',
       budgetRanges: [
         'minder dan € 1 000',
@@ -722,18 +756,30 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       travelOnQuote: 'on quote',
       budgetLabel: 'Budget',
       messageLabel: 'Message (optional)',
-      submitIdle: 'Prepare my message',
       otherProjectType: 'Other',
       openQuote: 'Request a quote',
       dialogTitle: 'Your quote request',
       close: 'Close',
-      previewTitle: 'Your message is ready',
-      previewHint: 'Read it, edit it if needed, then send it through the channel you prefer.',
+      previewLabel: 'Your message',
+      previewHint: 'It updates as you type. All that is left is to send it.',
+      steps: ['Project', 'Place & budget', 'You'],
+      stepCount: 'Step {current} of {total}',
+      stepTitles: ['Which project?', 'Where, and for what budget?', 'Your message is ready'],
+      stepCopies: [
+        'Pick the type of project and, if you already know, the package.',
+        'The place sets the travel fee; the budget helps us suggest the right package.',
+        'Add your name and, if you like, a word about the project. Then send it.',
+      ],
+      progressLabel: 'Request progress',
+      countryLabel: 'Country',
+      next: 'Continue',
+      categoryError: 'Pick a type of project.',
+      namePlaceholder: '[your name]',
       sendWhatsapp: 'Send on WhatsApp',
       sendEmail: 'Send by email',
       copy: 'Copy the message',
       copied: 'Message copied',
-      back: 'Edit my request',
+      back: 'Back',
       emailSubject: 'Quote request',
       budgetRanges: [
         'under €1,000',

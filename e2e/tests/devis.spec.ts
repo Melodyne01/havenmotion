@@ -54,26 +54,33 @@ test('du hero à la demande de devis', async ({ page }) => {
   // Ni date ni e-mail dans le formulaire.
   await expect(dialog.locator('input[type="date"], input[type="email"]')).toHaveCount(0);
 
-  // 6. Remplissage : la région affiche le forfait de déplacement.
-  await dialog.locator('#popup-name').fill('Camille Martin');
-  await dialog.locator('#popup-category').selectOption('mariage');
-  await dialog.locator('#popup-pack').selectOption('combo');
-  await dialog.locator('#popup-region').selectOption('lille-nord');
-  await expect(dialog.locator('#popup-travel-hint')).toContainText('90');
-  await dialog.locator('#popup-budget').selectOption('2 000 – 5 000 €');
-  await dialog.locator('#popup-message').fill('Cérémonie fin d’après-midi.');
-  await dialog.getByRole('button', { name: /préparer mon message/i }).click();
+  // 6. Étape 1 : des boutons à choisir, aucune liste déroulante.
+  await expect(dialog.locator('select')).toHaveCount(0);
+  const choice = (name: RegExp) => dialog.locator('label.choice').filter({ hasText: name });
+  await choice(/^Mariage$/).click();
+  await choice(/Photo \+ vidéo/).click();
+  await dialog.getByRole('button', { name: /continuer/i }).click();
 
-  // 7. Le message est composé, modifiable, et part par e-mail (WhatsApp
-  // apparaît dès que le numéro est configuré).
+  // 7. Étape 2 : pays, région, budget ; la région affiche le forfait.
+  await choice(/^France$/).click();
+  await choice(/^Lille – Nord$/).click();
+  await expect(dialog.locator('#popup-travel-hint')).toContainText('90');
+  await choice(/^2 000 – 5 000 €$/).click();
+  await dialog.getByRole('button', { name: /continuer/i }).click();
+
+  // 8. Étape 3 : le message se compose en direct et part par e-mail
+  // (WhatsApp apparaît dès que le numéro est configuré).
+  await dialog.locator('#popup-name').fill('Camille Martin');
+  await dialog.locator('#popup-message').fill('Cérémonie fin d’après-midi.');
   const preview = dialog.locator('#popup-preview');
-  await expect(preview).toHaveValue(/Je m’appelle Camille Martin/);
-  await expect(preview).toHaveValue(/Photo \+ vidéo \(à partir de 2.690.€ TTC\)/);
-  await expect(preview).toHaveValue(/Lille – Nord \(déplacement : 90.€\)/);
+  await expect(preview).toContainText('Je m’appelle Camille Martin');
+  await expect(preview).toContainText(/Photo \+ vidéo \(à partir de 2.690.€ TTC\)/);
+  await expect(preview).toContainText(/Lille – Nord \(déplacement : 90.€\)/);
+  await expect(preview).toContainText('Cérémonie fin d’après-midi.');
   const mail = dialog.getByRole('link', { name: /envoyer par e-mail/i });
   await expect(mail).toHaveAttribute('href', /^mailto:.+\?subject=.+&body=Bonjour/);
 
-  // 8. Échap ferme le popup ; rien n'est parti vers le serveur.
+  // 9. Échap ferme le popup ; rien n'est parti vers le serveur.
   await page.keyboard.press('Escape');
   await expect(dialog).toBeHidden();
   expect(leadCalls).toBe(0);
@@ -225,15 +232,18 @@ test('les formules ouvrent le popup prérempli et la page contact garde le formu
   await page.getByRole('link', { name: /choisir cette formule/i }).first().click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
-  await expect(dialog.locator('#popup-category')).toHaveValue('corporate');
-  await expect(dialog.locator('#popup-pack')).toHaveValue('photo');
+  const checked = dialog.locator('label.choice input:checked');
+  await expect(checked).toHaveCount(2);
+  await expect(checked.nth(0)).toHaveValue('corporate');
+  await expect(checked.nth(1)).toHaveValue('photo');
   await dialog.getByRole('button', { name: /fermer/i }).click();
   await expect(dialog).toBeHidden();
 
   await page.goto('/en/contact?categorie=sport&region=bruxelles');
-  await expect(page.locator('#page-category')).toHaveValue('sport');
-  await expect(page.locator('#page-region')).toHaveValue('bruxelles');
+  await expect(page.locator('label.choice input:checked[value="sport"]')).toHaveCount(1);
+  await page.getByRole('button', { name: /continue/i }).click();
+  await expect(page.locator('label.choice input:checked[value="bruxelles"]')).toHaveCount(1);
+  await page.getByRole('button', { name: /continue/i }).click();
   await page.locator('#page-name').fill('Alex');
-  await page.getByRole('button', { name: /prepare my message/i }).click();
-  await expect(page.locator('#page-preview')).toHaveValue(/Hello Heaven Motion,[\s\S]*Project: Sport/);
+  await expect(page.locator('#page-preview')).toContainText(/Hello Heaven Motion,[\s\S]*Project: Sport/);
 });
