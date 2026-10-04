@@ -5,7 +5,7 @@ import { APP_CONFIG } from './app-config';
 import { CategoryKey, SITE_LOCALES, SiteLocale, categoryKeyFromSlug } from './locale';
 import { Category, SiteSettings } from '../models';
 import { CategoryPricing, PACK_LABELS, PRICING, pricingFor } from './packs';
-import { COUNTRIES, REGIONS } from './regions';
+import { COUNTRIES, REGIONS, Region } from './regions';
 import { CATEGORY_NAMES, COMPANY } from './site-content';
 
 export interface SeoInput {
@@ -216,35 +216,31 @@ export class SeoService {
   }
 
   /**
-   * Publie le bloc JSON-LD `Service` d'une page zone/commune : même forme
-   * que `applyService`, mais `areaServed` pointe sur une `City` précise
-   * (nom + code postal) plutôt que sur la région entière — c'est tout
-   * l'intérêt local SEO de ces pages par rapport à la home. `serviceType`
-   * dépend de la locale : servir du texte FR dans le JSON-LD d'une page NL
-   * était une incohérence de langue aux yeux des moteurs de recherche.
+   * Publie le bloc JSON-LD `Service` d'une page région : `areaServed` pointe
+   * sur la région (`AdministrativeArea` dans son pays), avec les offres de
+   * la grille — c'est ce qui dit aux moteurs que les prix affichés valent à
+   * Lille ou à Luxembourg-Ville, pas seulement à Bruxelles.
    */
-  applyAreaServed(
-    settings: SiteSettings,
-    communeName: string,
-    postalCode: string,
-    locale: SiteLocale = 'fr',
-  ): void {
+  applyRegion(settings: SiteSettings, region: Region, locale: SiteLocale): void {
+    const country = COUNTRIES.find((c) => c.code === region.country);
     const serviceType = {
-      fr: 'Photographe et vidéaste événementiel et corporate',
-      nl: 'Fotograaf en videograaf voor evenementen en bedrijven',
-      en: 'Event and corporate photographer and videographer',
+      fr: 'Photographe et vidéaste',
+      nl: 'Fotograaf en videograaf',
+      en: 'Photographer and videographer',
     }[locale];
     const graph = {
       '@context': 'https://schema.org',
       '@type': 'Service',
       serviceType,
-      name: `${settings.brandName} — ${communeName}`,
+      name: `${settings.brandName} — ${region.name[locale]}`,
       provider: { '@type': 'LocalBusiness', name: settings.brandName, '@id': `${this.origin}/#studio` },
       areaServed: {
-        '@type': 'City',
-        name: communeName,
-        address: { '@type': 'PostalAddress', postalCode, addressCountry: 'BE' },
+        '@type': 'AdministrativeArea',
+        name: region.name[locale],
+        containedInPlace: { '@type': 'Country', name: country?.name[locale] },
       },
+      availableLanguage: region.languages,
+      offers: PRICING.flatMap((pricing) => this.offersOf(pricing, locale)),
     };
     this.writeJsonLd('vnl-area', graph);
   }

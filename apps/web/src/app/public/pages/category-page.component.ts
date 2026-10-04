@@ -29,6 +29,8 @@ import {
 import { UI_TEXT } from '../../core/ui-text';
 import { CATEGORY_FAQ_CONTENT } from '../../core/category-faq-content';
 import { CATEGORY_INTRO_CONTENT } from '../../core/category-intro-content';
+import { CATEGORY_CONTENT } from '../../core/category-content';
+import { ONE_PERSON_CONTENT } from '../../core/one-person-content';
 import { Film } from '../../models';
 
 /**
@@ -99,11 +101,59 @@ import { Film } from '../../models';
               </ul>
             }
 
+            @if (content(); as c) {
+              <section class="category-page__section" aria-labelledby="titre-pour-qui">
+                <h2 id="titre-pour-qui" class="category-page__section-title">{{ c.audienceTitle }}</h2>
+                <ul class="category-page__list">
+                  @for (item of c.audience; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              </section>
+
+              <section class="category-page__section" aria-labelledby="titre-deroule">
+                <h2 id="titre-deroule" class="category-page__section-title">{{ c.stepsTitle }}</h2>
+                <ol class="category-page__steps">
+                  @for (step of c.steps; track step.title) {
+                    <li>
+                      <strong>{{ step.title }}</strong>
+                      <p>{{ step.body }}</p>
+                    </li>
+                  }
+                </ol>
+              </section>
+            }
+
             @if (categoryKey(); as key) {
               <section class="category-page__packs" id="formules" aria-labelledby="titre-formules">
                 <h2 id="titre-formules" class="category-page__section-title">{{ text.packs.title }}</h2>
                 <p class="category-page__intro">{{ text.packs.lead }}</p>
                 <app-pack-grid [category]="key" />
+              </section>
+            }
+
+            @if (content(); as c) {
+              <section class="category-page__section" aria-labelledby="titre-livraison">
+                <h2 id="titre-livraison" class="category-page__section-title">{{ c.deliveryTitle }}</h2>
+                <ul class="category-page__list">
+                  @for (item of c.delivery; track item) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              </section>
+
+              @if (categoryKey() === 'mariage' || categoryKey() === 'evenementiel') {
+                <section class="category-page__section category-page__one" aria-labelledby="titre-une-personne">
+                  <h2 id="titre-une-personne" class="category-page__section-title">{{ onePerson.title }}</h2>
+                  <p class="category-page__intro">{{ onePerson.answer }}</p>
+                  <a class="category-page__more" [routerLink]="onePersonPath">{{ onePerson.eyebrow }} →</a>
+                </section>
+              }
+
+              <section class="category-page__section" aria-labelledby="titre-ou">
+                <h2 id="titre-ou" class="category-page__section-title">{{ c.placesTitle }}</h2>
+                <p class="category-page__intro">{{ c.places }}</p>
+                <a class="category-page__more" [routerLink]="zonesPath">{{ text.footer.zones }} →</a>
               </section>
             }
 
@@ -168,6 +218,13 @@ export class CategoryPageComponent {
     const key = this.categoryKey();
     return key ? CATEGORY_INTRO_CONTENT[this.locale][key] : '';
   });
+  protected readonly content = computed(() => {
+    const key = this.categoryKey();
+    return key ? CATEGORY_CONTENT[this.locale][key] : null;
+  });
+  protected readonly onePerson = ONE_PERSON_CONTENT[this.locale];
+  protected readonly onePersonPath = routePath(this.locale, 'onePerson');
+  protected readonly zonesPath = routePath(this.locale, 'zones');
   protected readonly homePath = homePath(this.locale);
   protected readonly contactHref = routePath(this.locale, 'contact');
 

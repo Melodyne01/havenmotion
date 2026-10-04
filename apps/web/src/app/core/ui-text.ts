@@ -86,8 +86,17 @@ export interface UiText {
   readonly zones: {
     readonly eyebrow: string;
     readonly title: string;
-    readonly brusselsGroup: string;
-    readonly peripheryGroup: string;
+    readonly lead: string;
+    readonly countriesTitle: string;
+    readonly regionsTitle: string;
+    readonly travelFee: string;
+    readonly travelIncluded: string;
+    readonly travelOnQuote: string;
+    readonly languages: string;
+    readonly servicesIn: string;
+    readonly faqTitle: string;
+    readonly inBrief: string;
+    readonly allZones: string;
   };
   readonly notFound: { readonly title: string; readonly text: string; readonly cta: string };
   readonly captions: string;
@@ -239,8 +248,17 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     zones: {
       eyebrow: "Zone d'intervention",
       title: 'Où nous tournons',
-      brusselsGroup: 'Région de Bruxelles-Capitale',
-      peripheryGroup: 'Périphérie flamande (autour de Wemmel)',
+      lead: 'Basé à Wemmel, aux portes de Bruxelles. Déplacement inclus jusqu’à 60 km, puis un forfait fixe par zone : 90 €, 190 €, 290 €. Chaque région ci-dessous a sa page, avec ses villes, ses lieux et ses conditions.',
+      countriesTitle: 'Par pays',
+      regionsTitle: 'Régions',
+      travelFee: 'Forfait de déplacement',
+      travelIncluded: 'inclus',
+      travelOnQuote: 'sur devis',
+      languages: 'Langues',
+      servicesIn: 'Prestations',
+      faqTitle: 'Questions fréquentes',
+      inBrief: 'En bref',
+      allZones: 'Toutes les zones et forfaits',
     },
     notFound: {
       title: 'Page introuvable',
@@ -391,8 +409,17 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     zones: {
       eyebrow: 'Werkgebied',
       title: 'Waar we filmen',
-      brusselsGroup: 'Brussels Hoofdstedelijk Gewest',
-      peripheryGroup: 'Vlaamse rand (rond Wemmel)',
+      lead: 'Gevestigd in Wemmel, aan de rand van Brussel. Verplaatsing inbegrepen tot 60 km, daarna een vast tarief per zone: € 90, € 190, € 290. Elke regio hieronder heeft haar pagina, met haar steden, locaties en voorwaarden.',
+      countriesTitle: 'Per land',
+      regionsTitle: 'Regio’s',
+      travelFee: 'Verplaatsingstarief',
+      travelIncluded: 'inbegrepen',
+      travelOnQuote: 'op offerte',
+      languages: 'Talen',
+      servicesIn: 'Diensten',
+      faqTitle: 'Veelgestelde vragen',
+      inBrief: 'In het kort',
+      allZones: 'Alle zones en tarieven',
     },
     notFound: {
       title: 'Pagina niet gevonden',
@@ -543,8 +570,17 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     zones: {
       eyebrow: 'Areas covered',
       title: 'Where we shoot',
-      brusselsGroup: 'Brussels-Capital Region',
-      peripheryGroup: 'Flemish periphery (around Wemmel)',
+      lead: 'Based in Wemmel, on the edge of Brussels. Travel included up to 60 km, then a flat fee per zone: €90, €190, €290. Every region below has its own page, with its towns, venues and terms.',
+      countriesTitle: 'By country',
+      regionsTitle: 'Regions',
+      travelFee: 'Travel fee',
+      travelIncluded: 'included',
+      travelOnQuote: 'on quote',
+      languages: 'Languages',
+      servicesIn: 'Services',
+      faqTitle: 'Frequently asked questions',
+      inBrief: 'In brief',
+      allZones: 'Every zone and fee',
     },
     notFound: {
       title: 'Page not found',

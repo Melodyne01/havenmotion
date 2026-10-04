@@ -5,17 +5,19 @@ import { SiteFooterComponent } from '../sections/site-footer.component';
 import { SectionTitleComponent } from '../../shared/ui/section-title.component';
 import { SiteStore } from '../site-store';
 import { SeoService } from '../../core/seo.service';
-import { SITE_LOCALE, homePath, pick, routePath } from '../../core/locale';
-import { BRUSSELS_COMMUNES, PERIPHERY_COMMUNES, CommuneInfo } from '../../core/communes';
+import { SITE_LOCALE, SITE_LOCALES, homePath, routePath } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
+import { COUNTRIES, REGIONS, regionId } from '../../core/regions';
+import { REGION_CONTENT } from '../../core/region-content';
+import { TRAVEL_ZONES, formatPrice } from '../../core/travel-zones';
+import { countryPath, regionPath } from './region-page.component';
 
 /**
- * Page hub `/zones` : liste les 19 communes de la Région de
- * Bruxelles-Capitale, plus Wemmel et sa périphérie flamande, chacune avec sa
- * propre page locale. Sert de maillage interne entre la home et les pages
- * commune (silo SEO classique). Les deux groupes sont présentés à part :
- * Wemmel et ses voisines ne sont pas des communes bruxelloises, les
- * confondre dans une seule liste "communes de Bruxelles" serait inexact.
+ * Page hub `/zones` : les cinq zones de déplacement et leur forfait, puis
+ * les pays avec leurs régions. Maillage interne entre la home, les pages
+ * pays et les pages région (silo SEO classique). Une région sans contenu
+ * dans la langue courante est listée sans lien : la zone est couverte, la
+ * page viendra avec sa matière (phases 2 et 3 du plan).
  */
 @Component({
   selector: 'app-zones-page',
@@ -25,25 +27,52 @@ import { UI_TEXT } from '../../core/ui-text';
     <a class="skip-link" href="#contenu">{{ text.skipLink }}</a>
     <app-site-header />
 
-    <main id="contenu">
-      <section class="zones-page">
-        <app-section-title [eyebrow]="eyebrow()" [title]="title()" titleId="titre-zones" level="h1" />
-        <p class="zones-page__intro">{{ intro() }}</p>
+    <main id="contenu" class="zones">
+      <app-section-title [eyebrow]="text.zones.eyebrow" [title]="text.zones.title" titleId="titre-zones" level="h1" />
+      <p class="zones__intro">{{ text.zones.lead }}</p>
 
-        <h2 class="zones-page__group-title">{{ peripheryGroupTitle() }}</h2>
-        <ul class="zones-page__list">
-          @for (commune of peripheryCommunes; track commune.slugFr) {
-            <li><a [routerLink]="communeHref(commune)">{{ communeName(commune) }}</a></li>
-          }
-        </ul>
+      <div class="zones__scroll">
+        <table class="zones__table">
+          <tbody>
+            @for (zone of travelZones; track zone.id) {
+              <tr>
+                <th scope="row">{{ zone.id }}</th>
+                <td>{{ zone.distance[locale] }}</td>
+                <td class="zones__fee">
+                  @if (zone.fee === null) {
+                    {{ text.zones.travelOnQuote }}
+                  } @else if (zone.fee === 0) {
+                    {{ text.zones.travelIncluded }}
+                  } @else {
+                    {{ format(zone.fee) }}
+                  }
+                </td>
+                <td>{{ zone.examples[locale] }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
 
-        <h2 class="zones-page__group-title">{{ brusselsGroupTitle() }}</h2>
-        <ul class="zones-page__list">
-          @for (commune of brusselsCommunes; track commune.slugFr) {
-            <li><a [routerLink]="communeHref(commune)">{{ communeName(commune) }}</a></li>
-          }
-        </ul>
-      </section>
+      <h2 class="zones__h2">{{ text.zones.countriesTitle }}</h2>
+      @for (country of countries; track country.code) {
+        <section class="zones__country" [attr.aria-labelledby]="'titre-' + country.code">
+          <h3 [id]="'titre-' + country.code" class="zones__group-title">
+            <a [routerLink]="country.href">{{ country.name }}</a>
+          </h3>
+          <ul class="zones__list">
+            @for (region of country.regions; track region.id) {
+              <li>
+                @if (region.href) {
+                  <a [routerLink]="region.href">{{ region.name }}</a>
+                } @else {
+                  <span>{{ region.name }}</span>
+                }
+              </li>
+            }
+          </ul>
+        </section>
+      }
     </main>
 
     <app-site-footer />
@@ -51,33 +80,73 @@ import { UI_TEXT } from '../../core/ui-text';
   styles: [
     `
       @use 'tokens' as *;
+      @use 'editorial' as *;
 
-      .zones-page {
-        padding: 32px $pad-x-mobile 64px;
+      .zones {
+        @include editorial-page;
+      }
 
-        @include tablet-up {
-          padding: 40px $pad-x-desktop 80px;
+      .zones__intro {
+        @include editorial-paragraph;
+
+        max-width: 72ch;
+        margin-top: -24px;
+      }
+
+      .zones__scroll {
+        overflow-x: auto;
+      }
+
+      .zones__table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: $fs-13;
+
+        th,
+        td {
+          padding: 10px 12px 10px 0;
+          text-align: left;
+          vertical-align: top;
+          border-bottom: $rule-width solid $color-rule-10;
+          line-height: $lh-body;
+          color: $color-muted-60;
+        }
+
+        th {
+          color: $color-film;
+          font-weight: $weight-semibold;
         }
       }
 
-      .zones-page__intro {
-        max-width: 640px;
-        margin: 16px 0 0;
-        color: $color-muted-60;
-        font-size: $fs-14;
-        line-height: $lh-body;
+      .zones__fee {
+        color: $color-amber !important;
+        white-space: nowrap;
       }
 
-      .zones-page__group-title {
+      .zones__h2 {
+        @include editorial-h2;
+
+        margin-top: 24px;
+      }
+
+      .zones__group-title {
         @include display-caps($fs-13, $ls-14, $weight-semibold);
 
-        color: $color-amber;
-        margin: 32px 0 0;
+        margin: 24px 0 0;
         padding-top: 16px;
         border-top: $rule-width solid $color-rule-10;
+
+        a {
+          color: $color-amber;
+          text-decoration: none;
+
+          &:hover {
+            color: $color-film;
+          }
+        }
       }
 
-      .zones-page__list {
+      .zones__list {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 4px 24px;
@@ -88,18 +157,26 @@ import { UI_TEXT } from '../../core/ui-text';
         @include tablet-up {
           grid-template-columns: repeat(3, minmax(0, 1fr));
         }
-      }
 
-      .zones-page__list a {
-        display: block;
-        padding: 12px 0;
-        color: $color-film;
-        text-decoration: none;
-        font-size: $fs-14;
-        border-bottom: $rule-width solid $color-rule-10;
+        a,
+        span {
+          display: block;
+          padding: 12px 0;
+          font-size: $fs-14;
+          text-decoration: none;
+          border-bottom: $rule-width solid $color-rule-10;
+        }
 
-        &:hover {
-          color: $color-amber;
+        a {
+          color: $color-film;
+
+          &:hover {
+            color: $color-amber;
+          }
+        }
+
+        span {
+          color: $color-muted-45;
         }
       }
     `,
@@ -108,11 +185,20 @@ import { UI_TEXT } from '../../core/ui-text';
 export class ZonesPageComponent {
   private readonly store = inject(SiteStore);
   private readonly seo = inject(SeoService);
-  private readonly locale = inject(SITE_LOCALE);
+  protected readonly locale = inject(SITE_LOCALE);
 
-  protected readonly brusselsCommunes = BRUSSELS_COMMUNES;
-  protected readonly peripheryCommunes = PERIPHERY_COMMUNES;
   protected readonly text = UI_TEXT[this.locale];
+  protected readonly travelZones = TRAVEL_ZONES;
+  protected readonly countries = COUNTRIES.map((country) => ({
+    code: country.code,
+    name: country.name[this.locale],
+    href: countryPath(this.locale, country),
+    regions: REGIONS.filter((r) => r.country === country.code).map((r) => ({
+      id: regionId(r),
+      name: r.name[this.locale],
+      href: REGION_CONTENT[regionId(r)]?.[this.locale] ? regionPath(this.locale, r) : null,
+    })),
+  }));
 
   constructor() {
     this.store.load(this.locale);
@@ -122,54 +208,22 @@ export class ZonesPageComponent {
       const path = routePath(this.locale, 'zones');
       this.seo.apply({
         title: `${this.text.zones.eyebrow} — ${settings.brandName}`,
-        description: pick(this.locale, {
-          fr: "Les 19 communes de la Région de Bruxelles-Capitale, plus Wemmel et sa périphérie, où nous tournons sans frais de déplacement — et les forfaits pour la Belgique, la France, le Luxembourg et les Pays-Bas.",
-          nl: 'De 19 gemeenten van het Brussels Hoofdstedelijk Gewest, plus Wemmel en de Vlaamse rand, waar we filmen zonder verplaatsingskosten — en de tarieven voor België, Frankrijk, Luxemburg en Nederland.',
-          en: 'The 19 municipalities of the Brussels-Capital Region, plus Wemmel and its periphery, where we shoot with no travel fee — and the flat fees for Belgium, France, Luxembourg and the Netherlands.',
-        }),
+        description: this.text.zones.lead,
         path,
         locale: this.locale,
       });
       this.seo.applyBreadcrumbs([
         { name: this.text.home, path: homePath(this.locale) },
-        { name: this.eyebrow(), path },
+        { name: this.text.zones.eyebrow, path },
       ]);
-      // Pas encore de version anglaise de cette page (chantier 5).
-      this.seo.applyHreflang({ fr: routePath('fr', 'zones'), nl: routePath('nl', 'zones') });
+      this.seo.applyHreflang({
+        fr: routePath('fr', 'zones'),
+        ...Object.fromEntries(SITE_LOCALES.filter((l) => l !== 'fr').map((l) => [l, routePath(l, 'zones')])),
+      });
     });
   }
 
-  protected eyebrow(): string {
-    return this.text.zones.eyebrow;
-  }
-
-  protected title(): string {
-    return this.text.zones.title;
-  }
-
-  protected intro(): string {
-    const brand = this.store.settings().brandName;
-    return pick(this.locale, {
-      fr: `${brand} tourne dans les 19 communes de la Région de Bruxelles-Capitale, ainsi qu'à Wemmel et dans les communes environnantes de la périphérie flamande : mariage, vidéo d'entreprise, sport, clip et contenu lifestyle, sans frais de déplacement supplémentaires. Au-delà, un forfait fixe par zone couvre la Belgique, le nord de la France, le Luxembourg et les Pays-Bas.`,
-      nl: `${brand} filmt in de 19 gemeenten van het Brussels Hoofdstedelijk Gewest, en ook in Wemmel en de omliggende gemeenten van de Vlaamse rand: huwelijk, bedrijfsvideo, sport, clip en lifestyle-content, zonder extra verplaatsingskosten. Daarbuiten dekt een vast tarief per zone België, Noord-Frankrijk, Luxemburg en Nederland.`,
-      en: `${brand} shoots in the 19 municipalities of the Brussels-Capital Region, plus Wemmel and its surrounding municipalities: weddings, corporate video, sport, music videos and lifestyle content, with no extra travel fee. Beyond that, a flat fee per zone covers Belgium, northern France, Luxembourg and the Netherlands.`,
-    });
-  }
-
-  protected brusselsGroupTitle(): string {
-    return this.text.zones.brusselsGroup;
-  }
-
-  protected peripheryGroupTitle(): string {
-    return this.text.zones.peripheryGroup;
-  }
-
-  protected communeName(commune: CommuneInfo): string {
-    return this.locale === 'nl' ? commune.nameNl : commune.nameFr;
-  }
-
-  protected communeHref(commune: CommuneInfo): string {
-    const slug = this.locale === 'nl' ? commune.slugNl : commune.slugFr;
-    return `${routePath(this.locale, 'zones')}/${slug}`;
+  protected format(amount: number): string {
+    return formatPrice(amount);
   }
 }

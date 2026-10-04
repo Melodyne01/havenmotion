@@ -27,10 +27,15 @@ function serverRoutesFor(locale: SiteLocale): ServerRoute[] {
     at(seg.faq),
     at(seg.legal),
     at(seg.privacy),
+    at(seg.onePerson),
+    at(seg.zones),
+    // Pays et régions : routes paramétrées (le moteur SSR exige la même forme
+    // que `app.routes.ts`). Un pays inconnu ou une région sans contenu dans
+    // la langue répond quand même 404 : le composant pose le statut lui-même
+    // via `RESPONSE_INIT` (voir region-page / country-page).
+    at(`${seg.zones}/:pays`),
+    at(`${seg.zones}/:pays/:region`),
   ];
-  if (locale !== 'en') {
-    paths.push(at(seg.zones), at(`${seg.zones}/:commune`));
-  }
   const legacyServices = { fr: 'realisations', nl: 'realisaties', en: null }[locale];
   if (legacyServices) {
     paths.push(at(`${legacyServices}/:slug`));

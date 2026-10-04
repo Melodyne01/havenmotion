@@ -252,7 +252,7 @@ export class ContactComponent {
   });
 
   constructor() {
-    // Préremplissage depuis la grille tarifaire : `?categorie=mariage&formule=combo`.
+    // Préremplissage depuis la grille tarifaire (`?categorie=mariage&formule=combo`) et les pages région (`?region=lille-nord`).
     const params = this.route.snapshot.queryParamMap;
     const categorie = params.get('categorie') as CategoryKey | null;
     const formule = params.get('formule') as PackType | null;
@@ -262,6 +262,10 @@ export class ContactComponent {
     }
     if (formule && PACK_TYPES.includes(formule)) {
       this.form.controls.pack.setValue(formule);
+    }
+    const region = params.get('region');
+    if (region && findRegion(region)) {
+      this.form.controls.region.setValue(region);
     }
   }
 

@@ -35,42 +35,26 @@ public static class PublicEndpoints
     private static readonly HashSet<string> LaunchPriorityCategorySlugs = ["clip", "lifestyle"];
 
     /// <summary>
-    /// Les 19 communes de la Région de Bruxelles-Capitale, pour le sitemap
-    /// uniquement. Liste administrative fixe : un dictionnaire statique ici
-    /// évite une table dédiée pour un contenu qui ne change jamais — même
-    /// principe et même duplication assumée que `CATEGORY_SLUG_MAP` côté
-    /// front (`communes.ts`), qui porte la version complète (noms, codes
-    /// postaux) utilisée pour construire les pages elles-mêmes.
+    /// Pages zones (pays et régions) qui existent, par langue, pour le sitemap
+    /// uniquement. Une région n'a une page que dans les langues où elle a un
+    /// contenu rédigé (`region-content.ts` côté front) : cette liste doit
+    /// rester synchronisée avec elle — même duplication assumée que
+    /// `CATEGORY_SLUG_MAP`. `null` = pas de page dans cette langue.
     /// </summary>
-    private static readonly (string Fr, string Nl)[] CommuneSlugs =
+    private static readonly (string? Fr, string? Nl, string? En)[] ZonePages =
     [
-        ("bruxelles-ville", "stad-brussel"),
-        ("anderlecht", "anderlecht"),
-        ("auderghem", "oudergem"),
-        ("berchem-sainte-agathe", "sint-agatha-berchem"),
-        ("etterbeek", "etterbeek"),
-        ("evere", "evere"),
-        ("forest", "vorst"),
-        ("ganshoren", "ganshoren"),
-        ("ixelles", "elsene"),
-        ("jette", "jette"),
-        ("koekelberg", "koekelberg"),
-        ("molenbeek-saint-jean", "sint-jans-molenbeek"),
-        ("saint-gilles", "sint-gillis"),
-        ("saint-josse-ten-noode", "sint-joost-ten-node"),
-        ("schaerbeek", "schaarbeek"),
-        ("uccle", "ukkel"),
-        ("watermael-boitsfort", "watermaal-bosvoorde"),
-        ("woluwe-saint-lambert", "sint-lambrechts-woluwe"),
-        ("woluwe-saint-pierre", "sint-pieters-woluwe"),
-        // Périphérie flamande autour de Wemmel : pas des communes de la
-        // Région de Bruxelles-Capitale, mais dans la même zone d'intervention.
-        ("wemmel", "wemmel"),
-        ("grimbergen", "grimbergen"),
-        ("meise", "meise"),
-        ("asse", "asse"),
-        ("dilbeek", "dilbeek"),
-        ("vilvorde", "vilvoorde"),
+        // Pays
+        ("/zones/belgique", "/nl/zones/belgie", "/en/areas/belgium"),
+        ("/zones/france", "/nl/zones/frankrijk", "/en/areas/france"),
+        ("/zones/luxembourg", "/nl/zones/luxemburg", "/en/areas/luxembourg"),
+        ("/zones/pays-bas", "/nl/zones/nederland", "/en/areas/netherlands"),
+        ("/zones/international", "/nl/zones/internationaal", "/en/areas/international"),
+        // Régions, phase 1
+        ("/zones/belgique/bruxelles", "/nl/zones/belgie/brussel", "/en/areas/belgium/brussels"),
+        ("/zones/belgique/brabant-flamand", "/nl/zones/belgie/vlaams-brabant", null),
+        ("/zones/belgique/brabant-wallon", "/nl/zones/belgie/waals-brabant", null),
+        ("/zones/luxembourg/luxembourg", "/nl/zones/luxemburg/luxembourg", "/en/areas/luxembourg/luxembourg"),
+        ("/zones/france/lille-nord", null, "/en/areas/france/lille"),
     ];
 
     private static async Task<SitePayloadDto> GetSiteAsync(
@@ -184,7 +168,8 @@ public static class PublicEndpoints
             (Localized("/contact", "/nl/contact", "/en/contact"), "monthly", "0.5"),
             (Localized("/mentions-legales", "/nl/wettelijke-vermeldingen", "/en/legal-notice"), "yearly", "0.2"),
             (Localized("/confidentialite", "/nl/privacybeleid", "/en/privacy"), "yearly", "0.2"),
-            (Localized("/zones", "/nl/zones", null), "monthly", "0.6"),
+            (Localized("/zones", "/nl/zones", "/en/areas"), "monthly", "0.6"),
+            (Localized("/photo-et-video-une-seule-personne", "/nl/foto-en-video-door-een-persoon", "/en/one-photographer-videographer"), "monthly", "0.8"),
         };
 
         var categoryCount = slugsByLocale.Values.Min(list => list.Count);
@@ -201,10 +186,10 @@ public static class PublicEndpoints
                 priority));
         }
 
-        entries.AddRange(CommuneSlugs.Select(c => (
-            Localized($"/zones/{c.Fr}", $"/nl/zones/{c.Nl}", null),
+        entries.AddRange(ZonePages.Select(z => (
+            Localized(z.Fr, z.Nl, z.En),
             "monthly",
-            c.Fr == "wemmel" ? "0.8" : "0.6")));
+            z.Fr is not null && z.Fr.Count(ch => ch == '/') >= 3 ? "0.7" : "0.6")));
 
         // Pas de date de modification par page suivie en base (catégories,
         // pages statiques) : `lastmod` reflète l'heure de génération du
@@ -230,6 +215,7 @@ public static class PublicEndpoints
                             <xhtml:link rel="alternate" hreflang="{other}" href="{origin}{paths[other]}" />
 
                         """));
+                var xDefault = paths[Locales.French] ?? path;
                 body.Append(
                     $"""
                       <url>
@@ -237,7 +223,7 @@ public static class PublicEndpoints
                         <lastmod>{lastmod}</lastmod>
                         <changefreq>{changeFreq}</changefreq>
                         <priority>{priority}</priority>
-                    {alternates}    <xhtml:link rel="alternate" hreflang="x-default" href="{origin}{paths[Locales.French]}" />
+                    {alternates}    <xhtml:link rel="alternate" hreflang="x-default" href="{origin}{xDefault}" />
                       </url>
 
                     """);
@@ -255,7 +241,7 @@ public static class PublicEndpoints
     }
 
     /// <summary>Chemins d'une même page en FR, NL et EN (`null` = pas de version dans cette langue). La home NL/EN est `/nl` et `/en`.</summary>
-    private static Dictionary<string, string?> Localized(string fr, string? nl, string? en) => new()
+    private static Dictionary<string, string?> Localized(string? fr, string? nl, string? en) => new()
     {
         [Locales.French] = fr == "" ? "/" : fr,
         [Locales.Dutch] = nl == "" ? "/nl" : nl,

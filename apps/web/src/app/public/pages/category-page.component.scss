@@ -160,3 +160,81 @@
   color: $color-film;
   margin: 0;
 }
+
+.category-page__section {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 78ch;
+}
+
+.category-page__list {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  li {
+    position: relative;
+    padding-left: 16px;
+    color: $color-muted-60;
+    font-size: $fs-14;
+    line-height: $lh-body;
+
+    &::before {
+      position: absolute;
+      left: 0;
+      color: $color-amber;
+      content: '—';
+    }
+  }
+}
+
+.category-page__steps {
+  display: grid;
+  gap: 14px;
+  padding: 0 0 0 28px;
+  margin: 0;
+
+  li {
+    color: $color-muted-60;
+    font-size: $fs-14;
+    line-height: $lh-body;
+
+    strong {
+      @include display-caps($fs-13, $ls-14, $weight-semibold);
+
+      display: block;
+      color: $color-film;
+      margin-bottom: 4px;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    &::marker {
+      color: $color-amber;
+      font-family: $font-display;
+      font-weight: $weight-bold;
+    }
+  }
+}
+
+.category-page__one {
+  padding: 20px 24px;
+  background: $color-surface;
+  border-left: 3px solid $color-amber;
+}
+
+.category-page__more {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  color: $color-amber;
+  text-decoration: none;
+
+  &:hover {
+    color: $color-film;
+  }
+}

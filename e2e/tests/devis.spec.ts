@@ -101,3 +101,34 @@ test('les anciennes URL redirigent et la page tarifs existe en FR, NL et EN', as
   await expect(page.getByRole('heading', { level: 1, name: /wedding/i })).toBeVisible();
   await expect(page.locator('app-pack-grid .pack')).toHaveCount(4);
 });
+
+/**
+ * Pages région (chantier 5) : les anciennes pages commune redirigent vers
+ * leur région, une région avec contenu se rend avec ses villes et sa FAQ,
+ * une région sans contenu dans la langue répond un vrai 404.
+ */
+test('les pages commune redirigent vers leur région et les pages région se rendent', async ({ page, request }) => {
+  const uccle = await request.get('/zones/uccle', { maxRedirects: 0 });
+  expect(uccle.status()).toBe(301);
+  expect(uccle.headers()['location']).toBe('/zones/belgique/bruxelles');
+
+  const wemmel = await request.get('/nl/zones/wemmel', { maxRedirects: 0 });
+  expect(wemmel.status()).toBe(301);
+  expect(wemmel.headers()['location']).toBe('/nl/zones/belgie/vlaams-brabant');
+
+  await page.goto('/zones/belgique/bruxelles');
+  await expect(page.getByRole('heading', { level: 1, name: /bruxelles/i })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: /dans les communes/i })).toBeVisible();
+  await expect(page.locator("link[rel='alternate'][hreflang='en']")).toHaveAttribute('href', /\/en\/areas\/belgium\/brussels$/);
+
+  await page.goto('/en/areas/luxembourg/luxembourg');
+  await expect(page.getByRole('heading', { level: 1, name: /luxembourg/i })).toBeVisible();
+
+  // Le Brabant wallon n'a pas de page en anglais : vrai 404, pas une page vide.
+  const missing = await request.get('/en/areas/belgium/walloon-brabant');
+  expect(missing.status()).toBe(404);
+
+  // La page « une seule personne » existe dans les trois langues.
+  await page.goto('/nl/foto-en-video-door-een-persoon');
+  await expect(page.getByRole('heading', { level: 1, name: /één persoon/i })).toBeVisible();
+});

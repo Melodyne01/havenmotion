@@ -7,8 +7,9 @@ import { ROUTE_SEGMENTS, SITE_LOCALE, SiteLocale } from './core/locale';
  * des pages est la même partout, seuls les mots changent — et une page
  * ajoutée ici existe d'office dans les trois langues.
  *
- * Exceptions : les pages zones/commune n'existent qu'en FR et NL (les
- * pages région en trois langues arrivent avec le chantier 5).
+ * Les pages région (`zones/:pays/:region`) ne sont rendues que pour les
+ * régions qui ont un contenu dans la langue (voir `region-content.ts`) ;
+ * les autres retombent sur la 404 de la sous-arborescence.
  */
 function publicRoutes(locale: SiteLocale): Routes {
   const seg = ROUTE_SEGMENTS[locale];
@@ -55,22 +56,27 @@ function publicRoutes(locale: SiteLocale): Routes {
         import('./public/legal-page.component').then((m) => m.LegalPageComponent),
       data: { document: 'confidentialite' },
     },
+    {
+      path: seg.onePerson,
+      loadComponent: () =>
+        import('./public/pages/one-person-page.component').then((m) => m.OnePersonPageComponent),
+    },
+    {
+      path: seg.zones,
+      loadComponent: () =>
+        import('./public/pages/zones-page.component').then((m) => m.ZonesPageComponent),
+    },
+    {
+      path: `${seg.zones}/:pays`,
+      loadComponent: () =>
+        import('./public/pages/country-page.component').then((m) => m.CountryPageComponent),
+    },
+    {
+      path: `${seg.zones}/:pays/:region`,
+      loadComponent: () =>
+        import('./public/pages/region-page.component').then((m) => m.RegionPageComponent),
+    },
   ];
-
-  if (locale !== 'en') {
-    routes.push(
-      {
-        path: seg.zones,
-        loadComponent: () =>
-          import('./public/pages/zones-page.component').then((m) => m.ZonesPageComponent),
-      },
-      {
-        path: `${seg.zones}/:commune`,
-        loadComponent: () =>
-          import('./public/pages/commune-page.component').then((m) => m.CommunePageComponent),
-      },
-    );
-  }
 
   // Anciennes adresses des pages catégorie (`/realisations/…`), remplacées
   // par `/prestations/…` avec l'arrivée des packs. Le serveur répond déjà

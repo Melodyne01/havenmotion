@@ -30,9 +30,7 @@ import { UI_TEXT } from '../../core/ui-text';
       <p class="intro__line">{{ onePersonText() }}</p>
       <p class="intro__line">
         {{ zonesText() }}
-        @if (zonesPath) {
-          <a [routerLink]="zonesPath">{{ text.intro.zonesLinkLabel }}</a>
-        }
+        <a [routerLink]="zonesPath">{{ text.intro.zonesLinkLabel }}</a>
       </p>
       <p class="intro__line">{{ visionCallText() }}</p>
       <p class="intro__line">
@@ -49,8 +47,7 @@ export class IntroComponent {
   protected readonly text = UI_TEXT[this.locale];
   private readonly categories = this.store.categories;
 
-  /** Les pages zones n'existent pas encore en anglais (chantier 5). */
-  protected readonly zonesPath = this.locale === 'en' ? null : routePath(this.locale, 'zones');
+  protected readonly zonesPath = routePath(this.locale, 'zones');
   protected readonly pricingPath = routePath(this.locale, 'pricing');
 
   protected openingText(): string {

@@ -8,6 +8,7 @@ import compression from 'compression';
 import express from 'express';
 import { request as httpRequest } from 'node:http';
 import { join } from 'node:path';
+import { COMMUNES } from './app/core/communes';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
@@ -85,7 +86,29 @@ const LEGACY_PREFIXES: readonly [RegExp, string][] = [
   [/^\/realisations(\/|$)/, '/prestations/'],
   [/^\/nl\/realisaties(\/|$)/, '/nl/diensten/'],
 ];
+/**
+ * Anciennes pages commune (`/zones/uccle`, `/nl/zones/wemmel`…), remplacées
+ * par les pages région : les 19 communes bruxelloises vont vers Bruxelles,
+ * Wemmel et sa périphérie vers le Brabant flamand. Redirection permanente,
+ * pour transférer le référencement acquis par ces 50 pages.
+ */
+const LEGACY_COMMUNES = new Map<string, string>();
+for (const commune of COMMUNES) {
+  LEGACY_COMMUNES.set(
+    `/zones/${commune.slugFr}`,
+    commune.isBrusselsRegion ? '/zones/belgique/bruxelles' : '/zones/belgique/brabant-flamand',
+  );
+  LEGACY_COMMUNES.set(
+    `/nl/zones/${commune.slugNl}`,
+    commune.isBrusselsRegion ? '/nl/zones/belgie/brussel' : '/nl/zones/belgie/vlaams-brabant',
+  );
+}
 app.use((req, res, next) => {
+  const region = LEGACY_COMMUNES.get(req.path.replace(/\/+$/, ''));
+  if (region) {
+    res.redirect(301, region);
+    return;
+  }
   for (const [pattern, target] of LEGACY_PREFIXES) {
     if (pattern.test(req.path)) {
       const rest = req.path.replace(pattern, '').replace(/^\/+/, '');

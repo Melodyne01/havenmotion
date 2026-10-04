@@ -1,5 +1,7 @@
 import { SiteLocale } from './locale';
 
+export { formatPrice } from './packs';
+
 /**
  * Forfaits de déplacement, par tranche de distance depuis Bruxelles / Wemmel.
  * Un forfait fixe par zone plutôt qu'un tarif au kilomètre : c'est ce que

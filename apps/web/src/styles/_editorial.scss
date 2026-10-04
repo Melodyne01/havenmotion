@@ -1,0 +1,171 @@
+@use 'tokens' as *;
+
+// Mise en page des pages éditoriales longues (page « une seule personne »,
+// pages région et pays) : une colonne lisible, des sections séparées par un
+// filet, des listes au tiret ambre. Partagé par `@use 'editorial'` pour que
+// ces pages se ressemblent sans dupliquer les règles.
+
+@mixin editorial-page {
+  display: grid;
+  gap: 16px;
+  padding: 20px $pad-x-mobile 64px;
+
+  @include tablet-up {
+    padding: 24px $pad-x-desktop 96px;
+  }
+}
+
+@mixin editorial-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: $color-muted-45;
+  font-size: $fs-13;
+
+  a {
+    color: $color-muted-60;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-amber;
+    }
+  }
+}
+
+@mixin editorial-answer {
+  max-width: 72ch;
+  padding: 20px 24px;
+  margin: -24px 0 16px;
+  color: $color-film;
+  font-size: $fs-15;
+  line-height: $lh-body;
+  background: $color-surface;
+  border-left: 3px solid $color-amber;
+}
+
+@mixin editorial-section {
+  display: grid;
+  gap: 12px;
+  max-width: 78ch;
+  padding-top: 32px;
+  margin-top: 16px;
+  border-top: $rule-width solid $color-rule-10;
+}
+
+@mixin editorial-h2 {
+  @include display-caps($fs-26, $ls-14);
+
+  color: $color-film;
+  margin: 0;
+
+  @include tablet-up {
+    font-size: $fs-40;
+  }
+}
+
+@mixin editorial-h3 {
+  @include display-caps($fs-13, $ls-14, $weight-semibold);
+
+  color: $color-film;
+  margin: 0 0 4px;
+}
+
+@mixin editorial-paragraph {
+  margin: 0;
+  color: $color-muted-60;
+  font-size: $fs-15;
+  line-height: $lh-body;
+}
+
+@mixin editorial-list {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  li {
+    position: relative;
+    padding-left: 16px;
+    color: $color-muted-60;
+    font-size: $fs-14;
+    line-height: $lh-body;
+
+    &::before {
+      position: absolute;
+      left: 0;
+      color: $color-amber;
+      content: '—';
+    }
+  }
+}
+
+@mixin editorial-cards {
+  display: grid;
+  gap: $gutter;
+
+  @include tablet-up {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  article {
+    padding: 18px 20px;
+    background: $color-charcoal;
+    border: $rule-width solid $color-rule-10;
+
+    p {
+      margin: 0;
+      color: $color-muted-60;
+      font-size: $fs-14;
+      line-height: $lh-body;
+    }
+  }
+}
+
+@mixin editorial-faq {
+  display: grid;
+  margin: 0;
+  border-top: $rule-width solid $color-rule-10;
+
+  div {
+    padding: 16px 0;
+    border-bottom: $rule-width solid $color-rule-10;
+  }
+
+  dt {
+    @include display-caps($fs-13, $ls-14, $weight-semibold);
+
+    color: $color-film;
+    margin: 0 0 8px;
+  }
+
+  dd {
+    margin: 0;
+    color: $color-muted-60;
+    font-size: $fs-14;
+    line-height: $lh-body;
+  }
+}
+
+@mixin editorial-cta {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  max-width: 78ch;
+  padding: 32px 24px;
+  margin-top: 24px;
+  background: $color-surface;
+  border-left: 3px solid $color-amber;
+}
+
+@mixin editorial-link {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  color: $color-amber;
+  text-decoration: none;
+
+  &:hover {
+    color: $color-film;
+  }
+}
