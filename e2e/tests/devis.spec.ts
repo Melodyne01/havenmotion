@@ -179,7 +179,7 @@ test('plus de témoignage d’attente ; pages faits et projets en trois langues'
 test('les trois guides prix se rendent, avec FAQ et grille, et un slug inconnu répond 404', async ({ page, request }) => {
   await page.goto('/guides');
   await expect(page.getByRole('heading', { level: 1, name: /guides/i })).toBeVisible();
-  await expect(page.locator('.guides__item')).toHaveCount(4);
+  await expect(page.locator('.guides__item')).toHaveCount(11);
 
   for (const [path, heading] of [
     ['/guides/prix-photographe-videaste-mariage-belgique-2026', /combien coûte/i],
@@ -187,6 +187,9 @@ test('les trois guides prix se rendent, avec FAQ et grille, et un slug inconnu r
     ['/en/guides/wedding-photographer-cost-belgium-2026', /how much/i],
     ['/guides/prix-video-entreprise-belgique-2026', /vidéo d’entreprise/i],
     ['/en/guides/getting-married-in-brussels-expat-guide', /getting married in brussels/i],
+    ['/nl/gidsen/drone-op-een-huwelijk-in-belgie-wat-mag', /drone/i],
+    ['/guides/photos-communion-profession-de-foi-quand-ou-combien', /communion/i],
+    ['/en/guides/linkedin-headshot-what-works-2026', /linkedin headshot/i],
   ] as const) {
     await page.goto(path);
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();

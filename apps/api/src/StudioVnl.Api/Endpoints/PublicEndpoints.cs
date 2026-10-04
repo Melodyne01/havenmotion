@@ -219,6 +219,14 @@ public static class PublicEndpoints
         entries.Add((Localized("/guides/prix-video-entreprise-belgique-2026", "/nl/gidsen/wat-kost-een-bedrijfsvideo-belgie-2026", null), "monthly", "0.8"));
         entries.Add((Localized(null, null, "/en/guides/getting-married-in-brussels-expat-guide"), "monthly", "0.7"));
         entries.Add((Localized("/guides/lieux-mariage-brabant-wallon", null, null), "monthly", "0.7"));
+        entries.Add((Localized(null, "/nl/gidsen/trouwen-in-de-ardennen-locaties-en-tips", null), "monthly", "0.7"));
+        entries.Add((Localized("/guides/se-marier-a-durbuy-lieux-mairie-photos", null, null), "monthly", "0.7"));
+        entries.Add((Localized("/guides/spots-shooting-photo-bruxelles", null, "/en/guides/photoshoot-locations-brussels"), "monthly", "0.7"));
+        entries.Add((Localized("/guides/photos-communion-profession-de-foi-quand-ou-combien", "/nl/gidsen/fotoshoot-lentefeest-communie-wanneer-waar-prijs", null), "monthly", "0.7"));
+        entries.Add((Localized("/guides/photo-linkedin-professionnelle-ce-qui-marche-2026", "/nl/gidsen/professionele-linkedin-foto-wat-werkt-2026", "/en/guides/linkedin-headshot-what-works-2026"), "monthly", "0.7"));
+        entries.Add((Localized("/guides/se-marier-au-luxembourg-lieux-et-demarches", null, "/en/guides/getting-married-in-luxembourg-venues-and-procedure"), "monthly", "0.7"));
+        entries.Add((Localized("/guides/photographe-belge-mariage-en-france-deplacement-tva-musique", null, null), "monthly", "0.7"));
+        entries.Add((Localized("/guides/drone-mariage-belgique-ce-qui-est-autorise", "/nl/gidsen/drone-op-een-huwelijk-in-belgie-wat-mag", null), "monthly", "0.7"));
 
         var projects = await db.Projects.AsNoTracking()
             .Where(p => p.Status == PublishStatus.Published)

@@ -1,7 +1,14 @@
 import { FaqEntry } from './faq-content';
 import { CategoryKey, SiteLocale } from './locale';
 import { formatPrice, pricingFor } from './packs';
+import { GUIDES_ARDENNES } from './guides/ardennes-weddings';
+import { GUIDES_FRANCE } from './guides/belgian-photographer-france';
 import { GUIDES_BRABANT_WALLON_VENUES } from './guides/brabant-wallon-venues';
+import { GUIDES_BRUSSELS_SPOTS } from './guides/brussels-photo-spots';
+import { GUIDES_COMMUNION } from './guides/communion-lentefeest';
+import { GUIDES_DRONE } from './guides/drone-wedding';
+import { GUIDES_LINKEDIN } from './guides/linkedin-photo';
+import { GUIDES_LUXEMBOURG } from './guides/luxembourg-wedding';
 import { GUIDES_BRUSSELS_EXPAT } from './guides/brussels-expat';
 import { GUIDES_CHOOSE } from './guides/photo-or-video';
 import { GUIDES_CORPORATE_PRICE } from './guides/corporate-video-price';
@@ -419,7 +426,20 @@ const PRICE_GUIDES: readonly Guide[] = [
 ];
 
 /** Tous les guides publiés, dans l'ordre d'affichage du hub. */
-export const GUIDES: readonly Guide[] = [...PRICE_GUIDES, ...GUIDES_CHOOSE, ...GUIDES_CORPORATE_PRICE, ...GUIDES_BRUSSELS_EXPAT, ...GUIDES_BRABANT_WALLON_VENUES];
+export const GUIDES: readonly Guide[] = [
+  ...PRICE_GUIDES,
+  ...GUIDES_CHOOSE,
+  ...GUIDES_CORPORATE_PRICE,
+  ...GUIDES_BRUSSELS_EXPAT,
+  ...GUIDES_BRABANT_WALLON_VENUES,
+  ...GUIDES_ARDENNES,
+  ...GUIDES_BRUSSELS_SPOTS,
+  ...GUIDES_COMMUNION,
+  ...GUIDES_LINKEDIN,
+  ...GUIDES_LUXEMBOURG,
+  ...GUIDES_FRANCE,
+  ...GUIDES_DRONE,
+];
 
 export function guidesFor(locale: SiteLocale): readonly Guide[] {
   return GUIDES.filter((g) => g.locale === locale);
