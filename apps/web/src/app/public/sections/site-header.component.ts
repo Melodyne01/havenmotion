@@ -10,6 +10,7 @@ import {
 import { RouterLink } from '@angular/router';
 import { LogotypeComponent } from '../../shared/ui/logotype.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
+import { QuoteDialogComponent } from './quote-dialog.component';
 import { SITE_LOCALE, SITE_LOCALES, contactAnchor, homePath, routePath } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 
@@ -30,7 +31,7 @@ import { UI_TEXT } from '../../core/ui-text';
 @Component({
   selector: 'app-site-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LogotypeComponent, CtaButtonComponent, RouterLink],
+  imports: [LogotypeComponent, CtaButtonComponent, RouterLink, QuoteDialogComponent],
   template: `
     <header class="header">
       <a class="header__brand" [routerLink]="homePath" [attr.aria-label]="text.header.brandAriaLabel">
@@ -91,6 +92,9 @@ import { UI_TEXT } from '../../core/ui-text';
         </div>
       </div>
     }
+
+    <!-- Popup de devis : un seul par page, ouvert par tous les liens « Demander un devis ». -->
+    <app-quote-dialog />
   `,
   styleUrl: './site-header.component.scss',
 })

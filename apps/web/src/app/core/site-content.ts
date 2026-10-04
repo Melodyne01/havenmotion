@@ -19,6 +19,13 @@ export const COMPANY = {
   projectsCompleted: 100,
   /** Pays où le studio a déjà tourné, pour l'à-propos et la page faits. */
   countriesWorked: ['BE', 'FR', 'NL', 'LU', 'GR'] as const,
+  /**
+   * Numéro WhatsApp qui reçoit les demandes de devis, au format
+   * international sans « + » ni espaces (ex. « 32470123456 »). Vide tant
+   * que le client ne l'a pas fourni : le bouton WhatsApp est alors masqué
+   * et seul l'envoi par e-mail est proposé.
+   */
+  whatsapp: '',
 } as const;
 
 export interface SiteContent {

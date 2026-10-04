@@ -124,8 +124,6 @@ export interface UiText {
     readonly lead: string;
     readonly nameLabel: string;
     readonly nameError: string;
-    readonly emailLabel: string;
-    readonly emailError: string;
     readonly projectTypeLabel: string;
     readonly packLabel: string;
     readonly packUndecided: string;
@@ -134,15 +132,22 @@ export interface UiText {
     readonly travelLabel: string;
     readonly travelIncluded: string;
     readonly travelOnQuote: string;
-    readonly dateLabel: string;
     readonly budgetLabel: string;
     readonly messageLabel: string;
-    readonly honeypotLabel: string;
     readonly submitIdle: string;
-    readonly submitPending: string;
-    readonly successMessage: string;
-    readonly genericError: string;
     readonly otherProjectType: string;
+    /** Bouton qui ouvre le popup depuis la section contact. */
+    readonly openQuote: string;
+    readonly dialogTitle: string;
+    readonly close: string;
+    readonly previewTitle: string;
+    readonly previewHint: string;
+    readonly sendWhatsapp: string;
+    readonly sendEmail: string;
+    readonly copy: string;
+    readonly copied: string;
+    readonly back: string;
+    readonly emailSubject: string;
     readonly budgetRanges: readonly string[];
   };
 }
@@ -316,11 +321,9 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     contact: {
       eyebrow: 'Contact',
       title: 'Parlons du projet',
-      lead: 'Réponse sous 48 h avec un devis chiffré. Aucun engagement.',
+      lead: 'Quelques questions, et votre demande est prête : vous l’envoyez sur WhatsApp ou par e-mail. Réponse sous 48 h avec un devis chiffré, sans engagement.',
       nameLabel: 'Nom',
       nameError: 'Indiquez votre nom.',
-      emailLabel: 'E-mail',
-      emailError: 'Adresse e-mail invalide.',
       projectTypeLabel: 'Type de projet',
       packLabel: 'Formule',
       packUndecided: 'Je ne sais pas encore',
@@ -329,15 +332,21 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       travelLabel: 'Déplacement',
       travelIncluded: 'inclus',
       travelOnQuote: 'sur devis',
-      dateLabel: 'Date',
       budgetLabel: 'Budget',
       messageLabel: 'Message (optionnel)',
-      honeypotLabel: 'Ne pas remplir',
-      submitIdle: 'Envoyer la demande',
-      submitPending: 'Envoi…',
-      successMessage: 'Demande envoyée. Un accusé de réception vient de partir vers votre boîte mail.',
-      genericError: "L'envoi a échoué. Réessayez ou écrivez-nous directement par e-mail.",
+      submitIdle: 'Préparer mon message',
       otherProjectType: 'Autre',
+      openQuote: 'Demander un devis',
+      dialogTitle: 'Votre demande de devis',
+      close: 'Fermer',
+      previewTitle: 'Votre message est prêt',
+      previewHint: 'Relisez-le, modifiez-le si besoin, puis envoyez-le par le canal de votre choix.',
+      sendWhatsapp: 'Envoyer sur WhatsApp',
+      sendEmail: 'Envoyer par e-mail',
+      copy: 'Copier le message',
+      copied: 'Message copié',
+      back: 'Modifier ma demande',
+      emailSubject: 'Demande de devis',
       budgetRanges: [
         'moins de 1 000 €',
         '1 000 – 2 000 €',
@@ -506,11 +515,9 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     contact: {
       eyebrow: 'Contact',
       title: 'Laten we over het project praten',
-      lead: 'Antwoord binnen 48 u met een concrete offerte. Geen verplichtingen.',
+      lead: 'Een paar vragen, en uw aanvraag is klaar: u verstuurt ze via WhatsApp of per e-mail. Antwoord binnen 48 u met een concrete offerte, zonder verplichtingen.',
       nameLabel: 'Naam',
       nameError: 'Vul uw naam in.',
-      emailLabel: 'E-mail',
-      emailError: 'Ongeldig e-mailadres.',
       projectTypeLabel: 'Soort project',
       packLabel: 'Formule',
       packUndecided: 'Ik weet het nog niet',
@@ -519,15 +526,21 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       travelLabel: 'Verplaatsing',
       travelIncluded: 'inbegrepen',
       travelOnQuote: 'op offerte',
-      dateLabel: 'Datum',
       budgetLabel: 'Budget',
       messageLabel: 'Bericht (optioneel)',
-      honeypotLabel: 'Niet invullen',
-      submitIdle: 'Aanvraag versturen',
-      submitPending: 'Verzenden…',
-      successMessage: 'Aanvraag verzonden. Een bevestiging is net naar uw mailbox gestuurd.',
-      genericError: 'Het versturen is mislukt. Probeer opnieuw of schrijf ons rechtstreeks via e-mail.',
+      submitIdle: 'Mijn bericht voorbereiden',
       otherProjectType: 'Ander',
+      openQuote: 'Offerte aanvragen',
+      dialogTitle: 'Uw offerteaanvraag',
+      close: 'Sluiten',
+      previewTitle: 'Uw bericht is klaar',
+      previewHint: 'Lees het na, pas het aan indien nodig, en verstuur het via het kanaal van uw keuze.',
+      sendWhatsapp: 'Versturen via WhatsApp',
+      sendEmail: 'Versturen per e-mail',
+      copy: 'Bericht kopiëren',
+      copied: 'Bericht gekopieerd',
+      back: 'Mijn aanvraag wijzigen',
+      emailSubject: 'Offerteaanvraag',
       budgetRanges: [
         'minder dan € 1 000',
         '€ 1 000 – 2 000',
@@ -696,11 +709,9 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     contact: {
       eyebrow: 'Contact',
       title: 'Let’s talk about your project',
-      lead: 'Reply within 48 h with an itemised quote. No commitment.',
+      lead: 'A few questions and your request is ready: you send it on WhatsApp or by email. Reply within 48 h with an itemised quote, no commitment.',
       nameLabel: 'Name',
       nameError: 'Please enter your name.',
-      emailLabel: 'Email',
-      emailError: 'Invalid email address.',
       projectTypeLabel: 'Type of project',
       packLabel: 'Package',
       packUndecided: 'Not sure yet',
@@ -709,15 +720,21 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       travelLabel: 'Travel',
       travelIncluded: 'included',
       travelOnQuote: 'on quote',
-      dateLabel: 'Date',
       budgetLabel: 'Budget',
       messageLabel: 'Message (optional)',
-      honeypotLabel: 'Leave empty',
-      submitIdle: 'Send the request',
-      submitPending: 'Sending…',
-      successMessage: 'Request sent. A confirmation is on its way to your inbox.',
-      genericError: 'Sending failed. Try again or email us directly.',
+      submitIdle: 'Prepare my message',
       otherProjectType: 'Other',
+      openQuote: 'Request a quote',
+      dialogTitle: 'Your quote request',
+      close: 'Close',
+      previewTitle: 'Your message is ready',
+      previewHint: 'Read it, edit it if needed, then send it through the channel you prefer.',
+      sendWhatsapp: 'Send on WhatsApp',
+      sendEmail: 'Send by email',
+      copy: 'Copy the message',
+      copied: 'Message copied',
+      back: 'Edit my request',
+      emailSubject: 'Quote request',
       budgetRanges: [
         'under €1,000',
         '€1,000 – 2,000',

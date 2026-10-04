@@ -27,7 +27,7 @@ import { UI_TEXT } from '../../core/ui-text';
         <a class="footer__link" [routerLink]="faqHref">FAQ</a>
         <a class="footer__link" [routerLink]="guidesHref">{{ text.footer.guides }}</a>
         <a class="footer__link" [routerLink]="zonesHref">{{ text.footer.zones }}</a>
-        <a class="footer__link" [routerLink]="contactHref">Contact</a>
+        <a class="footer__link" [routerLink]="contactHref" data-page-link>Contact</a>
         <a class="footer__link" [routerLink]="mentionsHref">{{ text.footer.legal }}</a>
         <a class="footer__link" [routerLink]="confidentialiteHref">{{ text.footer.privacy }}</a>
       </nav>

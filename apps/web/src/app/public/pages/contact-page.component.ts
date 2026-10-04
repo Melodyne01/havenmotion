@@ -7,7 +7,7 @@ import { SeoService } from '../../core/seo.service';
 import { SITE_LOCALE, SITE_LOCALES, homePath, pick, routePath } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 
-/** Page « Contact » dédiée : même formulaire que la section home, sa propre URL. */
+/** Page « Contact » : le formulaire de devis affiché dans la page, prérempli par l'URL. */
 @Component({
   selector: 'app-contact-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,7 +16,7 @@ import { UI_TEXT } from '../../core/ui-text';
     <a class="skip-link" href="#contenu">{{ text.skipLink }}</a>
     <app-site-header />
     <main id="contenu">
-      <app-contact headingLevel="h1" />
+      <app-contact headingLevel="h1" [inlineForm]="true" />
     </main>
     <app-site-footer />
   `,

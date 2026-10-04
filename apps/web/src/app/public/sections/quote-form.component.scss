@@ -1,0 +1,155 @@
+@use 'tokens' as *;
+
+.form {
+  display: grid;
+  gap: 18px;
+
+  @include tablet-up {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.form__row {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.form__row--wide {
+  @include tablet-up {
+    grid-column: 1 / -1;
+  }
+}
+
+.form__label {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  color: $color-muted-60;
+}
+
+.form__input {
+  width: 100%;
+  padding: 13px 14px;
+  color: $color-film;
+  font-family: $font-body;
+  font-size: $fs-14;
+  background: $color-charcoal;
+  border: $rule-width solid $color-rule-16;
+  transition: border-color $dur-fast $ease;
+
+  &:hover {
+    border-color: $color-rule-16;
+  }
+
+  &:focus {
+    border-color: $color-amber;
+    outline: none;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+textarea.form__input {
+  resize: vertical;
+}
+
+.form__error {
+  color: $color-amber;
+  font-family: $font-body;
+  font-size: $fs-14;
+}
+
+.form__error--global {
+  @include tablet-up {
+    grid-column: 1 / -1;
+  }
+}
+
+.form__hint {
+  color: $color-amber;
+  font-family: $font-body;
+  font-size: $fs-13;
+}
+
+.form__actions {
+  @include tablet-up {
+    grid-column: 1 / -1;
+  }
+}
+
+.preview {
+  display: grid;
+  gap: 14px;
+}
+
+.preview__title {
+  @include display-caps($fs-18, $ls-14);
+
+  color: $color-film;
+}
+
+.preview__hint {
+  max-width: 60ch;
+  color: $color-muted-60;
+  font-size: $fs-14;
+  line-height: $lh-body;
+}
+
+.preview__text {
+  font-size: $fs-13;
+  line-height: $lh-body;
+}
+
+.preview__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  padding-top: 6px;
+}
+
+.send {
+  @include display-caps($fs-13, $ls-20, $weight-bold);
+
+  display: inline-flex;
+  align-items: center;
+  padding: 16px 22px;
+  color: $color-amber;
+  border: $rule-width solid $color-amber;
+  transition: opacity $dur-fast $ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+// Le canal principal est plein : WhatsApp quand le numéro est configuré,
+// sinon l'e-mail.
+.send--whatsapp {
+  color: $color-charcoal;
+  background: $color-amber;
+}
+
+.link {
+  @include display-caps($fs-11, $ls-20, $weight-semibold);
+
+  padding: 8px 0;
+  color: $color-muted-60;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-amber;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}

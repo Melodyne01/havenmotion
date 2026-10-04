@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 /**
- * Parcours de référence du cahier des charges :
- * hero → survol d'une bande → formulaire de devis envoyé.
+ * Parcours de référence : hero → survol d'une bande → popup de devis →
+ * message pré-construit prêt à partir par e-mail ou WhatsApp.
  */
 test('du hero à la demande de devis', async ({ page }) => {
   const consoleErrors: string[] = [];
@@ -19,15 +19,11 @@ test('du hero à la demande de devis', async ({ page }) => {
     }
   });
 
-  // L'API de devis est interceptée : le test reste hermétique.
-  let leadBody: Record<string, unknown> | null = null;
+  // Plus aucun envoi au serveur : la demande part par WhatsApp ou e-mail.
+  let leadCalls = 0;
   await page.route('**/api/public/leads', async (route) => {
-    leadBody = route.request().postDataJSON();
-    await route.fulfill({
-      status: 201,
-      contentType: 'application/json',
-      body: JSON.stringify({ id: '00000000-0000-0000-0000-000000000001' }),
-    });
+    leadCalls++;
+    await route.abort();
   });
 
   await page.goto('/');
@@ -50,23 +46,37 @@ test('du hero à la demande de devis', async ({ page }) => {
   // `/prestations/` depuis l'arrivée des packs.
   await expect(firstBand).toHaveAttribute('href', /^\/prestations\//);
 
-  // 5. Formulaire de devis : remplissage et envoi.
-  await page.locator('#contact').scrollIntoViewIfNeeded();
-  await page.locator('#name').fill('Camille Martin');
-  await page.locator('#email').fill('camille@example.fr');
-  await page.locator('#projectType').selectOption('Mariage');
-  await page.locator('#pack').selectOption('combo');
-  // Choisir une région affiche le forfait de déplacement avant l'envoi.
-  await page.locator('#region').selectOption('lille-nord');
-  await expect(page.locator('#travel-hint')).toContainText('90');
-  await page.locator('#eventDate').fill('2026-09-12');
-  await page.locator('#budgetRange').selectOption('2 000 – 5 000 €');
-  await page.locator('#message').fill('Cérémonie à Lyon, fin d’après-midi.');
-  await page.getByRole('button', { name: /envoyer la demande/i }).click();
+  // 5. Le CTA du hero ouvre le popup de devis, sans quitter la page.
+  await page.locator('app-hero').getByRole('link', { name: /demander un devis/i }).click();
+  const dialog = page.getByRole('dialog', { name: /votre demande de devis/i });
+  await expect(dialog).toBeVisible();
+  await expect(page).toHaveURL(/\/$/);
+  // Ni date ni e-mail dans le formulaire.
+  await expect(dialog.locator('input[type="date"], input[type="email"]')).toHaveCount(0);
 
-  // 6. Confirmation inline, et la demande part qualifiée (formule, région, langue).
-  await expect(page.getByRole('status')).toContainText(/demande envoyée/i);
-  expect(leadBody).toEqual(expect.objectContaining({ pack: 'combo', region: 'lille-nord', locale: 'fr' }));
+  // 6. Remplissage : la région affiche le forfait de déplacement.
+  await dialog.locator('#popup-name').fill('Camille Martin');
+  await dialog.locator('#popup-category').selectOption('mariage');
+  await dialog.locator('#popup-pack').selectOption('combo');
+  await dialog.locator('#popup-region').selectOption('lille-nord');
+  await expect(dialog.locator('#popup-travel-hint')).toContainText('90');
+  await dialog.locator('#popup-budget').selectOption('2 000 – 5 000 €');
+  await dialog.locator('#popup-message').fill('Cérémonie fin d’après-midi.');
+  await dialog.getByRole('button', { name: /préparer mon message/i }).click();
+
+  // 7. Le message est composé, modifiable, et part par e-mail (WhatsApp
+  // apparaît dès que le numéro est configuré).
+  const preview = dialog.locator('#popup-preview');
+  await expect(preview).toHaveValue(/Je m’appelle Camille Martin/);
+  await expect(preview).toHaveValue(/Photo \+ vidéo \(à partir de 2.690.€ TTC\)/);
+  await expect(preview).toHaveValue(/Lille – Nord \(déplacement : 90.€\)/);
+  const mail = dialog.getByRole('link', { name: /envoyer par e-mail/i });
+  await expect(mail).toHaveAttribute('href', /^mailto:.+\?subject=.+&body=Bonjour/);
+
+  // 8. Échap ferme le popup ; rien n'est parti vers le serveur.
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  expect(leadCalls).toBe(0);
 
   // Aucune erreur console sur tout le parcours.
   expect(consoleErrors).toEqual([]);
@@ -204,4 +214,26 @@ test('les trois guides prix se rendent, avec FAQ et grille, et un slug inconnu r
 
   const missing = await request.get('/guides/guide-qui-n-existe-pas');
   expect(missing.status()).toBe(404);
+});
+
+/**
+ * Les liens « Choisir cette formule » ouvrent le popup prérempli ; la page
+ * Contact garde le formulaire dans la page, prérempli par l'URL.
+ */
+test('les formules ouvrent le popup prérempli et la page contact garde le formulaire', async ({ page }) => {
+  await page.goto('/prestations/corporate');
+  await page.getByRole('link', { name: /choisir cette formule/i }).first().click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator('#popup-category')).toHaveValue('corporate');
+  await expect(dialog.locator('#popup-pack')).toHaveValue('photo');
+  await dialog.getByRole('button', { name: /fermer/i }).click();
+  await expect(dialog).toBeHidden();
+
+  await page.goto('/en/contact?categorie=sport&region=bruxelles');
+  await expect(page.locator('#page-category')).toHaveValue('sport');
+  await expect(page.locator('#page-region')).toHaveValue('bruxelles');
+  await page.locator('#page-name').fill('Alex');
+  await page.getByRole('button', { name: /prepare my message/i }).click();
+  await expect(page.locator('#page-preview')).toHaveValue(/Hello Heaven Motion,[\s\S]*Project: Sport/);
 });
