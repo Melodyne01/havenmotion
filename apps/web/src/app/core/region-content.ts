@@ -3,6 +3,7 @@ import { SiteLocale } from './locale';
 import { CountryCode } from './regions';
 import { REGION_CONTENT_PHASE_2_ABROAD } from './region-content-phase2-abroad';
 import { REGION_CONTENT_PHASE_2_BE } from './region-content-phase2-be';
+import { REGION_CONTENT_PHASE_3 } from './region-content-phase3';
 
 /**
  * Contenu rédactionnel d'une page région, dans une langue. Une page région
@@ -369,13 +370,14 @@ const REGION_CONTENT_PHASE_1: Readonly<Record<string, Partial<Record<SiteLocale,
 };
 
 /**
- * Toutes les régions publiées, phases 1 et 2 réunies (la phase 2 est écrite
- * dans deux fichiers voisins pour garder celui-ci lisible).
+ * Toutes les régions publiées, phases 1 à 3 réunies (les phases 2 et 3 sont
+ * écrites dans des fichiers voisins pour garder celui-ci lisible).
  */
 export const REGION_CONTENT: Readonly<Record<string, Partial<Record<SiteLocale, RegionContent>>>> = {
   ...REGION_CONTENT_PHASE_1,
   ...REGION_CONTENT_PHASE_2_BE,
   ...REGION_CONTENT_PHASE_2_ABROAD,
+  ...REGION_CONTENT_PHASE_3,
 };
 
 /** Texte des pages pays (`/zones/belgique`…), dans les trois langues. */

@@ -72,6 +72,13 @@ public static class PublicEndpoints
         (null, "/nl/zones/nederland/nederlands-limburg", "/en/areas/netherlands/maastricht-limburg"),
         (null, "/nl/zones/nederland/noord-brabant", null),
         ("/zones/international/etranger", "/nl/zones/internationaal/buitenland", "/en/areas/international/destination"),
+        // Régions, phase 3
+        ("/zones/france/champagne", null, null),
+        ("/zones/france/paris-ile-de-france", null, "/en/areas/france/paris"),
+        (null, "/nl/zones/nederland/zeeland", null),
+        (null, "/nl/zones/nederland/zuid-holland", null),
+        (null, "/nl/zones/nederland/utrecht", null),
+        (null, "/nl/zones/nederland/noord-holland", "/en/areas/netherlands/amsterdam"),
     ];
 
     private static async Task<SitePayloadDto> GetSiteAsync(

@@ -136,6 +136,9 @@ test('les pages commune redirigent vers leur région et les pages région se ren
     ['/zones/belgique/hainaut', /hainaut/i],
     ['/nl/zones/nederland/noord-brabant', /noord-brabant/i],
     ['/en/areas/international/destination', /abroad/i],
+    ['/zones/france/champagne', /champagne/i],
+    ['/en/areas/france/paris', /paris/i],
+    ['/nl/zones/nederland/zeeland', /zeeland/i],
   ] as const) {
     await page.goto(path);
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
