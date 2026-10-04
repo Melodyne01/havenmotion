@@ -189,6 +189,13 @@ public static class PublicEndpoints
                 priority));
         }
 
+        // Guides : chacun n'existe que dans sa langue (voir `guide-content.ts`
+        // côté front, à garder synchronisé).
+        entries.Add((Localized("/guides", "/nl/gidsen", "/en/guides"), "weekly", "0.6"));
+        entries.Add((Localized("/guides/prix-photographe-videaste-mariage-belgique-2026", null, null), "monthly", "0.8"));
+        entries.Add((Localized(null, "/nl/gidsen/wat-kost-een-huwelijksfotograaf-en-videograaf-belgie-2026", null), "monthly", "0.8"));
+        entries.Add((Localized(null, null, "/en/guides/wedding-photographer-cost-belgium-2026"), "monthly", "0.8"));
+
         var projects = await db.Projects.AsNoTracking()
             .Where(p => p.Status == PublishStatus.Published)
             .Select(p => new { p.Slug, HasFr = p.TitleFr != "", HasNl = p.TitleNl != "", HasEn = p.TitleEn != "" })

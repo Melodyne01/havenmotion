@@ -17,6 +17,7 @@ export interface UiText {
     readonly navAriaLabel: string;
     readonly about: string;
     readonly pricing: string;
+    readonly guides: string;
     readonly zones: string;
     readonly legal: string;
     readonly privacy: string;
@@ -114,6 +115,7 @@ export interface UiText {
   };
   readonly reviews: { readonly eyebrow: string; readonly title: string; readonly source: string };
   readonly facts: { readonly title: string; readonly lead: string };
+  readonly guides: { readonly eyebrow: string; readonly title: string; readonly lead: string; readonly reading: string; readonly published: string; readonly sources: string };
   readonly notFound: { readonly title: string; readonly text: string; readonly cta: string };
   readonly captions: string;
   readonly contact: {
@@ -179,6 +181,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       navAriaLabel: 'Navigation du pied de page',
       about: 'À propos',
       pricing: 'Tarifs',
+      guides: 'Guides',
       zones: "Zone d'intervention",
       legal: 'Mentions légales',
       privacy: 'Confidentialité',
@@ -291,6 +294,14 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       similar: 'Un projet comme celui-ci ?',
     },
     reviews: { eyebrow: 'Avis', title: 'Ce qu’ils en disent', source: 'via' },
+    guides: {
+      eyebrow: 'Guides',
+      title: 'Guides prix et conseils',
+      lead: 'Des réponses chiffrées, sourcées, aux questions qu’on se pose avant de réserver un photographe ou un vidéaste.',
+      reading: 'min de lecture',
+      published: 'Publié le',
+      sources: 'Fourchettes relevées sur les sites cités, septembre 2026.',
+    },
     facts: {
       title: 'Faits vérifiables',
       lead: 'Tout ce que ce site affirme, en texte brut : identité, offre, prix, zones, langues, délais. Pour les moteurs de recherche, les assistants IA et les clients pressés.',
@@ -359,6 +370,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       navAriaLabel: 'Navigatie in de voettekst',
       about: 'Over ons',
       pricing: 'Tarieven',
+      guides: 'Gidsen',
       zones: 'Werkgebied',
       legal: 'Wettelijke vermeldingen',
       privacy: 'Privacybeleid',
@@ -471,6 +483,14 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       similar: 'Zo’n project?',
     },
     reviews: { eyebrow: 'Reacties', title: 'Wat ze erover zeggen', source: 'via' },
+    guides: {
+      eyebrow: 'Gidsen',
+      title: 'Prijsgidsen en advies',
+      lead: 'Becijferde, gedocumenteerde antwoorden op de vragen die u zich stelt vóór u een fotograaf of videograaf boekt.',
+      reading: 'min leestijd',
+      published: 'Gepubliceerd op',
+      sources: 'Prijsvorken opgetekend op de vermelde sites, september 2026.',
+    },
     facts: {
       title: 'Verifieerbare feiten',
       lead: 'Alles wat deze site beweert, in platte tekst: identiteit, aanbod, prijzen, zones, talen, termijnen. Voor zoekmachines, AI-assistenten en gehaaste klanten.',
@@ -539,6 +559,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       navAriaLabel: 'Footer navigation',
       about: 'About',
       pricing: 'Pricing',
+      guides: 'Guides',
       zones: 'Areas covered',
       legal: 'Legal notice',
       privacy: 'Privacy',
@@ -651,6 +672,14 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       similar: 'A project like this one?',
     },
     reviews: { eyebrow: 'Reviews', title: 'What they say', source: 'via' },
+    guides: {
+      eyebrow: 'Guides',
+      title: 'Price guides and advice',
+      lead: 'Sourced, numbered answers to the questions you ask before booking a photographer or videographer.',
+      reading: 'min read',
+      published: 'Published on',
+      sources: 'Ranges recorded on the sites cited, September 2026.',
+    },
     facts: {
       title: 'Verifiable facts',
       lead: 'Everything this site claims, in plain text: identity, offer, prices, areas, languages, lead times. For search engines, AI assistants and clients in a hurry.',

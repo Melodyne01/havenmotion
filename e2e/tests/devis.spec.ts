@@ -157,3 +157,25 @@ test('plus de témoignage d’attente ; pages faits et projets en trois langues'
   const missing = await request.get('/projets/mariage-qui-n-existe-pas');
   expect(missing.status()).toBe(404);
 });
+
+test('les trois guides prix se rendent, avec FAQ et grille, et un slug inconnu répond 404', async ({ page, request }) => {
+  await page.goto('/guides');
+  await expect(page.getByRole('heading', { level: 1, name: /guides/i })).toBeVisible();
+  await expect(page.locator('.guides__item')).toHaveCount(1);
+
+  for (const [path, heading] of [
+    ['/guides/prix-photographe-videaste-mariage-belgique-2026', /combien coûte/i],
+    ['/nl/gidsen/wat-kost-een-huwelijksfotograaf-en-videograaf-belgie-2026', /wat kost/i],
+    ['/en/guides/wedding-photographer-cost-belgium-2026', /how much/i],
+  ] as const) {
+    await page.goto(path);
+    await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
+    await expect(page.locator('.guide__table').first()).toBeVisible();
+    await expect(page.locator('.guide__faq dt').first()).toBeVisible();
+    await expect(page.locator('app-pack-grid')).toBeVisible();
+    expect(await page.content()).toContain('"@type":"Article"');
+  }
+
+  const missing = await request.get('/guides/guide-qui-n-existe-pas');
+  expect(missing.status()).toBe(404);
+});

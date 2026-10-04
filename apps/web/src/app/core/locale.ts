@@ -55,6 +55,7 @@ export const ROUTE_SEGMENTS: Readonly<Record<SiteLocale, Readonly<Record<RouteKe
     onePerson: 'photo-et-video-une-seule-personne',
     projects: 'projets',
     facts: 'a-propos/faits',
+    guides: 'guides',
   },
   nl: {
     services: 'diensten',
@@ -68,6 +69,7 @@ export const ROUTE_SEGMENTS: Readonly<Record<SiteLocale, Readonly<Record<RouteKe
     onePerson: 'foto-en-video-door-een-persoon',
     projects: 'projecten',
     facts: 'over-ons/feiten',
+    guides: 'gidsen',
   },
   en: {
     services: 'services',
@@ -81,6 +83,7 @@ export const ROUTE_SEGMENTS: Readonly<Record<SiteLocale, Readonly<Record<RouteKe
     onePerson: 'one-photographer-videographer',
     projects: 'projects',
     facts: 'about/facts',
+    guides: 'guides',
   },
 };
 
@@ -95,7 +98,8 @@ export type RouteKey =
   | 'privacy'
   | 'onePerson'
   | 'projects'
-  | 'facts';
+  | 'facts'
+  | 'guides';
 
 /** Chemin absolu d'une page fixe dans la langue donnée (`/nl/tarieven`). */
 export function routePath(locale: SiteLocale, key: RouteKey): string {

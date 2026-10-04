@@ -72,6 +72,16 @@ function publicRoutes(locale: SiteLocale): Routes {
         import('./public/pages/project-page.component').then((m) => m.ProjectPageComponent),
     },
     {
+      path: seg.guides,
+      loadComponent: () =>
+        import('./public/pages/guides-page.component').then((m) => m.GuidesPageComponent),
+    },
+    {
+      path: `${seg.guides}/:slug`,
+      loadComponent: () =>
+        import('./public/pages/guide-page.component').then((m) => m.GuidePageComponent),
+    },
+    {
       path: seg.facts,
       loadComponent: () =>
         import('./public/pages/facts-page.component').then((m) => m.FactsPageComponent),

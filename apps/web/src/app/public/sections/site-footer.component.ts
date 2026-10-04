@@ -25,6 +25,7 @@ import { UI_TEXT } from '../../core/ui-text';
         <a class="footer__link" [routerLink]="pricingHref">{{ text.footer.pricing }}</a>
         <a class="footer__link" [routerLink]="aboutHref">{{ text.footer.about }}</a>
         <a class="footer__link" [routerLink]="faqHref">FAQ</a>
+        <a class="footer__link" [routerLink]="guidesHref">{{ text.footer.guides }}</a>
         <a class="footer__link" [routerLink]="zonesHref">{{ text.footer.zones }}</a>
         <a class="footer__link" [routerLink]="contactHref">Contact</a>
         <a class="footer__link" [routerLink]="mentionsHref">{{ text.footer.legal }}</a>
@@ -46,6 +47,7 @@ export class SiteFooterComponent {
   protected readonly pricingHref = routePath(this.locale, 'pricing');
   protected readonly aboutHref = routePath(this.locale, 'about');
   protected readonly faqHref = routePath(this.locale, 'faq');
+  protected readonly guidesHref = routePath(this.locale, 'guides');
   protected readonly zonesHref = routePath(this.locale, 'zones');
   protected readonly contactHref = routePath(this.locale, 'contact');
   protected readonly mentionsHref = routePath(this.locale, 'legal');

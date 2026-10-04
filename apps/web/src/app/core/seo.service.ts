@@ -18,7 +18,7 @@ export interface SeoInput {
 }
 
 /** Chemins d'une même page dans chaque langue où elle existe ; FR obligatoire. */
-export type HreflangPaths = { fr: string } & Partial<Record<SiteLocale, string>>;
+export type HreflangPaths = Partial<Record<SiteLocale, string>>;
 
 const OG_LOCALES: Readonly<Record<SiteLocale, string>> = { fr: 'fr_BE', nl: 'nl_BE', en: 'en_GB' };
 
@@ -74,7 +74,12 @@ export class SeoService {
         this.removeAlternate(locale);
       }
     }
-    this.setAlternate('x-default', `${this.origin}${paths.fr}`);
+    // Une page qui n'existe que dans une langue (un guide écrit pour son
+    // marché) est son propre x-default.
+    const xDefault = paths.fr ?? SITE_LOCALES.map((l) => paths[l]).find(Boolean);
+    if (xDefault) {
+      this.setAlternate('x-default', `${this.origin}${xDefault}`);
+    }
   }
 
   /**
@@ -310,6 +315,30 @@ export class SeoService {
       })),
     };
     this.writeJsonLd('vnl-reviews', graph);
+  }
+
+  /** Publie le JSON-LD `Article` d'un guide, avec sa date de publication et son auteur (le studio). */
+  applyArticle(
+    settings: SiteSettings,
+    article: { title: string; description: string; path: string; published: string; locale: SiteLocale },
+  ): void {
+    const graph = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: article.title,
+      description: article.description,
+      inLanguage: article.locale,
+      datePublished: article.published,
+      dateModified: article.published,
+      mainEntityOfPage: `${this.origin}${article.path}`,
+      author: { '@type': 'Organization', name: settings.brandName, '@id': `${this.origin}/#studio` },
+      publisher: {
+        '@type': 'Organization',
+        name: settings.brandName,
+        logo: { '@type': 'ImageObject', url: `${this.origin}/icons/icon-512.png` },
+      },
+    };
+    this.writeJsonLd('vnl-article', graph);
   }
 
   /** Publie le bloc JSON-LD `BreadcrumbList` de la page courante. */
