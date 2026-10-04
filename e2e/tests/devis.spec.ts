@@ -68,8 +68,8 @@ test('du hero à la demande de devis', async ({ page }) => {
   await choice(/^2 000 – 5 000 €$/).click();
   await dialog.getByRole('button', { name: /continuer/i }).click();
 
-  // 8. Étape 3 : le message se compose en direct et part par e-mail
-  // (WhatsApp apparaît dès que le numéro est configuré).
+  // 8. Étape 3 : le message se compose en direct et part par WhatsApp
+  // (canal principal) ou par e-mail.
   await dialog.locator('#popup-name').fill('Camille Martin');
   await dialog.locator('#popup-message').fill('Cérémonie fin d’après-midi.');
   const preview = dialog.locator('#popup-preview');
@@ -77,6 +77,9 @@ test('du hero à la demande de devis', async ({ page }) => {
   await expect(preview).toContainText(/Photo \+ vidéo \(à partir de 2.690.€ TTC\)/);
   await expect(preview).toContainText(/Lille – Nord \(déplacement : 90.€\)/);
   await expect(preview).toContainText('Cérémonie fin d’après-midi.');
+  const whatsapp = dialog.getByRole('link', { name: /envoyer sur whatsapp/i });
+  await expect(whatsapp).toHaveAttribute('href', /^https:\/\/wa\.me\/32477753577\?text=Bonjour%20Heaven%20Motion/);
+  await expect(whatsapp).toHaveAttribute('target', '_blank');
   const mail = dialog.getByRole('link', { name: /envoyer par e-mail/i });
   await expect(mail).toHaveAttribute('href', /^mailto:.+\?subject=.+&body=Bonjour/);
 

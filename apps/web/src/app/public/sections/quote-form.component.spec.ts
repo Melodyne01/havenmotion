@@ -80,6 +80,9 @@ describe('QuoteFormComponent', () => {
     expect(preview).toContain('Luxembourg (déplacement : 190');
     const mail = [...element.querySelectorAll('a')].find((a) => a.href.startsWith('mailto:'));
     expect(mail?.href).toContain('body=Bonjour');
+    const whatsapp = [...element.querySelectorAll('a')].find((a) => a.href.startsWith('https://wa.me/'));
+    expect(whatsapp?.href).toMatch(/^https:\/\/wa\.me\/32477753577\?text=Bonjour/);
+    expect(whatsapp?.target).toBe('_blank');
   });
 
   it('bloque l’envoi tant que le nom manque', () => {
@@ -88,9 +91,9 @@ describe('QuoteFormComponent', () => {
     fixture.detectChanges();
     button(element, /continuer/i).click();
     fixture.detectChanges();
-    const mail = [...element.querySelectorAll('a')].find((a) => a.href.startsWith('mailto:'))!;
+    const whatsapp = [...element.querySelectorAll('a')].find((a) => a.href.startsWith('https://wa.me/'))!;
     const click = new MouseEvent('click', { cancelable: true });
-    mail.dispatchEvent(click);
+    whatsapp.dispatchEvent(click);
     fixture.detectChanges();
     expect(click.defaultPrevented).toBeTrue();
     expect(element.querySelector('#quote-name-error')).not.toBeNull();

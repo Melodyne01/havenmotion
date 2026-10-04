@@ -291,13 +291,46 @@
 }
 
 .nav--send {
-  justify-content: flex-start;
+  justify-content: space-between;
 
-  @include tablet-up {
-    .link {
-      margin-right: auto;
+  // À l'étape 3, ce sont les boutons d'envoi qui restent sous le pouce.
+  @include mobile {
+    position: static;
+    margin-bottom: 0;
+    border-top: 0;
+
+    .btn {
+      flex: 0 0 auto;
     }
   }
+}
+
+// Boutons d'envoi : WhatsApp d'abord (canal principal), l'e-mail ensuite.
+.send {
+  // Toujours visibles, collés en bas du popup, même quand l'aperçu est long.
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: grid;
+  gap: 10px;
+  padding: 12px 0;
+  background: $color-surface;
+  border-top: $rule-width solid $color-rule-10;
+
+  @include tablet-up {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .btn {
+    min-height: 54px;
+  }
+}
+
+.btn__icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
 }
 
 .btn {
