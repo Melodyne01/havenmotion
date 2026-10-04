@@ -58,6 +58,20 @@ public static class PublicEndpoints
         ("/zones/belgique/brabant-wallon", "/nl/zones/belgie/waals-brabant", null),
         ("/zones/luxembourg/luxembourg", "/nl/zones/luxemburg/luxembourg", "/en/areas/luxembourg/luxembourg"),
         ("/zones/france/lille-nord", null, "/en/areas/france/lille"),
+        // Régions, phase 2
+        ("/zones/belgique/anvers", "/nl/zones/belgie/antwerpen", "/en/areas/belgium/antwerp"),
+        ("/zones/belgique/flandre-orientale", "/nl/zones/belgie/oost-vlaanderen", "/en/areas/belgium/ghent-east-flanders"),
+        ("/zones/belgique/flandre-occidentale", "/nl/zones/belgie/west-vlaanderen", "/en/areas/belgium/bruges-west-flanders"),
+        ("/zones/belgique/limbourg", "/nl/zones/belgie/limburg", null),
+        ("/zones/belgique/hainaut", null, null),
+        ("/zones/belgique/namur", null, null),
+        ("/zones/belgique/liege", null, null),
+        ("/zones/belgique/ardennes", "/nl/zones/belgie/ardennen", "/en/areas/belgium/ardennes"),
+        ("/zones/france/pas-de-calais-cote-d-opale", null, null),
+        ("/zones/france/picardie-oise", null, null),
+        (null, "/nl/zones/nederland/nederlands-limburg", "/en/areas/netherlands/maastricht-limburg"),
+        (null, "/nl/zones/nederland/noord-brabant", null),
+        ("/zones/international/etranger", "/nl/zones/internationaal/buitenland", "/en/areas/international/destination"),
     ];
 
     private static async Task<SitePayloadDto> GetSiteAsync(

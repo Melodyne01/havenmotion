@@ -128,6 +128,21 @@ test('les pages commune redirigent vers leur région et les pages région se ren
   const missing = await request.get('/en/areas/belgium/walloon-brabant');
   expect(missing.status()).toBe(404);
 
+  // Phase 2 : Anvers en trois langues, Hainaut en français seulement, l'étranger en anglais.
+  for (const [path, heading] of [
+    ['/zones/belgique/anvers', /anvers/i],
+    ['/nl/zones/belgie/antwerpen', /antwerpen/i],
+    ['/en/areas/belgium/antwerp', /antwerp/i],
+    ['/zones/belgique/hainaut', /hainaut/i],
+    ['/nl/zones/nederland/noord-brabant', /noord-brabant/i],
+    ['/en/areas/international/destination', /abroad/i],
+  ] as const) {
+    await page.goto(path);
+    await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
+  }
+  const hainautNl = await request.get('/nl/zones/belgie/henegouwen');
+  expect(hainautNl.status()).toBe(404);
+
   // La page « une seule personne » existe dans les trois langues.
   await page.goto('/nl/foto-en-video-door-een-persoon');
   await expect(page.getByRole('heading', { level: 1, name: /één persoon/i })).toBeVisible();

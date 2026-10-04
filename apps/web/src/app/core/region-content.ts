@@ -1,6 +1,8 @@
 import { FaqEntry } from './faq-content';
 import { SiteLocale } from './locale';
 import { CountryCode } from './regions';
+import { REGION_CONTENT_PHASE_2_ABROAD } from './region-content-phase2-abroad';
+import { REGION_CONTENT_PHASE_2_BE } from './region-content-phase2-be';
 
 /**
  * Contenu rédactionnel d'une page région, dans une langue. Une page région
@@ -27,7 +29,7 @@ export interface CountryContent {
 }
 
 /** Phase 1 du plan : Bruxelles, Brabant flamand, Brabant wallon, Luxembourg, Lille. */
-export const REGION_CONTENT: Readonly<Record<string, Partial<Record<SiteLocale, RegionContent>>>> = {
+const REGION_CONTENT_PHASE_1: Readonly<Record<string, Partial<Record<SiteLocale, RegionContent>>>> = {
   bruxelles: {
     fr: {
       intro:
@@ -364,6 +366,16 @@ export const REGION_CONTENT: Readonly<Record<string, Partial<Record<SiteLocale, 
       ],
     },
   },
+};
+
+/**
+ * Toutes les régions publiées, phases 1 et 2 réunies (la phase 2 est écrite
+ * dans deux fichiers voisins pour garder celui-ci lisible).
+ */
+export const REGION_CONTENT: Readonly<Record<string, Partial<Record<SiteLocale, RegionContent>>>> = {
+  ...REGION_CONTENT_PHASE_1,
+  ...REGION_CONTENT_PHASE_2_BE,
+  ...REGION_CONTENT_PHASE_2_ABROAD,
 };
 
 /** Texte des pages pays (`/zones/belgique`…), dans les trois langues. */

@@ -36,6 +36,16 @@ describe('REGION_CONTENT', () => {
     }
   });
 
+  it('couvre les treize régions de phase 2 dans toutes leurs langues', () => {
+    const phaseTwo = REGIONS.filter((r) => r.phase === 2);
+    expect(phaseTwo.length).toBe(13);
+    for (const region of phaseTwo) {
+      for (const locale of region.languages) {
+        expect(REGION_CONTENT[region.slug.fr]?.[locale]).withContext(`${region.slug.fr} ${locale}`).toBeDefined();
+      }
+    }
+  });
+
   it('donne à chaque page au moins quatre villes, six lieux et deux questions', () => {
     for (const [id, byLocale] of Object.entries(REGION_CONTENT)) {
       for (const locale of SITE_LOCALES) {
