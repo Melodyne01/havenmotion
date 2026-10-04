@@ -38,9 +38,11 @@ import { UI_TEXT } from '../../core/ui-text';
           titleId="titre-studio"
           [level]="headingLevel()"
         />
-        @for (paragraph of about().paragraphs; track paragraph) {
-          <p class="about__line">{{ paragraph }}</p>
-        }
+        <div class="about__body">
+          @for (paragraph of about().paragraphs; track paragraph) {
+            <p class="about__line">{{ paragraph }}</p>
+          }
+        </div>
       </div>
     </section>
   `,

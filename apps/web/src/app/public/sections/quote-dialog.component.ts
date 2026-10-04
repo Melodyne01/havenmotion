@@ -169,6 +169,9 @@ export class QuoteDialogComponent {
     afterNextRender(() => {
       const listener = (event: MouseEvent) => this.intercept(event);
       this.document.addEventListener('click', listener, true);
+      // Repère « popup prêt » : avant ce moment (application pas encore
+      // démarrée), un clic suit le lien de secours vers la section contact.
+      this.document.documentElement.dataset['quoteReady'] = 'true';
       // Clic sur l'arrière-plan (hors du panneau) : fermeture. Au clavier,
       // c'est la touche Échap, gérée nativement par <dialog>.
       const element = this.dialog().nativeElement;
@@ -180,6 +183,7 @@ export class QuoteDialogComponent {
       element.addEventListener('click', backdrop);
       destroyRef.onDestroy(() => {
         this.document.removeEventListener('click', listener, true);
+        delete this.document.documentElement.dataset['quoteReady'];
         element.removeEventListener('click', backdrop);
         this.document.documentElement.style.overflow = '';
         this.quote.close();

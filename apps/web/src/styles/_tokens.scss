@@ -60,6 +60,9 @@ $lh-body: 1.65;
 // --- Mise en page ----------------------------------------------------------
 $gutter: 2px; // gouttière entre blocs vidéo
 $pad-x-desktop: 40px;
+// Largeur maximale du contenu des pages longues sur très grand écran : au-delà,
+// le contenu est centré plutôt que de laisser un vide d'un seul côté.
+$content-max: 1440px;
 $pad-x-mobile: 18px;
 $pad-y: 80px;
 $pad-y-tight: 70px;
@@ -78,10 +81,19 @@ $reveal-offset: 12px; // translation des apparitions au scroll
 
 // --- Points de rupture -----------------------------------------------------
 $bp-desktop: 1280px;
+$bp-laptop: 1024px; // portables et tablettes à l'horizontale
 $bp-tablet: 768px;
 
 @mixin desktop {
   @media (min-width: $bp-desktop) {
+    @content;
+  }
+}
+
+// Mises en page en deux colonnes des textes longs : dès 1024 px, la colonne
+// de droite garde une longueur de ligne confortable.
+@mixin laptop-up {
+  @media (min-width: $bp-laptop) {
     @content;
   }
 }

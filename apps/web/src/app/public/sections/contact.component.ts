@@ -42,6 +42,15 @@ import { QuoteService, prefillFromParams } from '../../core/quote';
         <app-quote-form [prefill]="prefill" idPrefix="page" />
       } @else {
         <div class="contact__action">
+          <ol class="contact__steps">
+            @for (step of text.steps; track $index) {
+              <li>
+                <span class="contact__step-number">{{ $index + 1 }}</span>
+                <span class="contact__step-label">{{ step }}</span>
+                <span class="contact__step-title">{{ text.stepTitles[$index] }}</span>
+              </li>
+            }
+          </ol>
           <app-cta-button (click)="quote.open()">{{ text.openQuote }}</app-cta-button>
         </div>
       }

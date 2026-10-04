@@ -21,6 +21,11 @@
 
 .services__lead {
   max-width: 62ch;
+
+  @include laptop-up {
+    max-width: 100ch;
+  }
+
   margin: -24px 0 32px;
   color: $color-muted-60;
   font-size: $fs-15;

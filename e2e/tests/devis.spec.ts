@@ -47,6 +47,9 @@ test('du hero à la demande de devis', async ({ page }) => {
   await expect(firstBand).toHaveAttribute('href', /^\/prestations\//);
 
   // 5. Le CTA du hero ouvre le popup de devis, sans quitter la page.
+  // Le popup s'active une fois l'application démarrée ; avant, le lien
+  // mène (volontairement) à la section contact.
+  await page.locator('html[data-quote-ready]').waitFor({ state: 'attached' });
   await page.locator('app-hero').getByRole('link', { name: /demander un devis/i }).click();
   const dialog = page.getByRole('dialog', { name: /votre demande de devis/i });
   await expect(dialog).toBeVisible();
@@ -232,6 +235,7 @@ test('les trois guides prix se rendent, avec FAQ et grille, et un slug inconnu r
  */
 test('les formules ouvrent le popup prérempli et la page contact garde le formulaire', async ({ page }) => {
   await page.goto('/prestations/corporate');
+  await page.locator('html[data-quote-ready]').waitFor({ state: 'attached' });
   await page.getByRole('link', { name: /choisir cette formule/i }).first().click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();

@@ -141,7 +141,7 @@ import { CATEGORY_NAMES } from '../../core/site-content';
         <p class="pricing__note">{{ content.travelHotel }}</p>
       </section>
 
-      <section class="pricing__section" aria-labelledby="titre-pourquoi">
+      <section class="pricing__section pricing__section--split" aria-labelledby="titre-pourquoi">
         <h2 id="titre-pourquoi" class="pricing__h2">{{ content.whyTitle }}</h2>
         @for (paragraph of content.why; track paragraph) {
           <p class="pricing__paragraph">{{ paragraph }}</p>
@@ -199,11 +199,15 @@ import { CATEGORY_NAMES } from '../../core/site-content';
   styles: [
     `
       @use 'tokens' as *;
+      @use 'editorial' as *;
 
       .pricing {
         display: grid;
         gap: 16px;
+        width: 100%;
+        max-width: $content-max;
         padding: 20px $pad-x-mobile 64px;
+        margin-inline: auto;
 
         @include tablet-up {
           padding: 24px $pad-x-desktop 96px;
@@ -231,6 +235,13 @@ import { CATEGORY_NAMES } from '../../core/site-content';
         display: grid;
         gap: 8px;
         max-width: 72ch;
+
+        @include laptop-up {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          column-gap: 48px;
+          max-width: none;
+        }
+
         padding: 20px 24px;
         margin: -24px 0 16px;
         list-style: none;
@@ -259,6 +270,10 @@ import { CATEGORY_NAMES } from '../../core/site-content';
         padding-top: 40px;
         margin-top: 24px;
         border-top: $rule-width solid $color-rule-10;
+      }
+
+      .pricing__section--split {
+        @include editorial-split;
       }
 
       .pricing__h2 {
@@ -300,6 +315,11 @@ import { CATEGORY_NAMES } from '../../core/site-content';
         color: $color-muted-60;
         font-size: $fs-15;
         line-height: $lh-body;
+
+        @include laptop-up {
+          max-width: 100ch;
+          font-size: 16px;
+        }
       }
 
       .pricing__types {

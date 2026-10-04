@@ -63,8 +63,6 @@ import { COUNTRIES, REGIONS } from '../../core/regions';
 
       .facts {
         @include editorial-page;
-
-        max-width: 90ch;
       }
 
       .facts__breadcrumb {

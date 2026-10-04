@@ -90,6 +90,11 @@ import { countryPath, regionPath } from './region-page.component';
         @include editorial-paragraph;
 
         max-width: 72ch;
+
+        @include laptop-up {
+          max-width: 100ch;
+          font-size: 16px;
+        }
         margin-top: -24px;
       }
 

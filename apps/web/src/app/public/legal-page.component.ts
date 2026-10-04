@@ -42,12 +42,17 @@ interface LegalSection {
   styles: [
     `
       @use 'tokens' as *;
+      @use 'editorial' as *;
 
       .legal {
         max-width: 78ch;
         margin: 0 auto;
 
         @include section-padding;
+
+        @include laptop-up {
+          max-width: $content-max;
+        }
       }
 
       .legal__title {
@@ -58,6 +63,11 @@ interface LegalSection {
       }
 
       .legal__section {
+        display: grid;
+        gap: 8px;
+
+        @include editorial-split(8px, false);
+
         padding-top: 28px;
         margin-top: 28px;
         border-top: $rule-width solid $color-rule-10;

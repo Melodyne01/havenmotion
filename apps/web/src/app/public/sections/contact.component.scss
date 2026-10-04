@@ -7,7 +7,7 @@
 
   @include section-padding;
 
-  @include desktop {
+  @include laptop-up {
     grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
     gap: 64px;
     align-items: start;
@@ -40,5 +40,55 @@
 }
 
 .contact__action {
-  align-self: center;
+  display: grid;
+  justify-items: start;
+  gap: 28px;
+  padding: 28px 24px;
+  background: $color-charcoal;
+  border: $rule-width solid $color-rule-10;
+
+  @include tablet-up {
+    padding: 40px;
+  }
+}
+
+// Les trois étapes du devis, pour que le bouton ne flotte pas seul au
+// milieu d'une demi-page vide.
+.contact__steps {
+  display: grid;
+  gap: 20px;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  counter-reset: none;
+
+  @include tablet-up {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  li {
+    display: grid;
+    gap: 6px;
+    padding-top: 16px;
+    border-top: $progress-height solid $color-amber;
+  }
+}
+
+.contact__step-number {
+  @include display-caps($fs-11, $ls-44, $weight-semibold);
+
+  color: $color-amber;
+}
+
+.contact__step-label {
+  @include display-caps($fs-18, $ls-14);
+
+  color: $color-film;
+}
+
+.contact__step-title {
+  color: $color-muted-60;
+  font-size: $fs-14;
+  line-height: $lh-body;
 }

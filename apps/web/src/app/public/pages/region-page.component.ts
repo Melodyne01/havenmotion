@@ -217,6 +217,7 @@ export function countryPath(locale: SiteLocale, country: Country): string {
 
       .region__intro {
         @include editorial-paragraph;
+        @include editorial-lede;
 
         max-width: 78ch;
       }
@@ -225,6 +226,14 @@ export function countryPath(locale: SiteLocale, country: Country): string {
         @include editorial-list;
 
         max-width: 78ch;
+
+        @include laptop-up {
+          grid-template-columns: repeat(3, auto);
+          justify-content: start;
+          column-gap: 48px;
+          max-width: none;
+        }
+
         padding: 16px 24px;
         background: $color-surface;
         border-left: 3px solid $color-amber;
