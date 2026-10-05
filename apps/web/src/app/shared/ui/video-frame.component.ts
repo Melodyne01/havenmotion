@@ -17,6 +17,7 @@ import { MediaAsset, Rendition } from '../../models';
 import { prefersLightMedia, prefersReducedMotion } from '../../core/motion';
 import { SiteLocale } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
+import { AnalyticsService } from '../../core/analytics';
 
 /**
  * `auto`     — lit en boucle dès que le cadre est visible (hero).
@@ -54,6 +55,7 @@ export type VideoFramePlayback = 'auto' | 'hover' | 'manual' | 'poster';
           disablepictureinpicture
           (timeupdate)="onTimeUpdate()"
           (emptied)="progressPercent.set(0)"
+          (play)="onPlay()"
         >
           @for (source of sources(); track source.url) {
             <source [src]="source.url" [type]="source.type" />
@@ -115,6 +117,9 @@ export class VideoFrameComponent implements AfterViewInit, OnDestroy {
   private readonly videoRef = viewChild<ElementRef<HTMLVideoElement>>('video');
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly analytics = inject(AnalyticsService);
+  /** Une seule mesure par film et par affichage, même si le visiteur relance la lecture. */
+  private playTracked = false;
 
   private readonly inView = signal(false);
   private readonly hovered = signal(false);
@@ -244,5 +249,21 @@ export class VideoFrameComponent implements AfterViewInit, OnDestroy {
 
   private hasFinePointer(): boolean {
     return this.isBrowser && window.matchMedia?.('(hover: hover) and (pointer: fine)').matches;
+  }
+
+  /**
+   * Mesure Umami : seules les lectures lancées par le visiteur comptent (films
+   * avec contrôles, sur les pages catégorie et projet) ; les fonds vidéo en
+   * lecture automatique ou au survol ne sont pas des lectures.
+   */
+  protected onPlay(): void {
+    if (!this.controls() || this.playTracked) {
+      return;
+    }
+    this.playTracked = true;
+    this.analytics.track('video_play', {
+      title: this.label(),
+      path: typeof location !== 'undefined' ? location.pathname : undefined,
+    });
   }
 }

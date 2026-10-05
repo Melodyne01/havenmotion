@@ -12,6 +12,15 @@
     <link rel="preload" href="/fonts/archivo-narrow-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
     <script src="/config.js"></script>
+    <!-- Umami (même instance que Beetee) : sans cookie, IP anonymisée, donc sans
+         consentement. data-domains limite la mesure au site de production :
+         dev.heavenmotion.be, localhost et les tests ne remontent rien. -->
+    <script
+      defer
+      src="https://analytics.beetee.be/script.js"
+      data-website-id="b45c7a69-aa21-4eb3-a2b8-56b8982c2c00"
+      data-domains="heavenmotion.be,www.heavenmotion.be"
+    ></script>
   </head>
   <body>
     <app-root></app-root>

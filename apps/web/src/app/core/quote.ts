@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { AnalyticsService } from './analytics';
 import { CategoryKey, SiteLocale, pick } from './locale';
 import { PACK_LABELS, PACK_TYPES, PackType, VAT_LABELS, formatPrice, pricingFor } from './packs';
 import { findRegion } from './regions';
@@ -145,15 +146,43 @@ export function mailtoUrl(email: string, subject: string, body: string): string 
 /** État du popup de devis, partagé par tous les boutons « Demander un devis » de la page. */
 @Injectable({ providedIn: 'root' })
 export class QuoteService {
+  private readonly analytics = inject(AnalyticsService);
+
   readonly isOpen = signal(false);
   readonly prefill = signal<QuotePrefill>({});
+  /** Dernière étape affichée dans le popup, pour mesurer l'abandon. */
+  private lastStep = 1;
+  /** Un envoi (WhatsApp ou e-mail) a eu lieu depuis l'ouverture. */
+  private sent = false;
 
-  open(prefill: QuotePrefill = {}): void {
+  /** `source` : le bouton qui a ouvert le popup (en-tête, hero, carte tarif…). */
+  open(prefill: QuotePrefill = {}, source = 'other'): void {
     this.prefill.set(prefill);
+    this.lastStep = 1;
+    this.sent = false;
     this.isOpen.set(true);
+    this.analytics.track('quote_open', {
+      source,
+      category: prefill.category,
+      pack: prefill.pack,
+      region: prefill.region,
+    });
   }
 
   close(): void {
+    if (this.isOpen() && !this.sent) {
+      this.analytics.track('quote_abandon', { step: this.lastStep });
+    }
     this.isOpen.set(false);
+  }
+
+  /** Appelé par le formulaire du popup à chaque étape affichée. */
+  stepShown(step: number): void {
+    this.lastStep = step;
+  }
+
+  /** Appelé par le formulaire quand un envoi part : la fermeture n'est plus un abandon. */
+  markSent(): void {
+    this.sent = true;
   }
 }

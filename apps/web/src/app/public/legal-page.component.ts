@@ -123,7 +123,10 @@ export class LegalPageComponent {
           },
           {
             title: 'Mesure d’audience',
-            body: ['Aucun traceur de mesure d’audience n’est déposé sans votre accord explicite. Le refus n’altère pas la navigation.'],
+            body: [
+              'Le site mesure son audience avec Umami, un outil de mesure d’audience qui ne dépose aucun cookie et anonymise l’adresse IP. Il compte les pages vues et quelques actions (ouverture du formulaire de devis, étapes franchies, choix d’envoyer par WhatsApp ou par e-mail, lecture d’un film, profondeur de lecture), sans jamais enregistrer votre nom, votre message ni aucune donnée qui vous identifie.',
+              'Cette mesure, exemptée de consentement, sert uniquement à améliorer le site. Aucun autre traceur, publicitaire ou de réseau social, n’est utilisé.',
+            ],
           },
           {
             title: 'Vos droits',
@@ -147,7 +150,10 @@ export class LegalPageComponent {
           },
           {
             title: 'Bezoekersstatistieken',
-            body: ['Er wordt geen enkele tracker voor bezoekersstatistieken geplaatst zonder uw uitdrukkelijke toestemming. Een weigering heeft geen invloed op de navigatie.'],
+            body: [
+              'De site meet zijn bezoekers met Umami, een meetinstrument voor bezoekers dat geen cookies plaatst en het IP-adres anonimiseert. Het telt de bekeken pagina’s en enkele acties (openen van het offerteformulier, doorlopen stappen, keuze om via WhatsApp of e-mail te versturen, afspelen van een film, leesdiepte), zonder ooit uw naam, uw bericht of gegevens die u identificeren op te slaan.',
+              'Deze meting, vrijgesteld van toestemming, dient enkel om de site te verbeteren. Er wordt geen andere tracker gebruikt, ook geen advertentie- of socialemediatracker.',
+            ],
           },
           {
             title: 'Uw rechten',
@@ -171,7 +177,10 @@ export class LegalPageComponent {
           },
           {
             title: 'Analytics',
-            body: ['No analytics tracker is set without your explicit consent. Refusing does not affect browsing.'],
+            body: [
+              'The site measures its audience with Umami, an audience measurement tool that sets no cookies and anonymises IP addresses. It counts page views and a few actions (opening the quote form, steps completed, choosing to send by WhatsApp or email, playing a film, reading depth), without ever recording your name, your message or any data that identifies you.',
+              'This measurement, exempt from consent, is used only to improve the site. No other tracker, advertising or social media, is used.',
+            ],
           },
           {
             title: 'Your rights',

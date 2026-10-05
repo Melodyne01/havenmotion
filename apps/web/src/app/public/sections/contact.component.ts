@@ -7,6 +7,8 @@ import { SiteStore } from '../site-store';
 import { SITE_LOCALE } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 import { QuoteService, prefillFromParams } from '../../core/quote';
+import { AnalyticsService } from '../../core/analytics';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Section contact. Sur l'accueil, un bouton ouvre le popup de devis ; sur la
@@ -51,7 +53,7 @@ import { QuoteService, prefillFromParams } from '../../core/quote';
               </li>
             }
           </ol>
-          <app-cta-button (click)="quote.open()">{{ text.openQuote }}</app-cta-button>
+          <app-cta-button (click)="openQuote()">{{ text.openQuote }}</app-cta-button>
         </div>
       }
     </section>
@@ -66,10 +68,17 @@ export class ContactComponent {
   private readonly store = inject(SiteStore);
   private readonly locale = inject(SITE_LOCALE);
   protected readonly quote = inject(QuoteService);
+  private readonly analytics = inject(AnalyticsService);
+  private readonly document = inject(DOCUMENT);
 
   protected readonly settings = this.store.settings;
   protected readonly text = UI_TEXT[this.locale].contact;
   protected readonly prefill = prefillFromParams(inject(ActivatedRoute).snapshot.queryParamMap);
+
+  protected openQuote(): void {
+    this.analytics.track('quote_entry_click', { source: 'contact-section', path: this.document.location.pathname });
+    this.quote.open({}, 'contact-section');
+  }
 
   protected instagramHandle(): string {
     return this.settings().instagram.replace('@', '');
