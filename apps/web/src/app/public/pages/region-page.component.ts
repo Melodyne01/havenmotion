@@ -22,7 +22,7 @@ import {
 } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 import { CATEGORY_NAMES } from '../../core/site-content';
-import { PRICING, VAT_LABELS, formatPrice, startingPrice } from '../../core/packs';
+import { PRICING, formatPrice, startingPriceText } from '../../core/packs';
 import { COUNTRIES, Country, REGIONS, Region, regionId } from '../../core/regions';
 import { REGION_CONTENT } from '../../core/region-content';
 import { travelZone } from '../../core/travel-zones';
@@ -97,7 +97,7 @@ export function countryPath(locale: SiteLocale, country: Country): string {
                 @for (entry of pricing; track entry.key) {
                   <li>
                     <a [routerLink]="categoryHref(entry.key)">{{ serviceHeading(entry.key, v.name) }}</a>
-                    <span>{{ text.services.from }} {{ format(from(entry.key)) }} {{ vat(entry.vat) }}</span>
+                    <span>{{ priceText(entry.key) }}</span>
                   </li>
                 }
               </ul>
@@ -447,15 +447,8 @@ export class RegionPageComponent {
     return categoryPath(this.locale, categorySlug(this.locale, key));
   }
 
-  protected from(key: CategoryKey): number {
-    return startingPrice(key);
-  }
-
-  protected vat(mode: (typeof PRICING)[number]['vat']): string {
-    return VAT_LABELS[mode][this.locale];
-  }
-
-  protected format(amount: number): string {
-    return formatPrice(amount);
+  /** « à partir de 300 € TTC », ou « Sur devis ». */
+  protected priceText(key: CategoryKey): string {
+    return startingPriceText(key, this.locale);
   }
 }

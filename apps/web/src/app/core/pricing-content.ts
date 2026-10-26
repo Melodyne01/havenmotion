@@ -1,6 +1,6 @@
 import { FaqEntry } from './faq-content';
 import { SiteLocale } from './locale';
-import { formatPrice, startingPrice } from './packs';
+import { formatPrice, pricingFor, startingPrice } from './packs';
 
 export interface PricingContent {
   /** Titre de la page (H1), avec l'année : les requêtes « prix 2026 » se classent. */
@@ -35,9 +35,9 @@ export interface PricingContent {
   readonly ctaBody: string;
 }
 
-const mariage = formatPrice(startingPrice('mariage'));
-const mariageCombo = '2 690 €';
-const lifestyle = formatPrice(startingPrice('lifestyle'));
+const mariage = formatPrice(startingPrice('mariage')!);
+const mariageCombo = formatPrice(pricingFor('mariage').packs.find((p) => p.type === 'combo')!.price!);
+const evenementiel = formatPrice(startingPrice('evenementiel')!);
 
 /**
  * Texte de la page tarifs. Les fourchettes de marché citées viennent de
@@ -49,15 +49,15 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
   fr: {
     title: 'Tarifs photo & vidéo 2026',
     metaTitle: 'Tarifs photographe & vidéaste 2026 — Belgique, France, Luxembourg, Pays-Bas, Allemagne',
-    metaDescription: `Prix affichés, TTC ou HTVA : photo, vidéo ou photo + vidéo par la même personne, dans 6 catégories. Mariage dès ${mariage}, séance lifestyle dès ${lifestyle}. Options, forfaits de déplacement, conditions.`,
+    metaDescription: `Prix affichés, TTC ou HTVA : photo, vidéo ou photo + vidéo par la même personne. Événement dès ${evenementiel}, mariage dès ${mariage} ; corporate, clip et lifestyle sur devis. Options, forfaits de déplacement, conditions.`,
     eyebrow: 'Tarifs',
     inBrief: [
       '6 catégories : mariage, événementiel, corporate, sport, clip, lifestyle.',
-      '4 formules par catégorie : photo, vidéo, photo + vidéo par la même personne, ou sur mesure.',
-      `Prix affichés, de ${lifestyle} (séance lifestyle) à ${mariageCombo} (mariage photo + vidéo, journée complète).`,
-      'TTC pour les particuliers, HTVA pour les entreprises — la mention figure à côté de chaque prix.',
+      'Mariage, événementiel et sport : 4 formules, photo, vidéo, photo + vidéo par la même personne, ou sur mesure. Corporate, clip et lifestyle : sur devis.',
+      `Prix affichés, de ${evenementiel} (événement en photo) à ${mariageCombo} (mariage photo + vidéo, journée complète).`,
+      'TTC pour les particuliers, HTVA pour les clubs et les entreprises — la mention figure à côté de chaque prix.',
       'Déplacement inclus jusqu’à 60 km de Bruxelles, puis forfait fixe : 90 €, 190 €, 290 €.',
-      'Devis chiffré sous 48 h, deux allers-retours de montage inclus, aperçu photo sous 7 jours.',
+      'Devis chiffré sous 48 h, deux allers-retours de montage inclus.',
     ],
     packTypesTitle: 'Quatre formules, une logique',
     packTypes: [
@@ -67,7 +67,7 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
       },
       {
         name: 'Vidéo + montage',
-        body: 'Le tournage, le montage, l’étalonnage et une musique sous licence. Un film qui raconte, plus les formats courts pour les réseaux.',
+        body: 'Le tournage, le montage et l’étalonnage. Un film qui raconte votre mariage, ou un aftermovie court qui résume votre événement.',
       },
       {
         name: 'Photo + vidéo',
@@ -75,7 +75,7 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
       },
       {
         name: 'Sur mesure',
-        body: 'Une durée, des livrables ou des options qui sortent de la grille : mariage sur deux jours, compétition sur un week-end, contenu mensuel pour une marque. Devis sous 48 h.',
+        body: 'Une durée, des livrables ou des options qui sortent de la grille : mariage sur deux jours, compétition sur un week-end, contenu mensuel pour une marque. Le corporate, le clip et le lifestyle sont toujours sur mesure. Devis sous 48 h.',
       },
     ],
     gridsTitle: 'Les prix, catégorie par catégorie',
@@ -93,7 +93,7 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
       'Une seule personne, pas d’agence : pas de marge intermédiaire, pas de sous-traitance du montage, pas de commercial. Vous parlez à celui qui tient la caméra.',
       'La photo et la vidéo par la même personne coûtent moins cher que deux prestataires : un seul déplacement, un seul repérage, un seul jour de travail. L’économie vous est reversée sur le combo.',
       'Les prix sont les mêmes dans les cinq pays. Seul le forfait de déplacement change, et il est affiché. Au Luxembourg, où le marché est 15 à 30 % plus cher, c’est un avantage réel.',
-      'Le matériel, les sauvegardes doubles, les licences musicales et les assurances sont compris. Ce qui est en option est listé ci-dessus, avec son prix.',
+      'Le matériel, les sauvegardes doubles et les assurances sont compris. Ce qui est en option est listé ci-dessus, avec son prix.',
     ],
     marketTitle: 'Pour comparer : les fourchettes du marché',
     market: [
@@ -109,8 +109,8 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
     terms: [
       { name: 'Réservation', body: 'Un acompte de 30 % bloque la date. Le solde est dû à la livraison.' },
       { name: 'Annulation', body: 'Acompte remboursé si l’annulation intervient plus de 90 jours avant la date ; report gratuit une fois, selon disponibilités.' },
-      { name: 'Livraison', body: 'Aperçu photo sous 7 jours, galerie complète et film sous 2 à 4 semaines selon la période. Deux allers-retours de montage inclus.' },
-      { name: 'Droits', body: 'Usage complet des images pour vos besoins propres ; cession des droits commerciaux incluse dans les formules corporate, sport et clip. Le studio garde le droit de montrer son travail, sauf refus de votre part.' },
+      { name: 'Livraison', body: 'Mariage : photos et film sous 2 à 4 semaines. Événementiel : photos dans la semaine, aftermovie sous 1 à 2 semaines. Deux allers-retours de montage inclus.' },
+      { name: 'Droits', body: 'Usage complet des images pour vos besoins propres ; cession des droits commerciaux incluse dans les formules sport, et précisée sur le devis pour le corporate et le clip. Le studio garde le droit de montrer son travail, sauf refus de votre part.' },
       { name: 'Sauvegarde', body: 'Double carte mémoire à la prise de vue, copie sur deux supports le soir même, galerie en ligne conservée 12 mois.' },
       { name: 'TVA', body: 'TVA belge de 21 % incluse dans les prix TTC. Pour une entreprise assujettie hors Belgique, facture en autoliquidation.' },
     ],
@@ -155,15 +155,15 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
   nl: {
     title: 'Tarieven foto & video 2026',
     metaTitle: 'Tarieven fotograaf & videograaf 2026 — België, Frankrijk, Luxemburg, Nederland, Duitsland',
-    metaDescription: `Transparante prijzen, incl. of excl. btw: foto, video of foto + video door dezelfde persoon, in 6 categorieën. Huwelijk vanaf ${mariage}, lifestyle-sessie vanaf ${lifestyle}. Opties, verplaatsingstarieven, voorwaarden.`,
+    metaDescription: `Transparante prijzen, incl. of excl. btw: foto, video of foto + video door dezelfde persoon. Evenement vanaf ${evenementiel}, huwelijk vanaf ${mariage}; zakelijk, clip en lifestyle op offerte. Opties, verplaatsingstarieven, voorwaarden.`,
     eyebrow: 'Tarieven',
     inBrief: [
       '6 categorieën: huwelijk, evenementen, zakelijk, sport, clip, lifestyle.',
-      '4 formules per categorie: foto, video, foto + video door dezelfde persoon, of op maat.',
-      `Prijzen online, van ${lifestyle} (lifestyle-sessie) tot ${mariageCombo} (huwelijk foto + video, volledige dag).`,
-      'Incl. btw voor particulieren, excl. btw voor bedrijven — de vermelding staat naast elke prijs.',
+      'Huwelijk, evenementen en sport: 4 formules, foto, video, foto + video door dezelfde persoon, of op maat. Zakelijk, clip en lifestyle: op offerte.',
+      `Prijzen online, van ${evenementiel} (evenement in foto) tot ${mariageCombo} (huwelijk foto + video, volledige dag).`,
+      'Incl. btw voor particulieren, excl. btw voor clubs en bedrijven — de vermelding staat naast elke prijs.',
       'Verplaatsing inbegrepen tot 60 km van Brussel, daarna een vast tarief: € 90, € 190, € 290.',
-      'Concrete offerte binnen 48 u, twee rondes feedback inbegrepen, voorproefje van de foto’s binnen 7 dagen.',
+      'Concrete offerte binnen 48 u, twee rondes feedback inbegrepen.',
     ],
     packTypesTitle: 'Vier formules, één logica',
     packTypes: [
@@ -173,7 +173,7 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
       },
       {
         name: 'Video + montage',
-        body: 'De opname, de montage, de kleurcorrectie en muziek in licentie. Een film die vertelt, plus korte formaten voor sociale media.',
+        body: 'De opname, de montage en de kleurcorrectie. Een film die uw huwelijk vertelt, of een korte aftermovie die uw evenement samenvat.',
       },
       {
         name: 'Foto + video',
@@ -181,7 +181,7 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
       },
       {
         name: 'Op maat',
-        body: 'Een duur, eindproducten of opties buiten de grille: huwelijk over twee dagen, competitie over een weekend, maandelijkse content voor een merk. Offerte binnen 48 u.',
+        body: 'Een duur, eindproducten of opties buiten de grille: huwelijk over twee dagen, competitie over een weekend, maandelijkse content voor een merk. Zakelijk, clip en lifestyle zijn altijd op maat. Offerte binnen 48 u.',
       },
     ],
     gridsTitle: 'De prijzen, categorie per categorie',
@@ -199,7 +199,7 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
       'Eén persoon, geen agentschap: geen tussenmarge, geen uitbestede montage, geen verkoper. U praat met wie de camera vasthoudt.',
       'Foto en video door dezelfde persoon kosten minder dan twee leveranciers: één verplaatsing, één verkenning, één werkdag. Die besparing krijgt u terug op de combinatie.',
       'De prijzen zijn dezelfde in de vijf landen. Alleen het verplaatsingstarief verandert, en dat staat online. In Luxemburg, waar de markt 15 tot 30 % duurder is, is dat een echt voordeel.',
-      'Materiaal, dubbele back-ups, muzieklicenties en verzekeringen zijn inbegrepen. Wat optioneel is, staat hierboven, met zijn prijs.',
+      'Materiaal, dubbele back-ups en verzekeringen zijn inbegrepen. Wat optioneel is, staat hierboven, met zijn prijs.',
     ],
     marketTitle: 'Ter vergelijking: de marktprijzen',
     market: [
@@ -215,8 +215,8 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
     terms: [
       { name: 'Reservatie', body: 'Een voorschot van 30 % legt de datum vast. Het saldo is verschuldigd bij levering.' },
       { name: 'Annulering', body: 'Voorschot terugbetaald bij annulering meer dan 90 dagen vóór de datum; één gratis verplaatsing van datum, volgens beschikbaarheid.' },
-      { name: 'Levering', body: 'Voorproefje van de foto’s binnen 7 dagen, volledige galerij en film binnen 2 tot 4 weken naargelang het seizoen. Twee rondes feedback inbegrepen.' },
-      { name: 'Rechten', body: 'Volledig gebruik van de beelden voor eigen doeleinden; commerciële rechten inbegrepen in de formules zakelijk, sport en clip. De studio behoudt het recht om zijn werk te tonen, tenzij u dat weigert.' },
+      { name: 'Levering', body: 'Huwelijk: foto’s en film binnen 2 tot 4 weken. Evenementen: foto’s binnen de week, aftermovie binnen 1 tot 2 weken. Twee rondes feedback inbegrepen.' },
+      { name: 'Rechten', body: 'Volledig gebruik van de beelden voor eigen doeleinden; commerciële rechten inbegrepen in de formules sport, en vermeld op de offerte voor zakelijk en clip. De studio behoudt het recht om zijn werk te tonen, tenzij u dat weigert.' },
       { name: 'Back-up', body: 'Dubbele geheugenkaart bij de opname, kopie op twee dragers dezelfde avond, online galerij 12 maanden bewaard.' },
       { name: 'Btw', body: 'Belgische btw van 21 % inbegrepen in de prijzen incl. btw. Voor een btw-plichtig bedrijf buiten België: factuur met verlegde btw.' },
     ],
@@ -237,22 +237,22 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
   en: {
     title: 'Photo & video pricing 2026',
     metaTitle: 'Photographer & videographer pricing 2026 — Belgium, France, Luxembourg, Netherlands, Germany',
-    metaDescription: `Published prices, incl. or excl. VAT: photo, video or photo + video by the same person, across 6 categories. Weddings from ${mariage}, lifestyle sessions from ${lifestyle}. Extras, travel fees, terms.`,
+    metaDescription: `Published prices, incl. or excl. VAT: photo, video or photo + video by the same person. Events from ${evenementiel}, weddings from ${mariage}; corporate, music video and lifestyle on quote. Extras, travel fees, terms.`,
     eyebrow: 'Pricing',
     inBrief: [
       '6 categories: wedding, events, corporate, sport, music video, lifestyle.',
-      '4 packages per category: photo, video, photo + video by the same person, or custom.',
-      `Published prices, from ${lifestyle} (lifestyle session) to ${mariageCombo} (wedding photo + video, full day).`,
-      'VAT included for private clients, excluded for businesses — the mention sits next to every price.',
+      'Wedding, events and sport: 4 packages, photo, video, photo + video by the same person, or custom. Corporate, music video and lifestyle: on quote.',
+      `Published prices, from ${evenementiel} (event photography) to ${mariageCombo} (wedding photo + video, full day).`,
+      'VAT included for private clients, excluded for clubs and businesses — the mention sits next to every price.',
       'Travel included up to 60 km from Brussels, then a flat fee: €90, €190, €290.',
-      'Itemised quote within 48 h, two rounds of edits included, photo sneak peek within 7 days.',
+      'Itemised quote within 48 h, two rounds of edits included.',
     ],
     packTypesTitle: 'Four packages, one logic',
     packTypes: [
       { name: 'Photo + editing', body: 'The shoot and the editing of every photo, delivered in an online gallery. For those who want images to keep, print and share.' },
-      { name: 'Video + editing', body: 'The shoot, the edit, colour grading and licensed music. A film that tells the story, plus short cuts for social media.' },
+      { name: 'Video + editing', body: 'The shoot, the edit and colour grading. A film that tells your wedding, or a short aftermovie that sums up your event.' },
       { name: 'Photo + video', body: 'Both, by the same person, on the same day. One style, one point of contact, fewer people around you — and a price below the two packages separately.' },
-      { name: 'Custom', body: 'A duration, deliverables or extras outside the grid: a two-day wedding, a weekend competition, monthly content for a brand. Quote within 48 h.' },
+      { name: 'Custom', body: 'A duration, deliverables or extras outside the grid: a two-day wedding, a weekend competition, monthly content for a brand. Corporate, music video and lifestyle are always custom. Quote within 48 h.' },
     ],
     gridsTitle: 'Prices, category by category',
     gridsLead: 'Each table gives the duration, what you receive and what is included. The combo is outlined: it is the most requested package, and the best value.',
@@ -269,7 +269,7 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
       'One person, no agency: no middle margin, no outsourced editing, no sales rep. You talk to the one holding the camera.',
       'Photo and video by the same person cost less than two suppliers: one trip, one scouting visit, one day of work. That saving goes back to you on the combo.',
       'Prices are the same in all five countries. Only the travel fee changes, and it is published. In Luxembourg, where the market is 15 to 30% more expensive, that is a real advantage.',
-      'Equipment, double backups, music licences and insurance are included. What is optional is listed above, with its price.',
+      'Equipment, double backups and insurance are included. What is optional is listed above, with its price.',
     ],
     marketTitle: 'For comparison: market ranges',
     market: [
@@ -285,8 +285,8 @@ export const PRICING_CONTENT: Record<SiteLocale, PricingContent> = {
     terms: [
       { name: 'Booking', body: 'A 30% deposit secures the date. The balance is due on delivery.' },
       { name: 'Cancellation', body: 'Deposit refunded if you cancel more than 90 days before the date; one free reschedule, subject to availability.' },
-      { name: 'Delivery', body: 'Photo sneak peek within 7 days, full gallery and film within 2 to 4 weeks depending on the season. Two rounds of edits included.' },
-      { name: 'Rights', body: 'Full use of the images for your own needs; commercial rights included in the corporate, sport and music video packages. The studio keeps the right to show its work, unless you say otherwise.' },
+      { name: 'Delivery', body: 'Wedding: photos and film within 2 to 4 weeks. Events: photos within a week, aftermovie within 1 to 2 weeks. Two rounds of edits included.' },
+      { name: 'Rights', body: 'Full use of the images for your own needs; commercial rights included in the sport packages, and stated on the quote for corporate and music video. The studio keeps the right to show its work, unless you say otherwise.' },
       { name: 'Backup', body: 'Dual memory cards during the shoot, copied to two drives the same evening, online gallery kept for 12 months.' },
       { name: 'VAT', body: 'Belgian VAT of 21% included in VAT-inclusive prices. For a VAT-registered business outside Belgium, invoices are issued under the reverse-charge mechanism.' },
     ],

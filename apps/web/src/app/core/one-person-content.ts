@@ -72,7 +72,7 @@ export const ONE_PERSON_CONTENT: Record<SiteLocale, OnePersonContent> = {
     faq: [
       { question: 'Avec un seul appareil, comment faites-vous photo et vidéo ?', answer: 'Avec un boîtier hybride qui bascule de l’un à l’autre en une pression, et une seconde optique montée sur un second boîtier pour ne jamais changer d’objectif pendant un moment clé.' },
       { question: 'Le film sera-t-il moins bon que celui d’un vidéaste seul ?', answer: 'Non sur la narration et l’image ; oui sur le nombre d’angles pendant les secondes où photo et vidéo se disputent le même instant. C’est précisément ce que le second opérateur compense quand la journée le justifie.' },
-      { question: 'Combien de photos et quelle durée de film ?', answer: 'Environ 400 photos retouchées et un film de 5 à 8 minutes avec un teaser d’une minute, comme pour les packs séparés. Le combo ne réduit aucun livrable.' },
+      { question: 'Combien de photos et quelle durée de film ?', answer: 'Environ 300 photos retouchées et un film de 7 à 10 minutes, livrés sous 2 à 4 semaines, comme pour les packs séparés. Le combo ne réduit aucun livrable.' },
       { question: 'Et si je veux surtout la vidéo, avec quelques photos ?', answer: 'Le sur mesure permet exactement ça : vidéo complète et un best-of photo réduit, à un prix intermédiaire.' },
       { question: 'Pouvons-nous vous voir travailler avant de réserver ?', answer: 'Oui : un film et une galerie d’un même mariage, côte à côte, vous sont envoyés avec le devis.' },
     ],
@@ -113,7 +113,7 @@ export const ONE_PERSON_CONTENT: Record<SiteLocale, OnePersonContent> = {
     faq: [
       { question: 'Hoe maakt u foto en video met één camera?', answer: 'Met een hybride camera die met één druk van het ene naar het andere schakelt, en een tweede lens op een tweede body om nooit van objectief te wisselen tijdens een sleutelmoment.' },
       { question: 'Wordt de film minder goed dan die van een aparte videograaf?', answer: 'Niet op vlak van verhaal en beeld; wel op het aantal hoeken tijdens de seconden waarin foto en video hetzelfde moment opeisen. Dat is precies wat de tweede operator compenseert als de dag het rechtvaardigt.' },
-      { question: 'Hoeveel foto’s en hoe lang is de film?', answer: 'Ongeveer 400 bewerkte foto’s en een film van 5 tot 8 minuten met een teaser van één minuut, zoals bij de aparte pakketten. De combinatie vermindert geen enkel eindproduct.' },
+      { question: 'Hoeveel foto’s en hoe lang is de film?', answer: 'Ongeveer 300 bewerkte foto’s en een film van 7 tot 10 minuten, geleverd binnen 2 tot 4 weken, zoals bij de aparte pakketten. De combinatie vermindert geen enkel eindproduct.' },
       { question: 'En als ik vooral de video wil, met enkele foto’s?', answer: 'Op maat laat precies dat toe: volledige video en een beperkte best-of in foto, aan een tussenprijs.' },
       { question: 'Kunnen we uw werk zien vóór we boeken?', answer: 'Ja: een film en een galerij van eenzelfde huwelijk, naast elkaar, worden met de offerte meegestuurd.' },
     ],
@@ -154,7 +154,7 @@ export const ONE_PERSON_CONTENT: Record<SiteLocale, OnePersonContent> = {
     faq: [
       { question: 'With one camera, how do you shoot photo and video?', answer: 'With a hybrid camera that switches from one to the other at the press of a button, and a second lens mounted on a second body so I never change lenses during a key moment.' },
       { question: 'Will the film be worse than a dedicated videographer’s?', answer: 'Not in storytelling or image; yes in the number of angles during the seconds when photo and video compete for the same instant. That is exactly what the second operator makes up for when the day justifies it.' },
-      { question: 'How many photos and how long is the film?', answer: 'Around 400 edited photos and a 5 to 8 minute film with a one-minute teaser, as in the separate packages. The combo does not reduce any deliverable.' },
+      { question: 'How many photos and how long is the film?', answer: 'Around 300 edited photos and a 7 to 10 minute film, delivered within 2 to 4 weeks, as in the separate packages. The combo does not reduce any deliverable.' },
       { question: 'What if I mostly want the video, with a few photos?', answer: 'The custom option allows exactly that: full video and a reduced photo best-of, at an in-between price.' },
       { question: 'Can we see your work before booking?', answer: 'Yes: a film and a gallery from the same wedding, side by side, are sent with the quote.' },
     ],

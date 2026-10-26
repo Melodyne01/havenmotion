@@ -29,13 +29,13 @@ export const REGION_CONTENT_PHASE_2_ABROAD: Readonly<Record<string, Partial<Reco
       practical: [
         'Déplacement : forfait de 190 € (zone 3) pour la côte, Saint-Omer et Béthune ; Arras et Lens sont en zone 2, à 90 €.',
         'Mariage : nuit d’hôtel (150 €) ajoutée pour la côte, la soirée finissant tard à plus de deux heures de Bruxelles ; cela permet une séance couple sur la plage le lendemain à l’aube.',
-        'Musique et droits : films montés sur de la musique sous licence, publiables sur les réseaux sans déclaration SACEM.',
+        'Droits : usage complet des photos et du film pour vos besoins propres, réseaux compris.',
         'Facturation : prestation intracommunautaire, facture belge avec TVA pour un particulier, autoliquidation pour une entreprise française assujettie.',
       ],
       faq: [
-        { question: 'Combien coûte un photographe-vidéaste de mariage au Touquet ?', answer: 'Le prix belge plus 190 € de déplacement et 150 € de nuit d’hôtel : 2 690 € pour la photo et la vidéo par la même personne, journée complète, soit environ 3 000 € tout compris, là où la photo seule se négocie souvent entre 1 800 et 2 500 € sur la côte.' },
+        { question: 'Combien coûte un photographe-vidéaste de mariage au Touquet ?', answer: 'Le prix belge plus 190 € de déplacement et 150 € de nuit d’hôtel : 2 790 € pour la photo et la vidéo par la même personne, journée complète, soit environ 3 100 € tout compris, là où la photo seule se négocie souvent entre 1 800 et 2 500 € sur la côte.' },
         { question: 'Venez-vous à Arras ou à Lens au même tarif ?', answer: 'Non, moins cher : Arras et Lens sont à moins de 150 km de Bruxelles, en zone 2, soit 90 € de déplacement et un retour le soir même.' },
-        { question: 'Peut-on faire une séance couple au cap Blanc-Nez ?', answer: 'Oui, c’est l’un des plus beaux sites de la côte pour une séance couple ou une demande en mariage, en formule lifestyle (250 € pour une heure trente, plus le déplacement). Le vent est le seul paramètre à surveiller.' },
+        { question: 'Peut-on faire une séance couple au cap Blanc-Nez ?', answer: 'Oui, c’est l’un des plus beaux sites de la côte pour une séance couple ou une demande en mariage, en séance lifestyle (sur devis, plus le déplacement). Le vent est le seul paramètre à surveiller.' },
       ],
     },
   },
@@ -60,10 +60,10 @@ export const REGION_CONTENT_PHASE_2_ABROAD: Readonly<Record<string, Partial<Reco
         'Déplacement : forfait de 190 € (zone 3) pour l’Oise, la Somme et l’Aisne ; au-delà, Paris et l’Île-de-France sont en zone 4, à 290 €.',
         'Mariage : nuit d’hôtel (150 €) ajoutée presque systématiquement, la soirée finissant tard à plus de deux heures de Bruxelles.',
         'Autorisations : le domaine de Chantilly et les monuments nationaux (Pierrefonds, Compiègne) demandent une autorisation de prise de vue, parfois payante, à prévoir au devis.',
-        'Facturation : prestation intracommunautaire, facture belge avec TVA pour un particulier, autoliquidation pour une entreprise française assujettie ; musique sous licence, sans SACEM.',
+        'Facturation : prestation intracommunautaire, facture belge avec TVA pour un particulier, autoliquidation pour une entreprise française assujettie .',
       ],
       faq: [
-        { question: 'Combien coûte un photographe-vidéaste de mariage à Chantilly ou à Senlis ?', answer: 'Le prix belge plus 190 € de déplacement et 150 € de nuit d’hôtel : 2 690 € pour la photo et la vidéo par la même personne, journée complète, soit environ 3 000 € tout compris.' },
+        { question: 'Combien coûte un photographe-vidéaste de mariage à Chantilly ou à Senlis ?', answer: 'Le prix belge plus 190 € de déplacement et 150 € de nuit d’hôtel : 2 790 € pour la photo et la vidéo par la même personne, journée complète, soit environ 3 100 € tout compris.' },
         { question: 'Peut-on faire des photos de couple dans le parc du château de Chantilly ?', answer: 'Oui, avec l’autorisation de prise de vue du domaine, à demander à l’avance et payante ; je m’en charge si vous le souhaitez, le montant est ajouté au devis.' },
         { question: 'Venez-vous aussi à Amiens et en baie de Somme ?', answer: 'Oui, au même forfait de 190 €. La baie se photographie à marée basse ; l’heure de la séance est fixée sur l’horaire des marées.' },
       ],
@@ -73,7 +73,7 @@ export const REGION_CONTENT_PHASE_2_ABROAD: Readonly<Record<string, Partial<Reco
   'limbourg-neerlandais': {
     nl: {
       intro:
-        'Bruidsfotograaf en videograaf in Maastricht en Nederlands Limburg, vanuit Brussel met vaste reiskosten van 90 €: Maastricht, Valkenburg, Heerlen, Sittard-Geleen, Roermond en Venlo liggen op anderhalf tot twee uur rijden. Trouwen op het stadhuis aan de Markt of in Château St. Gerlach, een shoot op het Vrijthof of de Sint-Pietersberg, bedrijfsfilms op de Brightlands-campussen: één persoon voor foto en video, voor 2.690 € voor beide op één bruiloft, waar een Nederlandse duo-combinatie vaak boven de 4.000 € begint.',
+        'Bruidsfotograaf en videograaf in Maastricht en Nederlands Limburg, vanuit Brussel met vaste reiskosten van 90 €: Maastricht, Valkenburg, Heerlen, Sittard-Geleen, Roermond en Venlo liggen op anderhalf tot twee uur rijden. Trouwen op het stadhuis aan de Markt of in Château St. Gerlach, een shoot op het Vrijthof of de Sint-Pietersberg, bedrijfsfilms op de Brightlands-campussen: één persoon voor foto en video, voor 2.790 € voor beide op één bruiloft, waar een Nederlandse duo-combinatie vaak boven de 4.000 € begint.',
       citiesTitle: 'In de provincie',
       cities: [
         { name: 'Maastricht', fact: 'het stadhuis op de Markt voor de ceremonie, het Vrijthof, de Sint Servaasbrug en het Jekerkwartier voor de bruidsfoto’s, het Kruisherenhotel voor een intieme receptie.' },
@@ -93,15 +93,15 @@ export const REGION_CONTENT_PHASE_2_ABROAD: Readonly<Record<string, Partial<Reco
         'Drone: toegelaten op de landgoederen en in het Heuvelland buiten de Natura 2000-gebieden; Maastricht Aachen Airport legt een no-flyzone op in het oosten.',
       ],
       faq: [
-        { question: 'Wat kost een bruidsfotograaf en videograaf in Maastricht?', answer: 'De Belgische prijs plus 90 € reiskosten: 1.290 € voor foto, 1.590 € voor video, 2.690 € voor beide door dezelfde persoon, hele dag, inclusief btw.' },
-        { question: 'Werkt u ook voor Nederlandse bedrijven?', answer: 'Ja: factuur met btw verlegd voor een Nederlands bedrijf met btw-nummer; teamportretten vanaf 490 € en bedrijfsfilm vanaf 990 €, exclusief btw.' },
-        { question: 'Hoe werkt de aanbetaling en de levering?', answer: 'Aanbetaling van 30 % bij reservering, saldo bij levering. Preview binnen 7 dagen, volledige levering binnen 2 tot 4 weken, via een online galerij.' },
+        { question: 'Wat kost een bruidsfotograaf en videograaf in Maastricht?', answer: 'De Belgische prijs plus 90 € reiskosten: 1.290 € voor foto, 1.590 € voor video, 2.790 € voor beide door dezelfde persoon, hele dag, inclusief btw.' },
+        { question: 'Werkt u ook voor Nederlandse bedrijven?', answer: 'Ja: factuur met btw verlegd voor een Nederlands bedrijf met btw-nummer; teamportretten en bedrijfsfilms op offerte, exclusief btw.' },
+        { question: 'Hoe werkt de aanbetaling en de levering?', answer: 'Aanbetaling van 30 % bij reservering, saldo bij levering. Volledige levering binnen 2 tot 4 weken, via een online galerij.' },
         { question: 'Komt u ook naar Roermond of Venlo?', answer: 'Roermond ja, met dezelfde 90 €. Venlo en Weert liggen op de rand van de zone en worden op de offerte bevestigd.' },
       ],
     },
     en: {
       intro:
-        'Wedding photographer and videographer in Maastricht and Dutch Limburg, from Brussels with a flat travel fee of €90: Maastricht, Valkenburg, Heerlen, Sittard-Geleen and Roermond are ninety minutes to two hours away by road. Ceremonies at the town hall on the Markt or at Château St. Gerlach, sessions on the Vrijthof or the Sint-Pietersberg, corporate films on the Brightlands campuses — one person for both photo and video, working in English for the international community of Maastricht University and the Euregio, at €2,690 for both on one wedding day.',
+        'Wedding photographer and videographer in Maastricht and Dutch Limburg, from Brussels with a flat travel fee of €90: Maastricht, Valkenburg, Heerlen, Sittard-Geleen and Roermond are ninety minutes to two hours away by road. Ceremonies at the town hall on the Markt or at Château St. Gerlach, sessions on the Vrijthof or the Sint-Pietersberg, corporate films on the Brightlands campuses — one person for both photo and video, working in English for the international community of Maastricht University and the Euregio, at €2,790 for both on one wedding day.',
       citiesTitle: 'Across the province',
       cities: [
         { name: 'Maastricht', fact: 'the town hall on the Markt for the ceremony, the Vrijthof, the Sint Servaasbrug and the Jeker quarter for couple photos, the Kruisherenhotel for an intimate reception.' },
@@ -121,8 +121,8 @@ export const REGION_CONTENT_PHASE_2_ABROAD: Readonly<Record<string, Partial<Reco
         'Languages: the day is run in English and Dutch as needed; contract, quote and delivery in English.',
       ],
       faq: [
-        { question: 'How much does a wedding photographer and videographer cost in Maastricht?', answer: 'The Belgian price plus €90 of travel: €1,290 for photo, €1,590 for video, €2,690 for both by the same person, full day, VAT included.' },
-        { question: 'Do you work for companies and the university in Maastricht?', answer: 'Yes: team headshots from €490 and corporate films from €990 excl. VAT, invoiced with reverse charge to a Dutch VAT-registered entity. Half a day on site, LinkedIn and social formats included.' },
+        { question: 'How much does a wedding photographer and videographer cost in Maastricht?', answer: 'The Belgian price plus €90 of travel: €1,290 for photo, €1,590 for video, €2,790 for both by the same person, full day, VAT included.' },
+        { question: 'Do you work for companies and the university in Maastricht?', answer: 'Yes: team headshots and corporate films on quote, excl. VAT, invoiced with reverse charge to a Dutch VAT-registered entity. Half a day on site, LinkedIn and social formats included.' },
         { question: 'Can you get married in Maastricht as a foreigner?', answer: 'A civil wedding in the Netherlands requires at least one partner to be a Dutch resident or national; many international couples marry legally elsewhere and celebrate here. I cover the celebration the same way.' },
       ],
     },
@@ -131,7 +131,7 @@ export const REGION_CONTENT_PHASE_2_ABROAD: Readonly<Record<string, Partial<Reco
   'brabant-septentrional': {
     nl: {
       intro:
-        'Bruidsfotograaf en videograaf in Noord-Brabant, vanuit Brussel met vaste reiskosten van 90 €: Eindhoven, Breda, Tilburg, ’s-Hertogenbosch, Helmond en Bergen op Zoom liggen op anderhalf tot twee uur rijden. Trouwen in Kasteel Heeze of op het Markiezenhof, een shoot op Strijp-S of in de Binnendieze, bedrijfsfilms op de High Tech Campus: één persoon voor foto en video, 2.690 € voor beide op één bruiloft, inclusief btw, met een vast bedrag aan reiskosten in plaats van kilometervergoeding.',
+        'Bruidsfotograaf en videograaf in Noord-Brabant, vanuit Brussel met vaste reiskosten van 90 €: Eindhoven, Breda, Tilburg, ’s-Hertogenbosch, Helmond en Bergen op Zoom liggen op anderhalf tot twee uur rijden. Trouwen in Kasteel Heeze of op het Markiezenhof, een shoot op Strijp-S of in de Binnendieze, bedrijfsfilms op de High Tech Campus: één persoon voor foto en video, 2.790 € voor beide op één bruiloft, inclusief btw, met een vast bedrag aan reiskosten in plaats van kilometervergoeding.',
       citiesTitle: 'In de provincie',
       cities: [
         { name: 'Eindhoven', fact: 'Strijp-S en het Ketelhuis voor industriële bruidsfoto’s en feesten, het Evoluon en de High Tech Campus voor bedrijfsfilms, het Philips Stadion voor sport.' },
@@ -151,9 +151,9 @@ export const REGION_CONTENT_PHASE_2_ABROAD: Readonly<Record<string, Partial<Reco
         'Drone: toegelaten op de landgoederen buiten Natura 2000; Eindhoven Airport en de vliegbases Volkel en Gilze-Rijen leggen no-flyzones op.',
       ],
       faq: [
-        { question: 'Wat kost een bruidsfotograaf en videograaf in Eindhoven of Breda?', answer: 'De Belgische prijs plus 90 € reiskosten: 1.290 € foto, 1.590 € video, 2.690 € foto én video door dezelfde persoon, hele dag, inclusief btw. Een Nederlands duo foto + video begint vaak boven de 4.000 €.' },
+        { question: 'Wat kost een bruidsfotograaf en videograaf in Eindhoven of Breda?', answer: 'De Belgische prijs plus 90 € reiskosten: 1.290 € foto, 1.590 € video, 2.790 € foto én video door dezelfde persoon, hele dag, inclusief btw. Een Nederlands duo foto + video begint vaak boven de 4.000 €.' },
         { question: 'Waarom één persoon voor foto en video?', answer: 'Eén stijl, één aanspreekpunt, minder volk rond het koppel en een lagere prijs. Boven de 120 gasten raad ik een tweede operator aan (optie, 490 €).' },
-        { question: 'Hoe verloopt de levering?', answer: 'Preview binnen 7 dagen, volledige online galerij en film binnen 2 tot 4 weken, twee correctierondes op de montage inbegrepen.' },
+        { question: 'Hoe verloopt de levering?', answer: 'Volledige online galerij en film binnen 2 tot 4 weken, twee correctierondes op de montage inbegrepen.' },
       ],
     },
   },
@@ -175,13 +175,13 @@ export const REGION_CONTENT_PHASE_2_ABROAD: Readonly<Record<string, Partial<Reco
       venues: ['Santorin (Oia, Imerovigli)', 'Athènes et le cap Sounion', 'Lac de Côme', 'Toscane (Chianti, Val d’Orcia)', 'Côte amalfitaine', 'Provence et Luberon', 'Côte d’Azur', 'Algarve et Lisbonne', 'Majorque et Ibiza', 'Alpes suisses'],
       practicalTitle: 'Comment ça marche',
       practical: [
-        'Prix : la prestation est facturée au prix de la grille (par exemple 2 690 € pour un mariage photo et vidéo par la même personne) ; s’y ajoutent les frais réels, détaillés au devis : vols, nuits d’hôtel (150 € par nuit), transferts, et une journée de déplacement forfaitaire par trajet.',
+        'Prix : la prestation est facturée au prix de la grille (par exemple 2 790 € pour un mariage photo et vidéo par la même personne) ; s’y ajoutent les frais réels, détaillés au devis : vols, nuits d’hôtel (150 € par nuit), transferts, et une journée de déplacement forfaitaire par trajet.',
         'Fourchette indicative pour un mariage en Europe : compter entre 800 et 1 500 € de frais en plus de la prestation, selon la destination et la saison. Au-delà de l’Europe, sur devis.',
         'Matériel : boîtiers, optiques, batteries et drone voyagent en cabine ; une sauvegarde est faite chaque soir sur deux supports. Le drone n’est utilisé que là où la réglementation locale et le lieu l’autorisent.',
-        'Timing : arrivée la veille au plus tard, repérage sur place, retour le lendemain. Aperçu photo sous 7 jours, livraison complète sous 2 à 4 semaines, comme en Belgique.',
+        'Timing : arrivée la veille au plus tard, repérage sur place, retour le lendemain. Livraison complète sous 2 à 4 semaines, comme en Belgique.',
       ],
       faq: [
-        { question: 'Combien coûte un photographe-vidéaste pour un mariage à l’étranger ?', answer: 'Le prix de la grille belge plus les frais réels : pour un mariage en Europe, comptez 2 690 € de prestation photo et vidéo plus 800 à 1 500 € de vols, nuits et déplacement, détaillés ligne par ligne sur le devis.' },
+        { question: 'Combien coûte un photographe-vidéaste pour un mariage à l’étranger ?', answer: 'Le prix de la grille belge plus les frais réels : pour un mariage en Europe, comptez 2 790 € de prestation photo et vidéo plus 800 à 1 500 € de vols, nuits et déplacement, détaillés ligne par ligne sur le devis.' },
         { question: 'Dans quels pays avez-vous déjà tourné ?', answer: 'Belgique, France, Pays-Bas, Luxembourg et Grèce. Les autres destinations sont possibles ; le devis tient compte des contraintes locales.' },
         { question: 'Pouvez-vous utiliser le drone à l’étranger ?', answer: 'Dans l’Union européenne, l’enregistrement d’opérateur belge est valable partout ; les zones interdites et les règles des sites restent locales, et sont vérifiées avant le départ. L’option est reportée ou remboursée si le vol est impossible.' },
         { question: 'Faut-il réserver plus tôt pour un mariage à l’étranger ?', answer: 'Oui, idéalement six à douze mois avant, pour bloquer les vols à bon prix et la date. L’acompte de 30 % réserve la date ; les frais de voyage sont facturés sur justificatifs.' },
@@ -203,13 +203,13 @@ export const REGION_CONTENT_PHASE_2_ABROAD: Readonly<Record<string, Partial<Reco
       venues: ['Santorini (Oia, Imerovigli)', 'Athene en Kaap Sounion', 'Comomeer', 'Toscane (Chianti, Val d’Orcia)', 'Amalfikust', 'Provence en Luberon', 'Côte d’Azur', 'Algarve en Lissabon', 'Mallorca en Ibiza', 'Zwitserse Alpen'],
       practicalTitle: 'Hoe het werkt',
       practical: [
-        'Prijs: de prestatie wordt gefactureerd aan de lijstprijs (bijvoorbeeld 2.690 € voor een huwelijk met foto en video door dezelfde persoon); daarbovenop komen de werkelijke kosten, gedetailleerd op de offerte: vluchten, hotelnachten (150 € per nacht), transfers en een forfaitaire reisdag per traject.',
+        'Prijs: de prestatie wordt gefactureerd aan de lijstprijs (bijvoorbeeld 2.790 € voor een huwelijk met foto en video door dezelfde persoon); daarbovenop komen de werkelijke kosten, gedetailleerd op de offerte: vluchten, hotelnachten (150 € per nacht), transfers en een forfaitaire reisdag per traject.',
         'Indicatieve vork voor een huwelijk in Europa: reken op 800 tot 1.500 € kosten boven op de prestatie, afhankelijk van bestemming en seizoen. Buiten Europa op offerte.',
         'Materiaal: camera’s, lenzen, batterijen en drone reizen als handbagage; elke avond een back-up op twee dragers. De drone wordt alleen gebruikt waar de lokale regels en de locatie het toelaten.',
-        'Timing: aankomst ten laatste de dag voordien, verkenning ter plaatse, terugkeer de dag erna. Preview binnen 7 dagen, volledige levering binnen 2 tot 4 weken, zoals in België.',
+        'Timing: aankomst ten laatste de dag voordien, verkenning ter plaatse, terugkeer de dag erna. Volledige levering binnen 2 tot 4 weken, zoals in België.',
       ],
       faq: [
-        { question: 'Wat kost een fotograaf en videograaf voor een huwelijk in het buitenland?', answer: 'De Belgische lijstprijs plus de werkelijke kosten: voor een huwelijk in Europa 2.690 € voor foto en video plus 800 tot 1.500 € vluchten, nachten en reisdagen, lijn per lijn op de offerte.' },
+        { question: 'Wat kost een fotograaf en videograaf voor een huwelijk in het buitenland?', answer: 'De Belgische lijstprijs plus de werkelijke kosten: voor een huwelijk in Europa 2.790 € voor foto en video plus 800 tot 1.500 € vluchten, nachten en reisdagen, lijn per lijn op de offerte.' },
         { question: 'In welke landen hebt u al gedraaid?', answer: 'België, Frankrijk, Nederland, Luxemburg en Griekenland. Andere bestemmingen zijn mogelijk; de offerte houdt rekening met de lokale beperkingen.' },
         { question: 'Mag de drone mee naar het buitenland?', answer: 'In de Europese Unie geldt de Belgische operatorregistratie overal; no-flyzones en regels van de locatie blijven lokaal en worden vóór vertrek gecheckt. De optie wordt verplaatst of terugbetaald als vliegen onmogelijk is.' },
       ],
@@ -230,13 +230,13 @@ export const REGION_CONTENT_PHASE_2_ABROAD: Readonly<Record<string, Partial<Reco
       venues: ['Santorini (Oia, Imerovigli)', 'Athens and Cape Sounion', 'Lake Como', 'Tuscany (Chianti, Val d’Orcia)', 'Amalfi Coast', 'Provence and the Luberon', 'French Riviera', 'Algarve and Lisbon', 'Mallorca and Ibiza', 'Swiss Alps'],
       practicalTitle: 'How it works',
       practical: [
-        'Price: the service is billed at the grid price (for example €2,690 for a wedding with photo and video by the same person); actual costs are added and itemised on the quote: flights, hotel nights (€150 per night), transfers, and a flat travel day per leg.',
+        'Price: the service is billed at the grid price (for example €2,790 for a wedding with photo and video by the same person); actual costs are added and itemised on the quote: flights, hotel nights (€150 per night), transfers, and a flat travel day per leg.',
         'Indicative range for a wedding in Europe: expect €800 to €1,500 of costs on top of the service, depending on destination and season. Beyond Europe, on quote.',
         'Gear: bodies, lenses, batteries and drone travel as carry-on; a backup is made every evening on two drives. The drone is only flown where local rules and the venue allow it.',
-        'Timing: arrival the day before at the latest, location visit on site, return the following day. Photo preview within 7 days, full delivery within 2 to 4 weeks, as in Belgium.',
+        'Timing: arrival the day before at the latest, location visit on site, return the following day. Full delivery within 2 to 4 weeks, as in Belgium.',
       ],
       faq: [
-        { question: 'How much does a destination wedding photographer and videographer cost?', answer: 'The Belgian grid price plus actual costs: for a wedding in Europe, €2,690 for photo and video plus €800 to €1,500 of flights, nights and travel days, itemised line by line on the quote.' },
+        { question: 'How much does a destination wedding photographer and videographer cost?', answer: 'The Belgian grid price plus actual costs: for a wedding in Europe, €2,790 for photo and video plus €800 to €1,500 of flights, nights and travel days, itemised line by line on the quote.' },
         { question: 'Which countries have you already worked in?', answer: 'Belgium, France, the Netherlands, Luxembourg and Greece. Other destinations are possible; the quote accounts for local constraints.' },
         { question: 'Can you fly the drone abroad?', answer: 'Within the European Union, the Belgian operator registration is valid everywhere; no-fly zones and venue rules remain local and are checked before departure. The option is rescheduled or refunded if flying is impossible.' },
         { question: 'How far ahead should we book a destination wedding?', answer: 'Ideally six to twelve months, to lock the date and book flights at a good price. The 30% deposit secures the date; travel costs are invoiced against receipts.' },

@@ -6,9 +6,9 @@ export interface FaqEntry {
   readonly answer: string;
 }
 
-const mariage = formatPrice(startingPrice('mariage'));
-const corporate = formatPrice(startingPrice('corporate'));
-const lifestyle = formatPrice(startingPrice('lifestyle'));
+const mariage = formatPrice(startingPrice('mariage')!);
+const evenementiel = formatPrice(startingPrice('evenementiel')!);
+const sport = formatPrice(startingPrice('sport')!);
 
 /**
  * Questions transactionnelles (tarif, délai, zone, droits) répondues
@@ -22,7 +22,7 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
   fr: [
     {
       question: 'Combien coûte un photographe et vidéaste en Belgique ?',
-      answer: `Les prix sont affichés : à partir de ${lifestyle} TTC pour une séance lifestyle, ${mariage} TTC pour un mariage en photo, ${corporate} HTVA pour un reportage d’entreprise. Chaque prestation existe en photo, en vidéo ou en photo + vidéo par la même personne, le combo coûtant moins cher que les deux séparés. Devis chiffré sous 48 h.`,
+      answer: `Les prix sont affichés : à partir de ${evenementiel} TTC pour un événement, ${mariage} TTC pour un mariage en photo, ${sport} HTVA pour un match ou une compétition. Ces trois prestations existent en photo, en vidéo ou en photo + vidéo par la même personne, le combo coûtant moins cher que les deux séparés. Corporate, clip et lifestyle sont sur devis. Devis chiffré sous 48 h.`,
     },
     {
       question: 'Une seule personne peut-elle faire la photo et la vidéo d’un mariage ?',
@@ -32,7 +32,7 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
     {
       question: 'Quel est le délai de livraison ?',
       answer:
-        'Un aperçu photo sous 7 jours, la galerie complète et le film sous 2 à 4 semaines selon la période. Le devis précise toujours une date ferme ; une option express divise le délai par deux.',
+        'Pour un mariage, les photos et le film sous 2 à 4 semaines. Pour un événement, les photos dans la semaine et l’aftermovie sous 1 à 2 semaines. Le devis précise toujours une date ferme ; une option express divise le délai par deux.',
     },
     {
       question: 'Vous déplacez-vous en France, au Luxembourg, aux Pays-Bas ou en Allemagne ?',
@@ -42,7 +42,7 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
     {
       question: 'Les prix sont-ils TTC ou hors TVA ?',
       answer:
-        'TTC pour les particuliers (mariage, événementiel, lifestyle), hors TVA pour les professionnels (corporate, sport, clip). La mention figure à côté de chaque prix.',
+        'TTC pour les particuliers (mariage, événementiel), hors TVA pour le sport. La mention figure à côté de chaque prix ; pour le corporate, le clip et le lifestyle, sur devis, elle figure sur le devis.',
     },
     {
       question: 'Comment se déroule une prestation, de la demande à la livraison ?',
@@ -52,13 +52,13 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
     {
       question: 'Qui détient les droits sur les images finales ?',
       answer:
-        'Le client reçoit un usage complet des photos et du film livrés pour ses propres besoins (site, réseaux, diffusion interne). La musique utilisée est systématiquement sous licence pour éviter tout retrait sur les plateformes.',
+        'Le client reçoit un usage complet des photos et du film livrés pour ses propres besoins (site, réseaux, diffusion interne).',
     },
   ],
   nl: [
     {
       question: 'Hoeveel kost een fotograaf en videograaf in België?',
-      answer: `De prijzen staan online: vanaf ${lifestyle} incl. btw voor een lifestyle-sessie, ${mariage} incl. btw voor een huwelijk in foto, ${corporate} excl. btw voor een bedrijfsreportage. Elke dienst bestaat in foto, video of foto + video door dezelfde persoon, en de combinatie kost minder dan de twee apart. Concrete offerte binnen 48 u.`,
+      answer: `De prijzen staan online: vanaf ${evenementiel} incl. btw voor een evenement, ${mariage} incl. btw voor een huwelijk in foto, ${sport} excl. btw voor een wedstrijd of competitie. Die drie diensten bestaan in foto, video of foto + video door dezelfde persoon, en de combinatie kost minder dan de twee apart. Zakelijk, clip en lifestyle: op offerte. Concrete offerte binnen 48 u.`,
     },
     {
       question: 'Kan één persoon zowel de foto als de video van een huwelijk maken?',
@@ -68,7 +68,7 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
     {
       question: 'Wat is de levertijd?',
       answer:
-        'Een voorproefje van de foto’s binnen 7 dagen, de volledige galerij en de film binnen 2 tot 4 weken naargelang het seizoen. De offerte vermeldt altijd een vaste datum; een expresoptie halveert de termijn.',
+        'Voor een huwelijk de foto’s en de film binnen 2 tot 4 weken. Voor een evenement de foto’s binnen de week en de aftermovie binnen 1 tot 2 weken. De offerte vermeldt altijd een vaste datum; een expresoptie halveert de termijn.',
     },
     {
       question: 'Komt u ook naar Frankrijk, Luxemburg, Nederland of Duitsland?',
@@ -78,7 +78,7 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
     {
       question: 'Zijn de prijzen incl. of excl. btw?',
       answer:
-        'Incl. btw voor particulieren (huwelijk, evenementen, lifestyle), excl. btw voor professionals (zakelijk, sport, clip). De vermelding staat naast elke prijs.',
+        'Incl. btw voor particulieren (huwelijk, evenementen), excl. btw voor sport. De vermelding staat naast elke prijs; voor zakelijk, clip en lifestyle, op offerte, staat ze op de offerte.',
     },
     {
       question: 'Hoe verloopt een opdracht, van aanvraag tot levering?',
@@ -88,13 +88,13 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
     {
       question: 'Wie heeft de rechten op de eindbeelden?',
       answer:
-        'De klant krijgt volledig gebruiksrecht op de geleverde foto’s en film voor eigen doeleinden (website, sociale media, interne verspreiding). Gebruikte muziek is steeds in licentie, zodat platforms de video nooit kunnen blokkeren.',
+        'De klant krijgt volledig gebruiksrecht op de geleverde foto’s en film voor eigen doeleinden (website, sociale media, interne verspreiding).',
     },
   ],
   en: [
     {
       question: 'How much does a photographer and videographer cost in Belgium?',
-      answer: `Prices are published: from ${lifestyle} incl. VAT for a lifestyle session, ${mariage} incl. VAT for wedding photography, ${corporate} excl. VAT for a corporate shoot. Every service comes as photo, video or photo + video by the same person, and the combo costs less than the two separately. Itemised quote within 48 h.`,
+      answer: `Prices are published: from ${evenementiel} incl. VAT for an event, ${mariage} incl. VAT for wedding photography, ${sport} excl. VAT for a match or competition. These three services come as photo, video or photo + video by the same person, and the combo costs less than the two separately. Corporate, music video and lifestyle are on quote. Itemised quote within 48 h.`,
     },
     {
       question: 'Can one person really shoot both the photos and the video of a wedding?',
@@ -104,7 +104,7 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
     {
       question: 'How long does delivery take?',
       answer:
-        'A photo sneak peek within 7 days, the full gallery and the film within 2 to 4 weeks depending on the season. The quote always states a firm date; an express option halves the wait.',
+        'For a wedding, the photos and the film within 2 to 4 weeks. For an event, the photos within a week and the aftermovie within 1 to 2 weeks. The quote always states a firm date; an express option halves the wait.',
     },
     {
       question: 'Do you travel to France, Luxembourg, the Netherlands or Germany?',
@@ -114,7 +114,7 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
     {
       question: 'Are prices inclusive or exclusive of VAT?',
       answer:
-        'Inclusive of VAT for private clients (wedding, events, lifestyle), exclusive of VAT for businesses (corporate, sport, music video). The mention sits next to every price.',
+        'Inclusive of VAT for private clients (wedding, events), exclusive of VAT for sport. The mention sits next to every price; for corporate, music video and lifestyle, which are on quote, it is on the quote.',
     },
     {
       question: 'How does a project run, from request to delivery?',
@@ -124,7 +124,7 @@ export const FAQ_CONTENT: Record<SiteLocale, readonly FaqEntry[]> = {
     {
       question: 'Who owns the rights to the final images?',
       answer:
-        'The client receives full usage of the delivered photos and film for their own needs (website, social media, internal use). Music is always licensed, so nothing gets taken down on the platforms.',
+        'The client receives full usage of the delivered photos and film for their own needs (website, social media, internal use).',
     },
   ],
 };

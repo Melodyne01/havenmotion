@@ -1,9 +1,4 @@
 import type { Guide } from '../guide-content';
-import { formatPrice, pricingFor } from '../packs';
-
-const l = pricingFor('lifestyle');
-const price = (type: 'photo' | 'video' | 'combo') => formatPrice(l.packs.find((p) => p.type === type)!.price!);
-
 /**
  * Guide « préparer une séance » : douze spots de shooting à Bruxelles, en
  * français et en anglais (le public expat cherche « photoshoot locations
@@ -23,7 +18,7 @@ export const GUIDES_BRUSSELS_SPOTS: readonly Guide[] = [
     eyebrow: 'Guide séance',
     published: '2026-10-05',
     readingMinutes: 8,
-    answer: `Les douze spots qui marchent à Bruxelles tiennent en quatre ambiances : monumental (Grand-Place à l’aube, Mont des Arts, Cinquantenaire, Galeries Royales), nature (bois de la Cambre, étangs d’Ixelles et abbaye de la Cambre, parc de Woluwe, Rouge-Cloître), urbain (canal et Tour & Taxis, place Flagey, Atomium) et Art nouveau (les rues d’Ixelles et de Saint-Gilles autour du musée Horta). La bonne heure est presque toujours l’heure dorée, une heure avant le coucher du soleil, ou huit heures du matin pour les lieux touristiques. Une séance d’une heure trente coûte ${price('photo')} TTC, ${price('combo')} avec un court film ; aucun spot de cette liste ne demande d’autorisation pour une séance à deux ou en famille.`,
+    answer: `Les douze spots qui marchent à Bruxelles tiennent en quatre ambiances : monumental (Grand-Place à l’aube, Mont des Arts, Cinquantenaire, Galeries Royales), nature (bois de la Cambre, étangs d’Ixelles et abbaye de la Cambre, parc de Woluwe, Rouge-Cloître), urbain (canal et Tour & Taxis, place Flagey, Atomium) et Art nouveau (les rues d’Ixelles et de Saint-Gilles autour du musée Horta). La bonne heure est presque toujours l’heure dorée, une heure avant le coucher du soleil, ou huit heures du matin pour les lieux touristiques. La séance, en photo, en vidéo ou les deux, est sur devis ; aucun spot de cette liste ne demande d’autorisation pour une séance à deux ou en famille.`,
     sections: [
       {
         title: 'Les douze spots, en un tableau',
@@ -74,7 +69,7 @@ export const GUIDES_BRUSSELS_SPOTS: readonly Guide[] = [
       {
         title: 'Ce que coûte une séance',
         paragraphs: [
-          `Chez Heaven Motion, la séance lifestyle d’une heure trente coûte ${price('photo')} TTC avec 25 photos retouchées livrées en galerie, ${price('video')} pour deux reels vidéo, et ${price('combo')} pour les photos et un court film par la même personne. Tous les spots de cette liste sont dans la zone incluse : aucun déplacement facturé. Sur le marché bruxellois, une séance couple ou famille d’une heure se situe entre 150 et 350 € selon le nombre de photos livrées.`,
+          `Chez Heaven Motion, la séance lifestyle est sur devis : photos retouchées livrées en galerie, reels vidéo, ou les deux par la même personne, selon la durée et ce que vous voulez recevoir. Tous les spots de cette liste sont dans la zone incluse : aucun déplacement facturé. Sur le marché bruxellois, une séance couple ou famille d’une heure se situe entre 150 et 350 € selon le nombre de photos livrées.`,
         ],
       },
     ],
@@ -104,7 +99,7 @@ export const GUIDES_BRUSSELS_SPOTS: readonly Guide[] = [
     eyebrow: 'Session guide',
     published: '2026-10-05',
     readingMinutes: 8,
-    answer: `The twelve spots that work in Brussels fall into four moods: monumental (the Grand-Place at dawn, Mont des Arts, the Cinquantenaire, the Galeries Royales), nature (Bois de la Cambre, the Ixelles ponds and La Cambre Abbey, Woluwe park, Rouge-Cloître), urban (the canal and Tour & Taxis, Place Flagey, the Atomium) and Art Nouveau (the streets of Ixelles and Saint-Gilles around the Horta Museum). The right hour is almost always golden hour, one hour before sunset, or eight in the morning for the tourist landmarks. A ninety-minute session costs ${price('photo')} incl. VAT, ${price('combo')} with a short film; none of these spots needs a permit for a couple or family session.`,
+    answer: `The twelve spots that work in Brussels fall into four moods: monumental (the Grand-Place at dawn, Mont des Arts, the Cinquantenaire, the Galeries Royales), nature (Bois de la Cambre, the Ixelles ponds and La Cambre Abbey, Woluwe park, Rouge-Cloître), urban (the canal and Tour & Taxis, Place Flagey, the Atomium) and Art Nouveau (the streets of Ixelles and Saint-Gilles around the Horta Museum). The right hour is almost always golden hour, one hour before sunset, or eight in the morning for the tourist landmarks. The session, in photo, video or both, is on quote; none of these spots needs a permit for a couple or family session.`,
     sections: [
       {
         title: 'The twelve spots at a glance',
@@ -155,7 +150,7 @@ export const GUIDES_BRUSSELS_SPOTS: readonly Guide[] = [
       {
         title: 'What a session costs',
         paragraphs: [
-          `At Heaven Motion, the ninety-minute lifestyle session costs ${price('photo')} incl. VAT with 25 edited photos delivered in an online gallery, ${price('video')} for two video reels, and ${price('combo')} for photos and a short film by the same person. Every spot on this list is inside the included zone: no travel fee. On the Brussels market, a one-hour couple or family session runs between €150 and €350 depending on the number of photos delivered.`,
+          `At Heaven Motion, the lifestyle session is on quote: edited photos delivered in an online gallery, video reels, or both by the same person, depending on duration and what you want to receive. Every spot on this list is inside the included zone: no travel fee. On the Brussels market, a one-hour couple or family session runs between €150 and €350 depending on the number of photos delivered.`,
         ],
       },
     ],

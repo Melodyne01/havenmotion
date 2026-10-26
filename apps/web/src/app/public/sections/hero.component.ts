@@ -6,7 +6,7 @@ import { SiteStore } from '../site-store';
 import { SITE_LOCALE } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 import { pick } from '../../core/locale';
-import { formatPrice, startingPrice } from '../../core/packs';
+import { formatPrice, lowestPrice } from '../../core/packs';
 
 /**
  * Hero : showreel plein cadre en 2.39:1, muet et en boucle.
@@ -70,7 +70,7 @@ export class HeroComponent {
    * secondes, et ce que les moteurs citent.
    */
   protected factsLine(): string {
-    const from = formatPrice(startingPrice('lifestyle'));
+    const from = formatPrice(lowestPrice());
     return pick(this.locale, {
       fr: `Une seule personne pour la photo et la vidéo · prix affichés, à partir de ${from}`,
       nl: `Eén persoon voor foto en video · prijzen online, vanaf ${from}`,

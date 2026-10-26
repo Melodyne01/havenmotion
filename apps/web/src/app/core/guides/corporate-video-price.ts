@@ -1,8 +1,4 @@
 import type { Guide } from '../guide-content';
-import { formatPrice, pricingFor } from '../packs';
-
-const c = pricingFor('corporate');
-const price = (type: 'photo' | 'video' | 'combo') => formatPrice(c.packs.find((p) => p.type === type)!.price!);
 
 /**
  * Guide prix B2B : combien coûte une vidéo d'entreprise. Deux versions, FR
@@ -10,7 +6,8 @@ const price = (type: 'photo' | 'video' | 'combo') => formatPrice(c.packs.find((p
  * production Brussels », une intention agence, pas un guide prix). Les
  * fourchettes viennent des grilles publiées par les plateformes de mise en
  * relation (Sortlist, Malt) et des sites d'agences et de freelances belges
- * relevés en septembre 2026 ; les nôtres de la grille corporate, HTVA.
+ * relevés en septembre 2026. Le corporate est sur devis depuis octobre 2026 :
+ * le guide explique comment se construit le devis, sans prix inventé.
  */
 export const GUIDES_CORPORATE_PRICE: readonly Guide[] = [
   {
@@ -20,11 +17,11 @@ export const GUIDES_CORPORATE_PRICE: readonly Guide[] = [
     category: 'corporate',
     title: 'Combien coûte une vidéo d’entreprise en Belgique en 2026 ?',
     metaTitle: 'Prix d’une vidéo d’entreprise en Belgique (2026) : fourchettes et exemples',
-    metaDescription: `Ce que coûtent un film d’entreprise, un aftermovie, une vidéo de recrutement ou des portraits d’équipe en Belgique, ce qui fait varier le devis, les frais cachés, et nos prix HTVA : film 1 à 2 min à ${price('video')}.`,
+    metaDescription: `Ce que coûtent un film d’entreprise, un aftermovie, une vidéo de recrutement ou des portraits d’équipe en Belgique, ce qui fait varier le devis, les frais cachés, et comment se construit notre devis HTVA, chiffré sous 48 h.`,
     eyebrow: 'Guide prix B2B',
     published: '2026-10-05',
     readingMinutes: 9,
-    answer: `En Belgique, une vidéo d’entreprise coûte entre 1 000 et 3 000 € HTVA chez un freelance pour un film de 1 à 3 minutes tourné en une journée, entre 3 000 et 10 000 € HTVA en agence avec script, équipe et motion design, et au-delà de 10 000 € pour une campagne publicitaire. Un aftermovie d’événement se situe entre 800 et 2 000 €, une vidéo de recrutement entre 2 500 et 6 000 €, un lot de portraits d’équipe entre 400 et 900 €. Chez Heaven Motion, le film de 1 à 2 minutes avec formats réseaux est à ${price('video')} HTVA, les portraits à ${price('photo')} HTVA, et les deux en une demi-journée à ${price('combo')} HTVA. Le détail ci-dessous.`,
+    answer: `En Belgique, une vidéo d’entreprise coûte entre 1 000 et 3 000 € HTVA chez un freelance pour un film de 1 à 3 minutes tourné en une journée, entre 3 000 et 10 000 € HTVA en agence avec script, équipe et motion design, et au-delà de 10 000 € pour une campagne publicitaire. Un aftermovie d’événement se situe entre 800 et 2 000 €, une vidéo de recrutement entre 2 500 et 6 000 €, un lot de portraits d’équipe entre 400 et 900 €. Chez Heaven Motion, chaque projet d’entreprise est sur devis, hors TVA, chiffré sous 48 h : un film, des portraits, les deux sur la même demi-journée, ou une journée où tout est tourné, monté et publié le jour même. Le détail ci-dessous.`,
     sections: [
       {
         title: 'Les fourchettes du marché belge, par type de vidéo',
@@ -34,13 +31,13 @@ export const GUIDES_CORPORATE_PRICE: readonly Guide[] = [
         table: {
           columns: ['Type de vidéo', 'Freelance', 'Agence', 'Heaven Motion (HTVA)'],
           rows: [
-            ['Film d’entreprise 1 à 3 min, 1 jour de tournage', '1 000 – 3 000 €', '3 000 – 10 000 €', `${price('video')} (demi-journée, 1 à 2 min + formats réseaux)`],
-            ['Aftermovie d’événement, 1 à 3 min', '800 – 2 000 €', '2 000 – 5 000 €', `${price('video')} (demi-journée) ; journée sur devis`],
+            ['Film d’entreprise 1 à 3 min, 1 jour de tournage', '1 000 – 3 000 €', '3 000 – 10 000 €', 'Sur devis (formats réseaux compris)'],
+            ['Aftermovie d’événement, 1 à 3 min', '800 – 2 000 €', '2 000 – 5 000 €', 'Sur devis, selon la durée sur place'],
             ['Vidéo de recrutement / marque employeur', '2 000 – 4 000 €', '4 000 – 10 000 €', 'Sur devis, à partir du film + interviews'],
-            ['Interview ou témoignage client, 1 à 2 min', '600 – 1 500 €', '1 500 – 4 000 €', `${price('video')} (demi-journée, jusqu’à 2 interviews)`],
-            ['Portraits d’équipe / headshots, 10 à 30 personnes', '400 – 900 €', '900 – 2 000 €', `${price('photo')} (demi-journée)`],
-            ['Reels et formats courts, lot de 4 à 8', '500 – 1 500 €', '1 500 – 4 000 €', 'Inclus dans le film (3 formats) ; lot sur devis'],
-            ['Film + portraits le même jour', '1 500 – 3 500 €', '4 000 – 12 000 €', `${price('combo')} (demi-journée)`],
+            ['Interview ou témoignage client, 1 à 2 min', '600 – 1 500 €', '1 500 – 4 000 €', 'Sur devis, selon le nombre d’interviews'],
+            ['Portraits d’équipe / headshots, 10 à 30 personnes', '400 – 900 €', '900 – 2 000 €', 'Sur devis, selon le nombre de personnes'],
+            ['Reels et formats courts, lot de 4 à 8', '500 – 1 500 €', '1 500 – 4 000 €', 'Sur devis, ponctuel ou mensuel'],
+            ['Film + portraits le même jour', '1 500 – 3 500 €', '4 000 – 12 000 €', 'Sur devis (une seule demi-journée)'],
           ],
           note: 'Prix hors TVA. Les fourchettes agence incluent généralement un chef de projet, un scénario et une équipe de deux à quatre personnes.',
         },
@@ -60,10 +57,10 @@ export const GUIDES_CORPORATE_PRICE: readonly Guide[] = [
         ],
       },
       {
-        title: 'Ce qui est inclus chez Heaven Motion, et ce qui ne l’est pas',
+        title: 'Comment se construit un devis chez Heaven Motion',
         paragraphs: [
-          `Le film à ${price('video')} HTVA comprend une demi-journée de tournage sur un site, jusqu’à deux interviews, le montage d’un film de 1 à 2 minutes, deux allers-retours de corrections, la musique sous licence, et trois formats (16/9, 9/16, 1/1). Les portraits à ${price('photo')} HTVA comprennent la demi-journée, un espace portrait monté sur place, la retouche de chaque portrait et la livraison en format LinkedIn. Les deux ensemble, le même jour, à ${price('combo')} HTVA.`,
-          'Ne sont pas inclus : le drone (190 €), la voix off et le sous-titrage (sur devis), les jours supplémentaires, le motion design au-delà des titres, les déplacements hors zone incluse (forfaits de 90 à 290 €), et une diffusion publicitaire payante, à signaler au devis.',
+          'Chaque devis corporate part de votre brief : la durée de tournage, le nombre de sites et d’interviews, la durée du film, les formats (16/9, 9/16, 1/1) et deux allers-retours de corrections. Les portraits d’équipe peuvent se faire le même jour, avec un espace portrait monté sur place et chaque portrait retouché, livré en format LinkedIn. Pour un événement ou vos réseaux, le devis peut aussi prévoir une journée où tout est tourné, monté et publié le jour même, ou un suivi régulier.',
+          'Chiffrés à part, ligne par ligne : le drone (190 €), la voix off et le sous-titrage, les jours supplémentaires, le motion design au-delà des titres, les déplacements hors zone incluse (forfaits de 90 à 290 €), et une diffusion publicitaire payante, à signaler au brief.',
         ],
       },
       {
@@ -81,7 +78,7 @@ export const GUIDES_CORPORATE_PRICE: readonly Guide[] = [
         title: 'Un exemple de budget : film de présentation pour une PME de 25 personnes',
         paragraphs: [
           'Objectif : un film de 90 secondes pour la page d’accueil et LinkedIn, avec deux interviews (le dirigeant et une collaboratrice), des plans des bureaux et de l’atelier, et les portraits de toute l’équipe pour le site.',
-          `Chez Heaven Motion : demi-journée film + portraits à ${price('combo')} HTVA, drone pour deux plans de l’atelier 190 €, déplacement inclus à moins de 60 km de Bruxelles. Total : 1 580 € HTVA, livraison sous 2 à 4 semaines. Le même brief en agence se chiffre entre 5 000 et 8 000 € HTVA, avec un script écrit et une équipe de trois personnes.`,
+          'Chez Heaven Motion, ce brief tient en une demi-journée film + portraits, avec le drone pour deux plans de l’atelier (190 €) et le déplacement inclus à moins de 60 km de Bruxelles ; il est chiffré sur devis sous 48 h, livraison sous 2 à 4 semaines. Le même brief en agence se chiffre entre 5 000 et 8 000 € HTVA, avec un script écrit et une équipe de trois personnes.',
         ],
       },
       {
@@ -98,12 +95,12 @@ export const GUIDES_CORPORATE_PRICE: readonly Guide[] = [
       },
     ],
     faq: [
-      { question: 'Combien coûte une vidéo d’entreprise de 2 minutes ?', answer: 'Entre 1 000 et 3 000 € HTVA chez un freelance belge, entre 3 000 et 10 000 € en agence. Chez Heaven Motion, ' + price('video') + ' HTVA pour une demi-journée, le montage, deux corrections et trois formats.' },
+      { question: 'Combien coûte une vidéo d’entreprise de 2 minutes ?', answer: 'Entre 1 000 et 3 000 € HTVA chez un freelance belge, entre 3 000 et 10 000 € en agence. Chez Heaven Motion, sur devis sous 48 h, selon la durée de tournage, le nombre d’interviews et les formats.' },
       { question: 'Quel est le tarif journalier d’un vidéaste freelance en Belgique ?', answer: 'Entre 450 et 900 € HTVA la journée de tournage selon Malt et les sites de freelances, montage non compris ; le montage se facture 350 à 700 € par jour.' },
       { question: 'La TVA est-elle récupérable ?', answer: 'Oui, pour une entreprise assujettie : les prix sont affichés hors TVA, la TVA de 21 % est déductible. Pour une entreprise française, néerlandaise ou luxembourgeoise, la facture est en autoliquidation.' },
       { question: 'Combien de temps pour recevoir le film ?', answer: 'Deux à quatre semaines après le tournage chez la plupart des prestataires, avec un premier montage à valider ; une livraison express (190 €) divise le délai par deux.' },
       { question: 'Vaut-il mieux une agence ou un freelance ?', answer: 'Une agence pour une campagne avec script, acteurs et motion design ; un freelance pour un film de présentation, des interviews, un aftermovie ou des portraits, à un tiers du prix. Le résultat dépend du brief plus que de la structure.' },
-      { question: 'Peut-on faire les portraits d’équipe et le film le même jour ?', answer: 'Oui, c’est même le cas le plus efficace : l’équipe est réunie une seule fois. Chez Heaven Motion, la demi-journée combinée est à ' + price('combo') + ' HTVA.' },
+      { question: 'Peut-on faire les portraits d’équipe et le film le même jour ?', answer: 'Oui, c’est même le cas le plus efficace : l’équipe est réunie une seule fois. Chez Heaven Motion, la demi-journée combinée est chiffrée sur devis.' },
     ],
     ctaTitle: 'Un devis HTVA sous 48 h',
     ctaBody: 'Décrivez l’objectif, le canal, le nombre d’interviews et le lieu : vous recevez un devis ligne par ligne, avec les formats livrés, les corrections incluses et le délai.',
@@ -120,11 +117,11 @@ export const GUIDES_CORPORATE_PRICE: readonly Guide[] = [
     category: 'corporate',
     title: 'Wat kost een bedrijfsvideo in België in 2026?',
     metaTitle: 'Prijs van een bedrijfsvideo in België (2026): prijsvorken en voorbeelden',
-    metaDescription: `Wat een bedrijfsfilm, aftermovie, wervingsvideo of teamportretten kosten in België, wat de offerte doet schommelen, de verborgen kosten, en onze prijzen excl. btw: film van 1 à 2 min aan ${price('video')}.`,
+    metaDescription: `Wat een bedrijfsfilm, aftermovie, wervingsvideo of teamportretten kosten in België, wat de offerte doet schommelen, de verborgen kosten, en hoe onze offerte excl. btw wordt opgebouwd, binnen 48 u.`,
     eyebrow: 'Prijsgids B2B',
     published: '2026-10-05',
     readingMinutes: 9,
-    answer: `In België kost een bedrijfsvideo tussen 1.000 en 3.000 € excl. btw bij een freelancer voor een film van 1 tot 3 minuten op één draaidag, tussen 3.000 en 10.000 € excl. btw bij een bureau met script, crew en motion design, en meer dan 10.000 € voor een reclamecampagne. Een aftermovie van een event zit tussen 800 en 2.000 €, een wervingsvideo tussen 2.500 en 6.000 €, een reeks teamportretten tussen 400 en 900 €. Bij Heaven Motion kost de film van 1 tot 2 minuten met socialemediaformaten ${price('video')} excl. btw, de portretten ${price('photo')} excl. btw, en beide op één halve dag ${price('combo')} excl. btw. Het detail hieronder.`,
+    answer: `In België kost een bedrijfsvideo tussen 1.000 en 3.000 € excl. btw bij een freelancer voor een film van 1 tot 3 minuten op één draaidag, tussen 3.000 en 10.000 € excl. btw bij een bureau met script, crew en motion design, en meer dan 10.000 € voor een reclamecampagne. Een aftermovie van een event zit tussen 800 en 2.000 €, een wervingsvideo tussen 2.500 en 6.000 €, een reeks teamportretten tussen 400 en 900 €. Bij Heaven Motion is elk bedrijfsproject op offerte, excl. btw, binnen 48 u: een film, portretten, beide op één halve dag, of een dag waarop alles dezelfde dag gefilmd, gemonteerd en gepost wordt. Het detail hieronder.`,
     sections: [
       {
         title: 'De prijsvorken van de Belgische markt, per type video',
@@ -134,13 +131,13 @@ export const GUIDES_CORPORATE_PRICE: readonly Guide[] = [
         table: {
           columns: ['Type video', 'Freelancer', 'Bureau', 'Heaven Motion (excl. btw)'],
           rows: [
-            ['Bedrijfsfilm 1 tot 3 min, 1 draaidag', '1.000 – 3.000 €', '3.000 – 10.000 €', `${price('video')} (halve dag, 1 tot 2 min + socialemediaformaten)`],
-            ['Aftermovie van een event, 1 tot 3 min', '800 – 2.000 €', '2.000 – 5.000 €', `${price('video')} (halve dag); hele dag op offerte`],
+            ['Bedrijfsfilm 1 tot 3 min, 1 draaidag', '1.000 – 3.000 €', '3.000 – 10.000 €', 'Op offerte (socialemediaformaten inbegrepen)'],
+            ['Aftermovie van een event, 1 tot 3 min', '800 – 2.000 €', '2.000 – 5.000 €', 'Op offerte, volgens de duur ter plaatse'],
             ['Wervingsvideo / employer branding', '2.000 – 4.000 €', '4.000 – 10.000 €', 'Op offerte, vanaf film + interviews'],
-            ['Interview of klantgetuigenis, 1 tot 2 min', '600 – 1.500 €', '1.500 – 4.000 €', `${price('video')} (halve dag, tot 2 interviews)`],
-            ['Teamportretten / headshots, 10 tot 30 personen', '400 – 900 €', '900 – 2.000 €', `${price('photo')} (halve dag)`],
-            ['Reels en korte formaten, reeks van 4 tot 8', '500 – 1.500 €', '1.500 – 4.000 €', 'In de film inbegrepen (3 formaten); reeks op offerte'],
-            ['Film + portretten op dezelfde dag', '1.500 – 3.500 €', '4.000 – 12.000 €', `${price('combo')} (halve dag)`],
+            ['Interview of klantgetuigenis, 1 tot 2 min', '600 – 1.500 €', '1.500 – 4.000 €', 'Op offerte, volgens het aantal interviews'],
+            ['Teamportretten / headshots, 10 tot 30 personen', '400 – 900 €', '900 – 2.000 €', 'Op offerte, volgens het aantal personen'],
+            ['Reels en korte formaten, reeks van 4 tot 8', '500 – 1.500 €', '1.500 – 4.000 €', 'Op offerte, eenmalig of maandelijks'],
+            ['Film + portretten op dezelfde dag', '1.500 – 3.500 €', '4.000 – 12.000 €', 'Op offerte (één halve dag)'],
           ],
           note: 'Prijzen exclusief btw. De bureauvorken omvatten meestal een projectleider, een script en een crew van twee tot vier personen.',
         },
@@ -160,10 +157,10 @@ export const GUIDES_CORPORATE_PRICE: readonly Guide[] = [
         ],
       },
       {
-        title: 'Wat bij Heaven Motion inbegrepen is, en wat niet',
+        title: 'Hoe een offerte bij Heaven Motion wordt opgebouwd',
         paragraphs: [
-          `De film aan ${price('video')} excl. btw omvat een halve dag opnames op één site, tot twee interviews, de montage van een film van 1 tot 2 minuten, twee correctierondes, muziek onder licentie en drie formaten (16/9, 9/16, 1/1). De portretten aan ${price('photo')} excl. btw omvatten de halve dag, een portretset ter plaatse, de bewerking van elk portret en de levering in LinkedIn-formaat. Beide samen, dezelfde dag, aan ${price('combo')} excl. btw.`,
-          'Niet inbegrepen: de drone (190 €), voice-over en ondertiteling (op offerte), extra dagen, motion design buiten de titels, verplaatsingen buiten de inbegrepen zone (vaste kosten van 90 tot 290 €), en betaalde advertentiecampagnes, te melden bij de offerte.',
+          'Elke zakelijke offerte vertrekt van uw briefing: de draaiduur, het aantal sites en interviews, de lengte van de film, de formaten (16/9, 9/16, 1/1) en twee correctierondes. De teamportretten kunnen dezelfde dag, met een portretset ter plaatse en elk portret bewerkt, geleverd in LinkedIn-formaat. Voor een event of uw sociale media kan de offerte ook een dag voorzien waarop alles dezelfde dag gefilmd, gemonteerd en gepost wordt, of een regelmatige opvolging.',
+          'Apart geprijsd, lijn per lijn: de drone (190 €), voice-over en ondertiteling, extra dagen, motion design buiten de titels, verplaatsingen buiten de inbegrepen zone (vaste kosten van 90 tot 290 €), en betaalde advertentiecampagnes, te melden bij de briefing.',
         ],
       },
       {
@@ -181,7 +178,7 @@ export const GUIDES_CORPORATE_PRICE: readonly Guide[] = [
         title: 'Een voorbeeldbudget: presentatiefilm voor een kmo van 25 personen',
         paragraphs: [
           'Doel: een film van 90 seconden voor de homepage en LinkedIn, met twee interviews (de zaakvoerder en een medewerkster), beelden van de kantoren en het atelier, en portretten van het hele team voor de website.',
-          `Bij Heaven Motion: halve dag film + portretten aan ${price('combo')} excl. btw, drone voor twee shots van het atelier 190 €, verplaatsing inbegrepen binnen 60 km van Brussel. Totaal: 1.580 € excl. btw, levering binnen 2 tot 4 weken. Dezelfde briefing bij een bureau kost 5.000 tot 8.000 € excl. btw, met een geschreven script en een crew van drie.`,
+          'Bij Heaven Motion past deze briefing in een halve dag film + portretten, met de drone voor twee shots van het atelier (190 €) en de verplaatsing inbegrepen binnen 60 km van Brussel; ze wordt op offerte geprijsd binnen 48 u, levering binnen 2 tot 4 weken. Dezelfde briefing bij een bureau kost 5.000 tot 8.000 € excl. btw, met een geschreven script en een crew van drie.',
         ],
       },
       {
@@ -198,7 +195,7 @@ export const GUIDES_CORPORATE_PRICE: readonly Guide[] = [
       },
     ],
     faq: [
-      { question: 'Wat kost een bedrijfsvideo van 2 minuten?', answer: 'Tussen 1.000 en 3.000 € excl. btw bij een Belgische freelancer, tussen 3.000 en 10.000 € bij een bureau. Bij Heaven Motion ' + price('video') + ' excl. btw voor een halve dag, de montage, twee correcties en drie formaten.' },
+      { question: 'Wat kost een bedrijfsvideo van 2 minuten?', answer: 'Tussen 1.000 en 3.000 € excl. btw bij een Belgische freelancer, tussen 3.000 en 10.000 € bij een bureau. Bij Heaven Motion op offerte binnen 48 u, volgens de draaiduur, het aantal interviews en de formaten.' },
       { question: 'Wat is het dagtarief van een freelance videograaf in België?', answer: 'Tussen 450 en 900 € excl. btw per draaidag volgens Malt en de freelancesites, montage niet inbegrepen; montage wordt aan 350 tot 700 € per dag aangerekend.' },
       { question: 'Is de btw aftrekbaar?', answer: 'Ja, voor een btw-plichtige onderneming: de prijzen zijn exclusief btw, de btw van 21 % is aftrekbaar. Voor een Nederlands, Frans of Luxemburgs bedrijf wordt de btw verlegd.' },
       { question: 'Hoe lang duurt het voor de film klaar is?', answer: 'Twee tot vier weken na de opnames bij de meeste leveranciers, met een eerste montage om goed te keuren; een snelle levering (190 €) halveert de termijn.' },

@@ -1,6 +1,6 @@
 import { ProcessStep, ServiceCard, Testimonial } from '../models';
 import { CategoryKey, SiteLocale, SITE_LOCALES } from './locale';
-import { PACK_LABELS, PRICING, VAT_LABELS, formatPrice, startingPrice } from './packs';
+import { PACK_LABELS, PRICING, startingPriceText } from './packs';
 
 /**
  * Identité légale de la société, communiquée par le client (octobre 2026).
@@ -101,7 +101,6 @@ export const CATEGORY_TAGLINES: Readonly<Record<CategoryKey, Readonly<Record<Sit
  * prix du site (JSON-LD `priceRange` de la home, pages commune, sitemap).
  */
 function serviceCardsFor(locale: SiteLocale): readonly ServiceCard[] {
-  const from = { fr: 'à partir de', nl: 'vanaf', en: 'from' }[locale];
   return PRICING.map((pricing, index) => {
     const combo = pricing.packs.find((p) => p.type === 'combo') ?? pricing.packs[0];
     return {
@@ -110,7 +109,7 @@ function serviceCardsFor(locale: SiteLocale): readonly ServiceCard[] {
       included: pricing.packs.map((p) => PACK_LABELS[p.type][locale]),
       duration: combo.duration[locale],
       deliverables: combo.deliverables[locale],
-      startingPrice: `${from} ${formatPrice(startingPrice(pricing.key))} ${VAT_LABELS[pricing.vat][locale]}`,
+      startingPrice: startingPriceText(pricing.key, locale),
       sortOrder: index + 1,
     };
   });

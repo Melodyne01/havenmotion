@@ -285,13 +285,16 @@ export class QuoteFormComponent implements OnInit {
   private readonly analytics = inject(AnalyticsService);
   private readonly quote = inject(QuoteService);
 
-  /** Formules, avec le prix de départ de la catégorie choisie ; « Je ne sais pas encore » en premier. */
+  /**
+   * Formules de la catégorie choisie (toutes tant qu'aucune n'est choisie),
+   * avec leur prix de départ ; « Je ne sais pas encore » en premier.
+   */
   protected readonly packOptions = computed(() => {
     const key = this.categoryKey();
     const pricing = key ? pricingFor(key) : null;
     return [
       { value: '', label: this.text.packUndecided, price: '' },
-      ...PACK_TYPES.map((type) => {
+      ...this.packTypesFor(key).map((type) => {
         const price = pricing?.packs.find((p) => p.type === type)?.price;
         return {
           value: type as string,
@@ -349,7 +352,7 @@ export class QuoteFormComponent implements OnInit {
     if (category) {
       this.category.set(category);
     }
-    if (pack) {
+    if (pack && this.packTypesFor(category ?? null).includes(pack)) {
       this.pack.set(pack);
     }
     const found = region ? findRegion(region) : null;
@@ -374,6 +377,15 @@ export class QuoteFormComponent implements OnInit {
   protected pickCategory(value: string): void {
     this.category.set(value);
     this.categoryError.set(false);
+    // Une formule absente de la nouvelle catégorie (photo pour un clip, sur devis seulement) est oubliée.
+    if (this.pack() && !this.packTypesFor(this.categoryKey()).includes(this.pack() as PackType)) {
+      this.pack.set('');
+    }
+  }
+
+  /** Formules proposées dans une catégorie ; toutes pour « Autre » ou tant qu'aucune n'est choisie. */
+  private packTypesFor(key: CategoryKey | null): readonly PackType[] {
+    return key ? pricingFor(key).packs.map((p) => p.type) : PACK_TYPES;
   }
 
   /** Un pays à une seule région (Luxembourg, étranger) la sélectionne d'office. */

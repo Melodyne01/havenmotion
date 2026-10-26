@@ -5,6 +5,7 @@ const m = pricingFor('mariage');
 const price = (type: 'photo' | 'video' | 'combo') => formatPrice(m.packs.find((p) => p.type === type)!.price!);
 const separate = formatPrice(m.packs.find((p) => p.type === 'photo')!.price! + m.packs.find((p) => p.type === 'video')!.price!);
 const second = formatPrice(490);
+const eventVideo = formatPrice(pricingFor('evenementiel').packs.find((p) => p.type === 'video')!.price!);
 
 /**
  * Guide de décision : photographe, vidéaste, ou les deux. Trois versions
@@ -104,7 +105,7 @@ export const GUIDES_CHOOSE: readonly Guide[] = [
       { question: 'Vaut-il mieux un photographe ou un vidéaste ?', answer: 'Si vous n’en prenez qu’un, le photographe : les photos durent, s’impriment et se regardent sans effort. Ajoutez le vidéaste si les voix (vœux, discours) comptent pour vous.' },
       { question: 'Une seule personne peut-elle vraiment faire les deux ?', answer: 'Oui, avec une méthode (repérage, moments clés, priorité décidée avec vous, matériel qui bascule) et une limite : pas deux angles simultanés. Jusqu’à 120 invités, c’est la solution la plus simple et la moins chère ; au-delà, un second opérateur s’ajoute.' },
       { question: 'Combien coûte un duo photo + vidéo en Belgique ?', answer: 'Entre 3 000 et 5 500 € TTC pour deux prestataires sur une journée complète. Une seule personne pour les deux coûte entre 2 500 et 4 000 € sur le marché, ' + price('combo') + ' TTC chez Heaven Motion.' },
-      { question: 'Peut-on prendre la vidéo seulement pour la cérémonie ?', answer: 'Oui. Une couverture courte (cérémonie, discours, 2 à 3 heures) existe chez la plupart des vidéastes, entre 600 et 1 200 € ; chez Heaven Motion, c’est la formule événementiel vidéo à 590 € TTC pour 3 heures.' },
+      { question: 'Peut-on prendre la vidéo seulement pour la cérémonie ?', answer: 'Oui. Une couverture courte (cérémonie, discours, 2 à 3 heures) existe chez la plupart des vidéastes, entre 600 et 1 200 € ; chez Heaven Motion, c’est la formule événementiel vidéo à ' + eventVideo + ' TTC pour 3 heures sur place et un aftermovie de 30 secondes à 1 minute.' },
       { question: 'Faut-il que le photographe et le vidéaste se connaissent ?', answer: 'C’est mieux. Deux professionnels qui n’ont jamais travaillé ensemble se gênent à la cérémonie et livrent deux styles. Demandez un mariage qu’ils ont couvert à deux, ou prenez une seule personne pour les deux.' },
     ],
     ctaTitle: 'Dites-nous votre journée, on vous dit quelle formule',
@@ -205,7 +206,7 @@ export const GUIDES_CHOOSE: readonly Guide[] = [
       { question: 'Is een trouwfotograaf of een videograaf beter?', answer: 'Neemt u er maar één, dan de fotograaf: foto’s blijven, worden gedrukt en bekeken zonder moeite. Voeg de videograaf toe als de stemmen (geloften, speeches) voor u tellen.' },
       { question: 'Kan één persoon echt beide doen?', answer: 'Ja, met een methode (verkenning, sleutelmomenten, prioriteit samen beslist, materiaal dat omschakelt) en een grens: geen twee gelijktijdige hoeken. Tot 120 gasten is het de eenvoudigste en goedkoopste oplossing; daarboven komt een tweede operator erbij.' },
       { question: 'Wat kost een duo foto + video in België?', answer: 'Tussen 3.000 en 5.500 € incl. btw voor twee leveranciers op een volledige dag. Eén persoon voor beide kost op de markt 2.500 tot 4.000 €, ' + price('combo') + ' incl. btw bij Heaven Motion.' },
-      { question: 'Kan ik video alleen voor de ceremonie nemen?', answer: 'Ja. Een korte dekking (ceremonie, speeches, 2 tot 3 uur) bestaat bij de meeste videografen, tussen 600 en 1.200 €; bij Heaven Motion is dat de evenementenformule video aan 590 € incl. btw voor 3 uur.' },
+      { question: 'Kan ik video alleen voor de ceremonie nemen?', answer: 'Ja. Een korte dekking (ceremonie, speeches, 2 tot 3 uur) bestaat bij de meeste videografen, tussen 600 en 1.200 €; bij Heaven Motion is dat de evenementenformule video aan ' + eventVideo + ' incl. btw voor 3 uur ter plaatse en een aftermovie van 30 seconden tot 1 minuut.' },
     ],
     ctaTitle: 'Vertel ons uw dag, wij zeggen welke formule',
     ctaBody: 'Datum, locatie, aantal gasten, en wat voor u telt (de stemmen, het album, de dansvloer): u krijgt binnen 48 u een offerte met de formule die zin heeft, en de tweede operator alleen als de dag erom vraagt.',
@@ -305,7 +306,7 @@ export const GUIDES_CHOOSE: readonly Guide[] = [
       { question: 'Is a wedding photographer or a videographer better?', answer: 'If you only take one, the photographer: photos last, get printed and are looked at effortlessly. Add the videographer if the voices (vows, speeches) matter to you.' },
       { question: 'Can one person really do both?', answer: 'Yes, with a method (location visit, key moments, priority decided with you, gear that switches) and one limit: no two simultaneous angles. Up to 120 guests it is the simplest and cheapest solution; beyond that a second operator is added.' },
       { question: 'How much does a photo + video duo cost in Belgium?', answer: 'Between €3,000 and €5,500 incl. VAT for two suppliers on a full day. One person for both costs €2,500 to €4,000 on the market, ' + price('combo') + ' incl. VAT at Heaven Motion.' },
-      { question: 'Can I book video for the ceremony only?', answer: 'Yes. Short coverage (ceremony, speeches, 2 to 3 hours) exists with most videographers, between €600 and €1,200; at Heaven Motion it is the events video package at €590 incl. VAT for 3 hours.' },
+      { question: 'Can I book video for the ceremony only?', answer: 'Yes. Short coverage (ceremony, speeches, 2 to 3 hours) exists with most videographers, between €600 and €1,200; at Heaven Motion it is the events video package at ' + eventVideo + ' incl. VAT for 3 hours on site and a 30-second to 1-minute aftermovie.' },
     ],
     ctaTitle: 'Tell us about your day, we tell you which package',
     ctaBody: 'Date, venue, guest count, and what matters to you (the voices, the album, the dance floor): you receive within 48 h a quote with the package that makes sense, and the second operator only if the day calls for it.',

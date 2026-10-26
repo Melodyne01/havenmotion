@@ -95,7 +95,7 @@ export const GUIDES_BRUSSELS_EXPAT: readonly Guide[] = [
         paragraphs: [
           'Every Brussels commune allows a photographer in the ceremony hall; some ask for no flash, some fix where the photographer stands. The exit on the steps and the first minutes outside are the images couples keep: it is worth asking your photographer to arrive thirty minutes early to catch the guests arriving and the two of you before.',
           'Then a couple session of 45 to 90 minutes: the Grand-Place at eight in the morning before the terraces, the Cinquantenaire arcades, the Abbaye de la Cambre and the Ixelles ponds, the Mont des Arts with the city below, the Bois de la Cambre in autumn light, the Atomium for something unmistakably Brussels. No permit is needed for a couple session in public spaces; parks close at dusk.',
-          `A civil wedding with a short session is a lifestyle booking at Heaven Motion: ${formatPrice(250)} incl. VAT for ninety minutes of photos, ${formatPrice(640)} with a short film. A full day, from getting ready to the party, is the wedding package: ${price('photo')} for photo, ${price('video')} for video, ${price('combo')} for both by the same person. No travel fee anywhere in the 19 communes.`,
+          `A civil wedding with a short session is a custom booking at Heaven Motion, on quote within 48 h. A full day, from getting ready to the party, is the wedding package: ${price('photo')} for photo, ${price('video')} for video, ${price('combo')} for both by the same person. No travel fee anywhere in the 19 communes.`,
         ],
       },
       {
@@ -104,7 +104,7 @@ export const GUIDES_BRUSSELS_EXPAT: readonly Guide[] = [
         list: [
           'The ceremony: free on weekdays in most communes; some charge for Saturdays or for the ceremonial hall, usually under €200. The marriage booklet is a few euros to a few dozen.',
           'Documents: apostilles and legalisations €20 to €100 each, sworn translations €40 to €80 per page.',
-          'Photographer and videographer: see above, from €250 for a short session to €2,690 for a full day with both.',
+          `Photographer and videographer: see above, a short session on quote, ${price('combo')} for a full day with both.`,
           'Reception: Brussels venues range from a restaurant private room (€60 to €120 per guest) to a château or an orangery (€150 to €250 per guest, all included).',
         ],
       },

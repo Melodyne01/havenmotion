@@ -44,7 +44,7 @@ export function prefillFromParams(params: URLSearchParams | { get(name: string):
   };
 }
 
-/** Prix de départ de la formule choisie, avec son régime de TVA : « 2 690 € TTC ». */
+/** Prix de départ de la formule choisie, avec son régime de TVA : « 2 790 € TTC ». */
 function packPrice(locale: SiteLocale, category: CategoryKey, pack: PackType): string | null {
   const pricing = pricingFor(category);
   const price = pricing.packs.find((p) => p.type === pack)?.price;

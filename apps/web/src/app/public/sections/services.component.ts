@@ -5,7 +5,7 @@ import { RevealDirective } from '../../shared/directives/reveal.directive';
 import { CategoryKey, SITE_LOCALE, categoryPath, categorySlug, routePath } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 import { CATEGORY_NAMES } from '../../core/site-content';
-import { PACK_LABELS, PRICING, VAT_LABELS, formatPrice, startingPrice } from '../../core/packs';
+import { PACK_LABELS, PRICING, formatPrice, startingPriceText } from '../../core/packs';
 
 /**
  * Tarifs sur la home : une carte par catégorie avec son prix d'appel et le
@@ -39,7 +39,7 @@ import { PACK_LABELS, PRICING, VAT_LABELS, formatPrice, startingPrice } from '..
                 </li>
               }
             </ul>
-            <p class="card__price">{{ text.services.from }} {{ format(from(entry.key)) }} {{ vat(entry.vat) }}</p>
+            <p class="card__price">{{ priceText(entry.key) }}</p>
             <a class="card__cta" [routerLink]="categoryHref(entry.key)">{{ text.services.cta }} →</a>
           </article>
         }
@@ -65,12 +65,9 @@ export class ServicesComponent {
     return PACK_LABELS[type][this.locale];
   }
 
-  protected vat(mode: (typeof PRICING)[number]['vat']): string {
-    return VAT_LABELS[mode][this.locale];
-  }
-
-  protected from(key: CategoryKey): number {
-    return startingPrice(key);
+  /** « à partir de 300 € TTC », ou « Sur devis ». */
+  protected priceText(key: CategoryKey): string {
+    return startingPriceText(key, this.locale);
   }
 
   protected format(amount: number): string {

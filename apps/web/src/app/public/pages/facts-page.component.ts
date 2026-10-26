@@ -139,16 +139,16 @@ export class FactsPageComponent {
       {
         title: t('Offre et prix', 'Aanbod en prijzen', 'Offer and prices'),
         lines: [
-          t('Quatre formules par catégorie : photo + retouche, vidéo + montage, photo + vidéo par la même personne, sur mesure (devis).', 'Vier formules per categorie: foto + bewerking, video + montage, foto + video door dezelfde persoon, op maat (offerte).', 'Four packages per category: photo + editing, video + editing, photo + video by the same person, custom (quote).'),
+          t('Mariage, événementiel et sport : quatre formules, photo + retouche, vidéo + montage, photo + vidéo par la même personne, sur mesure (devis). Corporate, clip et lifestyle : sur devis.', 'Huwelijk, evenementen en sport: vier formules, foto + bewerking, video + montage, foto + video door dezelfde persoon, op maat (offerte). Zakelijk, clip en lifestyle: op offerte.', 'Wedding, events and sport: four packages, photo + editing, video + editing, photo + video by the same person, custom (quote). Corporate, music video and lifestyle: on quote.'),
           ...PRICING.map((p) => {
             const name = CATEGORY_NAMES[p.key as CategoryKey][l];
             const vat = VAT_LABELS[p.vat][l];
             const priced = p.packs.filter((pack) => pack.price !== null).map((pack) => `${PACK_LABELS[pack.type][l]} ${formatPrice(pack.price!)}`).join(' · ');
-            return `${name} (${vat}) : ${priced}.`;
+            return priced ? `${name} (${vat}) : ${priced}.` : `${name} : ${t('sur devis', 'op offerte', 'on quote')}.`;
           }),
           ...PRICING_OPTIONS.map((o) => `${t('Option', 'Optie', 'Extra')} — ${o.name[l]} : ${o.from ? `${t('à partir de', 'vanaf', 'from')} ` : ''}${formatPrice(o.price)}.`),
           t('Devis chiffré sous 48 h, gratuit, valable 30 jours. Acompte de 30 % à la réservation, solde à la livraison.', 'Concrete offerte binnen 48 u, gratis, 30 dagen geldig. Voorschot van 30 % bij reservatie, saldo bij levering.', 'Itemised quote within 48 h, free, valid 30 days. 30% deposit on booking, balance on delivery.'),
-          t('Livraison : aperçu photo sous 7 jours, galerie complète et film sous 2 à 4 semaines, deux allers-retours de montage inclus.', 'Levering: voorproefje van de foto’s binnen 7 dagen, volledige galerij en film binnen 2 tot 4 weken, twee rondes feedback inbegrepen.', 'Delivery: photo sneak peek within 7 days, full gallery and film within 2 to 4 weeks, two rounds of edits included.'),
+          t('Livraison : mariage, photos et film sous 2 à 4 semaines ; événementiel, photos dans la semaine et aftermovie sous 1 à 2 semaines ; deux allers-retours de montage inclus.', 'Levering: huwelijk, foto’s en film binnen 2 tot 4 weken; evenementen, foto’s binnen de week en aftermovie binnen 1 tot 2 weken; twee rondes feedback inbegrepen.', 'Delivery: weddings, photos and film within 2 to 4 weeks; events, photos within a week and aftermovie within 1 to 2 weeks; two rounds of edits included.'),
         ],
       },
       {
@@ -167,8 +167,8 @@ export class FactsPageComponent {
         title: t('Méthode', 'Methode', 'Method'),
         lines: [
           t('Photo et vidéo par la même personne ; second opérateur proposé (490 €) au-delà de 120 invités ou pour une cérémonie religieuse longue.', 'Foto en video door dezelfde persoon; tweede operator voorgesteld (€ 490) vanaf 120 gasten of bij een lange religieuze ceremonie.', 'Photo and video by the same person; second operator offered (€490) above 120 guests or for a long religious ceremony.'),
-          t('Repérage du lieu avant un mariage ; musique sous licence dans tous les films sauf les clips ; sauvegarde double le jour même ; galerie en ligne conservée 12 mois.', 'Verkenning van de locatie vóór een huwelijk; muziek in licentie in alle films behalve clips; dubbele back-up dezelfde dag; online galerij 12 maanden bewaard.', 'Venue scouting before a wedding; licensed music in every film except music videos; double backup the same day; online gallery kept for 12 months.'),
-          t('Droits : usage complet pour le client ; cession des droits commerciaux incluse pour corporate, sport et clip.', 'Rechten: volledig gebruik voor de klant; commerciële rechten inbegrepen voor zakelijk, sport en clip.', 'Rights: full use for the client; commercial rights included for corporate, sport and music video.'),
+          t('Repérage du lieu avant un mariage ; sauvegarde double le jour même ; galerie en ligne conservée 12 mois.', 'Verkenning van de locatie vóór een huwelijk; dubbele back-up dezelfde dag; online galerij 12 maanden bewaard.', 'Venue scouting before a wedding; double backup the same day; online gallery kept for 12 months.'),
+          t('Droits : usage complet pour le client ; cession des droits commerciaux incluse pour le sport, précisée sur le devis pour corporate et clip.', 'Rechten: volledig gebruik voor de klant; commerciële rechten inbegrepen voor sport, vermeld op de offerte voor zakelijk en clip.', 'Rights: full use for the client; commercial rights included for sport, stated on the quote for corporate and music video.'),
         ],
       },
     ];

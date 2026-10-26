@@ -129,7 +129,7 @@ const PRICE_GUIDES: readonly Guide[] = [
         paragraphs: [
           'Pour une journée complète, le marché livre entre 300 et 600 photos retouchées, soit environ 25 à 50 photos par heure de présence, triées à partir de 2 000 à 5 000 prises. Un aperçu de 20 à 50 photos arrive sous 7 à 14 jours chez les meilleurs, la galerie complète sous 4 à 8 semaines.',
           'Côté film, le format standard est un film de 4 à 8 minutes qui raconte la journée, souvent accompagné d’un teaser d’une minute pour les réseaux. Le long format (20 à 30 minutes, cérémonie et discours en intégralité) est une option chez la plupart, comprise chez certains. Livraison : 1 à 3 mois en moyenne.',
-          'Chez Heaven Motion : environ 400 photos, aperçu sous 7 jours, galerie et film de 5 à 8 minutes avec teaser sous 2 à 4 semaines.',
+          'Chez Heaven Motion : environ 300 photos et un film de 7 à 10 minutes, livrés sous 2 à 4 semaines.',
         ],
       },
       {
@@ -183,7 +183,7 @@ const PRICE_GUIDES: readonly Guide[] = [
       { question: 'Une seule personne peut-elle faire la photo et la vidéo ?', answer: 'Oui, avec une méthode (les moments clés préparés au repérage, une priorité décidée avec vous) et une limite honnête : pas deux angles à la même seconde. Un second opérateur couvre les grands mariages. Le combo coûte nettement moins cher que deux prestataires.' },
       { question: 'Les prix sont-ils plus élevés à Bruxelles qu’en Wallonie ?', answer: 'Légèrement : Bruxelles et Anvers sont les marchés les plus chers, Liège, Namur et le Hainaut un peu moins. L’écart tient surtout au prestataire, pas à la ville.' },
       { question: 'Peut-on négocier ?', answer: 'Sur une date hors saison ou en semaine, souvent oui. Sur un samedi de juin, rarement. Chez Heaven Motion la grille est la même pour tous, mais le sur mesure permet d’ajuster la durée et les livrables au budget.' },
-      { question: 'Combien coûte un mariage civil seul ?', answer: 'Entre 300 et 600 € pour 1 à 2 heures sur le marché belge. Chez Heaven Motion, la séance de 1 h 30 à 250 € TTC couvre une cérémonie civile courte.' },
+      { question: 'Combien coûte un mariage civil seul ?', answer: 'Entre 300 et 600 € pour 1 à 2 heures sur le marché belge. Chez Heaven Motion, une cérémonie civile courte est sur devis, selon la durée et ce que vous voulez recevoir.' },
     ],
     ctaTitle: 'Un devis chiffré pour votre date',
     ctaBody: 'Date, lieu, nombre d’invités : vous recevez sous 48 h un devis avec la formule, le déplacement et, si la journée le justifie, le second opérateur.',
@@ -242,7 +242,7 @@ const PRICE_GUIDES: readonly Guide[] = [
         paragraphs: [
           'Voor een volledige dag levert de markt 300 tot 500 bewerkte foto’s, ongeveer 25 per uur aanwezigheid, geselecteerd uit enkele duizenden opnames. Een sneak peek volgt binnen een week bij de beteren, de volledige galerij binnen 6 tot 8 weken.',
           'Voor de film is de standaard een trouwfilm van 4 tot 8 minuten met daarnaast een trailer van 1 minuut voor sociale media. Een lange versie (ceremonie en speeches integraal) is meestal een optie. Levering: 8 tot 10 weken bij de gevestigde studio’s.',
-          'Bij Heaven Motion: ongeveer 400 foto’s, voorproefje binnen 7 dagen, galerij en trouwfilm van 5 tot 8 minuten met teaser binnen 2 tot 4 weken.',
+          'Bij Heaven Motion: ongeveer 300 foto’s en een trouwfilm van 7 tot 10 minuten, geleverd binnen 2 tot 4 weken.',
         ],
       },
       {
@@ -296,7 +296,7 @@ const PRICE_GUIDES: readonly Guide[] = [
       { question: 'Kan één persoon foto én video maken?', answer: 'Ja, met een methode (sleutelmomenten voorbereid bij de verkenning, een voorrang die we samen bepalen) en een eerlijke grens: geen twee hoeken op dezelfde seconde. Een tweede operator dekt grote huwelijken. De combinatie kost veel minder dan twee leveranciers.' },
       { question: 'Is Antwerpen duurder dan de rest van Vlaanderen?', answer: 'Iets: Antwerpen en Brussel zijn de duurste markten (€ 1 600 tot 3 800), Vlaams-Brabant en Limburg zitten iets lager. Het verschil zit vooral bij de fotograaf, niet bij de stad.' },
       { question: 'Trouwfotograaf of huwelijksfotograaf: is er een verschil?', answer: 'Nee, het zijn twee woorden voor hetzelfde beroep. « Trouwfotograaf » wordt in Vlaanderen en Nederland gebruikt, « huwelijksfotograaf » vooral in Vlaanderen. Zoek op beide.' },
-      { question: 'Wat kost enkel het burgerlijk huwelijk?', answer: 'Op de markt € 300 tot 600 voor 1 tot 2 uur. Bij Heaven Motion dekt de sessie van 1 u 30 aan € 250 incl. btw een korte burgerlijke ceremonie.' },
+      { question: 'Wat kost enkel het burgerlijk huwelijk?', answer: 'Op de markt € 300 tot 600 voor 1 tot 2 uur. Bij Heaven Motion is een korte burgerlijke ceremonie op offerte, volgens de duur en wat u wilt ontvangen.' },
     ],
     ctaTitle: 'Een concrete offerte voor uw datum',
     ctaBody: 'Datum, locatie, aantal gasten: u ontvangt binnen 48 u een offerte met de formule, de verplaatsing en, als de dag het rechtvaardigt, de tweede operator.',
@@ -356,7 +356,7 @@ const PRICE_GUIDES: readonly Guide[] = [
         paragraphs: [
           'For a full day, the market delivers 300 to 600 edited photos — roughly 25 to 50 per hour on site, selected from 2,000 to 5,000 frames. A sneak peek of 20 to 50 photos arrives within 7 to 14 days from the best, the full gallery within 4 to 8 weeks.',
           'For film, the standard is a 4 to 8 minute highlight film telling the day, usually with a one-minute teaser for social media. A long cut (20 to 30 minutes, full ceremony and speeches) is an option with most. Delivery: 1 to 3 months on average.',
-          'At Heaven Motion: around 400 photos, sneak peek within 7 days, gallery and 5 to 8 minute film with teaser within 2 to 4 weeks.',
+          'At Heaven Motion: around 300 photos and a 7 to 10 minute film, delivered within 2 to 4 weeks.',
         ],
       },
       {
@@ -418,7 +418,7 @@ const PRICE_GUIDES: readonly Guide[] = [
       { question: 'Can one person shoot both photo and video?', answer: 'Yes, with a method (key moments prepared during scouting, a priority agreed with you) and an honest limit: no two angles in the same second. A second operator covers large weddings. The combo costs far less than two suppliers.' },
       { question: 'Do Belgian photographers work in English?', answer: 'Many in Brussels do; fewer outside the capital. Heaven Motion works in English, French and Dutch — quote, contract and the day itself.' },
       { question: 'Is Luxembourg more expensive than Belgium?', answer: 'Yes, by 15 to 30% for an equivalent service. A Belgian supplier travelling to Luxembourg (€190 flat fee with us) is often cheaper than a local one.' },
-      { question: 'How much does a civil ceremony alone cost?', answer: 'Between €300 and €600 for 1 to 2 hours on the Belgian market. At Heaven Motion, the 1.5-hour session at €250 incl. VAT covers a short civil ceremony.' },
+      { question: 'How much does a civil ceremony alone cost?', answer: 'Between €300 and €600 for 1 to 2 hours on the Belgian market. At Heaven Motion, a short civil ceremony is on quote, depending on duration and what you want to receive.' },
     ],
     ctaTitle: 'An itemised quote for your date',
     ctaBody: 'Date, venue, guest count: you receive within 48 h a quote with the package, the travel fee and, if the day calls for it, the second operator.',

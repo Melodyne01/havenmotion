@@ -14,9 +14,9 @@ import {
 import { optionsFor } from '../../core/pricing-options';
 
 /**
- * Grille des quatre formules d'une catégorie (photo, vidéo, photo + vidéo,
- * sur mesure), avec le régime de TVA à côté de chaque prix et l'économie du
- * combo mise en avant. Même composant sur la page catégorie et sur la page
+ * Grille des formules d'une catégorie (photo, vidéo, photo + vidéo, sur
+ * mesure — ou le sur mesure seul pour une catégorie sur devis), avec le
+ * régime de TVA à côté de chaque prix et l'économie du combo mise en avant. Même composant sur la page catégorie et sur la page
  * tarifs : une seule présentation des prix sur tout le site.
  *
  * Chaque bouton « Choisir » renvoie au formulaire de devis avec la
@@ -28,7 +28,7 @@ import { optionsFor } from '../../core/pricing-options';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink],
   template: `
-    <div class="packs" [class.packs--compact]="compact()">
+    <div class="packs" [class.packs--compact]="compact()" [class.packs--single]="pricing().packs.length === 1">
       @for (pack of pricing().packs; track pack.type) {
         <article class="pack" [class.pack--combo]="pack.type === 'combo'">
           <h3 class="pack__name">{{ label(pack) }}</h3>
@@ -280,6 +280,15 @@ import { optionsFor } from '../../core/pricing-options';
       .packs--compact {
         @include desktop {
           grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+      }
+
+      // Catégorie sur devis seulement : une carte, sans colonnes vides à côté.
+      .packs.packs--single {
+        max-width: 420px;
+
+        @include tablet-up {
+          grid-template-columns: minmax(0, 1fr);
         }
       }
     `,

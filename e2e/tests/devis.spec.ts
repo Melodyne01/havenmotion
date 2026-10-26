@@ -77,7 +77,7 @@ test('du hero à la demande de devis', async ({ page }) => {
   await dialog.locator('#popup-message').fill('Cérémonie fin d’après-midi.');
   const preview = dialog.locator('#popup-preview');
   await expect(preview).toContainText('Je m’appelle Camille Martin');
-  await expect(preview).toContainText(/Photo \+ vidéo \(à partir de 2.690.€ TTC\)/);
+  await expect(preview).toContainText(/Photo \+ vidéo \(à partir de 2.790.€ TTC\)/);
   await expect(preview).toContainText(/Lille – Nord \(déplacement : 90.€\)/);
   await expect(preview).toContainText('Cérémonie fin d’après-midi.');
   const whatsapp = dialog.getByRole('link', { name: /envoyer sur whatsapp/i });
@@ -242,7 +242,8 @@ test('les formules ouvrent le popup prérempli et la page contact garde le formu
   const checked = dialog.locator('label.choice input:checked');
   await expect(checked).toHaveCount(2);
   await expect(checked.nth(0)).toHaveValue('corporate');
-  await expect(checked.nth(1)).toHaveValue('photo');
+  // Le corporate est sur devis : sa seule carte est le sur mesure.
+  await expect(checked.nth(1)).toHaveValue('custom');
   await dialog.getByRole('button', { name: /fermer/i }).click();
   await expect(dialog).toBeHidden();
 

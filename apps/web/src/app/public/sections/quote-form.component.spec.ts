@@ -49,9 +49,23 @@ describe('QuoteFormComponent', () => {
 
   it('affiche le prix de départ sur les formules une fois le projet choisi', () => {
     const { fixture, element } = create();
+    pick(element, 'Sport');
+    fixture.detectChanges();
+    expect(element.textContent).toContain('350 € HTVA');
+  });
+
+  it('ne propose que le sur mesure pour une catégorie sur devis, et oublie la formule devenue impossible', () => {
+    const { fixture, element } = create();
+    pick(element, 'Mariage');
+    fixture.detectChanges();
+    pick(element, 'Photo + retouche');
+    fixture.detectChanges();
     pick(element, 'Corporate');
     fixture.detectChanges();
-    expect(element.textContent).toContain('990 € HTVA');
+    const packs = [...element.querySelectorAll('label.choice input[name$="pack"]')].map((i) => (i as HTMLInputElement).value);
+    expect(packs).toEqual(['', 'custom']);
+    const checked = [...element.querySelectorAll('label.choice input:checked')].map((i) => (i as HTMLInputElement).value);
+    expect(checked).toEqual(['corporate', '']);
   });
 
   it('parcourt les trois étapes et compose le message en direct', () => {
@@ -76,7 +90,7 @@ describe('QuoteFormComponent', () => {
 
     const preview = element.querySelector('#quote-preview')!.textContent!;
     expect(preview).toContain('Je m’appelle Camille Martin');
-    expect(preview).toContain('Photo + vidéo (à partir de 2 690 € TTC)');
+    expect(preview).toContain('Photo + vidéo (à partir de 2 790 € TTC)');
     expect(preview).toContain('Luxembourg (déplacement : 190');
     const mail = [...element.querySelectorAll('a')].find((a) => a.href.startsWith('mailto:'));
     expect(mail?.href).toContain('body=Bonjour');
@@ -100,9 +114,9 @@ describe('QuoteFormComponent', () => {
   });
 
   it('applique le préremplissage reçu du lien cliqué, pays compris', () => {
-    const { fixture, element } = create({ category: 'corporate', pack: 'video', region: 'lille-nord' });
+    const { fixture, element } = create({ category: 'sport', pack: 'video', region: 'lille-nord' });
     const checked = () => [...element.querySelectorAll('label.choice input:checked')].map((i) => (i as HTMLInputElement).value);
-    expect(checked()).toEqual(['corporate', 'video']);
+    expect(checked()).toEqual(['sport', 'video']);
     button(element, /continuer/i).click();
     fixture.detectChanges();
     expect(checked()).toContain('FR');

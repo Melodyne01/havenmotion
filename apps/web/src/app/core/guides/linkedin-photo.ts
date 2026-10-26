@@ -1,10 +1,4 @@
 import type { Guide } from '../guide-content';
-import { formatPrice, pricingFor } from '../packs';
-
-const c = pricingFor('corporate');
-const l = pricingFor('lifestyle');
-const team = formatPrice(c.packs.find((p) => p.type === 'photo')!.price!);
-const solo = formatPrice(l.packs.find((p) => p.type === 'photo')!.price!);
 
 /**
  * Guide « préparer » : la photo LinkedIn professionnelle. Trois versions,
@@ -25,7 +19,7 @@ export const GUIDES_LINKEDIN: readonly Guide[] = [
     eyebrow: 'Guide corporate',
     published: '2026-10-05',
     readingMinutes: 7,
-    answer: `Une bonne photo LinkedIn en 2026 est un portrait cadré de la poitrine au sommet de la tête, le visage occupant environ 60 % de l’image, le regard vers l’objectif, un léger sourire, un fond uni ou flou qui ne raconte rien, une lumière douce venant de face ou de trois quarts, et une tenue qui est celle de vos rendez-vous, pas de votre mariage. Elle est récente (moins de deux ans), nette, et la même sur LinkedIn, votre signature mail et le site de l’entreprise. En Belgique, un portrait individuel chez un photographe coûte entre 90 et 250 €, une séance d’équipe entre 400 et 900 € pour 10 à 30 personnes. Chez Heaven Motion : ${solo} TTC pour une séance individuelle, ${team} HTVA pour une demi-journée en entreprise.`,
+    answer: `Une bonne photo LinkedIn en 2026 est un portrait cadré de la poitrine au sommet de la tête, le visage occupant environ 60 % de l’image, le regard vers l’objectif, un léger sourire, un fond uni ou flou qui ne raconte rien, une lumière douce venant de face ou de trois quarts, et une tenue qui est celle de vos rendez-vous, pas de votre mariage. Elle est récente (moins de deux ans), nette, et la même sur LinkedIn, votre signature mail et le site de l’entreprise. En Belgique, un portrait individuel chez un photographe coûte entre 90 et 250 €, une séance d’équipe entre 400 et 900 € pour 10 à 30 personnes. Chez Heaven Motion, la séance individuelle comme la demi-journée en entreprise sont sur devis, chiffré sous 48 h.`,
     sections: [
       {
         title: 'Les sept règles d’une photo de profil qui marche',
@@ -69,8 +63,8 @@ export const GUIDES_LINKEDIN: readonly Guide[] = [
       {
         title: 'Seul ou en équipe : les deux séances',
         paragraphs: [
-          `La séance individuelle dure trente à quarante-cinq minutes, en studio, chez vous ou dans un lieu neutre, avec deux tenues et une dizaine de propositions, dont trois à cinq retouchées et livrées en carré et en portrait. Chez Heaven Motion, c’est la séance lifestyle d’une heure trente à ${solo} TTC ; sur le marché belge, un portrait individuel se situe entre 90 et 250 €.`,
-          `La séance d’équipe se fait dans vos bureaux : un espace portrait monté en vingt minutes (fond, lumière), cinq à dix minutes par personne, et la même lumière pour tous, ce qui donne une série cohérente sur le site et sur LinkedIn. Chez Heaven Motion, la demi-journée en entreprise coûte ${team} HTVA pour 10 à 30 personnes, chaque portrait retouché et livré en format LinkedIn et site ; sur le marché, entre 400 et 900 € HTVA selon le nombre de personnes.`,
+          `La séance individuelle dure trente à quarante-cinq minutes, en studio, chez vous ou dans un lieu neutre, avec deux tenues et une dizaine de propositions, dont trois à cinq retouchées et livrées en carré et en portrait. Chez Heaven Motion, c’est une séance lifestyle, sur devis ; sur le marché belge, un portrait individuel se situe entre 90 et 250 €.`,
+          `La séance d’équipe se fait dans vos bureaux : un espace portrait monté en vingt minutes (fond, lumière), cinq à dix minutes par personne, et la même lumière pour tous, ce qui donne une série cohérente sur le site et sur LinkedIn. Chez Heaven Motion, la demi-journée en entreprise, pour 10 à 30 personnes, chaque portrait retouché et livré en format LinkedIn et site, est sur devis, selon le nombre de personnes ; sur le marché, entre 400 et 900 € HTVA selon le nombre de personnes.`,
         ],
       },
       {
@@ -88,7 +82,7 @@ export const GUIDES_LINKEDIN: readonly Guide[] = [
     faq: [
       { question: 'Faut-il sourire sur une photo LinkedIn ?', answer: 'Un sourire léger, oui. Les profils avec un sourire naturel sont perçus comme plus compétents et plus accessibles ; le grand sourire et le visage fermé font moins bien.' },
       { question: 'Quel fond pour une photo LinkedIn ?', answer: 'Uni ou flou, dans une couleur neutre. Le fond ne doit rien raconter : le lecteur doit regarder votre visage.' },
-      { question: 'Combien coûte une photo LinkedIn professionnelle en Belgique ?', answer: 'Entre 90 et 250 € pour un portrait individuel, entre 400 et 900 € HTVA pour une équipe de 10 à 30 personnes. Chez Heaven Motion : ' + solo + ' TTC la séance individuelle, ' + team + ' HTVA la demi-journée en entreprise.' },
+      { question: 'Combien coûte une photo LinkedIn professionnelle en Belgique ?', answer: 'Entre 90 et 250 € pour un portrait individuel, entre 400 et 900 € HTVA pour une équipe de 10 à 30 personnes. Chez Heaven Motion, l’une et l’autre sont sur devis, chiffré sous 48 h.' },
       { question: 'À quelle fréquence changer sa photo ?', answer: 'Tous les deux à trois ans, ou dès qu’elle ne vous ressemble plus (lunettes, barbe, cheveux). Entre-temps, gardez la même partout.' },
       { question: 'Peut-on utiliser une photo générée par IA ?', answer: 'Techniquement oui, mais le rendez-vous qui suit commence par un écart entre la photo et la personne. Une photo réelle, bien faite, évite ce premier malaise.' },
     ],
@@ -111,7 +105,7 @@ export const GUIDES_LINKEDIN: readonly Guide[] = [
     eyebrow: 'Zakelijke gids',
     published: '2026-10-05',
     readingMinutes: 7,
-    answer: `Een goede LinkedIn-foto in 2026 is een portret van de borst tot de kruin, met het gezicht op ongeveer 60 % van het beeld, de blik in de lens, een lichte glimlach, een effen of onscherpe achtergrond die niets vertelt, zacht licht van voren of van driekwart, en de kledij van uw afspraken, niet van uw huwelijk. Ze is recent (minder dan twee jaar), scherp, en dezelfde op LinkedIn, in uw e-mailhandtekening en op de bedrijfswebsite. In België kost een individueel portret bij een fotograaf 90 tot 250 €, een teamsessie 400 tot 900 € voor 10 tot 30 personen. Bij Heaven Motion: ${solo} incl. btw voor een individuele sessie, ${team} excl. btw voor een halve dag in het bedrijf.`,
+    answer: `Een goede LinkedIn-foto in 2026 is een portret van de borst tot de kruin, met het gezicht op ongeveer 60 % van het beeld, de blik in de lens, een lichte glimlach, een effen of onscherpe achtergrond die niets vertelt, zacht licht van voren of van driekwart, en de kledij van uw afspraken, niet van uw huwelijk. Ze is recent (minder dan twee jaar), scherp, en dezelfde op LinkedIn, in uw e-mailhandtekening en op de bedrijfswebsite. In België kost een individueel portret bij een fotograaf 90 tot 250 €, een teamsessie 400 tot 900 € voor 10 tot 30 personen. Bij Heaven Motion zijn de individuele sessie en de halve dag in het bedrijf op offerte, binnen 48 u.`,
     sections: [
       {
         title: 'De zeven regels van een profielfoto die werkt',
@@ -155,8 +149,8 @@ export const GUIDES_LINKEDIN: readonly Guide[] = [
       {
         title: 'Alleen of met het team: de twee sessies',
         paragraphs: [
-          `De individuele sessie duurt dertig tot vijfenveertig minuten, in de studio, bij u of op een neutrale plek, met twee outfits en een tiental voorstellen, waarvan drie tot vijf bewerkt en geleverd in vierkant en portret. Bij Heaven Motion is dat de lifestyle-sessie van anderhalf uur aan ${solo} incl. btw; op de Belgische markt kost een individueel portret 90 tot 250 €.`,
-          `De teamsessie gebeurt in uw kantoren: een portretset in twintig minuten opgesteld (achtergrond, licht), vijf tot tien minuten per persoon, en hetzelfde licht voor iedereen, wat een consistente reeks geeft op de website en op LinkedIn. Bij Heaven Motion kost de halve dag in het bedrijf ${team} excl. btw voor 10 tot 30 personen, elk portret bewerkt en geleverd in LinkedIn- en websiteformaat; op de markt 400 tot 900 € excl. btw naargelang het aantal personen.`,
+          `De individuele sessie duurt dertig tot vijfenveertig minuten, in de studio, bij u of op een neutrale plek, met twee outfits en een tiental voorstellen, waarvan drie tot vijf bewerkt en geleverd in vierkant en portret. Bij Heaven Motion is dat een lifestyle-sessie, op offerte; op de Belgische markt kost een individueel portret 90 tot 250 €.`,
+          `De teamsessie gebeurt in uw kantoren: een portretset in twintig minuten opgesteld (achtergrond, licht), vijf tot tien minuten per persoon, en hetzelfde licht voor iedereen, wat een consistente reeks geeft op de website en op LinkedIn. Bij Heaven Motion is de halve dag in het bedrijf, voor 10 tot 30 personen, elk portret bewerkt en geleverd in LinkedIn- en websiteformaat, op offerte volgens het aantal personen; op de markt 400 tot 900 € excl. btw naargelang het aantal personen.`,
         ],
       },
       {
@@ -174,7 +168,7 @@ export const GUIDES_LINKEDIN: readonly Guide[] = [
     faq: [
       { question: 'Moet ik glimlachen op een LinkedIn-foto?', answer: 'Een lichte glimlach, ja. Profielen met een natuurlijke glimlach worden als competenter en toegankelijker ervaren; de brede glimlach en het gesloten gezicht doen het minder goed.' },
       { question: 'Welke achtergrond voor een LinkedIn-foto?', answer: 'Effen of onscherp, in een neutrale kleur. De achtergrond mag niets vertellen: de lezer moet naar uw gezicht kijken.' },
-      { question: 'Wat kost een professionele LinkedIn-foto in België?', answer: 'Tussen 90 en 250 € voor een individueel portret, tussen 400 en 900 € excl. btw voor een team van 10 tot 30 personen. Bij Heaven Motion: ' + solo + ' incl. btw de individuele sessie, ' + team + ' excl. btw de halve dag in het bedrijf.' },
+      { question: 'Wat kost een professionele LinkedIn-foto in België?', answer: 'Tussen 90 en 250 € voor een individueel portret, tussen 400 en 900 € excl. btw voor een team van 10 tot 30 personen. Bij Heaven Motion zijn beide op offerte, binnen 48 u.' },
       { question: 'Hoe vaak de foto vervangen?', answer: 'Elke twee tot drie jaar, of zodra ze niet meer op u lijkt (bril, baard, haar). Ondertussen: dezelfde foto overal.' },
     ],
     ctaTitle: 'Uw LinkedIn-portretten, alleen of met het team',
@@ -196,7 +190,7 @@ export const GUIDES_LINKEDIN: readonly Guide[] = [
     eyebrow: 'Corporate guide',
     published: '2026-10-05',
     readingMinutes: 7,
-    answer: `A good LinkedIn headshot in 2026 is framed from the chest to the top of the head, with the face filling about 60% of the image, eyes to the lens, a slight smile, a plain or blurred background that tells no story, soft light from the front or three-quarters, and the outfit you wear to meetings, not to weddings. It is recent (under two years), sharp, and the same on LinkedIn, your email signature and the company website. In Brussels, an individual headshot costs between €90 and €250, a team session between €400 and €900 for 10 to 30 people. At Heaven Motion: ${solo} incl. VAT for an individual session, ${team} excl. VAT for half a day at your office, in English.`,
+    answer: `A good LinkedIn headshot in 2026 is framed from the chest to the top of the head, with the face filling about 60% of the image, eyes to the lens, a slight smile, a plain or blurred background that tells no story, soft light from the front or three-quarters, and the outfit you wear to meetings, not to weddings. It is recent (under two years), sharp, and the same on LinkedIn, your email signature and the company website. In Brussels, an individual headshot costs between €90 and €250, a team session between €400 and €900 for 10 to 30 people. At Heaven Motion, both the individual session and half a day at your office are on quote, within 48 h, in English.`,
     sections: [
       {
         title: 'The seven rules of a profile photo that works',
@@ -240,8 +234,8 @@ export const GUIDES_LINKEDIN: readonly Guide[] = [
       {
         title: 'Alone or as a team: the two sessions',
         paragraphs: [
-          `The individual session lasts thirty to forty-five minutes, in a studio, at your place or in a neutral location, with two outfits and about ten proposals, of which three to five are edited and delivered in square and portrait. At Heaven Motion it is the ninety-minute lifestyle session at ${solo} incl. VAT; on the Brussels market an individual headshot runs between €90 and €250.`,
-          `The team session happens at your office: a portrait set built in twenty minutes (background, light), five to ten minutes per person, and the same light for everyone, which gives a consistent series on the website and on LinkedIn. At Heaven Motion, half a day at your office costs ${team} excl. VAT for 10 to 30 people, each portrait edited and delivered in LinkedIn and website formats; on the market, between €400 and €900 excl. VAT depending on headcount. Common in the EU quarter, where teams change every few years.`,
+          `The individual session lasts thirty to forty-five minutes, in a studio, at your place or in a neutral location, with two outfits and about ten proposals, of which three to five are edited and delivered in square and portrait. At Heaven Motion it is a lifestyle session, on quote; on the Brussels market an individual headshot runs between €90 and €250.`,
+          `The team session happens at your office: a portrait set built in twenty minutes (background, light), five to ten minutes per person, and the same light for everyone, which gives a consistent series on the website and on LinkedIn. At Heaven Motion, half a day at your office for 10 to 30 people, each portrait edited and delivered in LinkedIn and website formats, is on quote, by headcount; on the market, between €400 and €900 excl. VAT depending on headcount. Common in the EU quarter, where teams change every few years.`,
         ],
       },
       {
@@ -259,7 +253,7 @@ export const GUIDES_LINKEDIN: readonly Guide[] = [
     faq: [
       { question: 'Should I smile in a LinkedIn photo?', answer: 'A slight smile, yes. Profiles with a natural smile are perceived as more competent and approachable; the wide grin and the closed face both do worse.' },
       { question: 'What background for a LinkedIn headshot?', answer: 'Plain or blurred, in a neutral colour. The background should tell nothing: the reader should look at your face.' },
-      { question: 'How much does a professional LinkedIn headshot cost in Brussels?', answer: 'Between €90 and €250 for an individual portrait, between €400 and €900 excl. VAT for a team of 10 to 30 people. At Heaven Motion: ' + solo + ' incl. VAT for the individual session, ' + team + ' excl. VAT for half a day at your office.' },
+      { question: 'How much does a professional LinkedIn headshot cost in Brussels?', answer: 'Between €90 and €250 for an individual portrait, between €400 and €900 excl. VAT for a team of 10 to 30 people. At Heaven Motion, both are on quote, within 48 h.' },
       { question: 'How often should I change my photo?', answer: 'Every two to three years, or as soon as it no longer looks like you (glasses, beard, hair). In between, keep the same one everywhere.' },
       { question: 'Can I use an AI-generated photo?', answer: 'Technically yes, but the meeting that follows starts with a gap between the photo and the person. A real, well-made photo avoids that first awkwardness.' },
     ],
