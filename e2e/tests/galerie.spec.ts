@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 /**
- * Pages Mariage, Événementiel, Sport et Clip : la galerie affiche les photos du studio, chacune
+ * Pages Mariage, Événementiel, Sport, Clip et Corporate : la galerie affiche les photos du studio, chacune
  * avec un texte alternatif, et aucune image ne reste cassée une fois
  * défilée (les fichiers sont servis par le site, pas par un CDN).
  */
@@ -61,7 +61,17 @@ test('la page Clip affiche sa galerie de photos, toutes chargées', async ({ pag
   }
 });
 
-test('une catégorie sans photos n’affiche pas de galerie', async ({ page }) => {
+test('la page Corporate affiche sa photo, chargée', async ({ page }) => {
   await page.goto('/prestations/corporate');
+
+  const photos = page.locator('.gallery__item img');
+  await expect(photos).toHaveCount(1);
+  await photos.first().scrollIntoViewIfNeeded();
+  await expect(photos.first()).toHaveAttribute('alt', /\S+/);
+  await expect.poll(() => photos.first().evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+});
+
+test('une catégorie sans photos n’affiche pas de galerie', async ({ page }) => {
+  await page.goto('/prestations/lifestyle');
   await expect(page.locator('.gallery')).toHaveCount(0);
 });

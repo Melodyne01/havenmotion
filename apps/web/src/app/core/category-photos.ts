@@ -359,6 +359,18 @@ export const CATEGORY_PHOTOS: Readonly<Record<string, readonly CategoryPhoto[]>>
       },
     },
   ],
+  corporate: [
+    {
+      slug: 'officier-marine-uniforme-stand',
+      width: 1600,
+      height: 1279,
+      alt: {
+        fr: 'Un officier de marine en uniforme de cérémonie et casquette blanche, devant un stand, entouré de visiteurs flous',
+        nl: 'Een marineofficier in galauniform met witte pet, voor een stand, omringd door onscherpe bezoekers',
+        en: 'A navy officer in dress uniform and white cap, in front of a stand, surrounded by out-of-focus visitors',
+      },
+    },
+  ],
 };
 
 export const CATEGORY_GALLERY_TEXT: Readonly<Record<SiteLocale, Readonly<Record<string, CategoryGalleryText>>>> = {
@@ -367,18 +379,21 @@ export const CATEGORY_GALLERY_TEXT: Readonly<Record<SiteLocale, Readonly<Record<
     evenementiel: { eyebrow: 'Galerie', title: 'Photos d’événements' },
     sport: { eyebrow: 'Galerie', title: 'Photos de sport' },
     clip: { eyebrow: 'Galerie', title: 'Photos de clip' },
+    corporate: { eyebrow: 'Galerie', title: 'Photos corporate' },
   },
   nl: {
     mariage: { eyebrow: 'Galerij', title: 'Huwelijksfoto’s' },
     evenementiel: { eyebrow: 'Galerij', title: 'Evenementfoto’s' },
     sport: { eyebrow: 'Galerij', title: 'Sportfoto’s' },
     clip: { eyebrow: 'Galerij', title: 'Clipfoto’s' },
+    corporate: { eyebrow: 'Galerij', title: 'Zakelijke foto’s' },
   },
   en: {
     mariage: { eyebrow: 'Gallery', title: 'Wedding photos' },
     evenementiel: { eyebrow: 'Gallery', title: 'Event photos' },
     sport: { eyebrow: 'Gallery', title: 'Sports photos' },
     clip: { eyebrow: 'Gallery', title: 'Music video photos' },
+    corporate: { eyebrow: 'Gallery', title: 'Corporate photos' },
   },
 };
 
