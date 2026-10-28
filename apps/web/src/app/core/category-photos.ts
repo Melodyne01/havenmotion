@@ -173,12 +173,113 @@ export const CATEGORY_PHOTOS: Readonly<Record<string, readonly CategoryPhoto[]>>
       },
     },
   ],
+  evenementiel: [
+    {
+      slug: 'cryo-jet-scene-ballons',
+      width: 1598,
+      height: 2576,
+      alt: {
+        fr: 'Un animateur projette un jet de fumée froide au-dessus du DJ, entouré de ballons dorés',
+        nl: 'Een animator spuit een straal koude rook boven de dj, omringd door gouden ballonnen',
+        en: 'An entertainer fires a jet of cold smoke above the DJ booth, surrounded by gold balloons',
+      },
+    },
+    {
+      slug: 'artiste-micro-contre-plongee',
+      width: 1600,
+      height: 2400,
+      alt: {
+        fr: 'Un artiste au micro, vu en contre-plongée dans la lumière rouge de la scène',
+        nl: 'Een artiest aan de microfoon, van onderaf gezien in het rode podiumlicht',
+        en: 'An artist at the microphone, seen from below in the red stage light',
+      },
+    },
+    {
+      slug: 'artiste-scene-sourire',
+      width: 1600,
+      height: 2400,
+      alt: {
+        fr: 'Un artiste en turban et lunettes de soleil, hilare, micro à la main sur scène',
+        nl: 'Een artiest met tulband en zonnebril lacht uitbundig op het podium, microfoon in de hand',
+        en: 'An artist in a head wrap and sunglasses laughing on stage, microphone in hand',
+      },
+    },
+    {
+      slug: 'dj-sourire-platines',
+      width: 1600,
+      height: 2400,
+      alt: {
+        fr: 'Un DJ souriant derrière ses platines, lunettes de soleil à la main',
+        nl: 'Een lachende dj achter zijn draaitafels, zonnebril in de hand',
+        en: 'A smiling DJ behind the decks, sunglasses in hand',
+      },
+    },
+    {
+      slug: 'costume-robot-lumineux',
+      width: 1600,
+      height: 2400,
+      alt: {
+        fr: 'Un artiste en costume de robot recouvert de LED, éclairé en rouge',
+        nl: 'Een artiest in een robotkostuum vol led-verlichting, rood belicht',
+        en: 'A performer in a LED-covered robot costume, lit in red',
+      },
+    },
+    {
+      slug: 'trois-amies-soiree',
+      width: 1600,
+      height: 2400,
+      alt: {
+        fr: 'Trois amies prennent la pose en soirée, sous une enseigne néon rouge',
+        nl: 'Drie vriendinnen poseren op het feest, onder een rode neonreclame',
+        en: 'Three friends strike a pose at the party, under a red neon sign',
+      },
+    },
+    {
+      slug: 'invitee-robe-strass-profil',
+      width: 1600,
+      height: 2400,
+      alt: {
+        fr: 'Une invitée en robe à strass pose de profil, lunettes de soleil sur le nez',
+        nl: 'Een gaste in een jurk met strass poseert in profiel, met zonnebril',
+        en: 'A guest in a rhinestone dress poses in profile, wearing sunglasses',
+      },
+    },
+    {
+      slug: 'invitee-robe-strass-regard',
+      width: 1600,
+      height: 2387,
+      alt: {
+        fr: 'Une invitée en robe à strass tourne la tête par-dessus l’épaule',
+        nl: 'Een gaste in een jurk met strass kijkt over haar schouder',
+        en: 'A guest in a rhinestone dress looks over her shoulder',
+      },
+    },
+    {
+      slug: 'invitee-robe-strass-bras-leve',
+      width: 1600,
+      height: 2400,
+      alt: {
+        fr: 'Une invitée en robe à strass, le bras relevé dans les cheveux, adossée à la banquette',
+        nl: 'Een gaste in een jurk met strass, een arm in het haar, leunend tegen de bank',
+        en: 'A guest in a rhinestone dress, one arm raised into her hair, leaning on the banquette',
+      },
+    },
+  ],
 };
 
 export const CATEGORY_GALLERY_TEXT: Readonly<Record<SiteLocale, Readonly<Record<string, CategoryGalleryText>>>> = {
-  fr: { mariage: { eyebrow: 'Galerie', title: 'Photos de mariage' } },
-  nl: { mariage: { eyebrow: 'Galerij', title: 'Huwelijksfoto’s' } },
-  en: { mariage: { eyebrow: 'Gallery', title: 'Wedding photos' } },
+  fr: {
+    mariage: { eyebrow: 'Galerie', title: 'Photos de mariage' },
+    evenementiel: { eyebrow: 'Galerie', title: 'Photos d’événements' },
+  },
+  nl: {
+    mariage: { eyebrow: 'Galerij', title: 'Huwelijksfoto’s' },
+    evenementiel: { eyebrow: 'Galerij', title: 'Evenementfoto’s' },
+  },
+  en: {
+    mariage: { eyebrow: 'Gallery', title: 'Wedding photos' },
+    evenementiel: { eyebrow: 'Gallery', title: 'Event photos' },
+  },
 };
 
 export function photoUrl(category: string, slug: string, width: 800 | 1600): string {
