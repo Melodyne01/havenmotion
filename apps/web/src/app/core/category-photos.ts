@@ -265,20 +265,75 @@ export const CATEGORY_PHOTOS: Readonly<Record<string, readonly CategoryPhoto[]>>
       },
     },
   ],
+  sport: [
+    {
+      slug: 'bmx-saut-maillot-rouge',
+      width: 1600,
+      height: 1066,
+      alt: {
+        fr: 'Un rider BMX en maillot rouge, en plein saut, vu d’en dessous sur fond de ciel bleu',
+        nl: 'Een bmx-rijder in rood shirt midden in een sprong, van onderaf gezien tegen een blauwe lucht',
+        en: 'A BMX rider in a red jersey mid-air, seen from below against a blue sky',
+      },
+    },
+    {
+      slug: 'bmx-saut-rampe-ciel',
+      width: 1600,
+      height: 1066,
+      alt: {
+        fr: 'Un rider BMX en plein saut au-dessus d’une rampe, devant de gros nuages',
+        nl: 'Een bmx-rijder midden in een sprong boven een helling, voor grote wolken',
+        en: 'A BMX rider mid-air above a ramp, in front of big clouds',
+      },
+    },
+    {
+      slug: 'bmx-saut-contre-jour',
+      width: 1600,
+      height: 1066,
+      alt: {
+        fr: 'Un rider BMX en suspension dans le ciel, en contre-jour',
+        nl: 'Een bmx-rijder zweeft in de lucht, tegen het licht in',
+        en: 'A BMX rider suspended in the sky, backlit',
+      },
+    },
+    {
+      slug: 'fauteuil-freestyle-skatepark',
+      width: 1600,
+      height: 1066,
+      alt: {
+        fr: 'Un athlète en fauteuil roulant en équilibre sur une roue dans un skatepark, sous l’objectif de photographes',
+        nl: 'Een atleet in een rolstoel op één wiel in een skatepark, onder de lens van fotografen',
+        en: 'An athlete in a wheelchair balancing on one wheel in a skatepark, in front of photographers',
+      },
+    },
+    {
+      slug: 'flyboard-port',
+      width: 1600,
+      height: 2400,
+      alt: {
+        fr: 'Un pilote de flyboard en t-shirt orange, debout sur deux jets d’eau devant des conteneurs de port',
+        nl: 'Een flyboardpiloot in oranje shirt, staand op twee waterstralen voor havencontainers',
+        en: 'A flyboard rider in an orange shirt standing on two water jets in front of harbour containers',
+      },
+    },
+  ],
 };
 
 export const CATEGORY_GALLERY_TEXT: Readonly<Record<SiteLocale, Readonly<Record<string, CategoryGalleryText>>>> = {
   fr: {
     mariage: { eyebrow: 'Galerie', title: 'Photos de mariage' },
     evenementiel: { eyebrow: 'Galerie', title: 'Photos d’événements' },
+    sport: { eyebrow: 'Galerie', title: 'Photos de sport' },
   },
   nl: {
     mariage: { eyebrow: 'Galerij', title: 'Huwelijksfoto’s' },
     evenementiel: { eyebrow: 'Galerij', title: 'Evenementfoto’s' },
+    sport: { eyebrow: 'Galerij', title: 'Sportfoto’s' },
   },
   en: {
     mariage: { eyebrow: 'Gallery', title: 'Wedding photos' },
     evenementiel: { eyebrow: 'Gallery', title: 'Event photos' },
+    sport: { eyebrow: 'Gallery', title: 'Sports photos' },
   },
 };
 
