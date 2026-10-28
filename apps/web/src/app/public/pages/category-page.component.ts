@@ -14,6 +14,7 @@ import { SiteFooterComponent } from '../sections/site-footer.component';
 import { VideoFrameComponent } from '../../shared/ui/video-frame.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
 import { PackGridComponent } from '../../shared/ui/pack-grid.component';
+import { CategoryGalleryComponent } from '../sections/category-gallery.component';
 import { RecentProjectsComponent } from '../sections/recent-projects.component';
 import { TestimonialsComponent } from '../sections/testimonials.component';
 import { PublicApiService } from '../../core/api/public-api.service';
@@ -51,6 +52,7 @@ import { Film } from '../../models';
     VideoFrameComponent,
     CtaButtonComponent,
     PackGridComponent,
+    CategoryGalleryComponent,
     RecentProjectsComponent,
     TestimonialsComponent,
     RouterLink,
@@ -177,6 +179,7 @@ import { Film } from '../../models';
           </div>
         </article>
         @if (categoryKey(); as key) {
+          <app-category-gallery [category]="key" />
           <app-recent-projects [category]="key" [title]="text.projects.inCategory" />
           <app-testimonials [category]="key" [limit]="3" />
         }
