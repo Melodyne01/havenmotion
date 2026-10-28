@@ -317,6 +317,48 @@ export const CATEGORY_PHOTOS: Readonly<Record<string, readonly CategoryPhoto[]>>
       },
     },
   ],
+  clip: [
+    {
+      slug: 'trio-danseurs-faisceau-lumiere',
+      width: 1600,
+      height: 2400,
+      alt: {
+        fr: 'Trois danseurs en tenue bleu clair, enlacés dans un faisceau de lumière sur une scène noire',
+        nl: 'Drie dansers in lichtblauwe kleding, verstrengeld in een lichtbundel op een zwart podium',
+        en: 'Three dancers in light blue outfits, intertwined in a beam of light on a black stage',
+      },
+    },
+    {
+      slug: 'danseur-lumiere-rouge',
+      width: 1600,
+      height: 2400,
+      alt: {
+        fr: 'Un danseur en sweat zippé marche sous une lumière rouge, le regard tourné sur le côté',
+        nl: 'Een danser in een sweater met rits loopt in rood licht, zijn blik opzij gericht',
+        en: 'A dancer in a zip-neck sweatshirt walks in red light, looking to the side',
+      },
+    },
+    {
+      slug: 'danseuse-profil-lumiere-violette',
+      width: 1600,
+      height: 2400,
+      alt: {
+        fr: 'Une danseuse de profil, cheveux longs, baignée de lumière violette et rouge',
+        nl: 'Een danseres in profiel met lang haar, badend in paars en rood licht',
+        en: 'A dancer in profile with long hair, bathed in purple and red light',
+      },
+    },
+    {
+      slug: 'silhouette-cone-lumiere-bleue',
+      width: 1600,
+      height: 2400,
+      alt: {
+        fr: 'Une silhouette en chemise bleue avance dans un cône de lumière sur une scène sombre',
+        nl: 'Een silhouet in een blauw hemd stapt door een lichtkegel op een donker podium',
+        en: 'A silhouette in a blue shirt steps through a cone of light on a dark stage',
+      },
+    },
+  ],
 };
 
 export const CATEGORY_GALLERY_TEXT: Readonly<Record<SiteLocale, Readonly<Record<string, CategoryGalleryText>>>> = {
@@ -324,16 +366,19 @@ export const CATEGORY_GALLERY_TEXT: Readonly<Record<SiteLocale, Readonly<Record<
     mariage: { eyebrow: 'Galerie', title: 'Photos de mariage' },
     evenementiel: { eyebrow: 'Galerie', title: 'Photos d’événements' },
     sport: { eyebrow: 'Galerie', title: 'Photos de sport' },
+    clip: { eyebrow: 'Galerie', title: 'Photos de clip' },
   },
   nl: {
     mariage: { eyebrow: 'Galerij', title: 'Huwelijksfoto’s' },
     evenementiel: { eyebrow: 'Galerij', title: 'Evenementfoto’s' },
     sport: { eyebrow: 'Galerij', title: 'Sportfoto’s' },
+    clip: { eyebrow: 'Galerij', title: 'Clipfoto’s' },
   },
   en: {
     mariage: { eyebrow: 'Gallery', title: 'Wedding photos' },
     evenementiel: { eyebrow: 'Gallery', title: 'Event photos' },
     sport: { eyebrow: 'Gallery', title: 'Sports photos' },
+    clip: { eyebrow: 'Gallery', title: 'Music video photos' },
   },
 };
 
