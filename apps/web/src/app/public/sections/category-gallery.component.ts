@@ -15,7 +15,7 @@ import { CATEGORY_GALLERY_TEXT, CATEGORY_PHOTOS, photoUrl } from '../../core/cat
     @if (photos().length > 0 && text(); as t) {
       <section class="gallery" [attr.aria-labelledby]="'titre-galerie-' + category()">
         <app-section-title [eyebrow]="t.eyebrow" [title]="t.title" [titleId]="'titre-galerie-' + category()" />
-        <ul class="gallery__grid">
+        <ul class="gallery__grid" [class.gallery__grid--single]="photos().length === 1">
           @for (photo of photos(); track photo.slug) {
             <li class="gallery__item">
               <img
@@ -58,6 +58,12 @@ import { CATEGORY_GALLERY_TEXT, CATEGORY_PHOTOS, photoUrl } from '../../core/cat
         @media (min-width: 1024px) {
           columns: 3;
         }
+      }
+
+      /* Une seule photo : pleine largeur de colonne plutôt qu'un tiers de page vide. */
+      .gallery__grid--single {
+        columns: 1;
+        max-width: 800px;
       }
 
       .gallery__item {
