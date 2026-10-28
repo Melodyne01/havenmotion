@@ -75,3 +75,49 @@ test('une catégorie sans photos n’affiche pas de galerie', async ({ page }) =
   await page.goto('/prestations/lifestyle');
   await expect(page.locator('.gallery')).toHaveCount(0);
 });
+
+/**
+ * Visionneuse : toucher une photo l'agrandit en plein écran, dans chaque
+ * catégorie illustrée. Flèches, boutons et Échap pilotent la navigation.
+ */
+for (const [slug, count] of [
+  ['mariage', 15],
+  ['evenementiel', 9],
+  ['sport', 5],
+  ['clip', 4],
+  ['corporate', 1],
+] as const) {
+  test(`la page ${slug} agrandit chaque photo dans la visionneuse`, async ({ page }) => {
+    await page.goto(`/prestations/${slug}`);
+    const viewer = page.locator('dialog.viewer');
+    const thumbnails = page.locator('.gallery__open');
+    await expect(thumbnails).toHaveCount(count);
+
+    await thumbnails.first().scrollIntoViewIfNeeded();
+    await thumbnails.first().click();
+    await expect(viewer).toBeVisible();
+    await expect(viewer.locator('.viewer__image')).toHaveAttribute(
+      'src',
+      new RegExp(`/photos/${slug}/.+-1600\\.webp`),
+    );
+    await expect(viewer.locator('.viewer__count')).toHaveText(`1 / ${count}`);
+
+    if (count > 1) {
+      await page.keyboard.press('ArrowRight');
+      await expect(viewer.locator('.viewer__count')).toHaveText(`2 / ${count}`);
+      await page.keyboard.press('ArrowLeft');
+      await page.keyboard.press('ArrowLeft');
+      await expect(viewer.locator('.viewer__count')).toHaveText(`${count} / ${count}`);
+    } else {
+      await expect(viewer.locator('.viewer__next')).toHaveCount(0);
+    }
+
+    await page.keyboard.press('Escape');
+    await expect(viewer).toBeHidden();
+
+    await thumbnails.last().click();
+    await expect(viewer.locator('.viewer__count')).toHaveText(`${count} / ${count}`);
+    await viewer.getByRole('button', { name: 'Fermer' }).click();
+    await expect(viewer).toBeHidden();
+  });
+}
