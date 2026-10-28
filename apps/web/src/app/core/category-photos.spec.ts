@@ -1,4 +1,4 @@
-import { CATEGORY_GALLERY_TEXT, CATEGORY_PHOTOS, photoUrl } from './category-photos';
+import { CATEGORY_GALLERY_TEXT, CATEGORY_PHOTOS } from './category-photos';
 import { SITE_LOCALES } from './locale';
 
 /**
