@@ -585,7 +585,35 @@ public static class SeedData
             return;
         }
 
-        if (await userManager.FindByEmailAsync(adminEmail) is null)
+        var existing = await userManager.FindByEmailAsync(adminEmail);
+        if (existing is not null && string.Equals(configuration["Seed:ResetAdminPassword"], "true", StringComparison.OrdinalIgnoreCase))
+        {
+            // Mot de passe perdu ou désaligné avec le .env : ADMIN_RESET_PASSWORD=true
+            // le réaligne sur Seed:AdminPassword au démarrage, puis on retire le drapeau.
+            // Pas de fournisseur de jetons configuré : retrait puis ajout du mot de passe.
+            var reset = await userManager.RemovePasswordAsync(existing);
+            if (reset.Succeeded)
+            {
+                reset = await userManager.AddPasswordAsync(existing, adminPassword);
+            }
+            if (reset.Succeeded)
+            {
+                await userManager.SetLockoutEndDateAsync(existing, null);
+                await userManager.ResetAccessFailedCountAsync(existing);
+                if (!await userManager.IsInRoleAsync(existing, "Admin"))
+                {
+                    await userManager.AddToRoleAsync(existing, "Admin");
+                }
+                logger.LogWarning("Mot de passe du compte admin {Email} réinitialisé depuis la configuration.", adminEmail);
+            }
+            else
+            {
+                logger.LogError("Réinitialisation du compte admin refusée : {Errors}",
+                    string.Join("; ", reset.Errors.Select(e => e.Description)));
+            }
+        }
+
+        if (existing is null)
         {
             var user = new AppUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
             var result = await userManager.CreateAsync(user, adminPassword);

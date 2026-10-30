@@ -127,6 +127,7 @@ Aucun secret dans le dépôt : tout passe par les variables d'environnement
 | `ConnectionStrings__Default` | Chaîne PostgreSQL |
 | `Jwt__SigningKey` | Clé de signature des jetons (obligatoire en prod) |
 | `Seed__AdminEmail` / `Seed__AdminPassword` | Compte admin créé au premier démarrage |
+| `Seed__ResetAdminPassword` (`ADMIN_RESET_PASSWORD` dans le `.env`) | `true` : réaligne le mot de passe admin sur `ADMIN_PASSWORD` au démarrage (à retirer ensuite) |
 | `Email__*` | SMTP (hôte, port, identifiants, expéditeur) |
 | `MediaStorage__Provider` | `LocalDisk` (défaut) ou `S3` (MinIO/AWS) |
 | `Cors__AllowedOrigins__0` | Origine du front |

@@ -41,6 +41,7 @@ services:
       Email__FromAddress: ${MAIL_FROM:-no-reply@heavenmotion.be}
       Seed__AdminEmail: ${ADMIN_EMAIL:-admin@heavenmotion.be}
       Seed__AdminPassword: ${ADMIN_PASSWORD:-}
+      Seed__ResetAdminPassword: ${ADMIN_RESET_PASSWORD:-false}
       MediaStorage__Provider: LocalDisk
       MediaStorage__LocalDisk__RootPath: /data/media
       Cors__AllowedOrigins__0: ${SITE_ORIGIN:-https://heavenmotion.be}
