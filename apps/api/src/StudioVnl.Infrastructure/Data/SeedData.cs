@@ -563,6 +563,8 @@ public static class SeedData
         logger.LogInformation("{Count} extrait(s) de banque externe retiré(s) : liens morts.", dead.Count);
     }
 
+    private const string LegacyAdminEmail = "admin@studiovnl.fr";
+
     private static async Task SeedRolesAndUsersAsync(IServiceProvider services, ILogger logger)
     {
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
@@ -586,6 +588,29 @@ public static class SeedData
         }
 
         var existing = await userManager.FindByEmailAsync(adminEmail);
+        if (existing is null)
+        {
+            // Compte créé du temps de Studio VNL : renommé plutôt que doublé,
+            // il garde son mot de passe et son rôle.
+            var legacy = await userManager.FindByEmailAsync(LegacyAdminEmail);
+            if (legacy is not null && !string.Equals(adminEmail, LegacyAdminEmail, StringComparison.OrdinalIgnoreCase))
+            {
+                legacy.Email = adminEmail;
+                legacy.UserName = adminEmail;
+                legacy.EmailConfirmed = true;
+                var renamed = await userManager.UpdateAsync(legacy);
+                if (renamed.Succeeded)
+                {
+                    logger.LogWarning("Compte admin {Legacy} renommé en {Email}.", LegacyAdminEmail, adminEmail);
+                    existing = legacy;
+                }
+                else
+                {
+                    logger.LogError("Renommage du compte admin refusé : {Errors}",
+                        string.Join("; ", renamed.Errors.Select(e => e.Description)));
+                }
+            }
+        }
         if (existing is not null && string.Equals(configuration["Seed:ResetAdminPassword"], "true", StringComparison.OrdinalIgnoreCase))
         {
             // Mot de passe perdu ou désaligné avec le .env : ADMIN_RESET_PASSWORD=true
