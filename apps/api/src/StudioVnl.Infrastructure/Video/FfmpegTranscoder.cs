@@ -20,11 +20,15 @@ public class FfmpegOptions
 
     /// <summary>Débit vidéo cible (kbit/s), ≤ 6 Mbps d'après le cahier des charges.</summary>
     public int VideoBitrateKbps { get; set; } = 5500;
+
+    /// <summary>Durée de l'extrait muet lu en boucle avant le film (secondes).</summary>
+    public int TeaserSeconds { get; set; } = 20;
 }
 
 /// <summary>
 /// Transcodage FFmpeg : MP4 (H.264) + WebM (VP9), version muette allégée pour
-/// les fonds de bande, poster extrait à 1 s.
+/// les fonds de bande, extrait muet de 20 s pour la lecture automatique,
+/// poster extrait à 1 s.
 /// </summary>
 public class FfmpegTranscoder(
     IMediaStorage storage,
@@ -50,6 +54,7 @@ public class FfmpegTranscoder(
             var mp4Path = Path.Combine(workDir, "web.mp4");
             var webmPath = Path.Combine(workDir, "web.webm");
             var mutedPath = Path.Combine(workDir, "band-muted.mp4");
+            var teaserPath = Path.Combine(workDir, "teaser.mp4");
             var posterPath = Path.Combine(workDir, "poster.jpg");
 
             // Rendu principal MP4 H.264 (son conservé).
@@ -74,6 +79,15 @@ public class FfmpegTranscoder(
                 $"\"{mutedPath}\"",
                 cancellationToken);
 
+            // Extrait muet lu en boucle avant le film : quelques Mo au lieu du film
+            // entier. Sur un film long, on saute le générique d'ouverture.
+            var teaserStart = TeaserStart(duration, _options.TeaserSeconds);
+            await RunFfmpegAsync(
+                $"-y -ss {teaserStart.ToString(CultureInfo.InvariantCulture)} -i \"{inputPath}\" -t {_options.TeaserSeconds} " +
+                $"-vf scale=-2:{bandHeight} -c:v libx264 -preset medium -b:v 1500k -maxrate 1500k -bufsize 3000k " +
+                $"-pix_fmt yuv420p -movflags +faststart -an \"{teaserPath}\"",
+                cancellationToken);
+
             // Poster : image à 1 seconde.
             await RunFfmpegAsync(
                 $"-y -ss 1 -i \"{inputPath}\" -vframes 1 -vf {scaleFilter} -q:v 3 \"{posterPath}\"",
@@ -91,6 +105,9 @@ public class FfmpegTranscoder(
             await UploadAsync(mutedPath, $"{prefix}/band-muted.mp4", cancellationToken);
             renditions.Add(new ProcessedRendition("video/mp4", $"{prefix}/band-muted.mp4", ScaledWidth(width, height, bandHeight), bandHeight, true));
 
+            await UploadAsync(teaserPath, $"{prefix}/teaser.mp4", cancellationToken);
+            renditions.Add(new ProcessedRendition("video/mp4", $"{prefix}/teaser.mp4", ScaledWidth(width, height, bandHeight), bandHeight, true, Teaser: true));
+
             var posterKey = $"{prefix}/poster.jpg";
             await UploadAsync(posterPath, posterKey, cancellationToken);
 
@@ -107,6 +124,16 @@ public class FfmpegTranscoder(
                 logger.LogWarning(exception, "Nettoyage incomplet du dossier {WorkDir}", workDir);
             }
         }
+    }
+
+    /// <summary>Début de l'extrait : 10 % du film au-delà d'une minute, le début sinon.</summary>
+    public static int TeaserStart(double duration, int teaserSeconds)
+    {
+        if (duration <= 60)
+        {
+            return 0;
+        }
+        return (int)Math.Min(duration * 0.1, duration - teaserSeconds);
     }
 
     private static int ScaledWidth(int width, int height, int targetHeight)

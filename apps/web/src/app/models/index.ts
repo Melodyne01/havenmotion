@@ -14,6 +14,8 @@ export interface Rendition {
   height: number;
   /** Rendu sans piste audio, utilisé pour les fonds de bande. */
   muted: boolean;
+  /** Extrait muet de 20 s lu en boucle avant le film (absent des vidéos plus anciennes). */
+  teaser?: boolean;
 }
 
 export interface MediaAsset {

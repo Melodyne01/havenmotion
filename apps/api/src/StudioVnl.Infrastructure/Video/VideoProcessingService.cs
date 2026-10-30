@@ -69,7 +69,7 @@ public class VideoProcessingService(
         var result = await transcoder.ProcessAsync(asset, cancellationToken);
 
         asset.RenditionsJson = DtoMapper.ToRenditionsJson(
-            result.Renditions.Select(r => new DtoMapper.StoredRendition(r.Type, r.Key, r.Width, r.Height, r.Muted)));
+            result.Renditions.Select(r => new DtoMapper.StoredRendition(r.Type, r.Key, r.Width, r.Height, r.Muted, r.Teaser)));
         asset.PosterPath = result.PosterKey;
         asset.Width = result.Width;
         asset.Height = result.Height;

@@ -57,7 +57,7 @@ import { projectPath } from '../../shared/ui/project-card.component';
           @if (v.project.video) {
             <app-video-frame
               [asset]="v.project.video"
-              playback="manual"
+              playback="teaser"
               [muted]="false"
               [loop]="false"
               [controls]="true"

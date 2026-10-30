@@ -16,7 +16,8 @@ public record ProcessedVideo(
     int Height,
     double DurationSec);
 
-public record ProcessedRendition(string Type, string Key, int Width, int Height, bool Muted);
+/// <param name="Teaser">Extrait court, muet, lu en boucle avant que le visiteur lance le film.</param>
+public record ProcessedRendition(string Type, string Key, int Width, int Height, bool Muted, bool Teaser = false);
 
 /// <summary>Enveloppe FFmpeg : transcodage MP4/WebM, poster à 1 s, version muette.</summary>
 public interface IVideoTranscoder

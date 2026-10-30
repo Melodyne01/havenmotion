@@ -3,7 +3,7 @@ using StudioVnl.Domain.Entities;
 namespace StudioVnl.Application.Dtos;
 
 /// <summary>Rendu transcodé exposé au front (`type`, `url`, dimensions, muet).</summary>
-public record RenditionDto(string Type, string Url, int Width, int Height, bool Muted);
+public record RenditionDto(string Type, string Url, int Width, int Height, bool Muted, bool Teaser = false);
 
 public record MediaAssetDto(
     Guid Id,

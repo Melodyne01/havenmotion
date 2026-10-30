@@ -118,6 +118,8 @@ export interface UiText {
   readonly guides: { readonly eyebrow: string; readonly title: string; readonly lead: string; readonly reading: string; readonly published: string; readonly sources: string; readonly related: string };
   readonly notFound: { readonly title: string; readonly text: string; readonly cta: string };
   readonly captions: string;
+  /** Bouton posé sur l'extrait muet : lance le film complet avec le son. */
+  readonly watchFilm: string;
   readonly contact: {
     readonly eyebrow: string;
     readonly title: string;
@@ -328,6 +330,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       cta: "Retour à l'accueil",
     },
     captions: 'Français',
+    watchFilm: 'Voir le film',
     contact: {
       eyebrow: 'Contact',
       title: 'Parlons du projet',
@@ -534,6 +537,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       cta: 'Terug naar home',
     },
     captions: 'Nederlands',
+    watchFilm: 'Bekijk de film',
     contact: {
       eyebrow: 'Contact',
       title: 'Laten we over het project praten',
@@ -740,6 +744,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       cta: 'Back to home',
     },
     captions: 'English',
+    watchFilm: 'Watch the film',
     contact: {
       eyebrow: 'Contact',
       title: 'Let’s talk about your project',

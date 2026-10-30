@@ -107,7 +107,7 @@ public static class DtoMapper
         {
             var stored = JsonSerializer.Deserialize<List<StoredRendition>>(json, Json) ?? [];
             return stored
-                .Select(r => new RenditionDto(r.Type, resolveUrl(r.Key), r.Width, r.Height, r.Muted))
+                .Select(r => new RenditionDto(r.Type, resolveUrl(r.Key), r.Width, r.Height, r.Muted, r.Teaser))
                 .ToList();
         }
         catch (JsonException)
@@ -200,6 +200,9 @@ public static class DtoMapper
         entry.Diff,
         entry.CreatedAt);
 
-    /// <summary>Forme stockée d'un rendu dans `MediaAsset.RenditionsJson`.</summary>
-    public record StoredRendition(string Type, string Key, int Width, int Height, bool Muted);
+    /// <summary>
+    /// Forme stockée d'un rendu dans `MediaAsset.RenditionsJson`. `Teaser` est
+    /// absent des vidéos traitées avant son ajout : il vaut alors `false`.
+    /// </summary>
+    public record StoredRendition(string Type, string Key, int Width, int Height, bool Muted, bool Teaser = false);
 }
