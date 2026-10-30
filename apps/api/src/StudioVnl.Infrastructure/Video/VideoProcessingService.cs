@@ -33,6 +33,7 @@ public class VideoProcessingService(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        await RequeueInterruptedAsync(stoppingToken);
         await foreach (var assetId in queue.ReadAllAsync(stoppingToken))
         {
             try
@@ -48,6 +49,38 @@ public class VideoProcessingService(
                 logger.LogError(exception, "Transcodage en échec pour {AssetId}", assetId);
                 await MarkFailedAsync(assetId, stoppingToken);
             }
+        }
+    }
+
+    /// <summary>
+    /// La file vit en mémoire : un redémarrage (déploiement) la vide. Les vidéos
+    /// restées « en attente » ou « en cours » sont remises en file au démarrage.
+    /// </summary>
+    private async Task RequeueInterruptedAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            using var scope = scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var interrupted = await db.MediaAssets
+                .Where(a => a.Kind == MediaKind.Video
+                    && (a.ProcessingStatus == ProcessingStatus.Pending || a.ProcessingStatus == ProcessingStatus.Processing))
+                .OrderBy(a => a.CreatedAt)
+                .Select(a => a.Id)
+                .ToListAsync(cancellationToken);
+            foreach (var id in interrupted)
+            {
+                await queue.EnqueueAsync(id, cancellationToken);
+            }
+            if (interrupted.Count > 0)
+            {
+                logger.LogInformation("{Count} vidéo(s) remise(s) en file après redémarrage", interrupted.Count);
+            }
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            // Base pas encore migrée au premier démarrage : rien à reprendre.
+            logger.LogWarning(exception, "Reprise de la file de transcodage impossible");
         }
     }
 

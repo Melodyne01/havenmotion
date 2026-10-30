@@ -18,6 +18,9 @@ public record MediaAssetDto(
     IReadOnlyList<RenditionDto> Renditions,
     DateTime CreatedAt);
 
+/// <summary>Nombre de vidéos mises en file de transcodage.</summary>
+public record ReprocessResponse(int Queued);
+
 public record StartUploadRequest(string FileName, string ContentType, long SizeBytes, int TotalChunks);
 
 public record StartUploadResponse(Guid UploadId);
