@@ -95,7 +95,7 @@ describe('QuoteFormComponent', () => {
     const mail = [...element.querySelectorAll('a')].find((a) => a.href.startsWith('mailto:'));
     expect(mail?.href).toContain('body=Bonjour');
     const whatsapp = [...element.querySelectorAll('a')].find((a) => a.href.startsWith('https://wa.me/'));
-    expect(whatsapp?.href).toMatch(/^https:\/\/wa\.me\/32477753577\?text=Bonjour/);
+    expect(whatsapp?.href).toMatch(/^https:\/\/wa\.me\/32476823374\?text=Bonjour/);
     expect(whatsapp?.target).toBe('_blank');
   });
 

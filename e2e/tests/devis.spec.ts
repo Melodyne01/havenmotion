@@ -81,7 +81,7 @@ test('du hero à la demande de devis', async ({ page }) => {
   await expect(preview).toContainText(/Lille – Nord \(déplacement : 90.€\)/);
   await expect(preview).toContainText('Cérémonie fin d’après-midi.');
   const whatsapp = dialog.getByRole('link', { name: /envoyer sur whatsapp/i });
-  await expect(whatsapp).toHaveAttribute('href', /^https:\/\/wa\.me\/32477753577\?text=Bonjour%20Heaven%20Motion/);
+  await expect(whatsapp).toHaveAttribute('href', /^https:\/\/wa\.me\/32476823374\?text=Bonjour%20Heaven%20Motion/);
   await expect(whatsapp).toHaveAttribute('target', '_blank');
   const mail = dialog.getByRole('link', { name: /envoyer par e-mail/i });
   await expect(mail).toHaveAttribute('href', /^mailto:.+\?subject=.+&body=Bonjour/);
