@@ -75,7 +75,7 @@ export const GUIDES_LUXEMBOURG: readonly Guide[] = [
         title: 'Le prix d’un photographe-vidéaste au Luxembourg',
         paragraphs: [
           `Le marché luxembourgeois est 15 à 30 % plus cher que le belge : un photographe de mariage y demande entre 1 800 et 4 000 €, un vidéaste entre 2 000 et 3 500 €, et les duos dépassent 4 000 €. Depuis Bruxelles, Heaven Motion facture ${price('photo')} TTC en photo, ${price('video')} en vidéo, ${price('combo')} pour les deux par la même personne, plus 190 € de déplacement (zone 3) et 150 € de nuit d’hôtel : environ 3 030 € tout compris pour la photo et la vidéo.`,
-          'La TVA : pour un particulier, la facture est belge avec TVA belge de 21 % (le prix affiché est TTC) ; pour une entreprise luxembourgeoise assujettie, autoliquidation. Les films sont montés sur de la musique sous licence.',
+          'La TVA : pour un particulier, la facture est belge avec TVA belge de 21 % (le prix affiché est TTC) ; pour une entreprise luxembourgeoise assujettie, autoliquidation.',
         ],
       },
     ],
@@ -157,7 +157,7 @@ export const GUIDES_LUXEMBOURG: readonly Guide[] = [
         title: 'What a photographer and videographer costs in Luxembourg',
         paragraphs: [
           `The Luxembourg market is 15 to 30% dearer than the Belgian one: a wedding photographer charges between €1,800 and €4,000, a videographer between €2,000 and €3,500, and duos exceed €4,000. From Brussels, Heaven Motion charges ${price('photo')} incl. VAT for photo, ${price('video')} for video, ${price('combo')} for both by the same person, plus €190 of travel (zone 3) and a €150 hotel night: about €3,030 all in for photo and video.`,
-          'VAT: for a private client the invoice is Belgian with 21% Belgian VAT (the displayed price is inclusive); for a VAT-registered Luxembourg company, reverse charge. Films are edited on licensed music.',
+          'VAT: for a private client the invoice is Belgian with 21% Belgian VAT (the displayed price is inclusive); for a VAT-registered Luxembourg company, reverse charge.',
         ],
       },
     ],

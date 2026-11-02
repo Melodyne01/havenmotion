@@ -8,8 +8,9 @@ const price = (type: 'photo' | 'video' | 'combo') => formatPrice(m.packs.find((p
  * Guide « rassurer » : faire venir un photographe belge pour un mariage en
  * France. En français seulement. Les règles de TVA citées sont celles du
  * régime intracommunautaire des prestations de services (B2C : TVA du pays
- * du prestataire ; B2B : autoliquidation) ; la musique sous licence évite
- * toute déclaration SACEM pour un usage privé et réseaux.
+ * du prestataire ; B2B : autoliquidation) ; une musique sous licence d'une
+ * banque musicale évite toute déclaration SACEM pour un usage privé et
+ * réseaux (règle générale, sans affirmer ce que contient chaque film).
  */
 export const GUIDES_FRANCE: readonly Guide[] = [
   {
@@ -23,7 +24,7 @@ export const GUIDES_FRANCE: readonly Guide[] = [
     eyebrow: 'Guide pratique',
     published: '2026-10-05',
     readingMinutes: 8,
-    answer: `Faire venir un photographe-vidéaste belge pour un mariage en France ne demande aucune formalité de votre côté : la prestation est un service intracommunautaire, facturé en Belgique avec la TVA belge pour un particulier (le prix affiché est TTC), et sans TVA, en autoliquidation, pour une entreprise française. Les films sont montés sur de la musique sous licence, qui ne relève pas de la SACEM pour un usage privé et sur les réseaux. Le déplacement est un forfait fixe : 90 € pour Lille et le Nord, 190 € pour la Côte d’Opale, la Picardie et la Champagne, 290 € pour Paris et l’Île-de-France, plus une nuit d’hôtel de 150 € quand la soirée finit tard. Le prix de la prestation, lui, est celui de la grille belge, ${price('combo')} TTC pour la photo et la vidéo par la même personne, sous la médiane française.`,
+    answer: `Faire venir un photographe-vidéaste belge pour un mariage en France ne demande aucune formalité de votre côté : la prestation est un service intracommunautaire, facturé en Belgique avec la TVA belge pour un particulier (le prix affiché est TTC), et sans TVA, en autoliquidation, pour une entreprise française. Une musique sous licence d’une banque musicale ne relève pas de la SACEM pour un usage privé et sur les réseaux. Le déplacement est un forfait fixe : 90 € pour Lille et le Nord, 190 € pour la Côte d’Opale, la Picardie et la Champagne, 290 € pour Paris et l’Île-de-France, plus une nuit d’hôtel de 150 € quand la soirée finit tard. Le prix de la prestation, lui, est celui de la grille belge, ${price('combo')} TTC pour la photo et la vidéo par la même personne, sous la médiane française.`,
     sections: [
       {
         title: 'Le déplacement : un forfait, pas un compteur',
@@ -52,7 +53,7 @@ export const GUIDES_FRANCE: readonly Guide[] = [
       {
         title: 'La musique et la SACEM',
         paragraphs: [
-          'La question revient à chaque mariage en France : faut-il déclarer le film à la SACEM ? Non, si la musique du film est sous licence d’une banque musicale (Artlist, Musicbed, Epidemic Sound et équivalents), ce qui est le cas de tous les films de Heaven Motion. Ces licences couvrent l’usage privé, la publication sur les réseaux sociaux et sur YouTube ; elles ne passent pas par la SACEM et ne déclenchent pas de redevance.',
+          'La question revient à chaque mariage en France : faut-il déclarer le film à la SACEM ? Non, si la musique du film est sous licence d’une banque musicale (Artlist, Musicbed, Epidemic Sound et équivalents). Ces licences couvrent l’usage privé, la publication sur les réseaux sociaux et sur YouTube ; elles ne passent pas par la SACEM et ne déclenchent pas de redevance.',
           'Ce que la licence ne couvre pas : une chanson du commerce (votre musique d’ouverture de bal) synchronisée sur le film. Elle peut apparaître dans le son d’ambiance capté pendant la soirée, pas être montée comme bande-son ; c’est la règle en Belgique comme en France.',
           'La SACEM concerne en revanche la diffusion de musique pendant la fête elle-même (DJ, orchestre), qui relève du lieu ou de l’organisateur, pas du photographe.',
         ],
@@ -77,14 +78,14 @@ export const GUIDES_FRANCE: readonly Guide[] = [
         title: 'Le prix, comparé au marché français',
         paragraphs: [
           `Les sites français de référence situent la photo de mariage entre 1 500 et 3 000 € pour une journée (médiane autour de 1 800 à 2 200 €), la vidéo entre 1 500 et 3 500 €, et un duo au-delà de 3 500 €, souvent « à partir de 1 900 € » pour un seul des deux dans le Nord. Chez Heaven Motion, la photo est à ${price('photo')} TTC, la vidéo à ${price('video')}, et les deux par la même personne à ${price('combo')}, plus le forfait de déplacement et, le cas échéant, la nuit d’hôtel.`,
-          'Exemple : mariage à Chantilly, photo et vidéo, soirée jusqu’à une heure du matin. ' + price('combo') + ' + 190 € + 150 € = ' + formatPrice(m.packs.find((p) => p.type === 'combo')!.price! + 340) + ' TTC, tout compris, pour une journée complète, environ 400 photos, un film de 5 à 8 minutes et un teaser.',
+          'Exemple : mariage à Chantilly, photo et vidéo, soirée jusqu’à une heure du matin. ' + price('combo') + ' + 190 € + 150 € = ' + formatPrice(m.packs.find((p) => p.type === 'combo')!.price! + 340) + ' TTC, tout compris, pour une journée complète, environ 300 photos et un film de 7 à 10 minutes.',
         ],
       },
     ],
     faq: [
       { question: 'Y a-t-il des formalités pour engager un photographe belge en France ?', answer: 'Aucune de votre côté. La prestation est un service intracommunautaire : facture belge avec TVA belge pour un particulier, autoliquidation pour une entreprise.' },
       { question: 'Dois-je payer la TVA française ?', answer: 'Non. Pour un particulier, la TVA belge est incluse dans le prix affiché ; vous ne déclarez rien en France.' },
-      { question: 'Le film doit-il être déclaré à la SACEM ?', answer: 'Non : la musique est sous licence d’une banque musicale, qui couvre l’usage privé et les réseaux sociaux sans passer par la SACEM.' },
+      { question: 'Le film doit-il être déclaré à la SACEM ?', answer: 'Non, si la musique du film est sous licence d’une banque musicale : la licence couvre l’usage privé et les réseaux sociaux sans passer par la SACEM.' },
       { question: 'Combien coûte le déplacement ?', answer: '90 € pour Lille et le Nord, 190 € pour la Côte d’Opale, la Picardie et la Champagne, 290 € pour Paris et l’Île-de-France ; au-delà, sur devis. Plus 150 € de nuit d’hôtel quand la soirée finit tard.' },
       { question: 'Que se passe-t-il si le photographe est malade le jour J ?', answer: 'Un remplaçant du réseau est envoyé, briefé avec le planning et le repérage ; c’est dans le contrat, comme pour un mariage en Belgique.' },
       { question: 'Venez-vous ailleurs qu’au nord de la France ?', answer: 'Oui, sur devis au-delà de 350 km : Normandie, Loire, Bourgogne, Provence, avec les frais réels (trajet, nuits) détaillés ligne par ligne.' },

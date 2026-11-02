@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
 import { LogotypeComponent } from '../../shared/ui/logotype.component';
 import { CtaButtonComponent } from '../../shared/ui/cta-button.component';
 import { QuoteDialogComponent } from './quote-dialog.component';
+import { AnalyticsService } from '../../core/analytics';
 import { SITE_LOCALE, SITE_LOCALES, contactAnchor, homePath, routePath } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 
@@ -50,7 +51,9 @@ import { UI_TEXT } from '../../core/ui-text';
 
       <div class="header__cta">
         @for (other of otherLocales; track other) {
-          <a class="header__lang" [routerLink]="homeOf(other)" [attr.hreflang]="other">{{ other.toUpperCase() }}</a>
+          <a class="header__lang" [routerLink]="homeOf(other)" [attr.hreflang]="other" (click)="switchLanguage(other)">{{
+            other.toUpperCase()
+          }}</a>
         }
         <app-cta-button [href]="contactHref">{{ text.quoteCta }}</app-cta-button>
       </div>
@@ -85,7 +88,7 @@ import { UI_TEXT } from '../../core/ui-text';
           }
         </nav>
         @for (other of otherLocales; track other) {
-          <a class="menu__link" [routerLink]="homeOf(other)" (click)="close()">{{ other.toUpperCase() }}</a>
+          <a class="menu__link" [routerLink]="homeOf(other)" (click)="switchLanguage(other); close()">{{ other.toUpperCase() }}</a>
         }
         <div class="menu__cta">
           <app-cta-button [href]="contactHref">{{ text.quoteCta }}</app-cta-button>
@@ -100,6 +103,7 @@ import { UI_TEXT } from '../../core/ui-text';
 })
 export class SiteHeaderComponent {
   private readonly locale = inject(SITE_LOCALE);
+  private readonly analytics = inject(AnalyticsService);
   private readonly burgerButton = viewChild<ElementRef<HTMLButtonElement>>('burgerButton');
 
   protected readonly menuOpen = signal(false);
@@ -109,6 +113,10 @@ export class SiteHeaderComponent {
   protected readonly pricingPath = routePath(this.locale, 'pricing');
   protected readonly contactHref = contactAnchor(this.locale);
   protected readonly otherLocales = SITE_LOCALES.filter((l) => l !== this.locale);
+
+  protected switchLanguage(to: (typeof SITE_LOCALES)[number]): void {
+    this.analytics.track('language_switch', { from: this.locale, to });
+  }
 
   protected homeOf(locale: (typeof SITE_LOCALES)[number]): string {
     return homePath(locale);

@@ -118,6 +118,8 @@ export interface UiText {
   readonly guides: { readonly eyebrow: string; readonly title: string; readonly lead: string; readonly reading: string; readonly published: string; readonly sources: string; readonly related: string };
   readonly notFound: { readonly title: string; readonly text: string; readonly cta: string };
   readonly captions: string;
+  /** Bouton posé sur l'extrait muet : lance le film complet avec le son. */
+  readonly watchFilm: string;
   readonly contact: {
     readonly eyebrow: string;
     readonly title: string;
@@ -236,7 +238,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     services: {
       eyebrow: 'Tarifs',
       title: 'Des prix affichés',
-      lead: 'Trois formules par prestation — photo, vidéo, ou les deux par la même personne — plus le sur mesure. Prix TTC pour les particuliers, HTVA pour les entreprises.',
+      lead: 'Mariage, événementiel et sport : trois formules — photo, vidéo, ou les deux par la même personne — plus le sur mesure. Corporate, clip et lifestyle : sur devis. Prix TTC pour les particuliers, HTVA pour les clubs et les entreprises.',
       duration: 'Durée',
       included: 'Inclus',
       deliverables: 'Livrables',
@@ -328,6 +330,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       cta: "Retour à l'accueil",
     },
     captions: 'Français',
+    watchFilm: 'Voir le film',
     contact: {
       eyebrow: 'Contact',
       title: 'Parlons du projet',
@@ -442,7 +445,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     services: {
       eyebrow: 'Tarieven',
       title: 'Transparante prijzen',
-      lead: 'Drie formules per dienst — foto, video, of beide door dezelfde persoon — plus op maat. Prijzen incl. btw voor particulieren, excl. btw voor bedrijven.',
+      lead: 'Huwelijk, evenementen en sport: drie formules — foto, video, of beide door dezelfde persoon — plus op maat. Zakelijk, clip en lifestyle: op offerte. Prijzen incl. btw voor particulieren, excl. btw voor clubs en bedrijven.',
       duration: 'Duur',
       included: 'Inbegrepen',
       deliverables: 'Op te leveren',
@@ -534,6 +537,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       cta: 'Terug naar home',
     },
     captions: 'Nederlands',
+    watchFilm: 'Bekijk de film',
     contact: {
       eyebrow: 'Contact',
       title: 'Laten we over het project praten',
@@ -648,7 +652,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
     services: {
       eyebrow: 'Pricing',
       title: 'Prices out in the open',
-      lead: 'Three packages per service — photo, video, or both by the same person — plus a custom option. Prices include VAT for private clients and exclude VAT for businesses.',
+      lead: 'Wedding, events and sport: three packages — photo, video, or both by the same person — plus a custom option. Corporate, music video and lifestyle: on quote. Prices include VAT for private clients and exclude VAT for clubs and businesses.',
       duration: 'Duration',
       included: 'Included',
       deliverables: 'Deliverables',
@@ -740,6 +744,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       cta: 'Back to home',
     },
     captions: 'English',
+    watchFilm: 'Watch the film',
     contact: {
       eyebrow: 'Contact',
       title: 'Let’s talk about your project',

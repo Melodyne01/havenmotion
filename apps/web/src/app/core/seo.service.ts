@@ -167,7 +167,7 @@ export class SeoService {
       this.removeJsonLd('vnl-service');
       return;
     }
-    const pricing = pricingFor(key);
+    const offers = this.offersOf(pricingFor(key), locale);
     const graph = {
       '@context': 'https://schema.org',
       '@type': 'Service',
@@ -176,7 +176,8 @@ export class SeoService {
       description: category.tagline,
       provider: { '@type': 'LocalBusiness', name: settings.brandName, '@id': `${this.origin}/#studio` },
       areaServed: COUNTRIES.filter((c) => c.code !== 'INT').map((c) => ({ '@type': 'Country', name: c.name[locale] })),
-      offers: this.offersOf(pricing, locale),
+      // Catégorie sur devis seulement : pas d'offre plutôt qu'une liste vide.
+      ...(offers.length ? { offers } : {}),
     };
     this.writeJsonLd('vnl-service', graph);
   }
@@ -190,7 +191,7 @@ export class SeoService {
       '@context': 'https://schema.org',
       '@type': 'OfferCatalog',
       name: `${settings.brandName} — ${{ fr: 'Tarifs', nl: 'Tarieven', en: 'Pricing' }[locale]}`,
-      itemListElement: PRICING.map((pricing) => ({
+      itemListElement: PRICING.filter((pricing) => pricing.packs.some((pack) => pack.price !== null)).map((pricing) => ({
         '@type': 'OfferCatalog',
         name: CATEGORY_NAMES[pricing.key][locale],
         itemListElement: this.offersOf(pricing, locale),

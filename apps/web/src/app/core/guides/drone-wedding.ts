@@ -66,7 +66,7 @@ export const GUIDES_DRONE: readonly Guide[] = [
       {
         title: 'Ce que ça coûte',
         paragraphs: [
-          `Chez Heaven Motion, l’option drone coûte ${drone}, pour deux à quatre vols dans la journée, les plans intégrés au film et au teaser, et cinq à dix photos aériennes livrées dans la galerie. Si le vol est impossible le jour J (géozone activée, lieu qui refuse, pluie ou vent), l’option est reportée à une séance ultérieure ou remboursée. Sur le marché belge, l’option drone se situe entre 150 et 400 € chez les vidéastes qui la proposent ; un pilote de drone dédié, en plus du photographe, coûte 400 à 800 € la journée.`,
+          `Chez Heaven Motion, l’option drone coûte ${drone}, pour deux à quatre vols dans la journée, les plans intégrés au film, et cinq à dix photos aériennes livrées dans la galerie. Si le vol est impossible le jour J (géozone activée, lieu qui refuse, pluie ou vent), l’option est reportée à une séance ultérieure ou remboursée. Sur le marché belge, l’option drone se situe entre 150 et 400 € chez les vidéastes qui la proposent ; un pilote de drone dédié, en plus du photographe, coûte 400 à 800 € la journée.`,
         ],
       },
       {
@@ -153,7 +153,7 @@ export const GUIDES_DRONE: readonly Guide[] = [
       {
         title: 'Wat het kost',
         paragraphs: [
-          `Bij Heaven Motion kost de drone-optie ${drone}, voor twee tot vier vluchten op de dag, de beelden verwerkt in film en teaser, en vijf tot tien luchtfoto’s in de galerij. Is vliegen onmogelijk op de dag zelf (geactiveerde geozone, locatie die weigert, regen of wind), dan wordt de optie verplaatst naar een latere shoot of terugbetaald. Op de Belgische markt kost de drone-optie 150 tot 400 € bij videografen die ze aanbieden; een aparte dronepiloot naast de fotograaf kost 400 tot 800 € per dag.`,
+          `Bij Heaven Motion kost de drone-optie ${drone}, voor twee tot vier vluchten op de dag, de beelden verwerkt in de film, en vijf tot tien luchtfoto’s in de galerij. Is vliegen onmogelijk op de dag zelf (geactiveerde geozone, locatie die weigert, regen of wind), dan wordt de optie verplaatst naar een latere shoot of terugbetaald. Op de Belgische markt kost de drone-optie 150 tot 400 € bij videografen die ze aanbieden; een aparte dronepiloot naast de fotograaf kost 400 tot 800 € per dag.`,
         ],
       },
       {

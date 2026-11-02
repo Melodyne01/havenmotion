@@ -31,11 +31,11 @@ export const REGION_CONTENT_PHASE_3: Readonly<Record<string, Partial<Record<Site
         'Déplacement : forfait de 190 € (zone 3) pour Reims, Épernay, Châlons et la Montagne de Reims ; Troyes et la vallée de la Marne sont confirmés sur devis.',
         'Mariage : nuit d’hôtel (150 €) ajoutée systématiquement, la soirée finissant tard à deux heures et demie de Bruxelles ; une séance couple dans les vignes le lendemain matin est possible en heure supplémentaire.',
         'Maisons de champagne : les caves et les domaines ont leurs règles de prise de vue (flash, zones), fixées avec le lieu au repérage.',
-        'Facturation : facture belge avec TVA pour un particulier, autoliquidation pour une maison ou une coopérative assujettie ; musique sous licence, sans déclaration SACEM.',
+        'Facturation : facture belge avec TVA pour un particulier, autoliquidation pour une maison ou une coopérative assujettie .',
       ],
       faq: [
-        { question: 'Combien coûte un photographe-vidéaste de mariage à Reims ou à Épernay ?', answer: 'Le prix belge plus 190 € de déplacement et 150 € de nuit d’hôtel : 2 690 € pour la photo et la vidéo par la même personne, journée complète, soit environ 3 030 € tout compris, là où la photo seule dépasse souvent 2 000 € en Champagne.' },
-        { question: 'Faites-vous des films pour les maisons de champagne et les vignerons ?', answer: 'Oui, en formule corporate : une demi-journée au domaine, 990 € HTVA pour un film d’une à deux minutes avec formats réseaux, 1 390 € avec les portraits et les photos du domaine ; vendanges et pressurage sur devis.' },
+        { question: 'Combien coûte un photographe-vidéaste de mariage à Reims ou à Épernay ?', answer: 'Le prix belge plus 190 € de déplacement et 150 € de nuit d’hôtel : 2 790 € pour la photo et la vidéo par la même personne, journée complète, soit environ 3 130 € tout compris, là où la photo seule dépasse souvent 2 000 € en Champagne.' },
+        { question: 'Faites-vous des films pour les maisons de champagne et les vignerons ?', answer: 'Oui, en formule corporate, sur devis HTVA : une demi-journée au domaine pour un film d’une à deux minutes avec formats réseaux, les portraits et les photos du domaine ; vendanges et pressurage aussi.' },
         { question: 'Peut-on faire une séance couple dans les vignes ?', answer: 'Oui, les coteaux de Verzenay, Hautvillers ou Aÿ se prêtent très bien à une séance au coucher du soleil, en formule lifestyle ou en heure supplémentaire le lendemain du mariage.' },
       ],
     },
@@ -61,11 +61,11 @@ export const REGION_CONTENT_PHASE_3: Readonly<Record<string, Partial<Record<Site
         'Déplacement : forfait de 290 € (zone 4) pour Paris et toute l’Île-de-France ; aucune majoration « Paris » sur la prestation elle-même.',
         'Mariage : nuit d’hôtel (150 €) ajoutée, la soirée finissant tard à trois heures de Bruxelles ; une séance couple au lever du soleil le lendemain au Trocadéro ou au Louvre est possible en heure supplémentaire.',
         'Autorisations : les monuments nationaux et les parcs (Versailles, Vaux-le-Vicomte, Fontainebleau) demandent une autorisation de prise de vue, parfois payante ; le drone est interdit sur Paris intra-muros et strictement encadré en petite couronne.',
-        'Facturation : facture belge avec TVA pour un particulier, autoliquidation pour une entreprise française assujettie ; musique sous licence, sans SACEM.',
+        'Facturation : facture belge avec TVA pour un particulier, autoliquidation pour une entreprise française assujettie .',
       ],
       faq: [
-        { question: 'Combien coûte un photographe-vidéaste de mariage venu de Bruxelles pour un mariage en Île-de-France ?', answer: 'Le prix belge plus 290 € de déplacement et 150 € de nuit d’hôtel : 2 690 € pour la photo et la vidéo par la même personne, journée complète, soit environ 3 130 € tout compris, là où la photo seule démarre souvent à 2 500 € à Paris.' },
-        { question: 'Faites-vous les séances couple à Paris sans mariage ?', answer: 'Oui, en formule lifestyle, idéalement tôt le matin au Trocadéro, au Palais-Royal ou sur les quais : 250 € pour une heure trente de photos, 640 € avec un court film, plus le déplacement ; se combine bien avec une demande en mariage.' },
+        { question: 'Combien coûte un photographe-vidéaste de mariage venu de Bruxelles pour un mariage en Île-de-France ?', answer: 'Le prix belge plus 290 € de déplacement et 150 € de nuit d’hôtel : 2 790 € pour la photo et la vidéo par la même personne, journée complète, soit environ 3 230 € tout compris, là où la photo seule démarre souvent à 2 500 € à Paris.' },
+        { question: 'Faites-vous les séances couple à Paris sans mariage ?', answer: 'Oui, en formule lifestyle, idéalement tôt le matin au Trocadéro, au Palais-Royal ou sur les quais, sur devis, plus le déplacement ; se combine bien avec une demande en mariage.' },
         { question: 'Couvrez-vous un événement d’entreprise belge organisé à Paris ?', answer: 'Oui, c’est un cas fréquent : reportage et aftermovie d’un salon, d’une conférence ou d’un dîner, facturés en Belgique, sans formalité française. Prix hors TVA sur la page tarifs.' },
       ],
     },
@@ -88,11 +88,11 @@ export const REGION_CONTENT_PHASE_3: Readonly<Record<string, Partial<Record<Site
         'Travel: flat fee of €290 (zone 4) for Paris and the whole Île-de-France; no “Paris” mark-up on the service itself.',
         'Wedding: a hotel night (€150) is added, as the party ends late three hours from Brussels; a sunrise couple session the next morning at the Trocadéro or the Louvre is possible as an extra hour.',
         'Permits: national monuments and parks (Versailles, Vaux-le-Vicomte, Fontainebleau) require a photography permit, sometimes paid; drones are forbidden over Paris and tightly restricted in the inner suburbs.',
-        'Invoicing: Belgian invoice with VAT for private clients, reverse charge for a VAT-registered company; licensed music, shareable on social media.',
+        'Invoicing: Belgian invoice with VAT for private clients, reverse charge for a VAT-registered company.',
       ],
       faq: [
-        { question: 'How much does a Brussels-based photographer and videographer cost for a wedding in Paris?', answer: 'The Belgian price plus €290 of travel and a €150 hotel night: €2,690 for photo and video by the same person, full day, about €3,130 all in, where photography alone often starts at €2,500 in Paris.' },
-        { question: 'Do you shoot elopements and proposals in Paris?', answer: 'Yes. A proposal or couple session is a lifestyle booking, ideally at dawn at the Trocadéro or the Palais-Royal: €250 for ninety minutes of photos, €640 with a short film, plus travel. An elopement with a symbolic ceremony is quoted as a half-day wedding.' },
+        { question: 'How much does a Brussels-based photographer and videographer cost for a wedding in Paris?', answer: 'The Belgian price plus €290 of travel and a €150 hotel night: €2,790 for photo and video by the same person, full day, about €3,230 all in, where photography alone often starts at €2,500 in Paris.' },
+        { question: 'Do you shoot elopements and proposals in Paris?', answer: 'Yes. A proposal or couple session is a lifestyle booking, ideally at dawn at the Trocadéro or the Palais-Royal, on quote, plus travel. An elopement with a symbolic ceremony is quoted as a half-day wedding.' },
         { question: 'Can we legally marry in Paris as foreigners?', answer: 'A civil wedding in France requires one partner to have lived in the arrondissement for at least a month; most international couples marry legally at home and hold a symbolic ceremony in Paris. I cover it the same way as a wedding.' },
       ],
     },
@@ -101,7 +101,7 @@ export const REGION_CONTENT_PHASE_3: Readonly<Record<string, Partial<Record<Site
   zelande: {
     nl: {
       intro:
-        'Bruidsfotograaf en videograaf in Zeeland, vanuit Brussel met vaste reiskosten van 90 €: Terneuzen en Hulst liggen op een uur, Middelburg, Vlissingen, Goes en Veere op anderhalf uur, Zierikzee en Renesse iets verder. Een bruiloft in Kasteel Westhove of Slot Moermond, een strandshoot in Domburg of Cadzand, trouwen in de Abdij van Middelburg, een bedrijfsfilm in de haven van Vlissingen: één persoon voor foto en video, 2.690 € voor beide op één dag inclusief btw, met een vast bedrag aan reiskosten in plaats van kilometervergoeding.',
+        'Bruidsfotograaf en videograaf in Zeeland, vanuit Brussel met vaste reiskosten van 90 €: Terneuzen en Hulst liggen op een uur, Middelburg, Vlissingen, Goes en Veere op anderhalf uur, Zierikzee en Renesse iets verder. Een bruiloft in Kasteel Westhove of Slot Moermond, een strandshoot in Domburg of Cadzand, trouwen in de Abdij van Middelburg, een bedrijfsfilm in de haven van Vlissingen: één persoon voor foto en video, 2.790 € voor beide op één dag inclusief btw, met een vast bedrag aan reiskosten in plaats van kilometervergoeding.',
       citiesTitle: 'In de provincie',
       cities: [
         { name: 'Middelburg', fact: 'het stadhuis op de Markt en de Abdij voor de ceremonie, de Lange Jan en de grachten voor de bruidsfoto’s, Kasteel Ter Hooge voor de receptie.' },
@@ -121,9 +121,9 @@ export const REGION_CONTENT_PHASE_3: Readonly<Record<string, Partial<Record<Site
         'Drone: toegelaten op de stranden en dijken buiten Natura 2000 en de broedseizoenen; de Oosterschelde en het Veerse Meer hebben beschermde zones. Wind is de enige echte beperking.',
       ],
       faq: [
-        { question: 'Wat kost een bruidsfotograaf en videograaf in Zeeland?', answer: 'De Belgische prijs plus 90 € reiskosten: 1.290 € foto, 1.590 € video, 2.690 € foto én video door dezelfde persoon, hele dag, inclusief btw.' },
+        { question: 'Wat kost een bruidsfotograaf en videograaf in Zeeland?', answer: 'De Belgische prijs plus 90 € reiskosten: 1.290 € foto, 1.590 € video, 2.790 € foto én video door dezelfde persoon, hele dag, inclusief btw.' },
         { question: 'Doet u strandbruiloften in Domburg of Cadzand?', answer: 'Ja. Strand, wind en tegenlicht vragen een eigen aanpak: de shoot plannen we rond zonsondergang en de ceremonie met de rug naar de zon. Een strandpaviljoen als uitwijk is altijd afgesproken.' },
-        { question: 'Hoe snel is de levering?', answer: 'Preview binnen 7 dagen, volledige online galerij en film binnen 2 tot 4 weken, twee correctierondes op de montage inbegrepen.' },
+        { question: 'Hoe snel is de levering?', answer: 'Volledige online galerij en film binnen 2 tot 4 weken, twee correctierondes op de montage inbegrepen.' },
       ],
     },
   },
@@ -131,7 +131,7 @@ export const REGION_CONTENT_PHASE_3: Readonly<Record<string, Partial<Record<Site
   'hollande-meridionale': {
     nl: {
       intro:
-        'Bruidsfotograaf en videograaf in Rotterdam, Den Haag, Delft en Leiden, vanuit Brussel met vaste reiskosten van 190 €: Rotterdam ligt op anderhalf uur, Den Haag en Leiden op twee uur. Geen zoveelste « bruidsfotograaf Rotterdam »-pagina: wel een Belgische fotograaf én videograaf in één persoon, voor koppels die trouwen in Kasteel de Wittenburg, op de Kop van Zuid of in het Prinsenhof van Delft, en voor Belgische bedrijven met een event in Rotterdam of Den Haag — 2.690 € voor foto en video op één bruiloft, inclusief btw.',
+        'Bruidsfotograaf en videograaf in Rotterdam, Den Haag, Delft en Leiden, vanuit Brussel met vaste reiskosten van 190 €: Rotterdam ligt op anderhalf uur, Den Haag en Leiden op twee uur. Geen zoveelste « bruidsfotograaf Rotterdam »-pagina: wel een Belgische fotograaf én videograaf in één persoon, voor koppels die trouwen in Kasteel de Wittenburg, op de Kop van Zuid of in het Prinsenhof van Delft, en voor Belgische bedrijven met een event in Rotterdam of Den Haag — 2.790 € voor foto en video op één bruiloft, inclusief btw.',
       citiesTitle: 'In de provincie',
       cities: [
         { name: 'Rotterdam', fact: 'het stadhuis aan de Coolsingel voor de ceremonie, de Erasmusbrug, de Markthal en Hotel New York voor de bruidsfoto’s, de Van Nelle Fabriek en SS Rotterdam voor het feest, De Kuip voor sport.' },
@@ -151,7 +151,7 @@ export const REGION_CONTENT_PHASE_3: Readonly<Record<string, Partial<Record<Site
         'Drone: verboden boven Rotterdam-centrum, de haven en rond Rotterdam The Hague Airport; mogelijk op landgoederen en aan de kust buiten Natura 2000.',
       ],
       faq: [
-        { question: 'Wat kost een bruidsfotograaf en videograaf in Rotterdam of Den Haag?', answer: 'De Belgische prijs plus 190 € reiskosten: 2.690 € voor foto én video door dezelfde persoon, hele dag, inclusief btw. Een Nederlands duo foto + video begint vaak boven de 4.000 €.' },
+        { question: 'Wat kost een bruidsfotograaf en videograaf in Rotterdam of Den Haag?', answer: 'De Belgische prijs plus 190 € reiskosten: 2.790 € voor foto én video door dezelfde persoon, hele dag, inclusief btw. Een Nederlands duo foto + video begint vaak boven de 4.000 €.' },
         { question: 'Waarom een fotograaf uit Brussel voor een bruiloft in de Randstad?', answer: 'Eén persoon voor foto en video, een vaste prijs met reiskosten in plaats van kilometervergoeding, en een stijl die u vooraf kunt zien in de projecten. Voor Belgisch-Nederlandse koppels ook: dezelfde fotograaf voor de familie aan beide kanten van de grens.' },
         { question: 'Werkt u voor Belgische bedrijven met een event in Rotterdam of Den Haag?', answer: 'Ja, dat is een frequent geval: reportage en aftermovie van een beurs, congres of diner, Belgisch gefactureerd zonder Nederlandse formaliteiten. Prijzen exclusief btw op de tarievenpagina.' },
       ],
@@ -161,7 +161,7 @@ export const REGION_CONTENT_PHASE_3: Readonly<Record<string, Partial<Record<Site
   utrecht: {
     nl: {
       intro:
-        'Bruidsfotograaf en videograaf in Utrecht en op de Heuvelrug, vanuit Brussel met vaste reiskosten van 190 €: Utrecht ligt op twee uur rijden, Amersfoort, Zeist en Doorn een kwartier verder. Een bruiloft in Kasteel de Haar of Slot Zeist, een shoot op de werven van de Oudegracht of in de bossen van de Heuvelrug, een bedrijfsfilm op het Utrecht Science Park: één persoon voor foto en video, 2.690 € voor beide op één dag inclusief btw, met een vast bedrag aan reiskosten.',
+        'Bruidsfotograaf en videograaf in Utrecht en op de Heuvelrug, vanuit Brussel met vaste reiskosten van 190 €: Utrecht ligt op twee uur rijden, Amersfoort, Zeist en Doorn een kwartier verder. Een bruiloft in Kasteel de Haar of Slot Zeist, een shoot op de werven van de Oudegracht of in de bossen van de Heuvelrug, een bedrijfsfilm op het Utrecht Science Park: één persoon voor foto en video, 2.790 € voor beide op één dag inclusief btw, met een vast bedrag aan reiskosten.',
       citiesTitle: 'In de provincie',
       cities: [
         { name: 'Utrecht', fact: 'het stadhuis en de Domkerk voor de ceremonie, de werven van de Oudegracht en de Domtoren voor de bruidsfoto’s, de Winkel van Sinkel en TivoliVredenburg voor het feest.' },
@@ -181,9 +181,9 @@ export const REGION_CONTENT_PHASE_3: Readonly<Record<string, Partial<Record<Site
         'Drone: mogelijk op de landgoederen en de Heuvelrug buiten Natura 2000; de vliegbasis Soesterberg en de stad Utrecht leggen beperkingen op.',
       ],
       faq: [
-        { question: 'Wat kost een bruidsfotograaf en videograaf in Utrecht?', answer: 'De Belgische prijs plus 190 € reiskosten: 2.690 € voor foto én video door dezelfde persoon, hele dag, inclusief btw.' },
+        { question: 'Wat kost een bruidsfotograaf en videograaf in Utrecht?', answer: 'De Belgische prijs plus 190 € reiskosten: 2.790 € voor foto én video door dezelfde persoon, hele dag, inclusief btw.' },
         { question: 'Werkt u in Kasteel de Haar?', answer: 'Kasteel de Haar ontvangt ceremonies en recepties en laat fotografen toe volgens zijn huisregels; de verkenning gebeurt met de locatie enkele weken vooraf.' },
-        { question: 'Hoe verloopt de levering?', answer: 'Preview binnen 7 dagen, volledige online galerij en film binnen 2 tot 4 weken, twee correctierondes op de montage inbegrepen.' },
+        { question: 'Hoe verloopt de levering?', answer: 'Volledige online galerij en film binnen 2 tot 4 weken, twee correctierondes op de montage inbegrepen.' },
       ],
     },
   },
@@ -191,7 +191,7 @@ export const REGION_CONTENT_PHASE_3: Readonly<Record<string, Partial<Record<Site
   'hollande-septentrionale': {
     nl: {
       intro:
-        'Bruidsfotograaf en videograaf in Amsterdam, Haarlem en Noord-Holland, vanuit Brussel met vaste reiskosten van 190 €: Haarlem en Amsterdam liggen op twee uur rijden, Alkmaar en het Gooi iets verder. Geen zoveelste « bruidsfotograaf Amsterdam »-pagina: wel een Belgische fotograaf én videograaf in één persoon, voor koppels die trouwen op de grachten, in Huize Frankendael of in het Muiderslot, voor internationale koppels en voor Belgische bedrijven met een event op de Zuidas of in de RAI — 2.690 € voor foto en video op één bruiloft, inclusief btw.',
+        'Bruidsfotograaf en videograaf in Amsterdam, Haarlem en Noord-Holland, vanuit Brussel met vaste reiskosten van 190 €: Haarlem en Amsterdam liggen op twee uur rijden, Alkmaar en het Gooi iets verder. Geen zoveelste « bruidsfotograaf Amsterdam »-pagina: wel een Belgische fotograaf én videograaf in één persoon, voor koppels die trouwen op de grachten, in Huize Frankendael of in het Muiderslot, voor internationale koppels en voor Belgische bedrijven met een event op de Zuidas of in de RAI — 2.790 € voor foto en video op één bruiloft, inclusief btw.',
       citiesTitle: 'In de provincie',
       cities: [
         { name: 'Amsterdam', fact: 'het stadhuis en de trouwlocaties van de gemeente voor de ceremonie, de grachtengordel, de Jordaan en het Vondelpark voor de bruidsfoto’s, de Zuidas en de RAI voor corporate, de Johan Cruijff ArenA voor sport.' },
@@ -211,14 +211,14 @@ export const REGION_CONTENT_PHASE_3: Readonly<Record<string, Partial<Record<Site
         'Drone: verboden boven Amsterdam en rond Schiphol; mogelijk op de landgoederen, in het Gooi en aan de kust buiten Natura 2000.',
       ],
       faq: [
-        { question: 'Wat kost een bruidsfotograaf en videograaf in Amsterdam of Haarlem?', answer: 'De Belgische prijs plus 190 € reiskosten: 2.690 € voor foto én video door dezelfde persoon, hele dag, inclusief btw. Een Amsterdams duo foto + video begint vaak boven de 4.000 €.' },
+        { question: 'Wat kost een bruidsfotograaf en videograaf in Amsterdam of Haarlem?', answer: 'De Belgische prijs plus 190 € reiskosten: 2.790 € voor foto én video door dezelfde persoon, hele dag, inclusief btw. Een Amsterdams duo foto + video begint vaak boven de 4.000 €.' },
         { question: 'Werkt u voor Belgische bedrijven met een event in Amsterdam?', answer: 'Ja, dat is een frequent geval: reportage en aftermovie van een beurs in de RAI, een congres of een diner, Belgisch gefactureerd zonder Nederlandse formaliteiten.' },
-        { question: 'Maakt u ook grachtenshoots zonder bruiloft?', answer: 'Ja, als lifestyle-shoot, vroeg in de ochtend op de grachten of in de Jordaan: 250 € voor anderhalf uur foto, 640 € met een korte film, plus reiskosten.' },
+        { question: 'Maakt u ook grachtenshoots zonder bruiloft?', answer: 'Ja, als lifestyle-shoot, vroeg in de ochtend op de grachten of in de Jordaan, op offerte, plus reiskosten.' },
       ],
     },
     en: {
       intro:
-        'Photographer and videographer for weddings, elopements and corporate shoots in Amsterdam and North Holland, based in Brussels, with a flat travel fee of €190: Amsterdam and Haarlem are two hours away by road. This is not another “Amsterdam wedding photographer” page: what is offered is one person for both photo and video, for international couples marrying on the canals, at Huize Frankendael or at the Muiderslot, for elopements and canal sessions at dawn, and for Belgian or international companies with an event on the Zuidas or at the RAI — €2,690 for photo and video on one wedding day, VAT included, in English.',
+        'Photographer and videographer for weddings, elopements and corporate shoots in Amsterdam and North Holland, based in Brussels, with a flat travel fee of €190: Amsterdam and Haarlem are two hours away by road. This is not another “Amsterdam wedding photographer” page: what is offered is one person for both photo and video, for international couples marrying on the canals, at Huize Frankendael or at the Muiderslot, for elopements and canal sessions at dawn, and for Belgian or international companies with an event on the Zuidas or at the RAI — €2,790 for photo and video on one wedding day, VAT included, in English.',
       citiesTitle: 'Across the province',
       cities: [
         { name: 'Amsterdam', fact: 'the city hall and the municipal wedding venues for the ceremony, the canal ring, the Jordaan and the Vondelpark for couple photos, the Zuidas and the RAI for corporate, the Johan Cruijff ArenA for sport.' },
@@ -238,9 +238,9 @@ export const REGION_CONTENT_PHASE_3: Readonly<Record<string, Partial<Record<Site
         'Drone: forbidden over Amsterdam and around Schiphol; possible on the estates, in the Gooi and on the coast outside Natura 2000 areas.',
       ],
       faq: [
-        { question: 'How much does a wedding photographer and videographer cost in Amsterdam?', answer: 'The Belgian price plus €190 of travel: €2,690 for photo and video by the same person, full day, VAT included. An Amsterdam photo + video duo often starts above €4,000.' },
+        { question: 'How much does a wedding photographer and videographer cost in Amsterdam?', answer: 'The Belgian price plus €190 of travel: €2,790 for photo and video by the same person, full day, VAT included. An Amsterdam photo + video duo often starts above €4,000.' },
         { question: 'Can we legally marry in Amsterdam as foreigners?', answer: 'A civil wedding in the Netherlands requires at least one partner to be a Dutch resident or national; most international couples marry legally at home and celebrate in Amsterdam. I cover the celebration the same way, from getting ready to the party.' },
-        { question: 'Do you shoot canal sessions and proposals without a wedding?', answer: 'Yes, as a lifestyle booking, early morning on the canals or in the Jordaan: €250 for ninety minutes of photos, €640 with a short film, plus travel.' },
+        { question: 'Do you shoot canal sessions and proposals without a wedding?', answer: 'Yes, as a lifestyle booking, early morning on the canals or in the Jordaan, on quote, plus travel.' },
       ],
     },
   },

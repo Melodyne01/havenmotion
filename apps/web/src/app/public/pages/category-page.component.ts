@@ -1,10 +1,12 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   computed,
   effect,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -72,7 +74,7 @@ import { Film } from '../../models';
 
           <app-video-frame
             [asset]="activeAsset()"
-            playback="manual"
+            playback="teaser"
             [muted]="false"
             [loop]="false"
             [controls]="true"
@@ -310,7 +312,19 @@ export class CategoryPageComponent {
     return `${cat.filmCount} ${noun} · ${cat.name}`;
   }
 
+  private readonly frame = viewChild<VideoFrameComponent>('frame');
+  private readonly frameElement = viewChild('frame', { read: ElementRef<HTMLElement> });
+
+  /**
+   * Choisir un film le lance en entier, avec le son : le clic vaut accord du
+   * visiteur. Le désélectionner ramène l'extrait muet de la bande-démo.
+   */
   protected selectFilm(film: Film): void {
-    this.selected.set(film.id === this.selected()?.id ? null : film);
+    const next = film.id === this.selected()?.id ? null : film;
+    this.selected.set(next);
+    if (next?.media) {
+      this.frame()?.playFull(next.media);
+      this.frameElement()?.nativeElement.scrollIntoView({ block: 'nearest' });
+    }
   }
 }

@@ -6,7 +6,15 @@ import { CATEGORY_NAMES, COMPANY } from '../../core/site-content';
 import { PACK_LABELS, PACK_TYPES, PackType, VAT_LABELS, formatPrice, pricingFor } from '../../core/packs';
 import { COUNTRIES, CountryCode, REGIONS, findRegion, regionId } from '../../core/regions';
 import { travelZone } from '../../core/travel-zones';
-import { CATEGORY_KEYS, QuotePrefill, buildQuoteMessage, mailtoUrl, whatsappUrl } from '../../core/quote';
+import { CATEGORY_KEYS, QuotePrefill, QuoteService, buildQuoteMessage, mailtoUrl, whatsappUrl } from '../../core/quote';
+import { AnalyticsData, AnalyticsService } from '../../core/analytics';
+
+/** Un nom d'événement Umami par étape : le taux de passage se lit dans la vue Events. */
+const STEP_EVENTS: Record<number, string> = {
+  1: 'quote_step_1_project',
+  2: 'quote_step_2_place',
+  3: 'quote_step_3_message',
+};
 
 /** Valeur « Autre » du type de projet. */
 const OTHER = 'autre';
@@ -217,7 +225,7 @@ const OTHER = 'autre';
 
             <div class="send">
               @if (whatsappHref(); as href) {
-                <a class="btn btn--primary btn--whatsapp" [href]="href" target="_blank" rel="noopener" (click)="guardSend($event)">
+                <a class="btn btn--primary btn--whatsapp" [href]="href" target="_blank" rel="noopener" (click)="guardSend($event, 'whatsapp')">
                   <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <path
                       fill="currentColor"
@@ -227,7 +235,7 @@ const OTHER = 'autre';
                   {{ text.sendWhatsapp }}
                 </a>
               }
-              <a class="btn" [class.btn--primary]="!whatsappHref()" [href]="mailHref()" (click)="guardSend($event)">{{
+              <a class="btn" [class.btn--primary]="!whatsappHref()" [href]="mailHref()" (click)="guardSend($event, 'email')">{{
                 text.sendEmail
               }}</a>
             </div>
@@ -274,14 +282,19 @@ export class QuoteFormComponent implements OnInit {
 
   private readonly nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly analytics = inject(AnalyticsService);
+  private readonly quote = inject(QuoteService);
 
-  /** Formules, avec le prix de départ de la catégorie choisie ; « Je ne sais pas encore » en premier. */
+  /**
+   * Formules de la catégorie choisie (toutes tant qu'aucune n'est choisie),
+   * avec leur prix de départ ; « Je ne sais pas encore » en premier.
+   */
   protected readonly packOptions = computed(() => {
     const key = this.categoryKey();
     const pricing = key ? pricingFor(key) : null;
     return [
       { value: '', label: this.text.packUndecided, price: '' },
-      ...PACK_TYPES.map((type) => {
+      ...this.packTypesFor(key).map((type) => {
         const price = pricing?.packs.find((p) => p.type === type)?.price;
         return {
           value: type as string,
@@ -330,11 +343,16 @@ export class QuoteFormComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.applyPrefill();
+    this.trackStep(1);
+  }
+
+  private applyPrefill(): void {
     const { category, pack, region } = this.prefill();
     if (category) {
       this.category.set(category);
     }
-    if (pack) {
+    if (pack && this.packTypesFor(category ?? null).includes(pack)) {
       this.pack.set(pack);
     }
     const found = region ? findRegion(region) : null;
@@ -359,6 +377,15 @@ export class QuoteFormComponent implements OnInit {
   protected pickCategory(value: string): void {
     this.category.set(value);
     this.categoryError.set(false);
+    // Une formule absente de la nouvelle catégorie (photo pour un clip, sur devis seulement) est oubliée.
+    if (this.pack() && !this.packTypesFor(this.categoryKey()).includes(this.pack() as PackType)) {
+      this.pack.set('');
+    }
+  }
+
+  /** Formules proposées dans une catégorie ; toutes pour « Autre » ou tant qu'aucune n'est choisie. */
+  private packTypesFor(key: CategoryKey | null): readonly PackType[] {
+    return key ? pricingFor(key).packs.map((p) => p.type) : PACK_TYPES;
   }
 
   /** Un pays à une seule région (Luxembourg, étranger) la sélectionne d'office. */
@@ -378,7 +405,11 @@ export class QuoteFormComponent implements OnInit {
 
   /** Change d'étape et remonte en haut : sinon la nouvelle étape s'ouvre défilée vers le bas. */
   protected go(step: number): void {
+    if (step < this.step()) {
+      this.analytics.track('quote_step_back', { from: this.step(), form: this.formKind() });
+    }
     this.step.set(step);
+    this.trackStep(step);
     const element = this.host.nativeElement;
     const dialog = element.closest('dialog');
     if (dialog) {
@@ -397,17 +428,63 @@ export class QuoteFormComponent implements OnInit {
   }
 
   /** Les liens d'envoi ne partent pas sans nom : le studio doit savoir à qui il répond. */
-  protected guardSend(event: Event): void {
+  protected guardSend(event: Event, channel: 'whatsapp' | 'email'): void {
     if (!this.name().trim()) {
       event.preventDefault();
       this.nameError.set(true);
       this.nameInput()?.nativeElement.focus();
+      this.analytics.track('quote_name_missing', { channel, form: this.formKind() });
+      return;
+    }
+    // Conversion : le visiteur part vers WhatsApp ou sa messagerie avec le message prêt.
+    this.analytics.track(`quote_submit_${channel}`, this.context());
+    if (this.inDialog()) {
+      this.quote.markSent();
     }
   }
 
   protected copy(): void {
+    this.analytics.track('quote_copy', { form: this.formKind() });
     if (typeof navigator !== 'undefined' && navigator.clipboard) {
       navigator.clipboard.writeText(this.message()).then(() => this.copied.set(true));
     }
+  }
+
+  // --- Mesure d'audience ------------------------------------------------------
+
+  private trackStep(step: number): void {
+    const data: AnalyticsData = { form: this.formKind() };
+    if (step >= 2) {
+      Object.assign(data, { category: this.category(), pack: this.pack() || 'undecided' });
+    }
+    if (step >= 3) {
+      Object.assign(data, { country: this.country(), region: this.region() || 'undecided', budget: this.budget() });
+    }
+    this.analytics.track(STEP_EVENTS[step], data);
+    if (this.inDialog()) {
+      this.quote.stepShown(step);
+    }
+  }
+
+  /** Tout ce qui qualifie la demande, joint aux conversions. */
+  private context(): AnalyticsData {
+    return {
+      category: this.category(),
+      pack: this.pack() || 'undecided',
+      country: this.country(),
+      region: this.region() || 'undecided',
+      budget: this.budget(),
+      lang: this.locale,
+      form: this.formKind(),
+    };
+  }
+
+  /** `popup` ou `page` (formulaire de la page Contact). */
+  private formKind(): string {
+    return this.inDialog() ? 'popup' : 'page';
+  }
+
+  private inDialog(): boolean {
+    return typeof this.host.nativeElement.closest === 'function' && !!this.host.nativeElement.closest('dialog');
   }
 }

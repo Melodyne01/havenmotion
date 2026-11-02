@@ -17,7 +17,15 @@
   padding: 24px 20px;
   border-bottom: $rule-width solid $color-rule-10;
 
+  // Dès la tablette, la barre reste fixe à gauche pendant le défilement des
+  // longues pages (films, projets) ; elle défile seule si l'écran est bas.
   @include tablet-up {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     align-content: space-between;
     border-right: $rule-width solid $color-rule-10;
     border-bottom: 0;

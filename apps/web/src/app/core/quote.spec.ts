@@ -15,18 +15,24 @@ describe('quote', () => {
     expect(text).toContain('Bonjour Heaven Motion,');
     expect(text).toContain('Je m’appelle Camille Martin');
     expect(text).toContain('• Projet : Mariage');
-    expect(text).toContain('Photo + vidéo (à partir de 2 690 € TTC)');
+    expect(text).toContain('Photo + vidéo (à partir de 2 790 € TTC)');
     expect(text).toContain('Lille – Nord (déplacement : 90 €)');
     expect(text).toContain('Cérémonie fin d’après-midi.');
     expect(text).not.toMatch(/date/i);
   });
 
   it('compose le message dans la langue du visiteur, sans espace avant les deux-points', () => {
-    const text = buildQuoteMessage('en', 'Heaven Motion', { ...request, category: 'corporate', pack: 'video', region: null });
+    const text = buildQuoteMessage('en', 'Heaven Motion', { ...request, category: 'sport', pack: 'video', region: null });
     expect(text).toContain('Hello Heaven Motion,');
-    expect(text).toContain('• Package: Video + editing (from 990 € excl. VAT)');
+    expect(text).toContain('• Package: Video + editing (from 590 € excl. VAT)');
     expect(text).toContain('• Location: to be confirmed');
     expect(text).not.toContain(' :');
+  });
+
+  it('n’affiche aucun prix pour une catégorie sur devis', () => {
+    const text = buildQuoteMessage('fr', 'Heaven Motion', { ...request, category: 'corporate', pack: 'custom', region: null });
+    expect(text).toContain('• Formule : Sur mesure\n');
+    expect(text).not.toContain('à partir de');
   });
 
   it('accepte « Autre » sans formule ni lieu', () => {

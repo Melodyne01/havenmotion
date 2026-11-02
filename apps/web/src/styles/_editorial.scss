@@ -8,10 +8,62 @@
 @mixin editorial-page {
   display: grid;
   gap: 16px;
+  width: 100%;
+  max-width: $content-max;
   padding: 20px $pad-x-mobile 64px;
+  margin-inline: auto;
 
   @include tablet-up {
     padding: 24px $pad-x-desktop 96px;
+  }
+}
+
+// Sur ordinateur, une section occupe toute la largeur en deux colonnes : son
+// titre (premier enfant) à gauche, qui reste visible pendant la lecture, et
+// le contenu à droite, à une longueur de ligne confortable. Sans ça, un bloc
+// limité à 78 caractères laissait la moitié droite de l'écran vide.
+// Les rangées n'ont pas d'espacement (row-gap: 0) : le titre s'étend sur
+// toutes les rangées sans y ajouter de vide, l'espace vient des marges.
+@mixin editorial-split($gap: 12px, $fluid-heading: true) {
+  @include laptop-up {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: 64px;
+    row-gap: 0;
+    max-width: none;
+
+    > * {
+      grid-column: 2;
+      margin-top: $gap;
+    }
+
+    > :first-child {
+      position: sticky;
+      top: 104px;
+      grid-row: 1 / span 40;
+      grid-column: 1;
+      align-self: start;
+      margin-top: 0;
+
+      // 26 px à 1024 px de large, 40 px au-delà de 1540 px : le titre tient
+      // en deux ou trois lignes dans sa colonne.
+      @if $fluid-heading {
+        font-size: clamp(26px, 2.6vw, 40px);
+      }
+    }
+
+    > :nth-child(2) {
+      margin-top: 0;
+    }
+  }
+}
+
+// Paragraphe d'introduction : sur ordinateur, il coule sur deux colonnes au
+// lieu de s'arrêter à mi-écran.
+@mixin editorial-lede {
+  @include laptop-up {
+    max-width: none;
+    columns: 2;
+    column-gap: 56px;
   }
 }
 
@@ -42,6 +94,13 @@
   line-height: $lh-body;
   background: $color-surface;
   border-left: 3px solid $color-amber;
+
+  @include editorial-lede;
+
+  @include laptop-up {
+    padding: 28px 32px;
+    font-size: $fs-18;
+  }
 }
 
 @mixin editorial-section {
@@ -51,6 +110,13 @@
   padding-top: 32px;
   margin-top: 16px;
   border-top: $rule-width solid $color-rule-10;
+
+  @include editorial-split;
+
+  @include laptop-up {
+    padding-top: 48px;
+    margin-top: 32px;
+  }
 }
 
 @mixin editorial-h2 {
@@ -76,6 +142,10 @@
   color: $color-muted-60;
   font-size: $fs-15;
   line-height: $lh-body;
+
+  @include laptop-up {
+    font-size: 16px;
+  }
 }
 
 @mixin editorial-list {
@@ -157,6 +227,11 @@
   margin-top: 24px;
   background: $color-surface;
   border-left: 3px solid $color-amber;
+
+  @include laptop-up {
+    max-width: none;
+    padding: 40px 48px;
+  }
 }
 
 @mixin editorial-link {

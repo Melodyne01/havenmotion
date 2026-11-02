@@ -2,9 +2,7 @@ import type { Guide } from '../guide-content';
 import { formatPrice, pricingFor } from '../packs';
 
 const e = pricingFor('evenementiel');
-const l = pricingFor('lifestyle');
 const event = (type: 'photo' | 'video' | 'combo') => formatPrice(e.packs.find((p) => p.type === type)!.price!);
-const session = formatPrice(l.packs.find((p) => p.type === 'photo')!.price!);
 
 /**
  * Guide organisation : photos de communion, profession de foi, lentefeest et
@@ -26,7 +24,7 @@ export const GUIDES_COMMUNION: readonly Guide[] = [
     eyebrow: 'Guide famille',
     published: '2026-10-05',
     readingMinutes: 7,
-    answer: `Pour une communion ou une profession de foi, il y a deux façons de faire des photos, et elles se cumulent : une séance portrait de l’enfant (seul, avec les parents, avec les parrain et marraine), une semaine avant ou le matin même, et un reportage de la fête, de la cérémonie au gâteau. En Belgique, une séance portrait d’une heure coûte entre 120 et 300 €, un reportage de trois à quatre heures entre 350 et 700 €. Chez Heaven Motion, la séance d’une heure trente est à ${session} TTC et le reportage de trois heures à ${event('photo')} TTC en photo, ${event('combo')} avec un film de deux à trois minutes. Les dates se concentrent d’avril à juin, le dimanche, autour de l’Ascension et de la Pentecôte : réservez en janvier.`,
+    answer: `Pour une communion ou une profession de foi, il y a deux façons de faire des photos, et elles se cumulent : une séance portrait de l’enfant (seul, avec les parents, avec les parrain et marraine), une semaine avant ou le matin même, et un reportage de la fête, de la cérémonie au gâteau. En Belgique, une séance portrait d’une heure coûte entre 120 et 300 €, un reportage de trois à quatre heures entre 350 et 700 €. Chez Heaven Motion, la séance portrait est sur devis et le reportage de trois heures est à ${event('photo')} TTC en photo, ${event('combo')} avec un aftermovie de 30 secondes à 1 minute. Les dates se concentrent d’avril à juin, le dimanche, autour de l’Ascension et de la Pentecôte : réservez en janvier.`,
     sections: [
       {
         title: 'Les deux formules, et laquelle choisir',
@@ -57,12 +55,12 @@ export const GUIDES_COMMUNION: readonly Guide[] = [
         table: {
           columns: ['Formule', 'Marché belge', 'Heaven Motion (TTC)'],
           rows: [
-            ['Séance portrait, 1 h, 15 à 25 photos', '120 – 300 €', `${session} (1 h 30, 25 photos)`],
-            ['Reportage de la fête, 3 à 4 h, 100 à 200 photos', '350 – 700 €', `${event('photo')} (3 h, ~150 photos)`],
-            ['Reportage + film court', '700 – 1 200 €', `${event('combo')} (3 h, photos + film 2–3 min)`],
+            ['Séance portrait, 1 h, 15 à 25 photos', '120 – 300 €', 'Sur devis'],
+            ['Reportage de la fête, 3 à 4 h, 100 à 200 photos', '350 – 700 €', `${event('photo')} (3 h, ~100 photos)`],
+            ['Reportage + film court', '700 – 1 200 €', `${event('combo')} (3 h, photos + aftermovie 30 s–1 min)`],
             ['Heure supplémentaire', '80 – 150 €', '150 €'],
           ],
-          note: 'Déplacement inclus jusqu’à 60 km de Bruxelles. Séance et reportage le même jour : sur devis, la séance s’ajoute pour moins que son prix seul.',
+          note: 'Déplacement inclus jusqu’à 60 km de Bruxelles. Séance et reportage le même jour : sur devis.',
         },
       },
       {
@@ -80,9 +78,9 @@ export const GUIDES_COMMUNION: readonly Guide[] = [
     faq: [
       { question: 'Quand faire les photos de communion ?', answer: 'La séance portrait une semaine avant ou le matin même ; le reportage le jour de la fête. Réservez en janvier pour une date de mai.' },
       { question: 'Le photographe peut-il entrer dans l’église ?', answer: 'Dans la plupart des paroisses, oui, discrètement et sans flash ; certaines imposent leur propre photographe. Demandez à la paroisse avant de réserver.' },
-      { question: 'Combien coûte un photographe de communion en Belgique ?', answer: 'Entre 120 et 300 € pour une séance portrait, entre 350 et 700 € pour un reportage de trois à quatre heures. Chez Heaven Motion : ' + session + ' la séance, ' + event('photo') + ' le reportage de trois heures, TTC.' },
-      { question: 'Faites-vous aussi une vidéo ?', answer: 'Oui : ' + event('combo') + ' TTC pour trois heures de photos et un film de deux à trois minutes, par la même personne.' },
-      { question: 'Combien de photos recevons-nous, et quand ?', answer: '25 photos retouchées pour la séance, environ 150 pour le reportage, en galerie en ligne, sous deux à quatre semaines ; un aperçu sous sept jours.' },
+      { question: 'Combien coûte un photographe de communion en Belgique ?', answer: 'Entre 120 et 300 € pour une séance portrait, entre 350 et 700 € pour un reportage de trois à quatre heures. Chez Heaven Motion : la séance sur devis, ' + event('photo') + ' TTC le reportage de trois heures.' },
+      { question: 'Faites-vous aussi une vidéo ?', answer: 'Oui : ' + event('combo') + ' TTC pour trois heures de photos et un aftermovie de 30 secondes à 1 minute, par la même personne.' },
+      { question: 'Combien de photos recevons-nous, et quand ?', answer: 'Environ 100 photos retouchées pour le reportage, en galerie en ligne, dans la semaine. Pour la séance, le nombre de photos et le délai figurent sur le devis.' },
     ],
     ctaTitle: 'Réservez votre date de communion',
     ctaBody: 'Dites-nous la date, la paroisse et le lieu de la fête : vous recevez sous 48 h un devis avec la séance, le reportage ou les deux.',
@@ -103,7 +101,7 @@ export const GUIDES_COMMUNION: readonly Guide[] = [
     eyebrow: 'Gezinsgids',
     published: '2026-10-05',
     readingMinutes: 7,
-    answer: `Voor een lentefeest, een eerste communie, een vormsel of een feest vrijzinnige jeugd zijn er twee manieren om foto’s te maken, en ze zijn te combineren: een portretshoot van het kind (alleen, met de ouders, met meter en peter), een week vooraf of de ochtend zelf, en een reportage van het feest, van de viering tot de taart. In België kost een portretshoot van een uur 120 tot 300 €, een reportage van drie tot vier uur 350 tot 700 €. Bij Heaven Motion kost de shoot van anderhalf uur ${session} incl. btw en de reportage van drie uur ${event('photo')} incl. btw voor foto, ${event('combo')} met een film van twee tot drie minuten. De data vallen van april tot juni, op zondag, rond Hemelvaart en Pinksteren: boek in januari.`,
+    answer: `Voor een lentefeest, een eerste communie, een vormsel of een feest vrijzinnige jeugd zijn er twee manieren om foto’s te maken, en ze zijn te combineren: een portretshoot van het kind (alleen, met de ouders, met meter en peter), een week vooraf of de ochtend zelf, en een reportage van het feest, van de viering tot de taart. In België kost een portretshoot van een uur 120 tot 300 €, een reportage van drie tot vier uur 350 tot 700 €. Bij Heaven Motion is de portretshoot op offerte en kost de reportage van drie uur ${event('photo')} incl. btw voor foto, ${event('combo')} met een aftermovie van 30 seconden tot 1 minuut. De data vallen van april tot juni, op zondag, rond Hemelvaart en Pinksteren: boek in januari.`,
     sections: [
       {
         title: 'De twee formules, en welke kiezen',
@@ -134,12 +132,12 @@ export const GUIDES_COMMUNION: readonly Guide[] = [
         table: {
           columns: ['Formule', 'Belgische markt', 'Heaven Motion (incl. btw)'],
           rows: [
-            ['Portretshoot, 1 u, 15 tot 25 foto’s', '120 – 300 €', `${session} (1 u 30, 25 foto’s)`],
-            ['Reportage van het feest, 3 tot 4 u, 100 tot 200 foto’s', '350 – 700 €', `${event('photo')} (3 u, ~150 foto’s)`],
-            ['Reportage + korte film', '700 – 1.200 €', `${event('combo')} (3 u, foto’s + film 2–3 min)`],
+            ['Portretshoot, 1 u, 15 tot 25 foto’s', '120 – 300 €', 'Op offerte'],
+            ['Reportage van het feest, 3 tot 4 u, 100 tot 200 foto’s', '350 – 700 €', `${event('photo')} (3 u, ~100 foto’s)`],
+            ['Reportage + korte film', '700 – 1.200 €', `${event('combo')} (3 u, foto’s + aftermovie 30 s–1 min)`],
             ['Extra uur', '80 – 150 €', '150 €'],
           ],
-          note: 'Verplaatsing inbegrepen tot 60 km van Brussel. Shoot en reportage op dezelfde dag: op offerte, de shoot komt erbij voor minder dan haar prijs alleen.',
+          note: 'Verplaatsing inbegrepen tot 60 km van Brussel. Shoot en reportage op dezelfde dag: op offerte.',
         },
       },
       {
@@ -157,9 +155,9 @@ export const GUIDES_COMMUNION: readonly Guide[] = [
     faq: [
       { question: 'Wanneer de foto’s van het lentefeest of de communie maken?', answer: 'De portretshoot een week vooraf of de ochtend zelf; de reportage op de dag van het feest. Boek in januari voor een datum in mei.' },
       { question: 'Mag de fotograaf in de kerk of op school?', answer: 'In de meeste parochies ja, discreet en zonder flits; sommige leggen hun eigen fotograaf op. Op school gelden de regels van de school. Vraag het vooraf.' },
-      { question: 'Wat kost een fotograaf voor een lentefeest of communie in België?', answer: 'Tussen 120 en 300 € voor een portretshoot, tussen 350 en 700 € voor een reportage van drie tot vier uur. Bij Heaven Motion: ' + session + ' de shoot, ' + event('photo') + ' de reportage van drie uur, incl. btw.' },
-      { question: 'Maakt u ook een film?', answer: 'Ja: ' + event('combo') + ' incl. btw voor drie uur foto’s en een film van twee tot drie minuten, door dezelfde persoon.' },
-      { question: 'Hoeveel foto’s krijgen we, en wanneer?', answer: '25 bewerkte foto’s voor de shoot, ongeveer 150 voor de reportage, in een online galerij, binnen twee tot vier weken; een preview binnen zeven dagen.' },
+      { question: 'Wat kost een fotograaf voor een lentefeest of communie in België?', answer: 'Tussen 120 en 300 € voor een portretshoot, tussen 350 en 700 € voor een reportage van drie tot vier uur. Bij Heaven Motion: de shoot op offerte, ' + event('photo') + ' incl. btw de reportage van drie uur.' },
+      { question: 'Maakt u ook een film?', answer: 'Ja: ' + event('combo') + ' incl. btw voor drie uur foto’s en een aftermovie van 30 seconden tot 1 minuut, door dezelfde persoon.' },
+      { question: 'Hoeveel foto’s krijgen we, en wanneer?', answer: 'Ongeveer 100 bewerkte foto’s voor de reportage, in een online galerij, binnen de week. Voor de shoot staan het aantal foto’s en de termijn in de offerte.' },
     ],
     ctaTitle: 'Boek uw datum',
     ctaBody: 'Zeg ons de datum, de school of parochie en de feestlocatie: u krijgt binnen 48 u een offerte met de shoot, de reportage of beide.',

@@ -47,6 +47,9 @@ test('du hero à la demande de devis', async ({ page }) => {
   await expect(firstBand).toHaveAttribute('href', /^\/prestations\//);
 
   // 5. Le CTA du hero ouvre le popup de devis, sans quitter la page.
+  // Le popup s'active une fois l'application démarrée ; avant, le lien
+  // mène (volontairement) à la section contact.
+  await page.locator('html[data-quote-ready]').waitFor({ state: 'attached' });
   await page.locator('app-hero').getByRole('link', { name: /demander un devis/i }).click();
   const dialog = page.getByRole('dialog', { name: /votre demande de devis/i });
   await expect(dialog).toBeVisible();
@@ -74,11 +77,11 @@ test('du hero à la demande de devis', async ({ page }) => {
   await dialog.locator('#popup-message').fill('Cérémonie fin d’après-midi.');
   const preview = dialog.locator('#popup-preview');
   await expect(preview).toContainText('Je m’appelle Camille Martin');
-  await expect(preview).toContainText(/Photo \+ vidéo \(à partir de 2.690.€ TTC\)/);
+  await expect(preview).toContainText(/Photo \+ vidéo \(à partir de 2.790.€ TTC\)/);
   await expect(preview).toContainText(/Lille – Nord \(déplacement : 90.€\)/);
   await expect(preview).toContainText('Cérémonie fin d’après-midi.');
   const whatsapp = dialog.getByRole('link', { name: /envoyer sur whatsapp/i });
-  await expect(whatsapp).toHaveAttribute('href', /^https:\/\/wa\.me\/32477753577\?text=Bonjour%20Heaven%20Motion/);
+  await expect(whatsapp).toHaveAttribute('href', /^https:\/\/wa\.me\/32476823374\?text=Bonjour%20Heaven%20Motion/);
   await expect(whatsapp).toHaveAttribute('target', '_blank');
   const mail = dialog.getByRole('link', { name: /envoyer par e-mail/i });
   await expect(mail).toHaveAttribute('href', /^mailto:.+\?subject=.+&body=Bonjour/);
@@ -232,13 +235,15 @@ test('les trois guides prix se rendent, avec FAQ et grille, et un slug inconnu r
  */
 test('les formules ouvrent le popup prérempli et la page contact garde le formulaire', async ({ page }) => {
   await page.goto('/prestations/corporate');
+  await page.locator('html[data-quote-ready]').waitFor({ state: 'attached' });
   await page.getByRole('link', { name: /choisir cette formule/i }).first().click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
   const checked = dialog.locator('label.choice input:checked');
   await expect(checked).toHaveCount(2);
   await expect(checked.nth(0)).toHaveValue('corporate');
-  await expect(checked.nth(1)).toHaveValue('photo');
+  // Le corporate est sur devis : sa seule carte est le sur mesure.
+  await expect(checked.nth(1)).toHaveValue('custom');
   await dialog.getByRole('button', { name: /fermer/i }).click();
   await expect(dialog).toBeHidden();
 

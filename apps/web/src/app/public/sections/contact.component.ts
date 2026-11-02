@@ -7,6 +7,8 @@ import { SiteStore } from '../site-store';
 import { SITE_LOCALE } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
 import { QuoteService, prefillFromParams } from '../../core/quote';
+import { AnalyticsService } from '../../core/analytics';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Section contact. Sur l'accueil, un bouton ouvre le popup de devis ; sur la
@@ -42,7 +44,16 @@ import { QuoteService, prefillFromParams } from '../../core/quote';
         <app-quote-form [prefill]="prefill" idPrefix="page" />
       } @else {
         <div class="contact__action">
-          <app-cta-button (click)="quote.open()">{{ text.openQuote }}</app-cta-button>
+          <ol class="contact__steps">
+            @for (step of text.steps; track $index) {
+              <li>
+                <span class="contact__step-number">{{ $index + 1 }}</span>
+                <span class="contact__step-label">{{ step }}</span>
+                <span class="contact__step-title">{{ text.stepTitles[$index] }}</span>
+              </li>
+            }
+          </ol>
+          <app-cta-button (click)="openQuote()">{{ text.openQuote }}</app-cta-button>
         </div>
       }
     </section>
@@ -57,10 +68,17 @@ export class ContactComponent {
   private readonly store = inject(SiteStore);
   private readonly locale = inject(SITE_LOCALE);
   protected readonly quote = inject(QuoteService);
+  private readonly analytics = inject(AnalyticsService);
+  private readonly document = inject(DOCUMENT);
 
   protected readonly settings = this.store.settings;
   protected readonly text = UI_TEXT[this.locale].contact;
   protected readonly prefill = prefillFromParams(inject(ActivatedRoute).snapshot.queryParamMap);
+
+  protected openQuote(): void {
+    this.analytics.track('quote_entry_click', { source: 'contact-section', path: this.document.location.pathname });
+    this.quote.open({}, 'contact-section');
+  }
 
   protected instagramHandle(): string {
     return this.settings().instagram.replace('@', '');

@@ -35,9 +35,9 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
       ],
       faq: [
         { question: 'Venez-vous à Anvers sans frais de déplacement ?', answer: 'Oui : Anvers et sa première couronne sont à moins de 60 km de Wemmel, donc en zone incluse. Même chose pour Malines, Lierre et Boom.' },
-        { question: 'Combien coûte un photographe-vidéaste de mariage à Anvers ?', answer: '1 290 € en photo, 1 590 € en vidéo, 2 690 € pour les deux par la même personne, journée complète, TVA comprise, sans déplacement. La grille complète est sur la page tarifs.' },
+        { question: 'Combien coûte un photographe-vidéaste de mariage à Anvers ?', answer: '1 290 € en photo, 1 590 € en vidéo, 2 790 € pour les deux par la même personne, journée complète, TVA comprise, sans déplacement. La grille complète est sur la page tarifs.' },
         { question: 'Parlez-vous néerlandais pendant le reportage ?', answer: 'Oui, le reportage se mène dans la langue des invités. Le contrat, le devis et la livraison peuvent être en français, en néerlandais ou en anglais.' },
-        { question: 'Faites-vous des portraits d’équipe dans le quartier du port ou à Berchem ?', answer: 'Oui : une demi-journée sur place, 490 € HTVA en photo, 1 390 € HTVA avec un film d’entreprise, formats LinkedIn et réseaux inclus.' },
+        { question: 'Faites-vous des portraits d’équipe dans le quartier du port ou à Berchem ?', answer: 'Oui : une demi-journée sur place, portraits seuls ou avec un film d’entreprise, formats LinkedIn et réseaux inclus, sur devis HTVA.' },
       ],
     },
     nl: {
@@ -63,9 +63,9 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
       ],
       faq: [
         { question: 'Komt u naar Antwerpen zonder verplaatsingskosten?', answer: 'Ja: Antwerpen en de eerste gordel liggen op minder dan 60 km van Wemmel, dus in de inbegrepen zone. Dat geldt ook voor Mechelen, Lier en Boom.' },
-        { question: 'Wat kost een huwelijksfotograaf en videograaf in Antwerpen?', answer: '1.290 € voor foto, 1.590 € voor video, 2.690 € voor beide door dezelfde persoon, volledige dag, btw inbegrepen, zonder verplaatsingskosten. De volledige lijst staat op de tarievenpagina.' },
+        { question: 'Wat kost een huwelijksfotograaf en videograaf in Antwerpen?', answer: '1.290 € voor foto, 1.590 € voor video, 2.790 € voor beide door dezelfde persoon, volledige dag, btw inbegrepen, zonder verplaatsingskosten. De volledige lijst staat op de tarievenpagina.' },
         { question: 'Wat is het verschil met een trouwfotograaf en een aparte videograaf?', answer: 'Eén stijl, één aanspreekpunt en één prijs die lager ligt dan twee aparte leveranciers. Boven de 120 gasten raden we een tweede operator aan (optie, 490 €).' },
-        { question: 'Maakt u teamportretten op het Eilandje of in Berchem?', answer: 'Ja: een halve dag ter plaatse, 490 € excl. btw voor foto, 1.390 € excl. btw met een bedrijfsfilm, LinkedIn- en socialemediaformaten inbegrepen.' },
+        { question: 'Maakt u teamportretten op het Eilandje of in Berchem?', answer: 'Ja: een halve dag ter plaatse, alleen portretten of met een bedrijfsfilm, LinkedIn- en socialemediaformaten inbegrepen, op offerte excl. btw.' },
       ],
     },
     en: {
@@ -91,9 +91,9 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
       ],
       faq: [
         { question: 'Do you come to Antwerp without a travel fee?', answer: 'Yes: Antwerp and its first ring are less than 60 km from Wemmel, so inside the included zone. The same applies to Mechelen, Lier and Boom.' },
-        { question: 'How much does a wedding photographer and videographer cost in Antwerp?', answer: '€1,290 for photo, €1,590 for video, €2,690 for both by the same person, full day, VAT included, no travel fee. The full grid is on the pricing page.' },
+        { question: 'How much does a wedding photographer and videographer cost in Antwerp?', answer: '€1,290 for photo, €1,590 for video, €2,790 for both by the same person, full day, VAT included, no travel fee. The full grid is on the pricing page.' },
         { question: 'Can you get married in Antwerp as a non-resident?', answer: 'A civil wedding in Belgium normally requires one partner to be registered in the municipality; most international couples hold the legal ceremony at home or at their town hall and celebrate in Antwerp. I cover the celebration the same way, from getting ready to the party.' },
-        { question: 'Do you shoot headshots and corporate films in the port or the diamond district?', answer: 'Yes: half a day on site, €490 excl. VAT for photo, €1,390 excl. VAT with a corporate film, LinkedIn and social formats included. Site passes for the port are arranged by your team in advance.' },
+        { question: 'Do you shoot headshots and corporate films in the port or the diamond district?', answer: 'Yes: half a day on site, headshots alone or with a corporate film, LinkedIn and social formats included, on quote excl. VAT. Site passes for the port are arranged by your team in advance.' },
       ],
     },
   },
@@ -122,7 +122,7 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
       ],
       faq: [
         { question: 'Venez-vous à Gand sans frais de déplacement ?', answer: 'Oui : Gand est à 55 km de Wemmel, en zone incluse, comme Alost, Saint-Nicolas, Termonde et Audenarde.' },
-        { question: 'Combien coûte un photographe-vidéaste de mariage à Gand ?', answer: '1 290 € en photo, 1 590 € en vidéo, 2 690 € pour les deux par la même personne, journée complète, TVA comprise, sans frais de déplacement.' },
+        { question: 'Combien coûte un photographe-vidéaste de mariage à Gand ?', answer: '1 290 € en photo, 1 590 € en vidéo, 2 790 € pour les deux par la même personne, journée complète, TVA comprise, sans frais de déplacement.' },
         { question: 'Où faire les photos de couple à Gand ?', answer: 'Le Graslei et le Korenlei, le pont Saint-Michel, le Gravensteen, l’abbaye Saint-Pierre et ses jardins, le Patershol. Le lieu se choisit selon l’heure et la foule du jour.' },
       ],
     },
@@ -149,9 +149,9 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
       ],
       faq: [
         { question: 'Komt u naar Gent zonder verplaatsingskosten?', answer: 'Ja: Gent ligt op 55 km van Wemmel, in de inbegrepen zone, net als Aalst, Sint-Niklaas, Dendermonde en Oudenaarde.' },
-        { question: 'Wat kost een huwelijksfotograaf en videograaf in Gent?', answer: '1.290 € voor foto, 1.590 € voor video, 2.690 € voor beide door dezelfde persoon, volledige dag, btw inbegrepen, zonder verplaatsingskosten.' },
+        { question: 'Wat kost een huwelijksfotograaf en videograaf in Gent?', answer: '1.290 € voor foto, 1.590 € voor video, 2.790 € voor beide door dezelfde persoon, volledige dag, btw inbegrepen, zonder verplaatsingskosten.' },
         { question: 'Waar maken we de koppelfoto’s in Gent?', answer: 'De Graslei en Korenlei, de Sint-Michielsbrug, het Gravensteen, de tuinen van de Sint-Pietersabdij, het Patershol. De plek kiezen we samen volgens het uur en de drukte.' },
-        { question: 'Fotografeert u ook lentefeesten en communies in Oost-Vlaanderen?', answer: 'Ja, als evenement: 390 € voor drie uur foto, 890 € met een aftermovie, btw inbegrepen. Zie de pagina Evenementen.' },
+        { question: 'Fotografeert u ook lentefeesten en communies in Oost-Vlaanderen?', answer: 'Ja, als evenement: 300 € voor drie uur foto, 700 € met een aftermovie, btw inbegrepen. Zie de pagina Evenementen.' },
       ],
     },
     en: {
@@ -177,7 +177,7 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
       ],
       faq: [
         { question: 'Do you come to Ghent without a travel fee?', answer: 'Yes: Ghent is 55 km from Wemmel, inside the included zone, as are Aalst, Sint-Niklaas, Dendermonde and Oudenaarde.' },
-        { question: 'How much does a wedding photographer and videographer cost in Ghent?', answer: '€1,290 for photo, €1,590 for video, €2,690 for both by the same person, full day, VAT included, no travel fee.' },
+        { question: 'How much does a wedding photographer and videographer cost in Ghent?', answer: '€1,290 for photo, €1,590 for video, €2,790 for both by the same person, full day, VAT included, no travel fee.' },
         { question: 'Where do we shoot couple photos in Ghent?', answer: 'The Graslei and Korenlei, St Michael’s Bridge, the Gravensteen, the gardens of St Peter’s Abbey, the Patershol. We pick the spot together according to the hour and the crowds.' },
       ],
     },
@@ -206,9 +206,9 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
         'Drone : interdit au-dessus du centre de Bruges ; les plages et les polders sont possibles hors zones protégées, le Zwin est exclu.',
       ],
       faq: [
-        { question: 'Combien coûte un photographe-vidéaste de mariage à Bruges ?', answer: 'Le prix de la grille plus 90 € de déplacement : 1 290 € en photo, 1 590 € en vidéo, 2 690 € pour les deux par la même personne, journée complète, TVA comprise.' },
+        { question: 'Combien coûte un photographe-vidéaste de mariage à Bruges ?', answer: 'Le prix de la grille plus 90 € de déplacement : 1 290 € en photo, 1 590 € en vidéo, 2 790 € pour les deux par la même personne, journée complète, TVA comprise.' },
         { question: 'Couvrez-vous les mariages civils à l’hôtel de ville de Bruges ?', answer: 'Oui. La salle gothique accepte un photographe ; la sortie se fait sur le Burg puis vers le Rozenhoedkaai, à cinq minutes à pied.' },
-        { question: 'Faites-vous des demandes en mariage ou des séances couple à Bruges ?', answer: 'Oui, en formule lifestyle : 250 € pour une heure trente de photos, 640 € avec un court film, TVA comprise, plus les 90 € de déplacement.' },
+        { question: 'Faites-vous des demandes en mariage ou des séances couple à Bruges ?', answer: 'Oui, en séance lifestyle, sur devis, plus les 90 € de déplacement.' },
       ],
     },
     nl: {
@@ -233,10 +233,10 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
         'Drone: verboden boven het centrum van Brugge; stranden en polders kunnen buiten de beschermde zones, het Zwin is uitgesloten.',
       ],
       faq: [
-        { question: 'Wat kost een huwelijksfotograaf en videograaf in Brugge?', answer: 'De prijs van de lijst plus 90 € verplaatsing: 1.290 € voor foto, 1.590 € voor video, 2.690 € voor beide door dezelfde persoon, volledige dag, btw inbegrepen.' },
+        { question: 'Wat kost een huwelijksfotograaf en videograaf in Brugge?', answer: 'De prijs van de lijst plus 90 € verplaatsing: 1.290 € voor foto, 1.590 € voor video, 2.790 € voor beide door dezelfde persoon, volledige dag, btw inbegrepen.' },
         { question: 'Fotografeert u het burgerlijk huwelijk in het stadhuis van Brugge?', answer: 'Ja. De Gotische zaal laat een fotograaf toe; de foto’s gebeuren op de Burg en daarna aan de Rozenhoedkaai, op vijf minuten wandelen.' },
         { question: 'Komt u ook naar Kortrijk, Roeselare of Ieper?', answer: 'Ja, met dezelfde vaste kost van 90 €. Kortrijk ligt op een uur van Wemmel.' },
-        { question: 'Maakt u ook foto’s van een aanzoek aan de kust of in Brugge?', answer: 'Ja, als lifestyle-shoot: 250 € voor anderhalf uur foto, 640 € met een korte film, btw inbegrepen, plus 90 € verplaatsing.' },
+        { question: 'Maakt u ook foto’s van een aanzoek aan de kust of in Brugge?', answer: 'Ja, als lifestyle-shoot, op offerte, plus 90 € verplaatsing.' },
       ],
     },
     en: {
@@ -261,8 +261,8 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
         'Drone: forbidden above the centre of Bruges; beaches and polders are possible outside protected areas, the Zwin is excluded.',
       ],
       faq: [
-        { question: 'How much does a wedding photographer and videographer cost in Bruges?', answer: 'The grid price plus €90 of travel: €1,290 for photo, €1,590 for video, €2,690 for both by the same person, full day, VAT included.' },
-        { question: 'Do you shoot elopements and proposals in Bruges?', answer: 'Yes. A proposal or couple session is a lifestyle booking: €250 for ninety minutes of photos, €640 with a short film, VAT included, plus €90 travel. An elopement with a ceremony is quoted as a half-day wedding.' },
+        { question: 'How much does a wedding photographer and videographer cost in Bruges?', answer: 'The grid price plus €90 of travel: €1,290 for photo, €1,590 for video, €2,790 for both by the same person, full day, VAT included.' },
+        { question: 'Do you shoot elopements and proposals in Bruges?', answer: 'Yes. A proposal or couple session is a lifestyle booking, on quote, plus €90 travel. An elopement with a ceremony is quoted as a half-day wedding.' },
         { question: 'Do you also cover Ostend, Knokke or Kortrijk?', answer: 'Yes, with the same flat €90 fee. Kortrijk is one hour from Wemmel, Knokke ninety minutes.' },
       ],
     },
@@ -291,8 +291,8 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
         'Langues : reportage en néerlandais, documents et livraison en français si la famille le souhaite.',
       ],
       faq: [
-        { question: 'Venez-vous au Limbourg et à quel prix ?', answer: 'Oui, avec un forfait de 90 € pour toute la province. Les prix sont ceux de la grille belge : 2 690 € photo et vidéo mariage par la même personne, journée complète.' },
-        { question: 'Faites-vous des séances dans les vergers en fleurs ?', answer: 'Oui, en avril, pendant deux à trois semaines : séance couple ou famille en formule lifestyle, 250 € pour une heure trente, plus 90 € de déplacement.' },
+        { question: 'Venez-vous au Limbourg et à quel prix ?', answer: 'Oui, avec un forfait de 90 € pour toute la province. Les prix sont ceux de la grille belge : 2 790 € photo et vidéo mariage par la même personne, journée complète.' },
+        { question: 'Faites-vous des séances dans les vergers en fleurs ?', answer: 'Oui, en avril, pendant deux à trois semaines : séance couple ou famille en formule lifestyle, sur devis, plus 90 € de déplacement.' },
         { question: 'Travaillez-vous à Alden Biesen et à Bokrijk ?', answer: 'Les deux domaines accueillent des mariages et des événements et acceptent les photographes ; le repérage se fait avec le lieu quelques semaines avant.' },
       ],
     },
@@ -318,8 +318,8 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
         'Btw: Belgische btw van 21 % voor particulieren; voor een Limburgs bedrijf gewoon een Belgische factuur, geen intracommunautaire formaliteiten.',
       ],
       faq: [
-        { question: 'Wat kost een huwelijksfotograaf in Limburg (België)?', answer: 'De prijs van de lijst plus 90 € verplaatsing: 1.290 € foto, 1.590 € video, 2.690 € foto én video door dezelfde persoon, volledige dag, btw inbegrepen.' },
-        { question: 'Maakt u bloesemshoots in Haspengouw?', answer: 'Ja, in april, gedurende twee tot drie weken: koppel- of gezinsshoot als lifestyle, 250 € voor anderhalf uur, plus 90 € verplaatsing.' },
+        { question: 'Wat kost een huwelijksfotograaf in Limburg (België)?', answer: 'De prijs van de lijst plus 90 € verplaatsing: 1.290 € foto, 1.590 € video, 2.790 € foto én video door dezelfde persoon, volledige dag, btw inbegrepen.' },
+        { question: 'Maakt u bloesemshoots in Haspengouw?', answer: 'Ja, in april, gedurende twee tot drie weken: koppel- of gezinsshoot als lifestyle, op offerte, plus 90 € verplaatsing.' },
         { question: 'Werkt u in Alden Biesen en Bokrijk?', answer: 'Beide domeinen ontvangen huwelijken en events en laten fotografen toe; de verkenning gebeurt met de locatie enkele weken vooraf.' },
         { question: 'Waarom een fotograaf uit Brussel en niet uit Nederlands Limburg?', answer: 'Belgische factuur en btw, Belgische huwelijkstradities (stadhuis, kerk, receptie, diner, feest in één dag), en een vaste verplaatsingskost in plaats van kilometerkosten.' },
       ],
@@ -349,7 +349,7 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
         'Entreprises : prix hors TVA sur la page tarifs, facture belge classique.',
       ],
       faq: [
-        { question: 'Combien coûte un photographe-vidéaste de mariage à Mons ou à Charleroi ?', answer: 'Le prix de la grille plus 90 € de déplacement : 1 290 € en photo, 1 590 € en vidéo, 2 690 € pour les deux par la même personne, journée complète, TVA comprise.' },
+        { question: 'Combien coûte un photographe-vidéaste de mariage à Mons ou à Charleroi ?', answer: 'Le prix de la grille plus 90 € de déplacement : 1 290 € en photo, 1 590 € en vidéo, 2 790 € pour les deux par la même personne, journée complète, TVA comprise.' },
         { question: 'Enghien et Soignies sont-ils en zone incluse ?', answer: 'Oui : Enghien, Soignies, Braine-le-Comte et Nivelles sont à moins de 60 km de Wemmel. Mons, Charleroi et Tournai sont en zone 2, à 90 €.' },
         { question: 'Travaillez-vous au château de Seneffe ou à Beloeil ?', answer: 'Les deux domaines accueillent des mariages et des événements privés et acceptent un photographe ; les conditions de prise de vue sont confirmées avec le lieu au repérage.' },
       ],
@@ -379,7 +379,7 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
         'Lumière : les vallées sont à l’ombre tôt ; l’heure des photos de couple est fixée au repérage.',
       ],
       faq: [
-        { question: 'Combien coûte un photographe-vidéaste de mariage à Namur ?', answer: 'Le prix de la grille plus 90 € de déplacement : 1 290 € en photo, 1 590 € en vidéo, 2 690 € pour les deux par la même personne, journée complète, TVA comprise.' },
+        { question: 'Combien coûte un photographe-vidéaste de mariage à Namur ?', answer: 'Le prix de la grille plus 90 € de déplacement : 1 290 € en photo, 1 590 € en vidéo, 2 790 € pour les deux par la même personne, journée complète, TVA comprise.' },
         { question: 'Venez-vous à Dinant et à Rochefort ?', answer: 'Oui, avec le même forfait de 90 €. Si la soirée se termine après minuit, une nuit d’hôtel de 150 € est ajoutée au devis.' },
         { question: 'Faites-vous les photos de couple à la citadelle ?', answer: 'Oui : la citadelle, le téléphérique et le confluent sont à dix minutes de l’hôtel de ville. Pour un mariage à Dinant, les rochers de Freÿr ou les bords de Meuse.' },
       ],
@@ -409,7 +409,7 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
         'Langues : français, et anglais ou néerlandais pour les familles et les équipes internationales des universités et des sièges liégeois.',
       ],
       faq: [
-        { question: 'Combien coûte un photographe-vidéaste de mariage à Liège ?', answer: 'Le prix de la grille plus 90 € de déplacement : 1 290 € en photo, 1 590 € en vidéo, 2 690 € pour les deux par la même personne, journée complète, TVA comprise.' },
+        { question: 'Combien coûte un photographe-vidéaste de mariage à Liège ?', answer: 'Le prix de la grille plus 90 € de déplacement : 1 290 € en photo, 1 590 € en vidéo, 2 790 € pour les deux par la même personne, journée complète, TVA comprise.' },
         { question: 'Venez-vous à Spa et dans les Cantons de l’Est ?', answer: 'Oui. Spa est en zone 2 (90 €) ; Eupen, Malmedy et Saint-Vith sont au bord de la zone 3 et confirmés au devis, avec une nuit d’hôtel si la soirée finit tard.' },
         { question: 'Où faire les photos de couple à Liège ?', answer: 'La Montagne de Bueren tôt le matin, la cour du palais des Princes-Évêques, la passerelle de la Boverie, la gare des Guillemins pour un rendu architectural.' },
       ],
@@ -439,7 +439,7 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
         'Langues : français, néerlandais pour les nombreux couples flamands et néerlandais qui se marient à Durbuy, anglais pour les mariages internationaux.',
       ],
       faq: [
-        { question: 'Combien coûte un photographe-vidéaste de mariage à Durbuy ?', answer: 'Le prix de la grille plus 90 € de déplacement et, le plus souvent, 150 € de nuit d’hôtel : 2 690 € pour la photo et la vidéo par la même personne, journée complète, TVA comprise.' },
+        { question: 'Combien coûte un photographe-vidéaste de mariage à Durbuy ?', answer: 'Le prix de la grille plus 90 € de déplacement et, le plus souvent, 150 € de nuit d’hôtel : 2 790 € pour la photo et la vidéo par la même personne, journée complète, TVA comprise.' },
         { question: 'Faites-vous les mariages sur deux jours dans les Ardennes ?', answer: 'Oui : la journée complète le samedi, puis une séance couple ou un brunch le dimanche matin en heure supplémentaire (150 €, ou 220 € photo et vidéo).' },
         { question: 'Couvrez-vous les événements au circuit de Spa-Francorchamps ?', answer: 'Oui, en formule corporate ou sport : incentives, journées de roulage et hospitalités, avec accréditation demandée par l’organisateur.' },
         { question: 'Parlez-vous néerlandais pour un mariage à Durbuy ?', answer: 'Oui, le reportage se mène en néerlandais ou en anglais si les invités le sont ; contrat et livraison dans la langue de votre choix.' },
@@ -467,7 +467,7 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
         'Talen: Nederlands voor de vele Vlaamse en Nederlandse koppels die in Durbuy trouwen, Frans voor de locaties, Engels voor internationale gasten.',
       ],
       faq: [
-        { question: 'Wat kost een huwelijksfotograaf en videograaf in Durbuy?', answer: 'De prijs van de lijst plus 90 € verplaatsing en meestal 150 € hotelnacht: 2.690 € voor foto én video door dezelfde persoon, volledige dag, btw inbegrepen.' },
+        { question: 'Wat kost een huwelijksfotograaf en videograaf in Durbuy?', answer: 'De prijs van de lijst plus 90 € verplaatsing en meestal 150 € hotelnacht: 2.790 € voor foto én video door dezelfde persoon, volledige dag, btw inbegrepen.' },
         { question: 'Doet u huwelijken over twee dagen in de Ardennen?', answer: 'Ja: de volledige dag op zaterdag, en een koppelshoot of brunch op zondagochtend als extra uur (150 €, of 220 € foto en video).' },
         { question: 'Fotografeert u ook events op het circuit van Spa-Francorchamps?', answer: 'Ja, als zakelijk of sport: incentives, trackdays en hospitality, met accreditatie aangevraagd door de organisator.' },
       ],
@@ -494,7 +494,7 @@ export const REGION_CONTENT_PHASE_2_BE: Readonly<Record<string, Partial<Record<S
         'Languages: the day is run in English, French or Dutch as the guests require; contract, quote and delivery in English.',
       ],
       faq: [
-        { question: 'How much does a wedding photographer and videographer cost in Durbuy?', answer: 'The grid price plus €90 of travel and, usually, a €150 hotel night: €2,690 for photo and video by the same person, full day, VAT included.' },
+        { question: 'How much does a wedding photographer and videographer cost in Durbuy?', answer: 'The grid price plus €90 of travel and, usually, a €150 hotel night: €2,790 for photo and video by the same person, full day, VAT included.' },
         { question: 'Do you cover two-day weddings in the Ardennes?', answer: 'Yes: the full day on Saturday, then a couple session or brunch on Sunday morning as an extra hour (€150, or €220 for photo and video).' },
         { question: 'Do you shoot events at the Spa-Francorchamps circuit?', answer: 'Yes, as corporate or sport bookings: incentives, track days and hospitality, with accreditation requested by the organiser.' },
       ],

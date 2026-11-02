@@ -39,6 +39,32 @@ durée, déposez la vidéo et le poster, choisissez **Publié** ou **Brouillon**
 Le compteur « X films » des bandes suit automatiquement les films publiés
 (sauf si vous forcez un nombre dans la catégorie).
 
+## Projets
+
+Menu **Projets** : chaque projet peut porter une vidéo. Sur la page du
+projet, elle démarre seule (extrait muet de 20 s en boucle) et le visiteur
+clique **Voir le film** pour la version complète avec le son.
+
+## Préparer et envoyer vos vidéos
+
+- Exportez en **MP4 H.264, 1080p, 15 à 25 Mbps** : le serveur refait de toute
+  façon les versions web, inutile d'envoyer du 4K ou du ProRes. Un film de
+  3 min pèse alors 300 à 500 Mo au lieu de plusieurs Go.
+- Un fichier par film, 4 Go maximum. Envoyez-les un par un : chaque vidéo est
+  transcodée à la suite des autres, comptez quelques minutes par film.
+- Le serveur fabrique : version web avec le son, version muette 720p pour les
+  bandes, **extrait muet de 20 s** pris à 10 % du film (pour sauter le
+  générique) et poster à 1 s.
+
+## Retraiter une vidéo
+
+Menu **Médias** : le bouton **Retraiter** relance le transcodage d'une vidéo
+depuis son original (utile après une mise à jour du site, ou si l'état est
+« Échec »). Les vidéos déposées avant l'ajout de l'extrait sont marquées
+**sans extrait** ; le bouton **Retraiter les N vidéos sans extrait**, en haut
+de la page, les met toutes en file. Pendant ce temps, l'ancienne version reste
+en ligne. Cliquez **Rafraîchir** pour suivre l'avancement.
+
 ## Textes du site
 
 Menu **Contenus** : coordonnées, prestations (une ligne par élément inclus),

@@ -37,8 +37,27 @@
   gap: 14px;
 }
 
+.about__body {
+  display: grid;
+  gap: 14px;
+
+  // Sur ordinateur, les paragraphes coulent sur deux colonnes : la colonne
+  // de texte s'arrêtait à 62 caractères et laissait le tiers droit vide.
+  @include desktop {
+    display: block;
+    columns: 2;
+    column-gap: 48px;
+  }
+}
+
 .about__line {
   max-width: 62ch;
   color: $color-muted-60;
   font-size: $fs-15;
+
+  @include desktop {
+    max-width: none;
+    margin: 0 0 14px;
+    break-inside: avoid;
+  }
 }

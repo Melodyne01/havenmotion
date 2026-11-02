@@ -14,6 +14,32 @@ import { QuoteFormComponent } from './quote-form.component';
 import { QuoteService, prefillFromParams } from '../../core/quote';
 import { SITE_LOCALES, SITE_LOCALE, routePath } from '../../core/locale';
 import { UI_TEXT } from '../../core/ui-text';
+import { AnalyticsService } from '../../core/analytics';
+
+/**
+ * Origine d'un clic « Demander un devis », pour Umami : le composant le plus
+ * proche qui contient le lien. Les plus spécifiques d'abord (une carte tarif
+ * est aussi dans une page catégorie).
+ */
+const QUOTE_SOURCES: readonly [string, string][] = [
+  ['.sticky-cta', 'sticky-mobile'],
+  ['app-pack-grid', 'pack-card'],
+  ['app-site-header', 'header'],
+  ['app-site-footer', 'footer'],
+  ['app-hero', 'hero'],
+  ['app-region-page', 'region'],
+  ['app-country-page', 'country'],
+  ['app-zones-page', 'zones'],
+  ['app-guide-page', 'guide'],
+  ['app-project-page', 'project'],
+  ['app-pricing-page', 'pricing'],
+  ['app-category-page', 'category'],
+  ['app-one-person-page', 'one-person'],
+];
+
+export function quoteSourceOf(element: Element): string {
+  return QUOTE_SOURCES.find(([selector]) => element.closest(selector))?.[1] ?? 'other';
+}
 
 /**
  * Popup de demande de devis, monté une fois par page (dans l'en-tête).
@@ -139,6 +165,7 @@ import { UI_TEXT } from '../../core/ui-text';
 })
 export class QuoteDialogComponent {
   protected readonly quote = inject(QuoteService);
+  private readonly analytics = inject(AnalyticsService);
   private readonly document = inject(DOCUMENT);
   private readonly locale = inject(SITE_LOCALE);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
@@ -169,6 +196,9 @@ export class QuoteDialogComponent {
     afterNextRender(() => {
       const listener = (event: MouseEvent) => this.intercept(event);
       this.document.addEventListener('click', listener, true);
+      // Repère « popup prêt » : avant ce moment (application pas encore
+      // démarrée), un clic suit le lien de secours vers la section contact.
+      this.document.documentElement.dataset['quoteReady'] = 'true';
       // Clic sur l'arrière-plan (hors du panneau) : fermeture. Au clavier,
       // c'est la touche Échap, gérée nativement par <dialog>.
       const element = this.dialog().nativeElement;
@@ -180,6 +210,7 @@ export class QuoteDialogComponent {
       element.addEventListener('click', backdrop);
       destroyRef.onDestroy(() => {
         this.document.removeEventListener('click', listener, true);
+        delete this.document.documentElement.dataset['quoteReady'];
         element.removeEventListener('click', backdrop);
         this.document.documentElement.style.overflow = '';
         this.quote.close();
@@ -205,6 +236,8 @@ export class QuoteDialogComponent {
     }
     event.preventDefault();
     event.stopPropagation();
-    this.quote.open(prefillFromParams(url.searchParams));
+    const source = quoteSourceOf(anchor);
+    this.analytics.track('quote_entry_click', { source, path: this.document.location.pathname });
+    this.quote.open(prefillFromParams(url.searchParams), source);
   }
 }

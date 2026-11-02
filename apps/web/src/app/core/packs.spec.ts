@@ -1,5 +1,5 @@
 import { CATEGORY_SLUG_MAP, SITE_LOCALES } from './locale';
-import { PRICING, comboSaving, formatPrice, pricingFor, startingPrice } from './packs';
+import { PRICING, comboSaving, formatPrice, lowestPrice, pricingFor, startingPrice } from './packs';
 import { PRICING_OPTIONS } from './pricing-options';
 import { REGIONS } from './regions';
 import { TRAVEL_ZONES, travelZone } from './travel-zones';
@@ -7,7 +7,7 @@ import { TRAVEL_ZONES, travelZone } from './travel-zones';
 /**
  * Garde-fous sur la grille tarifaire : ces règles sont ce que le site
  * promet en toutes lettres (« le combo coûte moins cher que les deux
- * formules séparées », « quatre formules par catégorie ») — une erreur de
+ * formules séparées », « quatre formules ou sur devis ») — une erreur de
  * saisie dans `packs.ts` doit casser un test, pas une page publique.
  */
 describe('PRICING', () => {
@@ -25,15 +25,18 @@ describe('PRICING', () => {
     }
   });
 
-  it('propose exactement photo, vidéo, combo et sur mesure dans chaque catégorie', () => {
+  it('propose photo, vidéo, combo et sur mesure, ou le sur mesure seul pour corporate, clip et lifestyle', () => {
+    const onQuoteOnly = ['corporate', 'clip', 'lifestyle'];
     for (const pricing of PRICING) {
-      expect(pricing.packs.map((p) => p.type)).toEqual(['photo', 'video', 'combo', 'custom']);
+      expect(pricing.packs.map((p) => p.type)).toEqual(
+        onQuoteOnly.includes(pricing.key) ? ['custom'] : ['photo', 'video', 'combo', 'custom'],
+      );
       expect(pricing.packs.find((p) => p.type === 'custom')?.price).toBeNull();
     }
   });
 
   it('vend le combo moins cher que photo + vidéo séparés, mais plus cher que chacun', () => {
-    for (const pricing of PRICING) {
+    for (const pricing of PRICING.filter((p) => p.packs.some((pack) => pack.type === 'combo'))) {
       const price = (type: string) => pricing.packs.find((p) => p.type === type)?.price ?? 0;
       expect(comboSaving(pricing)).toBeGreaterThan(0);
       expect(price('combo')).toBeGreaterThan(price('photo'));
@@ -43,14 +46,25 @@ describe('PRICING', () => {
 
   it('reprend les prix validés par le client', () => {
     const combo = (key: string) => pricingFor(key as never).packs.find((p) => p.type === 'combo')?.price;
-    expect(combo('mariage')).toBe(2690);
-    expect(combo('evenementiel')).toBe(890);
-    expect(combo('corporate')).toBe(1390);
+    expect(combo('mariage')).toBe(2790);
+    expect(combo('evenementiel')).toBe(700);
     expect(combo('sport')).toBe(850);
-    expect(combo('clip')).toBe(1090);
-    expect(combo('lifestyle')).toBe(640);
     expect(startingPrice('mariage')).toBe(1290);
-    expect(startingPrice('lifestyle')).toBe(250);
+    expect(startingPrice('evenementiel')).toBe(300);
+    expect(startingPrice('corporate')).toBeNull();
+    expect(startingPrice('clip')).toBeNull();
+    expect(startingPrice('lifestyle')).toBeNull();
+    expect(lowestPrice()).toBe(300);
+  });
+
+  it('ne répète aucun élément inclus dans une même formule', () => {
+    for (const pricing of PRICING) {
+      for (const pack of pricing.packs) {
+        for (const locale of SITE_LOCALES) {
+          expect(new Set(pack.included[locale]).size).toBe(pack.included[locale].length);
+        }
+      }
+    }
   });
 
   it('affiche TTC aux particuliers et HTVA aux professionnels', () => {

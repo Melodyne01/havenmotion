@@ -81,6 +81,16 @@ export class AdminApiService {
     return this.http.delete<void>(`${this.base}/admin/media/${id}`);
   }
 
+  /** Relance le transcodage depuis l'original (crée l'extrait muet des anciennes vidéos). */
+  reprocessMedia(id: string): Observable<MediaAsset> {
+    return this.http.post<MediaAsset>(`${this.base}/admin/media/${id}/reprocess`, {});
+  }
+
+  /** Met en file toutes les vidéos qui n'ont pas encore d'extrait muet. */
+  reprocessMissingTeasers(): Observable<{ queued: number }> {
+    return this.http.post<{ queued: number }>(`${this.base}/admin/media/reprocess-missing-teasers`, {});
+  }
+
   // --- Réglages -----------------------------------------------------------
   settings(locale: SiteLocale = 'fr'): Observable<SiteSettings> {
     return this.http.get<SiteSettings>(`${this.base}/admin/settings`, {

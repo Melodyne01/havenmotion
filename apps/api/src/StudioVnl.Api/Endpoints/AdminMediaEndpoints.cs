@@ -17,6 +17,8 @@ public static class AdminMediaEndpoints
         media.MapGet("/", ListAsync);
         media.MapGet("/{id:guid}", GetAsync);
         media.MapDelete("/{id:guid}", DeleteAsync);
+        media.MapPost("/{id:guid}/reprocess", ReprocessAsync);
+        media.MapPost("/reprocess-missing-teasers", ReprocessMissingTeasersAsync);
 
         media.MapPost("/uploads", StartUploadAsync)
             .AddEndpointFilter<ValidationFilter<StartUploadRequest>>();
@@ -86,6 +88,79 @@ public static class AdminMediaEndpoints
         await audit.RecordAsync("MediaAsset", id.ToString(), "Delete", asset.FileName, cancellationToken);
         return Results.NoContent();
     }
+
+    /// <summary>
+    /// Relance le transcodage depuis l'original conservé, par exemple pour créer
+    /// l'extrait muet des vidéos traitées avant son ajout. Les anciens rendus
+    /// restent servis jusqu'à ce que les nouveaux les remplacent.
+    /// </summary>
+    private static async Task<IResult> ReprocessAsync(
+        Guid id,
+        AppDbContext db,
+        IMediaStorage storage,
+        IVideoProcessingQueue queue,
+        IAuditTrail audit,
+        CancellationToken cancellationToken)
+    {
+        var asset = await db.MediaAssets.FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
+        if (asset is null)
+        {
+            return Results.NotFound();
+        }
+        if (!IsReprocessable(asset))
+        {
+            return Results.Problem(
+                statusCode: StatusCodes.Status409Conflict,
+                title: "Seule une vidéo déposée dans la bibliothèque peut être retraitée.");
+        }
+        if (asset.ProcessingStatus is ProcessingStatus.Pending or ProcessingStatus.Processing)
+        {
+            return Results.Problem(
+                statusCode: StatusCodes.Status409Conflict,
+                title: "Cette vidéo est déjà en file de transcodage.");
+        }
+
+        asset.ProcessingStatus = ProcessingStatus.Pending;
+        await db.SaveChangesAsync(cancellationToken);
+        await queue.EnqueueAsync(asset.Id, cancellationToken);
+        await audit.RecordAsync("MediaAsset", id.ToString(), "Reprocess", asset.FileName, cancellationToken);
+        return Results.Ok(asset.ToDto(storage.GetPublicUrl));
+    }
+
+    /// <summary>Met en file toutes les vidéos prêtes qui n'ont pas encore d'extrait muet.</summary>
+    private static async Task<IResult> ReprocessMissingTeasersAsync(
+        AppDbContext db,
+        IVideoProcessingQueue queue,
+        IAuditTrail audit,
+        CancellationToken cancellationToken)
+    {
+        var candidates = await db.MediaAssets
+            .Where(a => a.Kind == MediaKind.Video && a.ProcessingStatus == ProcessingStatus.Ready)
+            .OrderBy(a => a.CreatedAt)
+            .ToListAsync(cancellationToken);
+        var missing = candidates
+            .Where(a => IsReprocessable(a) && !DtoMapper.ParseRenditions(a.RenditionsJson, key => key).Any(r => r.Teaser))
+            .ToList();
+
+        foreach (var asset in missing)
+        {
+            asset.ProcessingStatus = ProcessingStatus.Pending;
+        }
+        await db.SaveChangesAsync(cancellationToken);
+        foreach (var asset in missing)
+        {
+            await queue.EnqueueAsync(asset.Id, cancellationToken);
+        }
+        await audit.RecordAsync("MediaAsset", "*", "Reprocess", $"{missing.Count} vidéo(s) sans extrait", cancellationToken);
+        return Results.Ok(new ReprocessResponse(missing.Count));
+    }
+
+    /// <summary>
+    /// Vidéo dont l'original est dans le stockage. Les plans d'ambiance provisoires
+    /// pointent vers des fichiers du front (`/ambience/…`) : rien à transcoder.
+    /// </summary>
+    private static bool IsReprocessable(MediaAsset asset) =>
+        asset.Kind == MediaKind.Video && asset.OriginalPath.StartsWith("originals/", StringComparison.Ordinal);
 
     private static async Task<IResult> StartUploadAsync(
         StartUploadRequest request,

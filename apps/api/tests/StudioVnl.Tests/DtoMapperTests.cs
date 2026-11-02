@@ -39,6 +39,22 @@ public class DtoMapperTests
     }
 
     [Fact]
+    public void L_extrait_est_marque_et_les_anciens_rendus_n_en_ont_pas()
+    {
+        var json = DtoMapper.ToRenditionsJson(
+        [
+            new DtoMapper.StoredRendition("video/mp4", "renditions/x/teaser.mp4", 1280, 720, true, Teaser: true),
+        ]);
+        Assert.True(DtoMapper.ParseRenditions(json, key => key)[0].Teaser);
+
+        // Vidéo traitée avant l'ajout de l'extrait : pas de champ `teaser` en base.
+        const string legacy = """[{"type":"video/mp4","key":"renditions/x/band-muted.mp4","width":1280,"height":720,"muted":true}]""";
+        var parsed = DtoMapper.ParseRenditions(legacy, key => key);
+        Assert.Single(parsed);
+        Assert.False(parsed[0].Teaser);
+    }
+
+    [Fact]
     public void Le_compteur_de_films_prefere_la_valeur_forcee()
     {
         var category = new Category

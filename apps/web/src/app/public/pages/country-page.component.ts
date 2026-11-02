@@ -96,6 +96,7 @@ import { countryPath, regionPath } from './region-page.component';
 
       .country__intro {
         @include editorial-paragraph;
+        @include editorial-lede;
 
         max-width: 78ch;
         margin-top: -24px;
