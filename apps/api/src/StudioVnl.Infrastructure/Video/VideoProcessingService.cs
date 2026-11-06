@@ -23,8 +23,9 @@ public class VideoProcessingQueue : IVideoProcessingQueue
 }
 
 /// <summary>
-/// Consommateur de la file : passe l'asset en `Processing`, lance FFmpeg puis
-/// écrit `Ready` (rendus + poster) ou `Failed`. Le backoffice lit ce statut.
+/// Consommateur de la file : passe l'asset en `Processing`, lance FFmpeg (vidéo)
+/// ou ImageSharp (photo remise en traitement depuis la bibliothèque) puis écrit
+/// `Ready` (rendus + poster) ou `Failed`. Le backoffice lit ce statut.
 /// </summary>
 public class VideoProcessingService(
     VideoProcessingQueue queue,
@@ -46,7 +47,7 @@ public class VideoProcessingService(
             }
             catch (Exception exception)
             {
-                logger.LogError(exception, "Transcodage en échec pour {AssetId}", assetId);
+                logger.LogError(exception, "Traitement en échec pour {AssetId}", assetId);
                 await MarkFailedAsync(assetId, stoppingToken);
             }
         }
@@ -63,8 +64,7 @@ public class VideoProcessingService(
             using var scope = scopeFactory.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var interrupted = await db.MediaAssets
-                .Where(a => a.Kind == MediaKind.Video
-                    && (a.ProcessingStatus == ProcessingStatus.Pending || a.ProcessingStatus == ProcessingStatus.Processing))
+                .Where(a => a.ProcessingStatus == ProcessingStatus.Pending || a.ProcessingStatus == ProcessingStatus.Processing)
                 .OrderBy(a => a.CreatedAt)
                 .Select(a => a.Id)
                 .ToListAsync(cancellationToken);
@@ -74,7 +74,7 @@ public class VideoProcessingService(
             }
             if (interrupted.Count > 0)
             {
-                logger.LogInformation("{Count} vidéo(s) remise(s) en file après redémarrage", interrupted.Count);
+                logger.LogInformation("{Count} média(s) remis en file après redémarrage", interrupted.Count);
             }
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
@@ -88,14 +88,33 @@ public class VideoProcessingService(
     {
         using var scope = scopeFactory.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var transcoder = scope.ServiceProvider.GetRequiredService<IVideoTranscoder>();
 
         var asset = await db.MediaAssets.FirstOrDefaultAsync(a => a.Id == assetId, cancellationToken);
-        if (asset is null || asset.Kind != MediaKind.Video)
+        if (asset is null)
         {
             return;
         }
 
+        if (asset.Kind == MediaKind.Image)
+        {
+            if (!MediaProcessing.IsOptimizableImage(asset))
+            {
+                // Image servie telle quelle (AVIF, fichier du site) : rien à faire.
+                asset.ProcessingStatus = ProcessingStatus.Ready;
+                await db.SaveChangesAsync(cancellationToken);
+                return;
+            }
+            asset.ProcessingStatus = ProcessingStatus.Processing;
+            await db.SaveChangesAsync(cancellationToken);
+
+            var images = scope.ServiceProvider.GetRequiredService<IImageProcessor>();
+            asset.Apply(await images.ProcessAsync(asset, cancellationToken));
+            await db.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("Optimisation terminée pour {FileName}", asset.FileName);
+            return;
+        }
+
+        var transcoder = scope.ServiceProvider.GetRequiredService<IVideoTranscoder>();
         asset.ProcessingStatus = ProcessingStatus.Processing;
         await db.SaveChangesAsync(cancellationToken);
 

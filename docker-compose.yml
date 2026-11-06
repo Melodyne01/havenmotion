@@ -39,6 +39,9 @@ services:
     build:
       context: .
       dockerfile: docker/api.Dockerfile
+      # Clé ImageSharp exigée par le build Release : `export SIXLABORS_LICENSE_KEY=…` avant `docker compose up`.
+      secrets:
+        - sixlabors_license
     depends_on:
       postgres:
         condition: service_healthy
@@ -56,6 +59,10 @@ services:
       - '5080:5080'
     volumes:
       - media-data:/data/media
+
+secrets:
+  sixlabors_license:
+    environment: SIXLABORS_LICENSE_KEY
 
 volumes:
   postgres-data:

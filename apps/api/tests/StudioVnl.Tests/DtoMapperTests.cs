@@ -1,3 +1,4 @@
+using StudioVnl.Application.Dtos;
 using StudioVnl.Application.Mapping;
 using StudioVnl.Domain.Entities;
 using Xunit;
@@ -86,6 +87,19 @@ public class DtoMapperTests
         var dto = asset.ToDto(key => $"/media/{key}");
         Assert.Equal("/media/renditions/y/poster.jpg", dto.PosterUrl);
         Assert.Equal("Ready", dto.ProcessingStatus);
+    }
+
+    [Fact]
+    public void Une_image_expose_son_texte_alternatif_par_langue()
+    {
+        var asset = new MediaAsset
+        {
+            Kind = MediaKind.Image,
+            AltFr = "Première danse des mariés",
+            AltNl = "Eerste dans van het bruidspaar",
+        };
+        var dto = asset.ToDto(key => key);
+        Assert.Equal(new MediaAltDto("Première danse des mariés", "Eerste dans van het bruidspaar", ""), dto.Alt);
     }
 
     [Fact]

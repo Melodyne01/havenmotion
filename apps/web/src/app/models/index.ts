@@ -5,9 +5,12 @@ export type MediaKind = 'Video' | 'Image';
 export type PublishStatus = 'Draft' | 'Published';
 export type LeadStatus = 'New' | 'Handled' | 'Won' | 'Lost';
 
-/** Rendu transcodé d'une vidéo (une entrée par format servi). */
+/**
+ * Rendu d'un média, une entrée par fichier servi : formats d'une vidéo
+ * transcodée, ou déclinaisons WebP d'une photo optimisée (800, 1600, 2400 px).
+ */
 export interface Rendition {
-  /** `video/mp4` ou `video/webm`. */
+  /** `video/mp4`, `video/webm` ou `image/webp`. */
   type: string;
   url: string;
   width: number;
@@ -30,6 +33,14 @@ export interface MediaAsset {
   processingStatus: ProcessingStatus;
   renditions: Rendition[];
   createdAt: string;
+  /** Texte alternatif d'une image par langue (chaînes vides si non renseigné). */
+  alt?: MediaAlt;
+}
+
+export interface MediaAlt {
+  fr: string;
+  nl: string;
+  en: string;
 }
 
 export interface Category {

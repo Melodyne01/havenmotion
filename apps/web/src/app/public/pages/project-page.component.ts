@@ -26,6 +26,7 @@ import { PACK_LABELS, PackType, PACK_TYPES } from '../../core/packs';
 import { COUNTRIES, findRegion } from '../../core/regions';
 import { regionPath } from './region-page.component';
 import { projectPath } from '../../shared/ui/project-card.component';
+import { imageAlt, responsiveImage } from '../../shared/ui/responsive-image';
 
 /**
  * Page d'un projet réel : le film, la galerie, le récit, le lieu et ce qui a
@@ -64,8 +65,17 @@ import { projectPath } from '../../shared/ui/project-card.component';
               [label]="v.title"
               class="project__frame"
             />
-          } @else if (v.coverUrl) {
-            <img class="project__cover" [src]="v.coverUrl" [alt]="v.title" fetchpriority="high" />
+          } @else if (v.cover; as cover) {
+            <img
+              class="project__cover"
+              [src]="cover.src"
+              [attr.srcset]="cover.srcset || null"
+              sizes="100vw"
+              [attr.width]="cover.width"
+              [attr.height]="cover.height"
+              [alt]="v.coverAlt"
+              fetchpriority="high"
+            />
           }
 
           <div class="project__body">
@@ -92,14 +102,21 @@ import { projectPath } from '../../shared/ui/project-card.component';
               <p class="project__p">{{ paragraph }}</p>
             }
 
-            @if (v.project.gallery.length > 0) {
+            @if (v.gallery.length > 0) {
               <section class="project__section" aria-labelledby="titre-galerie">
                 <h2 id="titre-galerie" class="project__h2">{{ text.projects.gallery }}</h2>
                 <ul class="project__gallery">
-                  @for (asset of v.project.gallery; track asset.id) {
-                    @if (asset.posterUrl ?? asset.renditions[0]?.url; as url) {
-                      <li><img [src]="url" [alt]="v.title + ' — ' + asset.fileName" loading="lazy" decoding="async" /></li>
-                    }
+                  @for (photo of v.gallery; track photo.id) {
+                    <li>
+                      <img
+                        [src]="photo.image.src"
+                        [attr.srcset]="photo.image.srcset || null"
+                        sizes="(min-width: 1024px) 160px, (min-width: 768px) 40vw, 100vw"
+                        [alt]="photo.alt"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </li>
                   }
                 </ul>
               </section>
@@ -144,6 +161,7 @@ import { projectPath } from '../../shared/ui/project-card.component';
       .project__cover {
         display: block;
         width: 100%;
+        height: auto;
         max-height: 70vh;
         margin-top: 16px;
         object-fit: cover;
@@ -313,7 +331,17 @@ export class ProjectPageComponent {
       regionName: region?.name[this.locale] ?? '',
       regionHref: region && region.languages.includes(this.locale) ? regionPath(this.locale, region) : null,
       packLabel: PACK_TYPES.includes(project.pack as PackType) ? PACK_LABELS[project.pack as PackType][this.locale] : '',
+      // Image de partage (JPEG 1600 px pour une photo optimisée) : lue par tous les réseaux sociaux.
       coverUrl: project.cover?.posterUrl ?? project.cover?.renditions[0]?.url ?? null,
+      cover: responsiveImage(project.cover),
+      coverAlt: imageAlt(project.cover, this.locale, localized.title),
+      // Sans texte alternatif saisi : « Titre du projet — photo 3 », jamais le nom du fichier.
+      gallery: project.gallery.flatMap((asset, index) => {
+        const image = responsiveImage(asset);
+        return image
+          ? [{ id: asset.id, image, alt: imageAlt(asset, this.locale, `${localized.title} — ${this.text.projects.photo} ${index + 1}`) }]
+          : [];
+      }),
       contactHref: `${routePath(this.locale, 'contact')}?categorie=${project.categoryKey}${project.pack ? `&formule=${project.pack}` : ''}${project.regionId ? `&region=${project.regionId}` : ''}`,
     };
   });

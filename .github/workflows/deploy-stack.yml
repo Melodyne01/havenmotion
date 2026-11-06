@@ -135,8 +135,12 @@ jobs:
       # livrées au VPS : le petit serveur n'a plus qu'à les charger et les
       # démarrer — pas de compilation Angular/.NET sur place.
       - name: Construire les images
+        env:
+          # Clé de licence ImageSharp (Six Labors), voir README.
+          SIXLABORS_LICENSE_KEY: ${{ secrets.SIXLABORS_LICENSE_KEY }}
         run: |
-          docker build -f docker/api.Dockerfile -t "vnl-api:$IMAGE_TAG" .
+          docker build --secret id=sixlabors_license,env=SIXLABORS_LICENSE_KEY \
+            -f docker/api.Dockerfile -t "vnl-api:$IMAGE_TAG" .
           docker build -f docker/web.Dockerfile -t "vnl-web:$IMAGE_TAG" .
 
       - name: Livrer les images au VPS

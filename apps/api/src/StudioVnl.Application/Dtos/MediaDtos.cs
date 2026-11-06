@@ -16,9 +16,16 @@ public record MediaAssetDto(
     long SizeBytes,
     string ProcessingStatus,
     IReadOnlyList<RenditionDto> Renditions,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    MediaAltDto Alt);
 
-/// <summary>Nombre de vidéos mises en file de transcodage.</summary>
+/// <summary>Texte alternatif d'une image dans les trois langues du site (chaîne vide si non renseigné).</summary>
+public record MediaAltDto(string Fr, string Nl, string En);
+
+/// <summary>Mise à jour du texte alternatif d'un média.</summary>
+public record UpdateMediaAltRequest(string Fr, string Nl, string En);
+
+/// <summary>Nombre de médias mis en file de traitement.</summary>
 public record ReprocessResponse(int Queued);
 
 public record StartUploadRequest(string FileName, string ContentType, long SizeBytes, int TotalChunks);

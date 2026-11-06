@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\StudioVnl.Application\StudioVnl.Application.csproj" />
+    <ProjectReference Include="..\..\src\StudioVnl.Imaging\StudioVnl.Imaging.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />

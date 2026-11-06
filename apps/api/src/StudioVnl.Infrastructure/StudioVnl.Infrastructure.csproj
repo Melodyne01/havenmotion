@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="..\StudioVnl.Application\StudioVnl.Application.csproj" />
+    <ProjectReference Include="..\StudioVnl.Imaging\StudioVnl.Imaging.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.7.410" />

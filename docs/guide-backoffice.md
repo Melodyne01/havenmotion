@@ -56,6 +56,29 @@ clique **Voir le film** pour la version complète avec le son.
   bandes, **extrait muet de 20 s** pris à 10 % du film (pour sauter le
   générique) et poster à 1 s.
 
+## Photos
+
+Déposez vos photos **en pleine définition**, telles que sorties de Lightroom
+(JPEG, PNG ou WebP, 100 Mo maximum) : inutile de les réduire. Dès la fin
+de l'envoi (quelques secondes), le serveur :
+
+- remet la photo dans le bon sens ;
+- retire les données de l'appareil photo, **dont la position GPS** ;
+- fabrique les versions web (WebP 800, 1600 et 2400 px), pour que chaque
+  visiteur reçoive la plus légère qui convient à son écran ;
+- fabrique une version JPEG pour le partage sur Facebook, LinkedIn, WhatsApp.
+
+**Texte alternatif** : sous chaque photo (couverture et galerie d'un projet,
+ou bouton **Texte alternatif** dans **Médias**), décrivez la photo en une
+phrase, dans chaque langue : « Première danse des mariés au château de La
+Hulpe ». C'est ce que lit Google Images, et ce qu'entend un visiteur
+malvoyant. Cliquez **Enregistrer le texte**. Sans texte, le site utilise le
+titre du projet.
+
+Les photos déposées avant cette mise à jour sont marquées **non optimisée**
+dans **Médias** : le bouton **Optimiser les N image(s) non optimisée(s)**, en
+haut de la page, les traite toutes.
+
 ## Retraiter une vidéo
 
 Menu **Médias** : le bouton **Retraiter** relance le transcodage d'une vidéo
@@ -82,5 +105,7 @@ Gagné/Perdu) et exportez en **CSV** pour votre tableur.
 - **Voir en preview** (bas du menu) ouvre le site avec les brouillons.
 - Le **Journal** garde la trace de qui a modifié quoi, et quand.
 - Formats vidéo acceptés : MP4, MOV, MKV — 4 Go maximum par fichier.
+- Formats photo acceptés : JPEG, PNG, WebP, AVIF — 100 Mo maximum par fichier.
+  Une photo illisible est refusée avec un message.
 - Un média encore utilisé par une bande, un film ou le showreel ne peut pas
   être supprimé : retirez-le d'abord de l'endroit où il est utilisé.

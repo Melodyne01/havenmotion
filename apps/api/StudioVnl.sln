@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioVnl.Domain", "src\StudioVnl.Domain\StudioVnl.Domain.csproj", "{1A6C6D6C-0000-0000-0000-000000000001}"
 EndProject
@@ -9,6 +9,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioVnl.Api", "src\StudioVnl.Api\StudioVnl.Api.csproj", "{1A6C6D6C-0000-0000-0000-000000000004}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioVnl.Tests", "tests\StudioVnl.Tests\StudioVnl.Tests.csproj", "{1A6C6D6C-0000-0000-0000-000000000005}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AD81E346-AAED-4051-9F51-5808BEF8251B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioVnl.Imaging", "src\StudioVnl.Imaging\StudioVnl.Imaging.csproj", "{0F11B83D-A9DB-4F4E-98D7-BFB030A6F8EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{4772F968-FAC5-4D23-9064-7D6F55BE097B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioVnl.PhotoTool", "tools\StudioVnl.PhotoTool\StudioVnl.PhotoTool.csproj", "{63F71342-7D50-4737-892E-CD6141D0DB87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +44,17 @@ Global
 		{1A6C6D6C-0000-0000-0000-000000000005}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A6C6D6C-0000-0000-0000-000000000005}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A6C6D6C-0000-0000-0000-000000000005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F11B83D-A9DB-4F4E-98D7-BFB030A6F8EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F11B83D-A9DB-4F4E-98D7-BFB030A6F8EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F11B83D-A9DB-4F4E-98D7-BFB030A6F8EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F11B83D-A9DB-4F4E-98D7-BFB030A6F8EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63F71342-7D50-4737-892E-CD6141D0DB87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63F71342-7D50-4737-892E-CD6141D0DB87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63F71342-7D50-4737-892E-CD6141D0DB87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63F71342-7D50-4737-892E-CD6141D0DB87}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0F11B83D-A9DB-4F4E-98D7-BFB030A6F8EE} = {AD81E346-AAED-4051-9F51-5808BEF8251B}
+		{63F71342-7D50-4737-892E-CD6141D0DB87} = {4772F968-FAC5-4D23-9064-7D6F55BE097B}
 	EndGlobalSection
 EndGlobal

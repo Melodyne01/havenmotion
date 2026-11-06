@@ -81,6 +81,67 @@ Côté API, une boucle n'est posée que sur un emplacement vide, et plus aucune
 n'est ajoutée dès qu'un fichier a été déposé dans la bibliothèque : le contenu
 du studio reprend la main sans manipulation.
 
+### Photos : optimisation automatique (ImageSharp)
+
+Toute photo déposée dans le backoffice (couverture, galerie de projet, menu
+**Médias**) est optimisée par l'API dès la fin de l'envoi, avec
+[ImageSharp](https://sixlabors.com/products/imagesharp/) (100 % .NET, rien à
+installer dans le conteneur) :
+
+- redressée selon l'orientation de l'appareil, puis **sans EXIF, IPTC ni XMP**
+  (marque du boîtier, date, **position GPS**) ; le profil couleur ICC est gardé ;
+- déclinée en **WebP 800, 1600 et 2400 px** de large (jamais agrandie), servies
+  en `srcset`/`sizes` par la page projet et les cartes ;
+- plus un **JPEG 1600 px** (`share.jpg`, exposé comme `posterUrl`) pour
+  `og:image` et les réseaux sociaux ;
+- un **texte alternatif FR/NL/EN** se saisit sur chaque photo (à défaut : titre
+  du projet, jamais le nom du fichier).
+
+L'original reste stocké (`originals/`) pour un retraitement, mais n'est plus
+servi. Les photos déposées avant cette version apparaissent « non optimisée »
+dans **Médias** : un bouton les met toutes en file. L'AVIF est servi tel quel
+(ImageSharp ne le décode pas). Limites : 100 Mo et 120 mégapixels par photo.
+
+| Où | Fichier |
+| --- | --- |
+| Pipeline partagé (API + outil) | `apps/api/src/StudioVnl.Imaging/WebImage.cs` |
+| Traitement à l'upload | `apps/api/src/StudioVnl.Infrastructure/Images/ImageSharpProcessor.cs` (réglages : section `Images` de la config) |
+| `srcset` côté front | `apps/web/src/app/shared/ui/responsive-image.ts` |
+
+**Galeries des pages de prestation** (`/prestations/<catégorie>`) : ces photos
+sont dans le dépôt (`apps/web/public/photos/<catégorie>/<slug>-800.webp` et
+`-1600.webp`, liste dans `apps/web/src/app/core/category-photos.ts`). L'outil
+ci-dessous les fabrique avec exactement les mêmes réglages et affiche les
+entrées TypeScript à coller (dimensions comprises) :
+
+```bash
+dotnet run --project apps/api/tools/StudioVnl.PhotoTool -- mariage ~/Photos/selection-mariage
+```
+
+Nommez les fichiers comme ce qu'ils montrent (`premiere-danse-maries.jpg`) : le
+nom devient le slug, donc l'URL de l'image. Complétez ensuite les textes
+alternatifs (`TODO`) dans `category-photos.ts`.
+
+#### Clé de licence Six Labors (obligatoire pour la prod)
+
+ImageSharp est sous [Six Labors Split License](https://sixlabors.com/pricing/) :
+Apache 2.0 gratuite pour une entreprise ou un indépendant **sous 1 M$ de
+chiffre d'affaires annuel**, licence commerciale au-delà. Depuis la 3.2, un
+build **Release** échoue sans clé (un build Debug passe avec un avertissement,
+donc `dotnet run` et `dotnet test` en local fonctionnent sans rien faire).
+
+1. Créer la clé gratuite (« community ») sur https://sixlabors.com/pricing/.
+   Si elle est limitée à un assembly, la demander pour **`StudioVnl.Imaging`**
+   (le seul projet qui référence ImageSharp).
+2. Ajouter le secret GitHub **`SIXLABORS_LICENSE_KEY`** (Settings → Secrets and
+   variables → Actions). La CI (`dotnet build -c Release`, image Docker) et les
+   déploiements le lisent ; tant qu'il manque, le build de l'image API échoue.
+3. En local, pour `docker compose up` ou un build Release :
+   `export SIXLABORS_LICENSE_KEY=…` (MSBuild lit aussi `SixLaborsLicenseKey`).
+
+La clé passe en secret BuildKit (`--secret id=sixlabors_license`) : elle
+n'apparaît ni dans une couche, ni dans l'image livrée au VPS.
+
 ### Comptes de démo
 
 Le seed crée un compte admin si `Seed:AdminPassword` est défini. En dev
@@ -130,6 +191,8 @@ Aucun secret dans le dépôt : tout passe par les variables d'environnement
 | `Seed__ResetAdminPassword` (`ADMIN_RESET_PASSWORD` dans le `.env`) | `true` : réaligne le mot de passe admin sur `ADMIN_PASSWORD` au démarrage (à retirer ensuite) |
 | `Email__*` | SMTP (hôte, port, identifiants, expéditeur) |
 | `MediaStorage__Provider` | `LocalDisk` (défaut) ou `S3` (MinIO/AWS) |
+| `Images__*` | Optimisation des photos : `Widths`, `WebpQuality` (80), `ShareWidth` (1600), `JpegQuality` (82), `MaxPixels` |
+| `SIXLABORS_LICENSE_KEY` (secret GitHub / build) | Clé ImageSharp, exigée au build Release (voir plus haut) |
 | `Cors__AllowedOrigins__0` | Origine du front |
 | `VNL_ALLOWED_HOSTS` (web) | Hôtes acceptés par le serveur SSR |
 | `VNL_API_PROXY_TARGET` (web) | Cible du proxy `/api` + `/media` (prod Docker) |
@@ -153,6 +216,7 @@ vérification HTTP 200 de l'URL publique.
 Pré-requis (une seule fois) :
 
 - secret GitHub `VPS_SSH_KEY` (clé privée du compte `deploy`) ;
+- secret GitHub `SIXLABORS_LICENSE_KEY` (clé ImageSharp, voir « Photos ») ;
 - Docker + plugin compose sur le VPS ;
 - DNS + vhost nginx (avec certificat) de chaque domaine vers son port web.
 

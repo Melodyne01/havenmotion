@@ -4,6 +4,7 @@ import { SITE_LOCALE, routePath } from '../../core/locale';
 import { Project } from '../../models';
 import { CATEGORY_NAMES } from '../../core/site-content';
 import { CategoryKey } from '../../core/locale';
+import { imageAlt, responsiveImage } from './responsive-image';
 
 /** Chemin d'une page projet dans une langue : `/projets/mariage-chateau-x`. */
 export function projectPath(locale: 'fr' | 'nl' | 'en', slug: string): string {
@@ -20,8 +21,16 @@ export function projectPath(locale: 'fr' | 'nl' | 'en', slug: string): string {
   imports: [RouterLink],
   template: `
     <a class="card" [routerLink]="href()">
-      @if (project().cover?.posterUrl ?? project().cover?.renditions?.[0]?.url; as image) {
-        <img class="card__image" [src]="image" [alt]="title()" loading="lazy" decoding="async" />
+      @if (cover(); as image) {
+        <img
+          class="card__image"
+          [src]="image.src"
+          [attr.srcset]="image.srcset || null"
+          sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+          [alt]="coverAlt()"
+          loading="lazy"
+          decoding="async"
+        />
       } @else {
         <span class="card__placeholder" aria-hidden="true"></span>
       }
@@ -103,4 +112,7 @@ export class ProjectCardComponent {
   protected readonly place = computed(() =>
     [this.project().venue, this.project().city].filter(Boolean).join(', '),
   );
+  /** Couverture en WebP 800 px par défaut : la carte ne dépasse jamais un tiers d'écran large. */
+  protected readonly cover = computed(() => responsiveImage(this.project().cover, 800));
+  protected readonly coverAlt = computed(() => imageAlt(this.project().cover, this.locale, this.title()));
 }

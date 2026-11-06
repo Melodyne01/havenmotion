@@ -15,6 +15,7 @@ using StudioVnl.Application.Abstractions;
 using StudioVnl.Application.Validation;
 using StudioVnl.Infrastructure.Data;
 using StudioVnl.Infrastructure.Email;
+using StudioVnl.Infrastructure.Images;
 using StudioVnl.Infrastructure.Storage;
 using StudioVnl.Infrastructure.Video;
 
@@ -102,6 +103,10 @@ builder.Services.AddScoped<IVideoTranscoder, FfmpegTranscoder>();
 builder.Services.AddSingleton<VideoProcessingQueue>();
 builder.Services.AddSingleton<IVideoProcessingQueue>(sp => sp.GetRequiredService<VideoProcessingQueue>());
 builder.Services.AddHostedService<VideoProcessingService>();
+
+// --- Optimisation des photos (ImageSharp) ---------------------------------
+builder.Services.Configure<ImageOptions>(builder.Configuration.GetSection(ImageOptions.Section));
+builder.Services.AddScoped<IImageProcessor, ImageSharpProcessor>();
 
 // --- E-mails ---------------------------------------------------------------
 builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(EmailOptions.Section));

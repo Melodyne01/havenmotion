@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { FormsModule } from '@angular/forms';
 import { AdminApiService } from '../../core/api/admin-api.service';
 import { MediaPickerComponent } from '../components/media-picker.component';
+import { MediaAltEditorComponent } from '../components/media-alt-editor.component';
 import { MediaAsset, Project, SaveProject } from '../../models';
 import { CATEGORY_NAMES } from '../../core/site-content';
 import { CategoryKey } from '../../core/locale';
@@ -28,7 +29,7 @@ interface ProjectDraft extends SaveProject {
 @Component({
   selector: 'app-projects-admin',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, MediaPickerComponent],
+  imports: [FormsModule, MediaPickerComponent, MediaAltEditorComponent],
   template: `
     <section class="a-page">
       <header class="a-page__head">
@@ -134,9 +135,19 @@ interface ProjectDraft extends SaveProject {
 
           <h2 class="a-label lang-title">Médias</h2>
           <div class="a-grid">
-            <app-media-picker label="Image de couverture" accept="image/*" [selected]="p.coverAsset" (choose)="setCover(p, $event)" />
+            <div class="cover">
+              <app-media-picker label="Image de couverture" accept="image/*" [selected]="p.coverAsset" (choose)="setCover(p, $event)" />
+              @if (p.coverAsset?.kind === 'Image' && p.coverAsset; as cover) {
+                <app-media-alt-editor [asset]="cover" (saved)="p.coverAsset = $event" />
+              }
+            </div>
             <app-media-picker label="Film" accept="video/*" [selected]="p.videoAsset" (choose)="setVideo(p, $event)" />
           </div>
+          <p class="a-hint">
+            Déposez vos photos en pleine définition (JPEG, PNG ou WebP) : le serveur les redresse, retire les
+            données EXIF et GPS et fabrique les versions web (WebP 800, 1600 et 2400 px). Sans texte alternatif, le site
+            utilise le titre du projet.
+          </p>
           <div class="gallery">
             <p class="a-label">Galerie ({{ p.galleryAssets.length }})</p>
             <ul class="gallery__list">
@@ -145,8 +156,13 @@ interface ProjectDraft extends SaveProject {
                   @if (asset.posterUrl; as poster) {
                     <img class="gallery__thumb" [src]="poster" [alt]="asset.fileName" />
                   }
-                  <span class="a-hint">{{ asset.fileName }}</span>
-                  <button class="a-btn a-btn--ghost" type="button" (click)="removeFromGallery(p, i)">Retirer</button>
+                  <div class="gallery__meta">
+                    <span class="a-hint">{{ asset.fileName }}</span>
+                    <button class="a-btn a-btn--ghost" type="button" (click)="removeFromGallery(p, i)">Retirer</button>
+                  </div>
+                  @if (asset.kind === 'Image') {
+                    <app-media-alt-editor class="gallery__alt" [asset]="asset" (saved)="replaceInGallery(p, i, $event)" />
+                  }
                 </li>
               }
             </ul>
@@ -216,23 +232,42 @@ interface ProjectDraft extends SaveProject {
         margin-top: 16px;
       }
 
+      .cover {
+        display: grid;
+        gap: 12px;
+        align-content: start;
+      }
+
       .gallery__list {
         display: grid;
-        gap: 8px;
+        gap: 16px;
         padding: 0;
         margin: 8px 0 16px;
         list-style: none;
       }
 
       .gallery__item {
+        display: grid;
+        grid-template-columns: 96px minmax(0, 1fr);
+        align-items: start;
+        gap: 8px 12px;
+      }
+
+      .gallery__meta {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: 12px;
+        gap: 8px 12px;
+      }
+
+      .gallery__alt {
+        grid-column: 2;
       }
 
       .gallery__thumb {
-        width: 64px;
-        height: 40px;
+        grid-row: span 2;
+        width: 96px;
+        height: 64px;
         object-fit: cover;
       }
     `,
@@ -351,6 +386,11 @@ export class ProjectsAdminComponent {
     draft.gallery = [...draft.gallery, asset.id];
     draft.galleryAssets = [...draft.galleryAssets, asset];
     this.draft.set({ ...draft });
+  }
+
+  /** Remplace un média de la galerie par sa version à jour (texte alternatif enregistré). */
+  protected replaceInGallery(draft: ProjectDraft, index: number, asset: MediaAsset): void {
+    draft.galleryAssets = draft.galleryAssets.map((current, i) => (i === index ? asset : current));
   }
 
   protected removeFromGallery(draft: ProjectDraft, index: number): void {

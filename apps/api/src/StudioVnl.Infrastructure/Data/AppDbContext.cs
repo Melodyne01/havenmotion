@@ -54,6 +54,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             entity.Property(m => m.FileName).HasMaxLength(255);
             entity.Property(m => m.OriginalPath).HasMaxLength(500);
             entity.Property(m => m.PosterPath).HasMaxLength(500);
+            entity.Property(m => m.AltFr).HasMaxLength(250);
+            entity.Property(m => m.AltNl).HasMaxLength(250);
+            entity.Property(m => m.AltEn).HasMaxLength(250);
         });
 
         builder.Entity<SiteSettings>(entity =>

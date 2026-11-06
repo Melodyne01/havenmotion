@@ -19,6 +19,9 @@ public static class AdminMediaEndpoints
         media.MapDelete("/{id:guid}", DeleteAsync);
         media.MapPost("/{id:guid}/reprocess", ReprocessAsync);
         media.MapPost("/reprocess-missing-teasers", ReprocessMissingTeasersAsync);
+        media.MapPost("/reprocess-unoptimized-images", ReprocessUnoptimizedImagesAsync);
+        media.MapPut("/{id:guid}/alt", UpdateAltAsync)
+            .AddEndpointFilter<ValidationFilter<UpdateMediaAltRequest>>();
 
         media.MapPost("/uploads", StartUploadAsync)
             .AddEndpointFilter<ValidationFilter<StartUploadRequest>>();
@@ -89,17 +92,43 @@ public static class AdminMediaEndpoints
         return Results.NoContent();
     }
 
+    /// <summary>Texte alternatif d'un média, dans les trois langues du site.</summary>
+    private static async Task<IResult> UpdateAltAsync(
+        Guid id,
+        UpdateMediaAltRequest request,
+        AppDbContext db,
+        IMediaStorage storage,
+        IAuditTrail audit,
+        CancellationToken cancellationToken)
+    {
+        var asset = await db.MediaAssets.FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
+        if (asset is null)
+        {
+            return Results.NotFound();
+        }
+
+        asset.AltFr = request.Fr.Trim();
+        asset.AltNl = request.Nl.Trim();
+        asset.AltEn = request.En.Trim();
+        await db.SaveChangesAsync(cancellationToken);
+        await audit.RecordAsync("MediaAsset", id.ToString(), "UpdateAlt", asset.FileName, cancellationToken);
+        return Results.Ok(asset.ToDto(storage.GetPublicUrl));
+    }
+
     /// <summary>
-    /// Relance le transcodage depuis l'original conservé, par exemple pour créer
-    /// l'extrait muet des vidéos traitées avant son ajout. Les anciens rendus
-    /// restent servis jusqu'à ce que les nouveaux les remplacent.
+    /// Relance le traitement depuis l'original conservé. Vidéo : remise en file
+    /// de transcodage (par exemple pour créer l'extrait muet des vidéos traitées
+    /// avant son ajout), les anciens rendus restent servis jusqu'à ce que les
+    /// nouveaux les remplacent. Photo : optimisée tout de suite (quelques secondes).
     /// </summary>
     private static async Task<IResult> ReprocessAsync(
         Guid id,
         AppDbContext db,
         IMediaStorage storage,
         IVideoProcessingQueue queue,
+        IImageProcessor images,
         IAuditTrail audit,
+        ILoggerFactory loggers,
         CancellationToken cancellationToken)
     {
         var asset = await db.MediaAssets.FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
@@ -111,13 +140,25 @@ public static class AdminMediaEndpoints
         {
             return Results.Problem(
                 statusCode: StatusCodes.Status409Conflict,
-                title: "Seule une vidéo déposée dans la bibliothèque peut être retraitée.");
+                title: asset.Kind == MediaKind.Image
+                    ? "Cette image est servie telle quelle (AVIF ou fichier du site) : rien à retraiter."
+                    : "Seule une vidéo déposée dans la bibliothèque peut être retraitée.");
         }
         if (asset.ProcessingStatus is ProcessingStatus.Pending or ProcessingStatus.Processing)
         {
             return Results.Problem(
                 statusCode: StatusCodes.Status409Conflict,
-                title: "Cette vidéo est déjà en file de transcodage.");
+                title: "Ce média est déjà en file de traitement.");
+        }
+
+        if (asset.Kind == MediaKind.Image)
+        {
+            var problem = await OptimizeImageAsync(asset, images, loggers, cancellationToken);
+            await db.SaveChangesAsync(cancellationToken);
+            await audit.RecordAsync("MediaAsset", id.ToString(), "Reprocess", asset.FileName, cancellationToken);
+            return problem is null
+                ? Results.Ok(asset.ToDto(storage.GetPublicUrl))
+                : Results.Problem(statusCode: StatusCodes.Status422UnprocessableEntity, title: problem.Message);
         }
 
         asset.ProcessingStatus = ProcessingStatus.Pending;
@@ -156,11 +197,77 @@ public static class AdminMediaEndpoints
     }
 
     /// <summary>
-    /// Vidéo dont l'original est dans le stockage. Les plans d'ambiance provisoires
+    /// Met en file toutes les photos optimisables qui n'ont encore aucune
+    /// déclinaison web (déposées avant l'optimisation automatique, ou en échec).
+    /// Elles restent servies telles quelles en attendant.
+    /// </summary>
+    private static async Task<IResult> ReprocessUnoptimizedImagesAsync(
+        AppDbContext db,
+        IVideoProcessingQueue queue,
+        IAuditTrail audit,
+        CancellationToken cancellationToken)
+    {
+        var candidates = await db.MediaAssets
+            .Where(a => a.Kind == MediaKind.Image
+                && (a.ProcessingStatus == ProcessingStatus.Ready || a.ProcessingStatus == ProcessingStatus.Failed))
+            .OrderBy(a => a.CreatedAt)
+            .ToListAsync(cancellationToken);
+        var unoptimized = candidates.Where(MediaProcessing.IsUnoptimizedImage).ToList();
+
+        foreach (var asset in unoptimized)
+        {
+            asset.ProcessingStatus = ProcessingStatus.Pending;
+        }
+        await db.SaveChangesAsync(cancellationToken);
+        foreach (var asset in unoptimized)
+        {
+            await queue.EnqueueAsync(asset.Id, cancellationToken);
+        }
+        await audit.RecordAsync("MediaAsset", "*", "Reprocess", $"{unoptimized.Count} image(s) non optimisée(s)", cancellationToken);
+        return Results.Ok(new ReprocessResponse(unoptimized.Count));
+    }
+
+    /// <param name="Rejected">Le fichier n'est pas une image exploitable (illisible, démesuré) : inutile de le garder.</param>
+    private sealed record ImageFailure(string Message, bool Rejected);
+
+    /// <summary>
+    /// Optimise une photo et met l'asset à jour (sans l'enregistrer). En cas
+    /// d'échec, renvoie le message à afficher ; l'asset passe alors en `Failed`
+    /// et l'original reste servi.
+    /// </summary>
+    private static async Task<ImageFailure?> OptimizeImageAsync(
+        MediaAsset asset,
+        IImageProcessor images,
+        ILoggerFactory loggers,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            asset.Apply(await images.ProcessAsync(asset, cancellationToken));
+            return null;
+        }
+        catch (InvalidMediaException exception)
+        {
+            asset.ProcessingStatus = ProcessingStatus.Failed;
+            return new ImageFailure(exception.Message, Rejected: true);
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            loggers.CreateLogger(typeof(AdminMediaEndpoints)).LogError(exception, "Optimisation en échec pour {FileName}", asset.FileName);
+            asset.ProcessingStatus = ProcessingStatus.Failed;
+            return new ImageFailure("L'optimisation de l'image a échoué. Réessayez avec « Retraiter ».", Rejected: false);
+        }
+    }
+
+    /// <summary>
+    /// Média dont l'original est dans le stockage. Les plans d'ambiance provisoires
     /// pointent vers des fichiers du front (`/ambience/…`) : rien à transcoder.
+    /// Une image AVIF est servie telle quelle.
     /// </summary>
     private static bool IsReprocessable(MediaAsset asset) =>
-        asset.Kind == MediaKind.Video && asset.OriginalPath.StartsWith("originals/", StringComparison.Ordinal);
+        asset.Kind == MediaKind.Video
+            ? MediaProcessing.HasStoredOriginal(asset)
+            : MediaProcessing.IsOptimizableImage(asset);
 
     private static async Task<IResult> StartUploadAsync(
         StartUploadRequest request,
@@ -220,7 +327,9 @@ public static class AdminMediaEndpoints
         AppDbContext db,
         IMediaStorage storage,
         IVideoProcessingQueue queue,
+        IImageProcessor images,
         IAuditTrail audit,
+        ILoggerFactory loggers,
         CancellationToken cancellationToken)
     {
         var session = await db.UploadSessions
@@ -283,11 +392,27 @@ public static class AdminMediaEndpoints
             FileName = session.FileName,
             OriginalPath = originalKey,
             SizeBytes = session.SizeBytes,
-            // Une image est prête telle quelle ; une vidéo part au transcodage.
+            // Une vidéo part au transcodage ; une photo est optimisée ci-dessous.
             ProcessingStatus = isVideo ? ProcessingStatus.Pending : ProcessingStatus.Ready,
             PosterPath = isVideo ? null : originalKey,
             CreatedAt = DateTime.UtcNow,
         };
+
+        // Photo : déclinaisons WebP + image de partage, tout de suite (quelques
+        // secondes) — l'admin repart avec une image prête. Un fichier qui n'est
+        // pas une image lisible est refusé et effacé.
+        if (MediaProcessing.IsOptimizableImage(asset))
+        {
+            var problem = await OptimizeImageAsync(asset, images, loggers, cancellationToken);
+            if (problem is { Rejected: true })
+            {
+                await storage.DeleteAsync(originalKey, cancellationToken);
+                db.UploadSessions.Remove(session);
+                await db.SaveChangesAsync(cancellationToken);
+                return Results.Problem(statusCode: StatusCodes.Status422UnprocessableEntity, title: problem.Message);
+            }
+        }
+
         db.MediaAssets.Add(asset);
         db.UploadSessions.Remove(session);
         await db.SaveChangesAsync(cancellationToken);

@@ -110,6 +110,8 @@ export interface UiText {
     readonly venue: string;
     readonly packDelivered: string;
     readonly gallery: string;
+    /** « Photo » : texte alternatif de repli d'une photo de galerie (« Titre — photo 3 »). */
+    readonly photo: string;
     readonly empty: string;
     readonly similar: string;
   };
@@ -307,6 +309,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       venue: 'Lieu',
       packDelivered: 'Formule livrée',
       gallery: 'Galerie',
+      photo: 'photo',
       empty: 'Les premiers projets arrivent. En attendant, le showreel et les pages prestations montrent le style.',
       similar: 'Un projet comme celui-ci ?',
     },
@@ -514,6 +517,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       venue: 'Locatie',
       packDelivered: 'Geleverde formule',
       gallery: 'Galerij',
+      photo: 'foto',
       empty: 'De eerste projecten komen eraan. Intussen tonen de showreel en de dienstenpagina’s de stijl.',
       similar: 'Zo’n project?',
     },
@@ -721,6 +725,7 @@ export const UI_TEXT: Record<SiteLocale, UiText> = {
       venue: 'Venue',
       packDelivered: 'Package delivered',
       gallery: 'Gallery',
+      photo: 'photo',
       empty: 'The first projects are on their way. Meanwhile, the showreel and the services pages show the style.',
       similar: 'A project like this one?',
     },

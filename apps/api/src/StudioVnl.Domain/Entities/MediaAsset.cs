@@ -17,5 +17,13 @@ public class MediaAsset
     public double DurationSec { get; set; }
     public long SizeBytes { get; set; }
     public ProcessingStatus ProcessingStatus { get; set; } = ProcessingStatus.Pending;
+
+    /// <summary>
+    /// Texte alternatif d'une image, par langue : ce que lisent Google Images et
+    /// les lecteurs d'écran. Vide = le site retombe sur le titre de la page.
+    /// </summary>
+    public string AltFr { get; set; } = string.Empty;
+    public string AltNl { get; set; } = string.Empty;
+    public string AltEn { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
 }

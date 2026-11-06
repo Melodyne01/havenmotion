@@ -40,3 +40,39 @@ public class UploadValidatorTests
         Assert.False(_validator.Validate(Valid() with { TotalChunks = 0 }).IsValid);
     }
 }
+
+public class ImageUploadValidatorTests
+{
+    private readonly StartUploadValidator _validator = new();
+
+    [Fact]
+    public void Accepte_une_photo_de_40_Mo()
+    {
+        Assert.True(_validator.Validate(new StartUploadRequest("mariage.jpg", "image/jpeg", 40L * 1024 * 1024, 8)).IsValid);
+    }
+
+    [Fact]
+    public void Rejette_une_photo_au_dela_de_100_Mo()
+    {
+        var request = new StartUploadRequest("mariage.tif", "image/png", StartUploadValidator.MaxImageSizeBytes + 1, 21);
+        Assert.False(_validator.Validate(request).IsValid);
+    }
+}
+
+public class UpdateMediaAltValidatorTests
+{
+    private readonly UpdateMediaAltValidator _validator = new();
+
+    [Fact]
+    public void Accepte_des_textes_vides()
+    {
+        Assert.True(_validator.Validate(new UpdateMediaAltRequest("", "", "")).IsValid);
+    }
+
+    [Fact]
+    public void Rejette_un_texte_trop_long()
+    {
+        var tooLong = new string('a', UpdateMediaAltValidator.MaxLength + 1);
+        Assert.False(_validator.Validate(new UpdateMediaAltRequest("Les mariés", tooLong, "")).IsValid);
+    }
+}

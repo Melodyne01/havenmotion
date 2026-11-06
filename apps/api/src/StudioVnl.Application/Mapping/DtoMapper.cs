@@ -130,7 +130,8 @@ public static class DtoMapper
         asset.SizeBytes,
         asset.ProcessingStatus.ToString(),
         ParseRenditions(asset.RenditionsJson, resolveUrl),
-        asset.CreatedAt);
+        asset.CreatedAt,
+        new MediaAltDto(asset.AltFr, asset.AltNl, asset.AltEn));
 
     public static CategoryDto ToDto(this Category category, Func<string, string> resolveUrl, int publishedFilmCount) => new(
         category.Id,

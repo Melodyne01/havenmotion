@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Optimisation des photos pour le web (ImageSharp, 100 % managé : rien à
+    installer dans le conteneur). Partagée entre l'API (photos déposées dans le
+    backoffice) et l'outil des galeries de prestation (tools/StudioVnl.PhotoTool).
+
+    Licence : Six Labors Split License — Apache 2.0 pour une entreprise ou un
+    indépendant de moins de 1 M$ de chiffre d'affaires annuel (cas de Heaven
+    Motion). Au-delà, une licence commerciale Six Labors est requise.
+  -->
+  <ItemGroup>
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.2.0" />
+  </ItemGroup>
+</Project>

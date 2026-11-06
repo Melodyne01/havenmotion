@@ -8,6 +8,8 @@ import { AuthService } from '../auth/auth.service';
 const CHUNK_SIZE = 5 * 1024 * 1024;
 
 export const MAX_VIDEO_BYTES = 4 * 1024 * 1024 * 1024;
+/** 100 Mo : aligné sur l'API (`StartUploadValidator.MaxImageSizeBytes`). */
+export const MAX_IMAGE_BYTES = 100 * 1024 * 1024;
 export const ACCEPTED_VIDEO_TYPES = ['video/mp4', 'video/quicktime', 'video/x-matroska'];
 export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 
@@ -27,12 +29,27 @@ export function validateFile(file: File): string | null {
   if (ACCEPTED_VIDEO_TYPES.includes(file.type) && file.size > MAX_VIDEO_BYTES) {
     return 'Fichier trop lourd : 4 Go maximum.';
   }
+  if (ACCEPTED_IMAGE_TYPES.includes(file.type) && file.size > MAX_IMAGE_BYTES) {
+    return 'Image trop lourde : 100 Mo maximum.';
+  }
   return null;
+}
+
+/** Message lisible d'une réponse d'erreur de l'API (`title` d'un problem+json, ou première erreur de validation). */
+async function problemMessage(response: Response): Promise<string | null> {
+  try {
+    const body = (await response.json()) as { title?: string; errors?: Record<string, string[]> };
+    const firstError = body.errors ? Object.values(body.errors).flat()[0] : undefined;
+    return firstError ?? body.title ?? null;
+  } catch {
+    return null;
+  }
 }
 
 /**
  * Upload par morceaux. L'API ouvre une session, reçoit les morceaux dans
- * l'ordre puis assemble le fichier et déclenche le transcodage FFmpeg.
+ * l'ordre puis assemble le fichier : une vidéo part au transcodage FFmpeg,
+ * une photo est optimisée tout de suite (ImageSharp).
  */
 @Injectable({ providedIn: 'root' })
 export class UploadService {
@@ -59,7 +76,9 @@ export class UploadService {
             signal: controller.signal,
           });
           if (!startResponse.ok) {
-            throw new Error(`Ouverture de session refusée (HTTP ${startResponse.status}).`);
+            throw new Error(
+              (await problemMessage(startResponse)) ?? `Ouverture de session refusée (HTTP ${startResponse.status}).`,
+            );
           }
           const { uploadId } = (await startResponse.json()) as { uploadId: string };
 
@@ -82,7 +101,8 @@ export class UploadService {
             { method: 'POST', headers, signal: controller.signal },
           );
           if (!completeResponse.ok) {
-            throw new Error("L'assemblage du fichier a échoué.");
+            // 422 : photo refusée par l'optimisation (illisible, démesurée) — l'API dit pourquoi.
+            throw new Error((await problemMessage(completeResponse)) ?? "L'assemblage du fichier a échoué.");
           }
           const asset = (await completeResponse.json()) as MediaAsset;
           subscriber.next({ percent: 100, asset });

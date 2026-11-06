@@ -85,6 +85,9 @@ public class StartUploadValidator : AbstractValidator<StartUploadRequest>
     /// <summary>4 Go : borne haute d'un master de showreel.</summary>
     public const long MaxSizeBytes = 4L * 1024 * 1024 * 1024;
 
+    /// <summary>100 Mo : un TIFF/PNG 16 bits de boîtier plein format tient dedans, un fichier aberrant non.</summary>
+    public const long MaxImageSizeBytes = 100L * 1024 * 1024;
+
     public static readonly string[] AllowedContentTypes =
     [
         "video/mp4",
@@ -103,7 +106,24 @@ public class StartUploadValidator : AbstractValidator<StartUploadRequest>
             .Must(type => AllowedContentTypes.Contains(type))
             .WithMessage("Type de fichier non pris en charge.");
         RuleFor(x => x.SizeBytes).GreaterThan(0).LessThanOrEqualTo(MaxSizeBytes);
+        RuleFor(x => x.SizeBytes)
+            .LessThanOrEqualTo(MaxImageSizeBytes)
+            .When(x => x.ContentType.StartsWith("image/", StringComparison.Ordinal))
+            .WithMessage("Image trop lourde : 100 Mo maximum.");
         RuleFor(x => x.TotalChunks).GreaterThan(0).LessThanOrEqualTo(2048);
+    }
+}
+
+public class UpdateMediaAltValidator : AbstractValidator<UpdateMediaAltRequest>
+{
+    /// <summary>Un texte alternatif décrit l'image en une phrase : au-delà, Google et les lecteurs d'écran coupent.</summary>
+    public const int MaxLength = 250;
+
+    public UpdateMediaAltValidator()
+    {
+        RuleFor(x => x.Fr).NotNull().MaximumLength(MaxLength);
+        RuleFor(x => x.Nl).NotNull().MaximumLength(MaxLength);
+        RuleFor(x => x.En).NotNull().MaximumLength(MaxLength);
     }
 }
 

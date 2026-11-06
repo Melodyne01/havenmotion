@@ -2,7 +2,10 @@ using StudioVnl.Domain.Entities;
 
 namespace StudioVnl.Application.Abstractions;
 
-/// <summary>File de traitement vidéo (FFmpeg) exécutée en arrière-plan.</summary>
+/// <summary>
+/// File de traitement exécutée en arrière-plan : transcodage des vidéos
+/// (FFmpeg) et retraitement en série des photos (ImageSharp).
+/// </summary>
 public interface IVideoProcessingQueue
 {
     ValueTask EnqueueAsync(Guid mediaAssetId, CancellationToken cancellationToken);

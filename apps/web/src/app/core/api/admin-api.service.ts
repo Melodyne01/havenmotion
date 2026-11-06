@@ -10,6 +10,7 @@ import {
   Film,
   Lead,
   LeadStatus,
+  MediaAlt,
   MediaAsset,
   Project,
   Review,
@@ -81,7 +82,15 @@ export class AdminApiService {
     return this.http.delete<void>(`${this.base}/admin/media/${id}`);
   }
 
-  /** Relance le transcodage depuis l'original (crée l'extrait muet des anciennes vidéos). */
+  /** Texte alternatif d'une image (FR/NL/EN) : Google Images et lecteurs d'écran. */
+  updateMediaAlt(id: string, alt: MediaAlt): Observable<MediaAsset> {
+    return this.http.put<MediaAsset>(`${this.base}/admin/media/${id}/alt`, alt);
+  }
+
+  /**
+   * Relance le traitement depuis l'original : vidéo remise en file de
+   * transcodage, photo optimisée tout de suite (réponse avec ses déclinaisons).
+   */
   reprocessMedia(id: string): Observable<MediaAsset> {
     return this.http.post<MediaAsset>(`${this.base}/admin/media/${id}/reprocess`, {});
   }
@@ -89,6 +98,11 @@ export class AdminApiService {
   /** Met en file toutes les vidéos qui n'ont pas encore d'extrait muet. */
   reprocessMissingTeasers(): Observable<{ queued: number }> {
     return this.http.post<{ queued: number }>(`${this.base}/admin/media/reprocess-missing-teasers`, {});
+  }
+
+  /** Met en file toutes les photos déposées avant l'optimisation automatique. */
+  reprocessUnoptimizedImages(): Observable<{ queued: number }> {
+    return this.http.post<{ queued: number }>(`${this.base}/admin/media/reprocess-unoptimized-images`, {});
   }
 
   // --- Réglages -----------------------------------------------------------
