@@ -144,10 +144,31 @@ jobs:
             -f docker/api.Dockerfile -t "vnl-api:$IMAGE_TAG" .
           docker build -f docker/web.Dockerfile -t "vnl-web:$IMAGE_TAG" .
 
+      # L'archive est d'abord écrite sur le runner (taille visible dans les
+      # logs), puis envoyée avec un délai par essai et jusqu'à 3 essais : une
+      # connexion SSH figée faisait sinon attendre le job jusqu'à son délai de
+      # 30 min, sans aucun message.
       - name: Livrer les images au VPS
+        timeout-minutes: 20
         run: |
-          docker save "vnl-api:$IMAGE_TAG" "vnl-web:$IMAGE_TAG" | gzip \
-            | ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" 'gunzip | docker load'
+          docker save "vnl-api:$IMAGE_TAG" "vnl-web:$IMAGE_TAG" | gzip > /tmp/images.tar.gz
+          echo "Archive des images : $(du -h /tmp/images.tar.gz | cut -f1)"
+          for attempt in 1 2 3; do
+            echo "Envoi, essai $attempt…"
+            if timeout 300 ssh -i ~/.ssh/deploy_key \
+                 -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -o ConnectTimeout=20 \
+                 "$DEPLOY_USER@$DEPLOY_HOST" 'gunzip | docker load' < /tmp/images.tar.gz; then
+              echo "Images chargées sur le VPS."
+              exit 0
+            else
+              rc=$?
+            fi
+            # 124 = délai de 5 min dépassé (connexion figée).
+            echo "Essai $attempt en échec (code $rc)."
+            sleep 10
+          done
+          echo "::error::Livraison des images impossible après 3 essais."
+          exit 1
 
       - name: Relancer la pile
         run: |
