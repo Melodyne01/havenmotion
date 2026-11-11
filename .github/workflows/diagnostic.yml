@@ -98,4 +98,15 @@ jobs:
           echo "=== Mémoire et disque ==="
           free -h | head -n 2
           df -h / | tail -n 1
+          echo
+          echo "=== Journaux de l'API : erreurs récentes ==="
+          if [ -f "$DEPLOY_PATH/docker-compose.prod.yml" ]; then
+            cd "$DEPLOY_PATH"
+            docker compose -f docker-compose.prod.yml logs --no-color --tail 2000 api 2>&1 \
+              | grep -iE -A12 '\[ERR\]|\[FTL\]|exception' | tail -n 120 || echo "(aucune erreur)"
+            echo
+            echo "=== Stockage médias vu par l'API ==="
+            docker compose -f docker-compose.prod.yml exec -T api sh -c \
+              'id; ls -ld /data/media /data/media/* 2>&1 | head -n 15; touch /data/media/.ecriture-test && echo "écriture OK" && rm -f /data/media/.ecriture-test' 2>&1 || true
+          fi
           REMOTE
