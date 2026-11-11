@@ -35,6 +35,18 @@ services:
       - '1025:1025'
       - '8025:8025'
 
+  # Rend le volume des médias inscriptible par l'API (utilisateur non-root
+  # `app`, uid 1654) : un volume créé avant que l'image ne pose ces droits
+  # restait root:root et chaque envoi de fichier finissait en erreur 500.
+  media-permissions:
+    # uid 1654 = utilisateur `app` des images .NET officielles.
+    image: alpine:3.20
+    user: '0'
+    entrypoint: ['chown', '-R', '1654:1654', '/data/media']
+    restart: 'no'
+    volumes:
+      - media-data:/data/media
+
   api:
     build:
       context: .
@@ -45,6 +57,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      media-permissions:
+        condition: service_completed_successfully
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=studiovnl;Username=studiovnl;Password=studiovnl

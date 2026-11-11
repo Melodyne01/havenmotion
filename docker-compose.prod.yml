@@ -20,6 +20,17 @@ services:
       timeout: 5s
       retries: 10
 
+  # Rend le volume des médias inscriptible par l'API (utilisateur non-root
+  # `app`, uid 1654) : un volume créé avant que l'image ne pose ces droits
+  # restait root:root et chaque envoi de fichier finissait en erreur 500.
+  media-permissions:
+    image: vnl-api:${IMAGE_TAG:-prod}
+    user: '0'
+    entrypoint: ['sh', '-c', 'chown -R "$$APP_UID:$$APP_UID" /data/media']
+    restart: 'no'
+    volumes:
+      - media-data:/data/media
+
   api:
     image: vnl-api:${IMAGE_TAG:-prod}
     build:
@@ -29,6 +40,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      media-permissions:
+        condition: service_completed_successfully
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=studiovnl;Username=studiovnl;Password=${POSTGRES_PASSWORD}

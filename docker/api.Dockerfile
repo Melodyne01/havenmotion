@@ -30,6 +30,11 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends ffmpeg curl \
  && rm -rf /var/lib/apt/lists/*
 
+# Dossier des médias (volume) appartenant à l'utilisateur non-root de l'image :
+# un volume neuf hérite de ces droits. Les volumes déjà créés root:root sont
+# réparés au démarrage par le service `media-permissions` (docker-compose).
+RUN mkdir -p /data/media && chown "$APP_UID:$APP_UID" /data/media
+
 WORKDIR /app
 COPY --from=build /out .
 
