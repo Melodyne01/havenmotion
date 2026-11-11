@@ -2,6 +2,18 @@
 
 Connexion : **votresite.fr/admin** avec votre e-mail et votre mot de passe.
 
+## Mot de passe
+
+- **Première connexion** : compte `admin@heavenmotion.be`, mot de passe par
+  défaut `HeavenMotion2026!`. Le backoffice vous demande aussitôt d'en choisir
+  un nouveau (10 caractères minimum, avec une minuscule, une majuscule et un
+  chiffre).
+- **Changer de mot de passe** : en bas du menu, **Mon compte** → mot de passe
+  actuel, puis le nouveau deux fois. Vos autres sessions sont déconnectées.
+- **Mot de passe oublié** : sur l'écran de connexion, lien **Mot de passe
+  oublié ?** → indiquez votre e-mail, vous recevez un lien valable une heure
+  pour en choisir un nouveau.
+
 ## Les vidéos actuelles sont provisoires
 
 En attendant vos films, les cinq bandes et le showreel jouent des boucles

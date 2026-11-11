@@ -7,6 +7,16 @@ export const adminRoutes: Routes = [
     loadComponent: () => import('./pages/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: 'mot-de-passe-oublie',
+    loadComponent: () =>
+      import('./pages/forgot-password.component').then((m) => m.ForgotPasswordComponent),
+  },
+  {
+    path: 'reinitialiser-mot-de-passe',
+    loadComponent: () =>
+      import('./pages/reset-password.component').then((m) => m.ResetPasswordComponent),
+  },
+  {
     path: '',
     loadComponent: () => import('./admin-shell.component').then((m) => m.AdminShellComponent),
     canActivate: [authGuard],
@@ -51,6 +61,10 @@ export const adminRoutes: Routes = [
         path: 'devis',
         loadComponent: () =>
           import('./pages/leads-admin.component').then((m) => m.LeadsAdminComponent),
+      },
+      {
+        path: 'compte',
+        loadComponent: () => import('./pages/account.component').then((m) => m.AccountComponent),
       },
       {
         path: 'journal',

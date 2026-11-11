@@ -40,6 +40,7 @@ builder.Services
         options.User.RequireUniqueEmail = true;
     })
     .AddRoles<IdentityRole>()
+    .AddErrorDescriber<FrenchIdentityErrorDescriber>()
     .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.Section));

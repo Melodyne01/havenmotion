@@ -942,8 +942,18 @@ namespace StudioVnl.Infrastructure.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<DateTime?>("PasswordChangedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
+
+                    b.Property<DateTime?>("PasswordResetExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PasswordResetTokenHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");

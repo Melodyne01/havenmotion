@@ -144,10 +144,27 @@ n'apparaît ni dans une couche, ni dans l'image livrée au VPS.
 
 ### Comptes de démo
 
-Le seed crée un compte admin si `Seed:AdminPassword` est défini. En dev
-(`appsettings.Development.json` et `docker-compose.yml`) :
+Le seed crée toujours un compte admin par défaut (dev comme prod) :
 
-- **admin@heavenmotion.be** / `Admin-Demo-2026!` → rôle `Admin`
+- **admin@heavenmotion.be** / `HeavenMotion2026!` → rôle `Admin`
+
+À la première connexion, le backoffice impose de choisir un nouveau mot de
+passe (page **Mon compte**). Tant que ce n'est pas fait, le mot de passe par
+défaut est réappliqué à chaque démarrage ; une fois choisi, il n'est plus
+jamais écrasé (sauf `ADMIN_RESET_PASSWORD=true`, voir « Configuration »).
+`Seed:AdminEmail` / `Seed:AdminPassword` remplacent l'e-mail et le mot de passe
+par défaut si besoin.
+
+Gestion du mot de passe depuis le backoffice :
+
+- **Mon compte** (`/admin/compte`) : changer son mot de passe (l'actuel est
+  demandé ; les autres sessions sont déconnectées) ;
+- **Mot de passe oublié ?** sur l'écran de connexion
+  (`/admin/mot-de-passe-oublie`) : un lien valable 1 h, à usage unique, part
+  par e-mail vers `/admin/reinitialiser-mot-de-passe`. Le lien est construit
+  sur `Site__Origin` et l'envoi passe par le SMTP (`Email__*`) : en prod, il
+  faut un SMTP fonctionnel et une boîte qui reçoit bien les mails de l'adresse
+  admin.
 
 Backoffice : http://localhost:4200/admin — e-mails visibles dans Mailpit :
 http://localhost:8025.
@@ -187,8 +204,8 @@ Aucun secret dans le dépôt : tout passe par les variables d'environnement
 | --- | --- |
 | `ConnectionStrings__Default` | Chaîne PostgreSQL |
 | `Jwt__SigningKey` | Clé de signature des jetons (obligatoire en prod) |
-| `Seed__AdminEmail` / `Seed__AdminPassword` | Compte admin créé au premier démarrage |
-| `Seed__ResetAdminPassword` (`ADMIN_RESET_PASSWORD` dans le `.env`) | `true` : réaligne le mot de passe admin sur `ADMIN_PASSWORD` au démarrage (à retirer ensuite) |
+| `Seed__AdminEmail` / `Seed__AdminPassword` | Compte admin par défaut (vides : `admin@heavenmotion.be` / `HeavenMotion2026!`) |
+| `Seed__ResetAdminPassword` (`ADMIN_RESET_PASSWORD` dans le `.env`) | `true` : remet le compte admin sur le mot de passe par défaut (ou `ADMIN_PASSWORD`) au démarrage, même s'il a été changé (à retirer ensuite) |
 | `Email__*` | SMTP (hôte, port, identifiants, expéditeur) |
 | `MediaStorage__Provider` | `LocalDisk` (défaut) ou `S3` (MinIO/AWS) |
 | `Images__*` | Optimisation des photos : `Widths`, `WebpQuality` (80), `ShareWidth` (1600), `JpegQuality` (82), `MaxPixels` |
@@ -208,8 +225,8 @@ Deux pipelines appellent la même mécanique (`deploy-stack.yml`) :
 | `deploy-dev.yml` (dev) | push sur `develop` | https://dev.heavenmotion.be | `/home/deploy/havenmotion-dev` (images `vnl-*:dev`) | 127.0.0.1:4100 |
 
 Chaque déploiement : rsync des sources, génération/réalignement du `.env`
-serveur (secrets créés sur place au premier passage, identifiants backoffice
-dans `BACKOFFICE-ACCES.txt`), build des images sur le runner, livraison par
+serveur (secrets créés sur place au premier passage ; le backoffice démarre
+sur le compte admin par défaut, voir « Comptes de démo »), build des images sur le runner, livraison par
 `docker save | ssh | docker load`, `compose up -d --no-build`, puis
 vérification HTTP 200 de l'URL publique.
 

@@ -565,6 +565,17 @@ public static class SeedData
 
     private const string LegacyAdminEmail = "admin@studiovnl.fr";
 
+    /// <summary>Compte admin par défaut (surchargé par Seed:AdminEmail).</summary>
+    public const string DefaultAdminEmail = "admin@heavenmotion.be";
+
+    /// <summary>
+    /// Mot de passe par défaut du compte admin (surchargé par Seed:AdminPassword).
+    /// Tant que l'administrateur n'a pas choisi le sien (<see cref="AppUser.PasswordChangedAt"/>
+    /// nul), c'est ce mot de passe qui s'applique et le backoffice impose d'en changer
+    /// dès la connexion.
+    /// </summary>
+    public const string DefaultAdminPassword = "HeavenMotion2026!";
+
     private static async Task SeedRolesAndUsersAsync(IServiceProvider services, ILogger logger)
     {
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
@@ -578,20 +589,17 @@ public static class SeedData
 
         var userManager = services.GetRequiredService<UserManager<AppUser>>();
         var configuration = services.GetRequiredService<IConfiguration>();
-        var adminEmail = configuration["Seed:AdminEmail"] ?? "admin@heavenmotion.be";
-        var adminPassword = configuration["Seed:AdminPassword"];
-
-        if (string.IsNullOrEmpty(adminPassword))
-        {
-            logger.LogWarning("Seed:AdminPassword absent : aucun compte admin créé.");
-            return;
-        }
+        var adminEmail = configuration["Seed:AdminEmail"] is { Length: > 0 } email ? email : DefaultAdminEmail;
+        var adminPassword = configuration["Seed:AdminPassword"] is { Length: > 0 } password
+            ? password
+            : DefaultAdminPassword;
+        var forceReset = string.Equals(configuration["Seed:ResetAdminPassword"], "true", StringComparison.OrdinalIgnoreCase);
 
         var existing = await userManager.FindByEmailAsync(adminEmail);
         if (existing is null)
         {
             // Compte créé du temps de Studio VNL : renommé plutôt que doublé,
-            // il garde son mot de passe et son rôle.
+            // il garde son rôle.
             var legacy = await userManager.FindByEmailAsync(LegacyAdminEmail);
             if (legacy is not null && !string.Equals(adminEmail, LegacyAdminEmail, StringComparison.OrdinalIgnoreCase))
             {
@@ -611,32 +619,6 @@ public static class SeedData
                 }
             }
         }
-        if (existing is not null && string.Equals(configuration["Seed:ResetAdminPassword"], "true", StringComparison.OrdinalIgnoreCase))
-        {
-            // Mot de passe perdu ou désaligné avec le .env : ADMIN_RESET_PASSWORD=true
-            // le réaligne sur Seed:AdminPassword au démarrage, puis on retire le drapeau.
-            // Pas de fournisseur de jetons configuré : retrait puis ajout du mot de passe.
-            var reset = await userManager.RemovePasswordAsync(existing);
-            if (reset.Succeeded)
-            {
-                reset = await userManager.AddPasswordAsync(existing, adminPassword);
-            }
-            if (reset.Succeeded)
-            {
-                await userManager.SetLockoutEndDateAsync(existing, null);
-                await userManager.ResetAccessFailedCountAsync(existing);
-                if (!await userManager.IsInRoleAsync(existing, "Admin"))
-                {
-                    await userManager.AddToRoleAsync(existing, "Admin");
-                }
-                logger.LogWarning("Mot de passe du compte admin {Email} réinitialisé depuis la configuration.", adminEmail);
-            }
-            else
-            {
-                logger.LogError("Réinitialisation du compte admin refusée : {Errors}",
-                    string.Join("; ", reset.Errors.Select(e => e.Description)));
-            }
-        }
 
         if (existing is null)
         {
@@ -645,13 +627,50 @@ public static class SeedData
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(user, "Admin");
-                logger.LogInformation("Compte admin {Email} créé.", adminEmail);
+                logger.LogInformation("Compte admin {Email} créé avec le mot de passe par défaut.", adminEmail);
             }
             else
             {
                 logger.LogError("Création du compte admin refusée : {Errors}",
                     string.Join("; ", result.Errors.Select(e => e.Description)));
             }
+            return;
+        }
+
+        // Le mot de passe par défaut s'applique tant que l'administrateur n'a pas
+        // choisi le sien. ADMIN_RESET_PASSWORD=true (Seed:ResetAdminPassword) y
+        // ramène de force un compte dont le mot de passe est perdu, puis on retire
+        // le drapeau. Un mot de passe choisi depuis le backoffice n'est jamais écrasé
+        // sans ce drapeau.
+        if (!forceReset && existing.PasswordChangedAt is not null)
+        {
+            return;
+        }
+        if (!forceReset && await userManager.HasPasswordAsync(existing)
+            && await userManager.CheckPasswordAsync(existing, adminPassword))
+        {
+            return;
+        }
+
+        existing.PasswordHash = userManager.PasswordHasher.HashPassword(existing, adminPassword);
+        existing.PasswordChangedAt = null;
+        existing.PasswordResetTokenHash = null;
+        existing.PasswordResetExpiresAt = null;
+        var reset = await userManager.UpdateSecurityStampAsync(existing);
+        if (reset.Succeeded)
+        {
+            await userManager.SetLockoutEndDateAsync(existing, null);
+            await userManager.ResetAccessFailedCountAsync(existing);
+            if (!await userManager.IsInRoleAsync(existing, "Admin"))
+            {
+                await userManager.AddToRoleAsync(existing, "Admin");
+            }
+            logger.LogWarning("Mot de passe du compte admin {Email} remis au mot de passe par défaut.", adminEmail);
+        }
+        else
+        {
+            logger.LogError("Réinitialisation du compte admin refusée : {Errors}",
+                string.Join("; ", reset.Errors.Select(e => e.Description)));
         }
     }
 

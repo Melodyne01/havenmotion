@@ -24,6 +24,7 @@ export class AuthService {
   readonly isAuthenticated = computed(() => this.tokens() !== null);
   readonly email = computed(() => this.tokens()?.email ?? '');
   readonly role = computed(() => this.tokens()?.role ?? null);
+  readonly mustChangePassword = computed(() => this.tokens()?.mustChangePassword === true);
 
   get accessToken(): string | null {
     return this.tokens()?.accessToken ?? null;
@@ -33,6 +34,23 @@ export class AuthService {
     return this.http
       .post<AuthTokens>(`${this.base}/auth/login`, { email, password })
       .pipe(tap((tokens) => this.persist(tokens)));
+  }
+
+  /** Utilisateur connecté : remplace son mot de passe ; la session est renouvelée. */
+  changePassword(currentPassword: string, newPassword: string): Observable<AuthTokens> {
+    return this.http
+      .post<AuthTokens>(`${this.base}/auth/change-password`, { currentPassword, newPassword })
+      .pipe(tap((tokens) => this.persist(tokens)));
+  }
+
+  /** Demande un lien de réinitialisation par e-mail (réponse identique que le compte existe ou non). */
+  forgotPassword(email: string): Observable<void> {
+    return this.http.post<void>(`${this.base}/auth/forgot-password`, { email });
+  }
+
+  /** Pose un nouveau mot de passe à partir du lien reçu par e-mail. */
+  resetPassword(email: string, token: string, newPassword: string): Observable<void> {
+    return this.http.post<void>(`${this.base}/auth/reset-password`, { email, token, newPassword });
   }
 
   /** Échange le jeton de rafraîchissement. Renvoie `false` si la session est morte. */

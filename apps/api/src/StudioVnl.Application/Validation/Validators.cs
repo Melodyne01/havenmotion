@@ -47,6 +47,37 @@ public class LoginValidator : AbstractValidator<LoginRequest>
     }
 }
 
+public class ChangePasswordValidator : AbstractValidator<ChangePasswordRequest>
+{
+    public ChangePasswordValidator()
+    {
+        RuleFor(x => x.CurrentPassword).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(10).MaximumLength(200)
+            .WithMessage("Le nouveau mot de passe doit faire au moins 10 caractères.");
+        RuleFor(x => x.NewPassword).NotEqual(x => x.CurrentPassword)
+            .WithMessage("Le nouveau mot de passe doit être différent de l'actuel.");
+    }
+}
+
+public class ForgotPasswordValidator : AbstractValidator<ForgotPasswordRequest>
+{
+    public ForgotPasswordValidator()
+    {
+        RuleFor(x => x.Email).NotEmpty().EmailAddress().MaximumLength(256);
+    }
+}
+
+public class ResetPasswordValidator : AbstractValidator<ResetPasswordRequest>
+{
+    public ResetPasswordValidator()
+    {
+        RuleFor(x => x.Email).NotEmpty().EmailAddress().MaximumLength(256);
+        RuleFor(x => x.Token).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(10).MaximumLength(200)
+            .WithMessage("Le nouveau mot de passe doit faire au moins 10 caractères.");
+    }
+}
+
 public class UpdateCategoryValidator : AbstractValidator<UpdateCategoryRequest>
 {
     public UpdateCategoryValidator()

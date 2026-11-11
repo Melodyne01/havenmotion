@@ -1,0 +1,27 @@
+@use 'tokens' as *;
+
+.login {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: $pad-x-mobile;
+  background: $color-charcoal;
+}
+
+.login__box {
+  display: grid;
+  gap: 18px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.login__link {
+  justify-self: center;
+  font-size: 0.9rem;
+  color: inherit;
+  opacity: 0.75;
+}
+
+.login__link:hover {
+  opacity: 1;
+}

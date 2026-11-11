@@ -27,6 +27,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     {
         base.OnModelCreating(builder);
 
+        builder.Entity<AppUser>(entity =>
+        {
+            entity.Property(u => u.PasswordResetTokenHash).HasMaxLength(64);
+        });
+
         builder.Entity<Category>(entity =>
         {
             entity.HasIndex(c => new { c.Slug, c.Locale }).IsUnique();

@@ -62,6 +62,7 @@ import { SiteLocale } from '../core/locale';
             Voir en preview
           </a>
           <p class="shell__user">{{ email() }}</p>
+          <a class="shell__preview" routerLink="compte">Mon compte</a>
           <button class="shell__logout" type="button" (click)="logout()">Se déconnecter</button>
         </div>
       </aside>

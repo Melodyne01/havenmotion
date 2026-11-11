@@ -51,7 +51,6 @@ services:
       Email__Host: mailpit
       Email__Port: '1025'
       Seed__AdminEmail: admin@heavenmotion.be
-      Seed__AdminPassword: Admin-Demo-2026!
       MediaStorage__Provider: LocalDisk
       MediaStorage__LocalDisk__RootPath: /data/media
       Cors__AllowedOrigins__0: http://localhost:4200

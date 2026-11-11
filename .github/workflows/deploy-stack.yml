@@ -82,22 +82,27 @@ jobs:
             ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
 
       # Premier passage : génère le .env sur le serveur (secrets créés sur
-      # place, jamais dans les logs). Les identifiants du backoffice sont
-      # écrits dans <deploy_path>/BACKOFFICE-ACCES.txt (lisible en SSH).
+      # place, jamais dans les logs). Le backoffice démarre sur le compte admin
+      # par défaut (README, « Comptes de démo ») : son mot de passe est à
+      # changer à la première connexion.
       # Passages suivants : les secrets sont conservés, seules les valeurs
-      # dérivées du domaine/environnement sont réalignées.
+      # dérivées du domaine/environnement sont réalignées. L'ancien mot de
+      # passe admin aléatoire (ADMIN_PASSWORD, BACKOFFICE-ACCES.txt) est retiré :
+      # le compte bascule sur le mot de passe par défaut tant qu'il n'a pas été
+      # changé depuis le backoffice.
       - name: Préparer l'environnement serveur
         run: |
           ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" \
             "DEPLOY_PATH='$DEPLOY_PATH' SITE_ORIGIN='$SITE_ORIGIN' ALLOWED_HOSTS='$ALLOWED_HOSTS' IMAGE_TAG='$IMAGE_TAG' WEB_PORT='$WEB_PORT' bash -s" <<'REMOTE'
           set -eu
           cd "$DEPLOY_PATH"
-          DOMAIN="${SITE_ORIGIN#https://}"
           if [ -f .env ]; then
             sed -i \
               -e "s|^SITE_ORIGIN=.*|SITE_ORIGIN=$SITE_ORIGIN|" \
               -e "s|^ALLOWED_HOSTS=.*|ALLOWED_HOSTS=$ALLOWED_HOSTS|" \
+              -e '/^ADMIN_PASSWORD=/d' \
               .env
+            rm -f BACKOFFICE-ACCES.txt
             for kv in "IMAGE_TAG=$IMAGE_TAG" "WEB_PORT=$WEB_PORT"; do
               key="${kv%%=*}"
               if grep -q "^$key=" .env; then
@@ -109,7 +114,6 @@ jobs:
             echo ".env déjà présent : valeurs d'environnement réalignées."
             exit 0
           fi
-          ADMIN_PWD="Hm-$(openssl rand -hex 6)!"
           cat > .env <<ENV
           POSTGRES_PASSWORD=$(openssl rand -hex 24)
           JWT_SIGNING_KEY=$(openssl rand -base64 48 | tr -d '\n')
@@ -119,16 +123,13 @@ jobs:
           SMTP_PASSWORD=
           MAIL_FROM=no-reply@heavenmotion.be
           ADMIN_EMAIL=admin@heavenmotion.be
-          ADMIN_PASSWORD=$ADMIN_PWD
           SITE_ORIGIN=$SITE_ORIGIN
           ALLOWED_HOSTS=$ALLOWED_HOSTS
           IMAGE_TAG=$IMAGE_TAG
           WEB_PORT=$WEB_PORT
           ENV
           chmod 600 .env
-          printf 'Backoffice %s : admin@heavenmotion.be / %s\n' "$DOMAIN" "$ADMIN_PWD" > BACKOFFICE-ACCES.txt
-          chmod 600 BACKOFFICE-ACCES.txt
-          echo ".env généré ; identifiants backoffice dans $DEPLOY_PATH/BACKOFFICE-ACCES.txt"
+          echo ".env généré ; backoffice sur le compte admin par défaut (à changer à la 1re connexion)."
           REMOTE
 
       # Les images sont construites sur le runner (machine puissante) puis

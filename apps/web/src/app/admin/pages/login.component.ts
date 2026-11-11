@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { LogotypeComponent } from '../../shared/ui/logotype.component';
 import { AuthService } from '../../core/auth/auth.service';
 
@@ -8,7 +8,7 @@ import { AuthService } from '../../core/auth/auth.service';
 @Component({
   selector: 'app-login',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, LogotypeComponent],
+  imports: [ReactiveFormsModule, RouterLink, LogotypeComponent],
   template: `
     <main class="login">
       <form class="login__box a-card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
@@ -46,29 +46,12 @@ import { AuthService } from '../../core/auth/auth.service';
         <button class="a-btn" type="submit" [disabled]="pending()">
           {{ pending() ? 'Connexion…' : 'Se connecter' }}
         </button>
+
+        <a class="login__link" routerLink="/admin/mot-de-passe-oublie">Mot de passe oublié ?</a>
       </form>
     </main>
   `,
-  styles: [
-    `
-      @use 'tokens' as *;
-
-      .login {
-        display: grid;
-        place-items: center;
-        min-height: 100vh;
-        padding: $pad-x-mobile;
-        background: $color-charcoal;
-      }
-
-      .login__box {
-        display: grid;
-        gap: 18px;
-        width: 100%;
-        max-width: 380px;
-      }
-    `,
-  ],
+  styleUrl: './auth-page.scss',
 })
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
@@ -94,8 +77,12 @@ export class LoginComponent {
 
     const { email, password } = this.form.getRawValue();
     this.auth.login(email, password).subscribe({
-      next: () => {
+      next: (tokens) => {
         this.pending.set(false);
+        if (tokens.mustChangePassword) {
+          void this.router.navigate(['/admin/compte']);
+          return;
+        }
         const redirect = this.route.snapshot.queryParamMap.get('redirect') ?? '/admin/categories';
         void this.router.navigateByUrl(redirect);
       },

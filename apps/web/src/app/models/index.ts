@@ -236,6 +236,8 @@ export interface AuthTokens {
   expiresAtUtc: string;
   email: string;
   role: 'Admin' | 'Editor';
+  /** Compte encore sur le mot de passe par défaut : il faut en choisir un. */
+  mustChangePassword: boolean;
 }
 
 export interface ReorderRequest {
