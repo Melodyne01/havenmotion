@@ -5,13 +5,16 @@ import { throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
-/** Ajoute le jeton d'accès aux appels `/admin` et rejoue une fois après un 401. */
+/** Ajoute le jeton d'accès aux appels authentifiés (`/admin`, changement de mot de passe) et rejoue une fois après un 401. */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
   const router = inject(Router);
   const token = auth.accessToken;
 
-  const isAdminCall = req.url.includes('/admin/') || req.url.includes('/auth/logout');
+  const isAdminCall =
+    req.url.includes('/admin/') ||
+    req.url.includes('/auth/logout') ||
+    req.url.includes('/auth/change-password');
   if (!token || !isAdminCall) {
     return next(req);
   }

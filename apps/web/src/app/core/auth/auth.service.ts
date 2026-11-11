@@ -2,7 +2,7 @@ import { Injectable, computed, inject, signal, PLATFORM_ID } from '@angular/core
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, tap } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, finalize, map, shareReplay } from 'rxjs/operators';
 import { APP_CONFIG } from '../app-config';
 import { AuthTokens } from '../../models';
 
@@ -53,20 +53,32 @@ export class AuthService {
     return this.http.post<void>(`${this.base}/auth/reset-password`, { email, token, newPassword });
   }
 
-  /** Échange le jeton de rafraîchissement. Renvoie `false` si la session est morte. */
+  private refreshInFlight: Observable<boolean> | null = null;
+
+  /**
+   * Échange le jeton de rafraîchissement. Renvoie `false` si la session est morte.
+   * Les appels simultanés (intercepteur + envoi de vidéo) partagent le même
+   * échange : le jeton est à usage unique, un second échange en parallèle
+   * serait refusé et déconnecterait l'utilisateur.
+   */
   refresh(): Observable<boolean> {
     const refreshToken = this.tokens()?.refreshToken;
     if (!refreshToken) {
       return of(false);
     }
-    return this.http.post<AuthTokens>(`${this.base}/auth/refresh`, { refreshToken }).pipe(
-      tap((tokens) => this.persist(tokens)),
-      map(() => true),
-      catchError(() => {
-        this.clear();
-        return of(false);
-      }),
-    );
+    this.refreshInFlight ??= this.http
+      .post<AuthTokens>(`${this.base}/auth/refresh`, { refreshToken })
+      .pipe(
+        tap((tokens) => this.persist(tokens)),
+        map(() => true),
+        catchError(() => {
+          this.clear();
+          return of(false);
+        }),
+        finalize(() => (this.refreshInFlight = null)),
+        shareReplay(1),
+      );
+    return this.refreshInFlight;
   }
 
   logout(): Observable<void> {

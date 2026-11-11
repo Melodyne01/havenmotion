@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { APP_CONFIG } from '../app-config';
 import { MediaAsset } from '../../models';
 import { AuthService } from '../auth/auth.service';
@@ -63,46 +63,57 @@ export class UploadService {
 
       void (async () => {
         try {
-          const headers = this.headers();
-          const startResponse = await fetch(`${this.base}/admin/media/uploads`, {
-            method: 'POST',
-            headers: { ...headers, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              fileName: file.name,
-              contentType: file.type,
-              sizeBytes: file.size,
-              totalChunks: total,
+          const startResponse = await this.send(
+            `${this.base}/admin/media/uploads`,
+            () => ({
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                fileName: file.name,
+                contentType: file.type,
+                sizeBytes: file.size,
+                totalChunks: total,
+              }),
             }),
-            signal: controller.signal,
-          });
+            controller.signal,
+          );
           if (!startResponse.ok) {
             throw new Error(
-              (await problemMessage(startResponse)) ?? `Ouverture de session refusée (HTTP ${startResponse.status}).`,
+              (await problemMessage(startResponse)) ??
+                `Ouverture de session refusée (HTTP ${startResponse.status}).`,
             );
           }
           const { uploadId } = (await startResponse.json()) as { uploadId: string };
 
           for (let index = 0; index < total; index++) {
             const slice = file.slice(index * CHUNK_SIZE, (index + 1) * CHUNK_SIZE);
-            const body = new FormData();
-            body.append('chunk', slice, `${file.name}.part${index}`);
-            const chunkResponse = await fetch(
+            const chunkResponse = await this.send(
               `${this.base}/admin/media/uploads/${uploadId}/chunks/${index}`,
-              { method: 'PUT', headers, body, signal: controller.signal },
+              () => {
+                const body = new FormData();
+                body.append('chunk', slice, `${file.name}.part${index}`);
+                return { method: 'PUT', body };
+              },
+              controller.signal,
             );
             if (!chunkResponse.ok) {
-              throw new Error(`Morceau ${index + 1}/${total} refusé.`);
+              const reason =
+                (await problemMessage(chunkResponse)) ?? `HTTP ${chunkResponse.status}`;
+              throw new Error(`Morceau ${index + 1}/${total} refusé : ${reason}.`);
             }
             subscriber.next({ percent: Math.round(((index + 1) / total) * 95) });
           }
 
-          const completeResponse = await fetch(
+          const completeResponse = await this.send(
             `${this.base}/admin/media/uploads/${uploadId}/complete`,
-            { method: 'POST', headers, signal: controller.signal },
+            () => ({ method: 'POST' }),
+            controller.signal,
           );
           if (!completeResponse.ok) {
             // 422 : photo refusée par l'optimisation (illisible, démesurée) — l'API dit pourquoi.
-            throw new Error((await problemMessage(completeResponse)) ?? "L'assemblage du fichier a échoué.");
+            throw new Error(
+              (await problemMessage(completeResponse)) ?? "L'assemblage du fichier a échoué.",
+            );
           }
           const asset = (await completeResponse.json()) as MediaAsset;
           subscriber.next({ percent: 100, asset });
@@ -118,8 +129,54 @@ export class UploadService {
     });
   }
 
+  /**
+   * Envoie une requête avec le jeton d'accès du moment. Un envoi de vidéo
+   * dure souvent plus que la vie du jeton (15 min) : sur un 401, la session
+   * est rafraîchie puis la requête rejouée. Les erreurs passagères (réseau,
+   * 502/503/504) sont retentées deux fois.
+   */
+  private async send(url: string, init: () => RequestInit, signal: AbortSignal): Promise<Response> {
+    let refreshed = false;
+    for (let attempt = 1; ; attempt++) {
+      let response: Response;
+      try {
+        const request = init();
+        response = await fetch(url, {
+          ...request,
+          headers: {
+            ...(request.headers as Record<string, string> | undefined),
+            ...this.headers(),
+          },
+          signal,
+        });
+      } catch (error) {
+        if (signal.aborted || attempt >= 3) {
+          throw error;
+        }
+        await delay(1000 * attempt);
+        continue;
+      }
+      if (response.status === 401 && !refreshed) {
+        refreshed = true;
+        if (await firstValueFrom(this.auth.refresh())) {
+          continue;
+        }
+        throw new Error('Session expirée : reconnectez-vous puis relancez l’envoi.');
+      }
+      if ([502, 503, 504].includes(response.status) && attempt < 3) {
+        await delay(1000 * attempt);
+        continue;
+      }
+      return response;
+    }
+  }
+
   private headers(): Record<string, string> {
     const token = this.auth.accessToken;
     return token ? { Authorization: `Bearer ${token}` } : {};
   }
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
