@@ -78,6 +78,7 @@ jobs:
             --exclude='dist' \
             --exclude='.env' \
             --exclude='BACKOFFICE-ACCES.txt' \
+            --exclude='.images.tar.gz' \
             -e "ssh -i ~/.ssh/deploy_key" \
             ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
 
@@ -144,31 +145,48 @@ jobs:
             -f docker/api.Dockerfile -t "vnl-api:$IMAGE_TAG" .
           docker build -f docker/web.Dockerfile -t "vnl-web:$IMAGE_TAG" .
 
-      # L'archive est d'abord écrite sur le runner (taille visible dans les
-      # logs), puis envoyée avec un délai par essai et jusqu'à 3 essais : une
-      # connexion SSH figée faisait sinon attendre le job jusqu'à son délai de
-      # 30 min, sans aucun message.
+      # Livraison en deux temps, chacun minuté : transfert de l'archive
+      # (rsync, reprenable) puis `docker load` sur le VPS. Un blocage dit
+      # ainsi tout de suite s'il vient du réseau ou de Docker sur le serveur
+      # (le `docker save | ssh docker load` d'origine restait figé sans
+      # message jusqu'au délai du job).
       - name: Livrer les images au VPS
-        timeout-minutes: 20
+        timeout-minutes: 25
         run: |
+          SSH="ssh -i $HOME/.ssh/deploy_key -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -o ConnectTimeout=20"
           docker save "vnl-api:$IMAGE_TAG" "vnl-web:$IMAGE_TAG" | gzip > /tmp/images.tar.gz
           echo "Archive des images : $(du -h /tmp/images.tar.gz | cut -f1)"
+
+          start=$(date +%s)
+          sent=false
           for attempt in 1 2 3; do
-            echo "Envoi, essai $attempt…"
-            if timeout 300 ssh -i ~/.ssh/deploy_key \
-                 -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -o ConnectTimeout=20 \
-                 "$DEPLOY_USER@$DEPLOY_HOST" 'gunzip | docker load' < /tmp/images.tar.gz; then
-              echo "Images chargées sur le VPS."
-              exit 0
+            echo "Transfert, essai $attempt…"
+            if timeout 420 rsync --partial --timeout=60 -e "$SSH" \
+                 /tmp/images.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/.images.tar.gz"; then
+              sent=true
+              break
             else
-              rc=$?
+              echo "Transfert en échec (code $?)."
+              sleep 10
             fi
-            # 124 = délai de 5 min dépassé (connexion figée).
-            echo "Essai $attempt en échec (code $rc)."
-            sleep 10
           done
-          echo "::error::Livraison des images impossible après 3 essais."
-          exit 1
+          if [ "$sent" != true ]; then
+            echo "::error::Transfert de l'archive vers le VPS impossible (réseau)."
+            exit 1
+          fi
+          echo "Transfert terminé en $(( $(date +%s) - start )) s."
+
+          start=$(date +%s)
+          rc=0
+          timeout 600 $SSH "$DEPLOY_USER@$DEPLOY_HOST" \
+            "cd '$DEPLOY_PATH' && docker info --format 'Docker {{.ServerVersion}}' && gunzip -c .images.tar.gz | docker load && rm -f .images.tar.gz" \
+            || rc=$?
+          if [ "$rc" -ne 0 ]; then
+            # 124 = délai de 10 min dépassé.
+            echo "::error::docker load bloqué ou en échec sur le VPS (code $rc)."
+            exit 1
+          fi
+          echo "Images chargées en $(( $(date +%s) - start )) s."
 
       - name: Relancer la pile
         run: |
