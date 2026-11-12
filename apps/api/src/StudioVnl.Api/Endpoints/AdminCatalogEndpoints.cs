@@ -91,6 +91,20 @@ public static class AdminCatalogEndpoints
         category.IsPublished = request.IsPublished;
         category.ReelMediaId = request.Reel?.Id;
         category.PosterMediaId = request.Poster?.Id;
+
+        // Vidéo et poster communs aux trois langues : les versions NL/EN (ou FR)
+        // de la même bande suivent.
+        if (category.TranslationKey is not null)
+        {
+            var translations = await db.Categories
+                .Where(c => c.TranslationKey == category.TranslationKey && c.Id != category.Id)
+                .ToListAsync(cancellationToken);
+            foreach (var translation in translations)
+            {
+                translation.ReelMediaId = category.ReelMediaId;
+                translation.PosterMediaId = category.PosterMediaId;
+            }
+        }
         await db.SaveChangesAsync(cancellationToken);
 
         await audit.RecordAsync(

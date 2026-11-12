@@ -243,11 +243,17 @@ namespace StudioVnl.Infrastructure.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
+                    b.Property<string>("TranslationKey")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PosterMediaId");
 
                     b.HasIndex("ReelMediaId");
+
+                    b.HasIndex("TranslationKey");
 
                     b.HasIndex("Slug", "Locale")
                         .IsUnique();

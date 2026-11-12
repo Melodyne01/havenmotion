@@ -19,6 +19,10 @@ import { Category, MediaAsset } from '../../models';
       <header class="a-page__head">
         <h1 class="a-title">Catégories</h1>
         <p class="a-hint">Glissez une ligne pour changer l’ordre des bandes du site.</p>
+        <p class="a-hint">
+          La vidéo et le poster d’une bande valent pour les trois langues (FR, NL, EN) : les changer
+          ici met à jour les autres versions. Les textes restent propres à chaque langue.
+        </p>
       </header>
 
       @if (status()) {
@@ -47,12 +51,22 @@ import { Category, MediaAsset } from '../../models';
             <div class="a-grid">
               <label class="a-field">
                 <span class="a-label">Nom</span>
-                <input class="a-input" type="text" [(ngModel)]="category.name" name="name-{{ i }}" />
+                <input
+                  class="a-input"
+                  type="text"
+                  [(ngModel)]="category.name"
+                  name="name-{{ i }}"
+                />
               </label>
 
               <label class="a-field">
                 <span class="a-label">Slug</span>
-                <input class="a-input" type="text" [(ngModel)]="category.slug" name="slug-{{ i }}" />
+                <input
+                  class="a-input"
+                  type="text"
+                  [(ngModel)]="category.slug"
+                  name="slug-{{ i }}"
+                />
               </label>
 
               <label class="a-field">

@@ -33,6 +33,11 @@ bibliothèque quand elles ne servent plus.
    Le poster est extrait automatiquement.
 4. Cliquez **Enregistrer**. Le site public est à jour immédiatement.
 
+La vidéo et le poster d'une bande sont communs au français, au néerlandais et
+à l'anglais : les changer dans une langue met à jour les deux autres. Le nom
+et la ligne descriptive, eux, se traduisent langue par langue (boutons FR / NL
+/ EN du menu).
+
 ## Réordonner les bandes
 
 Dans **Catégories**, attrapez une ligne (poignée ⠿) et glissez-la à sa

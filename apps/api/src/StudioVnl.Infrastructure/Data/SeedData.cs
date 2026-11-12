@@ -86,7 +86,56 @@ public static class SeedData
         await FixLegacyLocationAsync(db, logger, cancellationToken);
         await EnsureNlTranslationsAsync(db, logger, cancellationToken);
         await EnsureEnCategoriesAsync(db, logger, cancellationToken);
+        await EnsureCategoryTranslationKeysAsync(db, logger, cancellationToken);
         await AttachAmbienceFootageAsync(db, logger, cancellationToken);
+    }
+
+    /// <summary>
+    /// Relie les versions FR/NL/EN d'une même catégorie (clé = slug FR
+    /// d'origine) pour les bases créées avant la clé : par les tables de
+    /// correspondance des slugs, sinon par la position dans la langue.
+    /// À cette première liaison, la vidéo et le poster de la version française
+    /// sont recopiés sur ses traductions, la règle étant désormais un média
+    /// commun aux trois langues.
+    /// </summary>
+    private static async Task EnsureCategoryTranslationKeysAsync(
+        AppDbContext db,
+        ILogger logger,
+        CancellationToken cancellationToken)
+    {
+        var categories = await db.Categories.ToListAsync(cancellationToken);
+        if (categories.All(c => c.TranslationKey is not null))
+        {
+            return;
+        }
+
+        var french = categories.Where(c => c.Locale == "fr").ToList();
+        foreach (var fr in french.Where(c => c.TranslationKey is null))
+        {
+            fr.TranslationKey = fr.Slug;
+        }
+
+        foreach (var category in categories.Where(c => c.TranslationKey is null && c.Locale != "fr"))
+        {
+            var frSlug = category.Locale switch
+            {
+                "nl" => CategoryLocaleMap.FirstOrDefault(m => m.NlSlug == category.Slug).FrSlug,
+                "en" => CategoryEnglishMap.FirstOrDefault(m => m.EnSlug == category.Slug).FrSlug,
+                _ => null,
+            };
+            var fr = french.FirstOrDefault(c => c.Slug == frSlug)
+                ?? french.FirstOrDefault(c => c.SortOrder == category.SortOrder);
+            if (fr is null)
+            {
+                continue;
+            }
+            category.TranslationKey = fr.TranslationKey;
+            category.ReelMediaId = fr.ReelMediaId;
+            category.PosterMediaId = fr.PosterMediaId;
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
+        logger.LogInformation("Catégories reliées entre langues : vidéo et poster désormais communs.");
     }
 
     /// <summary>
@@ -167,6 +216,7 @@ public static class SeedData
                 Tagline = LoremShort,
                 Locale = "nl",
                 SortOrder = fr.SortOrder,
+                TranslationKey = fr.TranslationKey ?? fr.Slug,
                 ReelMediaId = fr.ReelMediaId,
                 PosterMediaId = fr.PosterMediaId,
                 IsPublished = fr.IsPublished,
@@ -335,6 +385,7 @@ public static class SeedData
                 Tagline = enTagline,
                 Locale = "en",
                 SortOrder = fr.SortOrder,
+                TranslationKey = fr.TranslationKey ?? fr.Slug,
                 ReelMediaId = fr.ReelMediaId,
                 PosterMediaId = fr.PosterMediaId,
                 IsPublished = fr.IsPublished,
@@ -691,6 +742,7 @@ public static class SeedData
         Name = name,
         Tagline = tagline,
         SortOrder = order,
+        TranslationKey = slug,
         IsPublished = true,
         IsProtected = true,
     };

@@ -13,6 +13,13 @@ public class Category
 
     public int SortOrder { get; set; }
 
+    /// <summary>
+    /// Clé commune aux versions FR, NL et EN d'une même catégorie (le slug
+    /// français d'origine). La vidéo et le poster d'une bande sont partagés
+    /// par les trois langues : les changer sur une version met à jour les autres.
+    /// </summary>
+    public string? TranslationKey { get; set; }
+
     /// <summary>Compteur affiché s'il est renseigné ; sinon le nombre de films publiés.</summary>
     public int? FilmCountOverride { get; set; }
 

@@ -35,6 +35,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
         builder.Entity<Category>(entity =>
         {
             entity.HasIndex(c => new { c.Slug, c.Locale }).IsUnique();
+            entity.HasIndex(c => c.TranslationKey);
+            entity.Property(c => c.TranslationKey).HasMaxLength(60);
             entity.Property(c => c.Name).HasMaxLength(60);
             entity.Property(c => c.Slug).HasMaxLength(60);
             entity.Property(c => c.Tagline).HasMaxLength(200);
