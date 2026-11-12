@@ -108,7 +108,10 @@ jobs:
               -e '/^ADMIN_RESET_PASSWORD=/d' \
               .env
             rm -f BACKOFFICE-ACCES.txt
-            for kv in "IMAGE_TAG=$IMAGE_TAG" "WEB_PORT=$WEB_PORT"; do
+            # Compte admin : adresse Heaven Motion partout. L'API renomme au
+            # démarrage l'ancien compte admin@studiovnl.fr (mot de passe et rôle
+            # conservés) quand ADMIN_EMAIL change.
+            for kv in "IMAGE_TAG=$IMAGE_TAG" "WEB_PORT=$WEB_PORT" "ADMIN_EMAIL=admin@heavenmotion.be"; do
               key="${kv%%=*}"
               if grep -q "^$key=" .env; then
                 sed -i "s|^$key=.*|$kv|" .env
