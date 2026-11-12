@@ -23,10 +23,17 @@ public class FfmpegOptions
 
     /// <summary>Durée de l'extrait muet lu en boucle avant le film (secondes).</summary>
     public int TeaserSeconds { get; set; } = 20;
+
+    /// <summary>
+    /// Preset x264. `veryfast` encode environ 3 fois plus vite que `medium`
+    /// pour une qualité très proche au débit visé : sur le petit VPS partagé,
+    /// un film d'1 Go passait sinon des heures en transcodage.
+    /// </summary>
+    public string Preset { get; set; } = "veryfast";
 }
 
 /// <summary>
-/// Transcodage FFmpeg : MP4 (H.264) + WebM (VP9), version muette allégée pour
+/// Transcodage FFmpeg : MP4 (H.264), version muette allégée pour
 /// les fonds de bande, extrait muet de 20 s pour la lecture automatique,
 /// poster extrait à 1 s.
 /// </summary>
@@ -52,29 +59,26 @@ public class FfmpegTranscoder(
             var bitrate = $"{_options.VideoBitrateKbps}k";
 
             var mp4Path = Path.Combine(workDir, "web.mp4");
-            var webmPath = Path.Combine(workDir, "web.webm");
-            var mutedPath = Path.Combine(workDir, "band-muted.mp4");
+                        var mutedPath = Path.Combine(workDir, "band-muted.mp4");
             var teaserPath = Path.Combine(workDir, "teaser.mp4");
             var posterPath = Path.Combine(workDir, "poster.jpg");
 
             // Rendu principal MP4 H.264 (son conservé).
             await RunFfmpegAsync(
-                $"-y -i \"{inputPath}\" -vf {scaleFilter} -c:v libx264 -preset medium -b:v {bitrate} " +
+                $"-y -i \"{inputPath}\" -vf {scaleFilter} -c:v libx264 -preset {_options.Preset} -b:v {bitrate} " +
                 $"-maxrate {bitrate} -bufsize {_options.VideoBitrateKbps * 2}k -pix_fmt yuv420p " +
                 "-movflags +faststart -c:a aac -b:a 128k " +
                 $"\"{mp4Path}\"",
                 cancellationToken);
 
-            // Rendu WebM VP9.
-            await RunFfmpegAsync(
-                $"-y -i \"{inputPath}\" -vf {scaleFilter} -c:v libvpx-vp9 -b:v {bitrate} -row-mt 1 " +
-                $"-c:a libopus -b:a 96k \"{webmPath}\"",
-                cancellationToken);
+            // Pas de rendu WebM (VP9) : lu par tous les navigateurs, le MP4 H.264
+            // suffit, et l'encodeur VP9 prenait à lui seul des dizaines d'heures
+            // pour un film d'1 Go sur le VPS, bloquant toute la file.
 
             // Version muette et allégée pour les fonds de bande (720p, sans audio).
             var bandHeight = Math.Min(height, 720);
             await RunFfmpegAsync(
-                $"-y -i \"{inputPath}\" -vf scale=-2:{bandHeight} -c:v libx264 -preset medium " +
+                $"-y -i \"{inputPath}\" -vf scale=-2:{bandHeight} -c:v libx264 -preset {_options.Preset} " +
                 "-b:v 2500k -maxrate 2500k -bufsize 5000k -pix_fmt yuv420p -movflags +faststart -an " +
                 $"\"{mutedPath}\"",
                 cancellationToken);
@@ -84,7 +88,7 @@ public class FfmpegTranscoder(
             var teaserStart = TeaserStart(duration, _options.TeaserSeconds);
             await RunFfmpegAsync(
                 $"-y -ss {teaserStart.ToString(CultureInfo.InvariantCulture)} -i \"{inputPath}\" -t {_options.TeaserSeconds} " +
-                $"-vf scale=-2:{bandHeight} -c:v libx264 -preset medium -b:v 1500k -maxrate 1500k -bufsize 3000k " +
+                $"-vf scale=-2:{bandHeight} -c:v libx264 -preset {_options.Preset} -b:v 1500k -maxrate 1500k -bufsize 3000k " +
                 $"-pix_fmt yuv420p -movflags +faststart -an \"{teaserPath}\"",
                 cancellationToken);
 
@@ -98,9 +102,6 @@ public class FfmpegTranscoder(
 
             await UploadAsync(mp4Path, $"{prefix}/web.mp4", cancellationToken);
             renditions.Add(new ProcessedRendition("video/mp4", $"{prefix}/web.mp4", ScaledWidth(width, height, targetHeight), targetHeight, false));
-
-            await UploadAsync(webmPath, $"{prefix}/web.webm", cancellationToken);
-            renditions.Add(new ProcessedRendition("video/webm", $"{prefix}/web.webm", ScaledWidth(width, height, targetHeight), targetHeight, false));
 
             await UploadAsync(mutedPath, $"{prefix}/band-muted.mp4", cancellationToken);
             renditions.Add(new ProcessedRendition("video/mp4", $"{prefix}/band-muted.mp4", ScaledWidth(width, height, bandHeight), bandHeight, true));

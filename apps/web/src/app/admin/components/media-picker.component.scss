@@ -1,8 +1,18 @@
 @use 'tokens' as *;
 
+:host {
+  display: block;
+  // Élément de grille : sans min-width 0, la bibliothèque (une ligne qui
+  // défile) élargissait la colonne et débordait sur le sélecteur voisin.
+  min-width: 0;
+}
+
 .picker {
   display: grid;
+  // Piste bornée à la largeur du sélecteur : la bibliothèque défile dedans.
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
+  min-width: 0;
 }
 
 .picker__current {
@@ -74,4 +84,12 @@
   &:hover {
     border-color: $color-amber;
   }
+}
+
+.picker__more > summary {
+  cursor: pointer;
+}
+
+.picker__more[open] > summary {
+  margin-bottom: 10px;
 }
