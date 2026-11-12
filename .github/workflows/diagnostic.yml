@@ -108,5 +108,15 @@ jobs:
             echo "=== Stockage médias vu par l'API ==="
             docker compose -f docker-compose.prod.yml exec -T api sh -c \
               'id; ls -ld /data/media /data/media/* 2>&1 | head -n 15; touch /data/media/.ecriture-test && echo "écriture OK" && rm -f /data/media/.ecriture-test' 2>&1 || true
+            echo
+            echo "=== Derniers médias (Kind 0=vidéo 1=image ; Status 0=attente 1=transcodage 2=prêt 3=échec) ==="
+            docker compose -f docker-compose.prod.yml exec -T postgres psql -U studiovnl -d studiovnl -c \
+              'SELECT "FileName", "Kind", "ProcessingStatus", round("SizeBytes"/1048576.0) AS mo, "CreatedAt" FROM "MediaAssets" ORDER BY "CreatedAt" DESC LIMIT 8' 2>&1 || true
+            echo "=== Vidéo et poster de chaque bande ==="
+            docker compose -f docker-compose.prod.yml exec -T postgres psql -U studiovnl -d studiovnl -c \
+              'SELECT c."Locale", c."SortOrder", c."Name", r."FileName" AS reel, r."ProcessingStatus" AS reel_status, p."FileName" AS poster FROM "Categories" c LEFT JOIN "MediaAssets" r ON r."Id" = c."ReelMediaId" LEFT JOIN "MediaAssets" p ON p."Id" = c."PosterMediaId" ORDER BY c."Locale", c."SortOrder"' 2>&1 || true
+            echo "=== Journaux de traitement vidéo ==="
+            docker compose -f docker-compose.prod.yml logs --no-color --tail 3000 api 2>&1 \
+              | grep -iE 'ffmpeg|transcod|vidéo|video|WRN' | tail -n 30 || true
           fi
           REMOTE
