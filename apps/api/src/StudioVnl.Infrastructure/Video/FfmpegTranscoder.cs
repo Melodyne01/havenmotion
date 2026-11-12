@@ -182,8 +182,10 @@ public class FfmpegTranscoder(
         return (width, height, duration);
     }
 
+    // -nostats/-loglevel error : FFmpeg n'écrit plus sa progression, seulement
+    // les erreurs (gardées pour le message d'échec).
     private Task RunFfmpegAsync(string arguments, CancellationToken cancellationToken) =>
-        RunProcessAsync(_options.FfmpegPath, arguments, cancellationToken);
+        RunProcessAsync(_options.FfmpegPath, $"-hide_banner -nostats -loglevel error {arguments}", cancellationToken);
 
     private static async Task<string> RunProcessAsync(
         string fileName,
@@ -199,13 +201,28 @@ public class FfmpegTranscoder(
         using var process = Process.Start(info)
             ?? throw new InvalidOperationException($"Impossible de démarrer {fileName}.");
 
-        var stdout = await process.StandardOutput.ReadToEndAsync(cancellationToken);
-        var stderr = await process.StandardError.ReadToEndAsync(cancellationToken);
-        await process.WaitForExitAsync(cancellationToken);
+        // Les deux flux sont lus en même temps. Lus l'un après l'autre, FFmpeg
+        // remplissait le tuyau de stderr (64 Ko) pendant qu'on attendait la fin
+        // de stdout : il se bloquait pour toujours, et un long film restait
+        // « en cours » indéfiniment en bloquant toute la file.
+        var stdoutTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
+        var stderrTask = process.StandardError.ReadToEndAsync(cancellationToken);
+        try
+        {
+            await process.WaitForExitAsync(cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            process.Kill(entireProcessTree: true);
+            throw;
+        }
+        var stdout = await stdoutTask;
+        var stderr = await stderrTask;
 
         if (process.ExitCode != 0)
         {
-            throw new InvalidOperationException($"{fileName} a échoué ({process.ExitCode}) : {stderr}");
+            var tail = stderr.Length > 2000 ? stderr[^2000..] : stderr;
+            throw new InvalidOperationException($"{fileName} a échoué ({process.ExitCode}) : {tail}");
         }
         return stdout;
     }

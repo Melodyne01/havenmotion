@@ -90,7 +90,10 @@ jobs:
       # dérivées du domaine/environnement sont réalignées. L'ancien mot de
       # passe admin aléatoire (ADMIN_PASSWORD, BACKOFFICE-ACCES.txt) est retiré :
       # le compte bascule sur le mot de passe par défaut tant qu'il n'a pas été
-      # changé depuis le backoffice.
+      # changé depuis le backoffice. ADMIN_RESET_PASSWORD est à usage unique :
+      # resté à true, il écrasait à chaque déploiement le mot de passe choisi.
+      # Il est donc retiré ; pour s'en servir, l'ajouter puis relancer la pile
+      # à la main (docker compose up -d), le déploiement suivant l'enlèvera.
       - name: Préparer l'environnement serveur
         run: |
           ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" \
@@ -102,6 +105,7 @@ jobs:
               -e "s|^SITE_ORIGIN=.*|SITE_ORIGIN=$SITE_ORIGIN|" \
               -e "s|^ALLOWED_HOSTS=.*|ALLOWED_HOSTS=$ALLOWED_HOSTS|" \
               -e '/^ADMIN_PASSWORD=/d' \
+              -e '/^ADMIN_RESET_PASSWORD=/d' \
               .env
             rm -f BACKOFFICE-ACCES.txt
             for kv in "IMAGE_TAG=$IMAGE_TAG" "WEB_PORT=$WEB_PORT"; do

@@ -205,7 +205,7 @@ Aucun secret dans le dépôt : tout passe par les variables d'environnement
 | `ConnectionStrings__Default` | Chaîne PostgreSQL |
 | `Jwt__SigningKey` | Clé de signature des jetons (obligatoire en prod) |
 | `Seed__AdminEmail` / `Seed__AdminPassword` | Compte admin par défaut (vides : `admin@heavenmotion.be` / `HeavenMotion2026!`) |
-| `Seed__ResetAdminPassword` (`ADMIN_RESET_PASSWORD` dans le `.env`) | `true` : remet le compte admin sur le mot de passe par défaut (ou `ADMIN_PASSWORD`) au démarrage, même s'il a été changé (à retirer ensuite) |
+| `Seed__ResetAdminPassword` (`ADMIN_RESET_PASSWORD` dans le `.env`) | `true` : remet le compte admin sur le mot de passe par défaut (ou `ADMIN_PASSWORD`) au démarrage, même s'il a été changé ; usage unique : le déploiement suivant retire la variable |
 | `Email__*` | SMTP (hôte, port, identifiants, expéditeur) |
 | `MediaStorage__Provider` | `LocalDisk` (défaut) ou `S3` (MinIO/AWS) |
 | `Images__*` | Optimisation des photos : `Widths`, `WebpQuality` (80), `ShareWidth` (1600), `JpegQuality` (82), `MaxPixels` |
