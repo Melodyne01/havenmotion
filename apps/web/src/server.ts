@@ -112,7 +112,9 @@ app.use((req, res, next) => {
   for (const [pattern, target] of LEGACY_PREFIXES) {
     if (pattern.test(req.path)) {
       const rest = req.path.replace(pattern, '').replace(/^\/+/, '');
-      const query = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : '';
+      const query = req.originalUrl.includes('?')
+        ? req.originalUrl.slice(req.originalUrl.indexOf('?'))
+        : '';
       res.redirect(301, `${target}${rest}${query}`.replace(/\/+$/, '') || '/');
       return;
     }
@@ -166,6 +168,36 @@ app.get('/robots.txt', (req, res) => {
     ? 'User-agent: *\nDisallow: /\n'
     : `User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${siteOrigin}/sitemap.xml\n`;
   res.type('text/plain').send(body);
+});
+
+/**
+ * Catalogue de ressources pour agents IA (Agentic Resource Discovery), que
+ * Lighthouse 13.5+ valide (audit « ai-catalog.json schema is valid ») contre
+ * `ai-catalog.schema.json` de l'ARD : `specVersion` et `entries` obligatoires,
+ * aucun autre champ à la racine. Le site n'expose ni API ni agent : la liste
+ * est vide, et l'hôte renvoie vers `llms.txt`, qui décrit l'offre en clair.
+ * Sans ce fichier, l'adresse tombait sur la page 404 HTML d'Angular et
+ * l'audit échouait (« Malformed JSON »).
+ */
+app.get('/.well-known/ai-catalog.json', (_req, res) => {
+  res.type('application/json').json({
+    specVersion: '1.0',
+    host: {
+      displayName: 'Heaven Motion',
+      documentationUrl: `${siteOrigin}/llms.txt`,
+      logoUrl: `${siteOrigin}/favicon.svg`,
+    },
+    entries: [],
+  });
+});
+
+/**
+ * Tout autre fichier de `/.well-known/` (security.txt, ard.json, …) : vraie
+ * 404 en texte, jamais la page HTML d'Angular, que les robots prendraient
+ * pour un fichier mal formé.
+ */
+app.use('/.well-known', (_req, res) => {
+  res.status(404).type('text/plain').send('Not found');
 });
 
 /**
