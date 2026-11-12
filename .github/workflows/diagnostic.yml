@@ -93,7 +93,7 @@ jobs:
           ls -la "$DEPLOY_PATH" | head -n 20
           echo
           echo "=== Variables clés du .env (sans secrets) ==="
-          grep -E '^(SITE_ORIGIN|ALLOWED_HOSTS|MAIL_FROM|SMTP_HOST|ADMIN_EMAIL)=' "$DEPLOY_PATH/.env" 2>/dev/null || echo "(.env illisible)"
+          grep -E '^(SITE_ORIGIN|ALLOWED_HOSTS|MAIL_FROM|SMTP_HOST|ADMIN_EMAIL|ADMIN_RESET_PASSWORD)=' "$DEPLOY_PATH/.env" 2>/dev/null || echo "(.env illisible)"
           echo
           echo "=== Mémoire et disque ==="
           free -h | head -n 2
@@ -115,6 +115,13 @@ jobs:
             echo "=== Vidéo et poster de chaque bande ==="
             docker compose -f docker-compose.prod.yml exec -T postgres psql -U studiovnl -d studiovnl -c \
               'SELECT c."Locale", c."SortOrder", c."Name", r."FileName" AS reel, r."ProcessingStatus" AS reel_status, p."FileName" AS poster FROM "Categories" c LEFT JOIN "MediaAssets" r ON r."Id" = c."ReelMediaId" LEFT JOIN "MediaAssets" p ON p."Id" = c."PosterMediaId" ORDER BY c."Locale", c."SortOrder"' 2>&1 || true
+            echo "=== Comptes du backoffice ==="
+            docker compose -f docker-compose.prod.yml exec -T postgres psql -U studiovnl -d studiovnl -c \
+              'SELECT "Email", "PasswordChangedAt", "LockoutEnd", "AccessFailedCount" FROM "AspNetUsers"' 2>&1 || true
+            echo "=== Processus FFmpeg en cours ==="
+            docker compose -f docker-compose.prod.yml exec -T api sh -c \
+              'for p in /proc/[0-9]*; do c=$(tr "\0" " " < $p/cmdline 2>/dev/null); case "$c" in ffmpeg*) echo "$c" | cut -c1-200;; esac; done' 2>&1 || true
+            docker compose -f docker-compose.prod.yml exec -T api sh -c 'ls -la /tmp/vnl-renditions/*/ 2>&1 | head -n 20' 2>&1 || true
             echo "=== Journaux de traitement vidéo ==="
             docker compose -f docker-compose.prod.yml logs --no-color --tail 3000 api 2>&1 \
               | grep -iE 'ffmpeg|transcod|vidéo|video|WRN' | tail -n 30 || true
