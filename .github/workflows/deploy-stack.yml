@@ -2,8 +2,8 @@ name: Deploy stack
 
 # Mécanique de déploiement partagée entre la prod (deploy.yml) et la dev
 # (deploy-dev.yml). Les images sont construites sur le runner puis livrées au
-# VPS par docker save/load (couches déjà présentes non renvoyées) ; le
-# serveur ne fait que les charger et démarrer.
+# VPS via le registre GitHub (ghcr.io), d'où le serveur les télécharge ; il
+# ne fait que les tirer et démarrer.
 #
 # Pré-requis côté dépôt : secret VPS_SSH_KEY (clé privée SSH du compte deploy).
 # Pré-requis côté serveur : Docker + plugin compose ; le reverse proxy de
@@ -44,7 +44,7 @@ jobs:
   deploy:
     name: Déployer ${{ inputs.env_name }}
     runs-on: ubuntu-latest
-    timeout-minutes: 70
+    timeout-minutes: 60
     env:
       DEPLOY_HOST: 195.35.1.21
       DEPLOY_USER: deploy
@@ -54,8 +54,8 @@ jobs:
       ALLOWED_HOSTS: ${{ inputs.allowed_hosts }}
       IMAGE_TAG: ${{ inputs.image_tag }}
       WEB_PORT: ${{ inputs.web_port }}
-      # Dossiers d'images des deux environnements (couches partagées).
-      IMAGE_SHARE_DIRS: /opt/havenmotion/.images /home/deploy/havenmotion-dev/.images
+      # Registre des images (ghcr.io/<propriétaire du dépôt>, en minuscules).
+      REGISTRY: ghcr.io/melodyne01
     steps:
       - uses: actions/checkout@v4
 
@@ -151,108 +151,72 @@ jobs:
       # pas à être renvoyée au VPS (voir l'étape suivante).
       - uses: docker/setup-buildx-action@v3
 
-      - name: Construire l'image API
+      - name: Connexion au registre GitHub (ghcr.io)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Construire et publier l'image API
         uses: docker/build-push-action@v6
         with:
           context: .
           file: docker/api.Dockerfile
-          tags: vnl-api:${{ inputs.image_tag }}
-          load: true
+          tags: ${{ env.REGISTRY }}/havenmotion-api:${{ inputs.image_tag }}
+          push: true
           # Clé de licence ImageSharp (Six Labors), voir README.
           secrets: sixlabors_license=${{ secrets.SIXLABORS_LICENSE_KEY }}
           cache-from: type=gha,scope=vnl-api
           cache-to: type=gha,scope=vnl-api,mode=max
 
-      - name: Construire l'image web
+      - name: Construire et publier l'image web
         uses: docker/build-push-action@v6
         with:
           context: .
           file: docker/web.Dockerfile
-          tags: vnl-web:${{ inputs.image_tag }}
-          load: true
+          tags: ${{ env.REGISTRY }}/havenmotion-web:${{ inputs.image_tag }}
+          push: true
           cache-from: type=gha,scope=vnl-web
           cache-to: type=gha,scope=vnl-web,mode=max
 
-      # Livraison couche par couche. `docker save` produit un dossier OCI où
-      # chaque couche est un fichier nommé par son empreinte : le VPS garde ce
-      # dossier (.images/) d'un déploiement à l'autre et rsync n'envoie que les
-      # couches absentes — quelques dizaines de Mo au lieu de ~300 Mo
-      # d'archive complète, qui ne passaient plus quand le lien vers le VPS
-      # ralentissait. Un transfert coupé reprend où il s'était arrêté
-      # (--partial --append-verify), y compris au déploiement suivant.
+      # Le VPS télécharge lui-même les images depuis ghcr.io : son débit
+      # entrant depuis les runners GitHub est tombé à ~40 Ko/s (diagnostic du
+      # 22/11), alors qu'il télécharge ~10 fois plus vite. Le registre ne
+      # transfère en plus que les couches que le serveur n'a pas déjà.
+      # Identifiants temporaires (jeton du job, valable le temps du job),
+      # rangés dans un dossier jetable : les connexions Docker existantes du
+      # compte deploy ne sont pas touchées.
       - name: Livrer les images au VPS
-        timeout-minutes: 55
+        timeout-minutes: 45
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          SSH="ssh -i $HOME/.ssh/deploy_key -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -o ConnectTimeout=20"
-          rm -rf /tmp/images && mkdir -p /tmp/images
-          docker save "vnl-api:$IMAGE_TAG" "vnl-web:$IMAGE_TAG" | tar -x -C /tmp/images
-          echo "Images : $(du -sh /tmp/images | cut -f1) (non compressées)"
-
-          # Premier passage : le dossier du VPS est amorcé avec les images
-          # déjà chargées, pour ne pas renvoyer les couches qu'il possède.
-          $SSH "$DEPLOY_USER@$DEPLOY_HOST" "cd '$DEPLOY_PATH' && rm -f .images.tar.gz && rm -rf .images/blobs/sha256/.rsync-partial && \
-            if [ ! -d .images/blobs ]; then \
-              rm -rf .images && mkdir -p .images && \
-              (docker save vnl-api:$IMAGE_TAG vnl-web:$IMAGE_TAG 2>/dev/null | tar -x -C .images || true); \
-              chmod -R u+w .images; echo \"Dossier d'images amorcé : \$(du -sh .images | cut -f1)\"; \
-            fi"
-
-          # Dev et prod partagent le cache de build, donc les mêmes couches :
-          # celles déjà livrées à l'autre environnement sont reprises sur
-          # place (liens durs, même disque) au lieu d'être renvoyées.
-          $SSH "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_PATH/.images/blobs/sha256' && \
-            for d in $IMAGE_SHARE_DIRS; do \
-              [ \"\$d\" != '$DEPLOY_PATH/.images' ] && [ -d \"\$d/blobs/sha256\" ] && \
-                (cp -ln \"\$d\"/blobs/sha256/* '$DEPLOY_PATH/.images/blobs/sha256/' 2>/dev/null || true); \
-            done; echo \"Couches disponibles sur le VPS : \$(ls '$DEPLOY_PATH/.images/blobs/sha256' | wc -l)\""
-
-          # Ce qui reste à envoyer (couches absentes du VPS), pour suivre la
-          # reprise d'un transfert d'un déploiement à l'autre.
-          rsync -rn --size-only --timeout=120 --out-format='%l %n' \
-            -e "$SSH" /tmp/images/blobs/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/.images/blobs/" \
-            | awk '$1 ~ /^[0-9]+$/ && $2 !~ /\/$/ { n++; t += $1; printf "  à envoyer : %s (%.1f Mo)\n", $2, $1 / 1048576 }
-                   END { printf "Reste à envoyer : %d couche(s), %.1f Mo\n", n, t / 1048576 }' || true
-
+          SSH="ssh -i $HOME/.ssh/deploy_key -o ServerAliveInterval=15 -o ServerAliveCountMax=8 -o ConnectTimeout=20"
           start=$(date +%s)
-          sent=false
-          for attempt in 1 2 3 4; do
-            echo "Transfert des couches, essai $attempt…"
-            # --size-only : une couche porte son empreinte comme nom, même nom
-            # et même taille = même contenu. Les métadonnées (index.json…)
-            # sont, elles, comparées au contenu.
-            # --partial + --append-verify : une couche coupée reste en place
-            # (taille inférieure, donc renvoyée) et seul son reste repart ;
-            # l'empreinte complète est revérifiée à l'arrivée. (Le
-            # --partial-dir d'origine échouait sur le VPS et perdait tout.)
-            # Arrêt propre avant le délai de l'étape, pour garder le reçu.
-            if timeout -s TERM 2700 rsync -rz --size-only --delete --partial --append-verify --timeout=120 \
-                 --info=stats1,progress2 --no-inc-recursive \
-                 -e "$SSH" /tmp/images/blobs/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/.images/blobs/" \
-               && rsync -rz --checksum --exclude=blobs --timeout=120 \
-                 -e "$SSH" /tmp/images/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/.images/"; then
-              sent=true
+          pulled=false
+          for attempt in 1 2 3; do
+            echo "Téléchargement des images par le VPS, essai $attempt…"
+            if echo "$GHCR_TOKEN" | timeout 2400 $SSH "$DEPLOY_USER@$DEPLOY_HOST" "set -e
+                export DOCKER_CONFIG=\$(mktemp -d)
+                trap 'rm -rf \"\$DOCKER_CONFIG\"' EXIT
+                docker login ghcr.io -u '${{ github.actor }}' --password-stdin >/dev/null
+                for img in api web; do
+                  docker pull -q $REGISTRY/havenmotion-\$img:$IMAGE_TAG
+                  docker tag $REGISTRY/havenmotion-\$img:$IMAGE_TAG vnl-\$img:$IMAGE_TAG
+                done
+                rm -rf '$DEPLOY_PATH/.images' '$DEPLOY_PATH/.images.tar.gz'"; then
+              pulled=true
               break
             fi
-            echo "Transfert interrompu, reprise dans 10 s."
+            echo "Téléchargement interrompu, reprise dans 10 s (les couches déjà reçues sont gardées)."
             sleep 10
           done
-          if [ "$sent" != true ]; then
-            echo "::error::Transfert des images vers le VPS impossible (réseau). Relancer le déploiement reprendra là où il s'est arrêté."
+          if [ "$pulled" != true ]; then
+            echo "::error::Le VPS n'a pas pu télécharger les images depuis ghcr.io."
             exit 1
           fi
-          echo "Transfert terminé en $(( $(date +%s) - start )) s."
-
-          start=$(date +%s)
-          rc=0
-          timeout 600 $SSH "$DEPLOY_USER@$DEPLOY_HOST" \
-            "cd '$DEPLOY_PATH/.images' && docker info --format 'Docker {{.ServerVersion}}' && tar --exclude=.rsync-partial -cf - . | docker load" \
-            || rc=$?
-          if [ "$rc" -ne 0 ]; then
-            # 124 = délai de 10 min dépassé.
-            echo "::error::docker load bloqué ou en échec sur le VPS (code $rc)."
-            exit 1
-          fi
-          echo "Images chargées en $(( $(date +%s) - start )) s."
+          echo "Images téléchargées et étiquetées en $(( $(date +%s) - start )) s."
 
       - name: Relancer la pile
         run: |

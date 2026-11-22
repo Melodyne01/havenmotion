@@ -18,6 +18,10 @@ concurrency:
 
 jobs:
   dev:
+    # Publication des images sur ghcr.io (voir deploy-stack.yml).
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/deploy-stack.yml
     secrets: inherit
     with:
