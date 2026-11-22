@@ -44,7 +44,7 @@ public static class SeedData
                 City = "Bruxelles",
                 Region = "Bruxelles-Capitale",
                 LegalText = "HEAVEN Event SRL — Avenue Limburg Stirum 252/1B, 1780 Wemmel, Belgique — TVA BE 1009.781.480",
-                AboutPortraitUrl = "/placeholders/portrait.svg",
+                AboutPortraitUrl = PortraitUrl,
                 AboutParagraphsJson = DtoMapper.ToJson(
                 [
                     "Heaven Motion est un studio vidéo indépendant basé à Bruxelles.",
@@ -84,6 +84,7 @@ public static class SeedData
 
         await RenameLegacyBrandAsync(db, logger, cancellationToken);
         await FixLegacyLocationAsync(db, logger, cancellationToken);
+        await UsePortraitPhotoAsync(db, logger, cancellationToken);
         await EnsureNlTranslationsAsync(db, logger, cancellationToken);
         await EnsureEnCategoriesAsync(db, logger, cancellationToken);
         await EnsureCategoryTranslationKeysAsync(db, logger, cancellationToken);
@@ -444,6 +445,39 @@ public static class SeedData
             await db.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Réglages de localisation repris sur Bruxelles.");
         }
+    }
+
+    /// <summary>Portrait de la section « À propos » (fichier statique du front, 900 × 1200 WebP).</summary>
+    private const string PortraitUrl = "/photos/about/portrait-900.webp";
+
+    private const string PlaceholderPortraitUrl = "/placeholders/portrait.svg";
+
+    /// <summary>
+    /// Remplace le portrait provisoire par la vraie photo sur les bases déjà
+    /// en service, dans toutes les langues. Seules les fiches restées au
+    /// placeholder (ou vides) sont réécrites : un portrait choisi depuis le
+    /// backoffice n'est jamais écrasé.
+    /// </summary>
+    private static async Task UsePortraitPhotoAsync(
+        AppDbContext db,
+        ILogger logger,
+        CancellationToken cancellationToken)
+    {
+        var settings = await db.SiteSettings
+            .Where(s => s.AboutPortraitUrl == PlaceholderPortraitUrl || s.AboutPortraitUrl == string.Empty)
+            .ToListAsync(cancellationToken);
+        if (settings.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var entry in settings)
+        {
+            entry.AboutPortraitUrl = PortraitUrl;
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
+        logger.LogInformation("Portrait « À propos » remplacé sur {Count} fiche(s) de réglages.", settings.Count);
     }
 
     /// <summary>

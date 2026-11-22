@@ -176,7 +176,7 @@ export const PLACEHOLDER_SITE: SitePayload = {
     },
   ],
   about: {
-    portraitUrl: '/placeholders/portrait.svg',
+    portraitUrl: '/photos/about/portrait-900.webp',
     paragraphs: [
       'Heaven Motion est un studio photo et vidéo indépendant, basé à Bruxelles et disponible dans le monde entier.',
       'Je filme seul ou en équipe réduite, pour rester au plus près des gens.',
