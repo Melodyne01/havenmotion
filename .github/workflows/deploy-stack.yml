@@ -54,6 +54,8 @@ jobs:
       ALLOWED_HOSTS: ${{ inputs.allowed_hosts }}
       IMAGE_TAG: ${{ inputs.image_tag }}
       WEB_PORT: ${{ inputs.web_port }}
+      # Dossiers d'images des deux environnements (couches partagées).
+      IMAGE_SHARE_DIRS: /opt/havenmotion/.images /home/deploy/havenmotion-dev/.images
     steps:
       - uses: actions/checkout@v4
 
@@ -194,6 +196,15 @@ jobs:
               (docker save vnl-api:$IMAGE_TAG vnl-web:$IMAGE_TAG 2>/dev/null | tar -x -C .images || true); \
               chmod -R u+w .images; echo \"Dossier d'images amorcé : \$(du -sh .images | cut -f1)\"; \
             fi"
+
+          # Dev et prod partagent le cache de build, donc les mêmes couches :
+          # celles déjà livrées à l'autre environnement sont reprises sur
+          # place (liens durs, même disque) au lieu d'être renvoyées.
+          $SSH "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p '$DEPLOY_PATH/.images/blobs/sha256' && \
+            for d in $IMAGE_SHARE_DIRS; do \
+              [ \"\$d\" != '$DEPLOY_PATH/.images' ] && [ -d \"\$d/blobs/sha256\" ] && \
+                (cp -ln \"\$d\"/blobs/sha256/* '$DEPLOY_PATH/.images/blobs/sha256/' 2>/dev/null || true); \
+            done; echo \"Couches disponibles sur le VPS : \$(ls '$DEPLOY_PATH/.images/blobs/sha256' | wc -l)\""
 
           start=$(date +%s)
           sent=false
