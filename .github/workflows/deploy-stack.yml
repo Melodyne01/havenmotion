@@ -2,7 +2,8 @@ name: Deploy stack
 
 # Mécanique de déploiement partagée entre la prod (deploy.yml) et la dev
 # (deploy-dev.yml). Les images sont construites sur le runner puis livrées au
-# VPS par docker save/load ; le serveur ne fait que les charger et démarrer.
+# VPS par docker save/load (couches déjà présentes non renvoyées) ; le
+# serveur ne fait que les charger et démarrer.
 #
 # Pré-requis côté dépôt : secret VPS_SSH_KEY (clé privée SSH du compte deploy).
 # Pré-requis côté serveur : Docker + plugin compose ; le reverse proxy de
@@ -43,7 +44,7 @@ jobs:
   deploy:
     name: Déployer ${{ inputs.env_name }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 50
     env:
       DEPLOY_HOST: 195.35.1.21
       DEPLOY_USER: deploy
@@ -78,7 +79,7 @@ jobs:
             --exclude='dist' \
             --exclude='.env' \
             --exclude='BACKOFFICE-ACCES.txt' \
-            --exclude='.images.tar.gz' \
+            --exclude='.images/' \
             -e "ssh -i ~/.ssh/deploy_key" \
             ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
 
@@ -143,42 +144,76 @@ jobs:
       # Les images sont construites sur le runner (machine puissante) puis
       # livrées au VPS : le petit serveur n'a plus qu'à les charger et les
       # démarrer — pas de compilation Angular/.NET sur place.
-      - name: Construire les images
-        env:
-          # Clé de licence ImageSharp (Six Labors), voir README.
-          SIXLABORS_LICENSE_KEY: ${{ secrets.SIXLABORS_LICENSE_KEY }}
-        run: |
-          docker build --secret id=sixlabors_license,env=SIXLABORS_LICENSE_KEY \
-            -f docker/api.Dockerfile -t "vnl-api:$IMAGE_TAG" .
-          docker build -f docker/web.Dockerfile -t "vnl-web:$IMAGE_TAG" .
+      # Cache de build GitHub Actions : une couche inchangée (FFmpeg, image de
+      # base…) ressort à l'identique d'un déploiement à l'autre, et n'a donc
+      # pas à être renvoyée au VPS (voir l'étape suivante).
+      - uses: docker/setup-buildx-action@v3
 
-      # Livraison en deux temps, chacun minuté : transfert de l'archive
-      # (rsync, reprenable) puis `docker load` sur le VPS. Un blocage dit
-      # ainsi tout de suite s'il vient du réseau ou de Docker sur le serveur
-      # (le `docker save | ssh docker load` d'origine restait figé sans
-      # message jusqu'au délai du job).
+      - name: Construire l'image API
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/api.Dockerfile
+          tags: vnl-api:${{ inputs.image_tag }}
+          load: true
+          # Clé de licence ImageSharp (Six Labors), voir README.
+          secrets: sixlabors_license=${{ secrets.SIXLABORS_LICENSE_KEY }}
+          cache-from: type=gha,scope=vnl-api
+          cache-to: type=gha,scope=vnl-api,mode=max
+
+      - name: Construire l'image web
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/web.Dockerfile
+          tags: vnl-web:${{ inputs.image_tag }}
+          load: true
+          cache-from: type=gha,scope=vnl-web
+          cache-to: type=gha,scope=vnl-web,mode=max
+
+      # Livraison couche par couche. `docker save` produit un dossier OCI où
+      # chaque couche est un fichier nommé par son empreinte : le VPS garde ce
+      # dossier (.images/) d'un déploiement à l'autre et rsync n'envoie que les
+      # couches absentes — quelques dizaines de Mo au lieu de ~300 Mo
+      # d'archive complète, qui ne passaient plus quand le lien vers le VPS
+      # ralentissait. Un transfert coupé reprend où il s'était arrêté
+      # (--partial-dir), y compris au déploiement suivant.
       - name: Livrer les images au VPS
-        timeout-minutes: 25
+        timeout-minutes: 35
         run: |
           SSH="ssh -i $HOME/.ssh/deploy_key -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -o ConnectTimeout=20"
-          docker save "vnl-api:$IMAGE_TAG" "vnl-web:$IMAGE_TAG" | gzip > /tmp/images.tar.gz
-          echo "Archive des images : $(du -h /tmp/images.tar.gz | cut -f1)"
+          rm -rf /tmp/images && mkdir -p /tmp/images
+          docker save "vnl-api:$IMAGE_TAG" "vnl-web:$IMAGE_TAG" | tar -x -C /tmp/images
+          echo "Images : $(du -sh /tmp/images | cut -f1) (non compressées)"
+
+          # Premier passage : le dossier du VPS est amorcé avec les images
+          # déjà chargées, pour ne pas renvoyer les couches qu'il possède.
+          $SSH "$DEPLOY_USER@$DEPLOY_HOST" "cd '$DEPLOY_PATH' && rm -f .images.tar.gz && \
+            if [ ! -d .images/blobs ]; then \
+              rm -rf .images && mkdir -p .images && \
+              (docker save vnl-api:$IMAGE_TAG vnl-web:$IMAGE_TAG 2>/dev/null | tar -x -C .images || true); \
+              chmod -R u+w .images; echo \"Dossier d'images amorcé : \$(du -sh .images | cut -f1)\"; \
+            fi"
 
           start=$(date +%s)
           sent=false
-          for attempt in 1 2 3; do
-            echo "Transfert, essai $attempt…"
-            if timeout 420 rsync --partial --timeout=60 -e "$SSH" \
-                 /tmp/images.tar.gz "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/.images.tar.gz"; then
+          for attempt in 1 2 3 4; do
+            echo "Transfert des couches, essai $attempt…"
+            # --size-only : une couche porte son empreinte comme nom, même nom
+            # et même taille = même contenu. Les métadonnées (index.json…)
+            # sont, elles, comparées au contenu.
+            if rsync -rz --size-only --delete --partial-dir=.rsync-partial --timeout=120 --info=stats1 \
+                 -e "$SSH" /tmp/images/blobs/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/.images/blobs/" \
+               && rsync -rz --checksum --exclude=blobs --timeout=120 \
+                 -e "$SSH" /tmp/images/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/.images/"; then
               sent=true
               break
-            else
-              echo "Transfert en échec (code $?)."
-              sleep 10
             fi
+            echo "Transfert interrompu, reprise dans 10 s."
+            sleep 10
           done
           if [ "$sent" != true ]; then
-            echo "::error::Transfert de l'archive vers le VPS impossible (réseau)."
+            echo "::error::Transfert des images vers le VPS impossible (réseau). Relancer le déploiement reprendra là où il s'est arrêté."
             exit 1
           fi
           echo "Transfert terminé en $(( $(date +%s) - start )) s."
@@ -186,7 +221,7 @@ jobs:
           start=$(date +%s)
           rc=0
           timeout 600 $SSH "$DEPLOY_USER@$DEPLOY_HOST" \
-            "cd '$DEPLOY_PATH' && docker info --format 'Docker {{.ServerVersion}}' && gunzip -c .images.tar.gz | docker load && rm -f .images.tar.gz" \
+            "cd '$DEPLOY_PATH/.images' && docker info --format 'Docker {{.ServerVersion}}' && tar --exclude=.rsync-partial -cf - . | docker load" \
             || rc=$?
           if [ "$rc" -ne 0 ]; then
             # 124 = délai de 10 min dépassé.
