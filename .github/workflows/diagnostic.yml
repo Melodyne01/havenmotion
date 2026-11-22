@@ -51,6 +51,28 @@ jobs:
           echo | timeout 10 openssl s_client -connect "$SITE_DOMAIN:443" -servername "$SITE_DOMAIN" 2>/dev/null \
             | openssl x509 -noout -subject -issuer -dates 2>/dev/null || echo "(pas de certificat TLS présenté)"
 
+      - name: Débit réseau runner ↔ VPS
+        run: |
+          SSH="ssh -i $HOME/.ssh/id_deploy -o ConnectTimeout=20"
+          echo "=== Latence (aller-retour SSH) ==="
+          for i in 1 2 3; do
+            /usr/bin/time -f "%e s" $SSH "$DEPLOY_USER@$DEPLOY_HOST" true 2>&1 | tail -n 1
+          done
+          echo "=== Envoi runner → VPS (20 Mo aléatoires) ==="
+          head -c 20M /dev/urandom > /tmp/probe.bin
+          start=$(date +%s.%N)
+          if timeout 180 $SSH "$DEPLOY_USER@$DEPLOY_HOST" 'cat > /dev/null' < /tmp/probe.bin; then
+            awk -v s="$start" -v e="$(date +%s.%N)" 'BEGIN { d = e - s; printf "%.1f s, soit %.0f Ko/s\n", d, 20480 / d }'
+          else
+            echo "(pas terminé en 180 s : moins de 115 Ko/s)"
+          fi
+          echo "=== Téléchargement VPS ← Internet (archive GitHub) ==="
+          $SSH "$DEPLOY_USER@$DEPLOY_HOST" \
+            "curl -sL -o /dev/null -m 60 -w '%{size_download} octets en %{time_total} s, soit %{speed_download} o/s\n' https://github.com/git/git/archive/refs/tags/v2.45.0.tar.gz" \
+            || echo "(échec du téléchargement)"
+          echo "=== Charge du VPS ==="
+          $SSH "$DEPLOY_USER@$DEPLOY_HOST" 'uptime; cat /proc/net/dev | grep -E "eth|ens|enp"' || true
+
       - name: État du serveur (via SSH)
         run: |
           ssh -i ~/.ssh/id_deploy "$DEPLOY_USER@$DEPLOY_HOST" SITE_DOMAIN="$SITE_DOMAIN" DEPLOY_PATH="$DEPLOY_PATH" 'bash -s' <<'REMOTE'
