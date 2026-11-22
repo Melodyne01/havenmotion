@@ -44,7 +44,7 @@ jobs:
   deploy:
     name: Déployer ${{ inputs.env_name }}
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 70
     env:
       DEPLOY_HOST: 195.35.1.21
       DEPLOY_USER: deploy
@@ -179,9 +179,9 @@ jobs:
       # couches absentes — quelques dizaines de Mo au lieu de ~300 Mo
       # d'archive complète, qui ne passaient plus quand le lien vers le VPS
       # ralentissait. Un transfert coupé reprend où il s'était arrêté
-      # (--partial-dir), y compris au déploiement suivant.
+      # (--partial --append-verify), y compris au déploiement suivant.
       - name: Livrer les images au VPS
-        timeout-minutes: 35
+        timeout-minutes: 55
         run: |
           SSH="ssh -i $HOME/.ssh/deploy_key -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -o ConnectTimeout=20"
           rm -rf /tmp/images && mkdir -p /tmp/images
@@ -190,7 +190,7 @@ jobs:
 
           # Premier passage : le dossier du VPS est amorcé avec les images
           # déjà chargées, pour ne pas renvoyer les couches qu'il possède.
-          $SSH "$DEPLOY_USER@$DEPLOY_HOST" "cd '$DEPLOY_PATH' && rm -f .images.tar.gz && \
+          $SSH "$DEPLOY_USER@$DEPLOY_HOST" "cd '$DEPLOY_PATH' && rm -f .images.tar.gz && rm -rf .images/blobs/sha256/.rsync-partial && \
             if [ ! -d .images/blobs ]; then \
               rm -rf .images && mkdir -p .images && \
               (docker save vnl-api:$IMAGE_TAG vnl-web:$IMAGE_TAG 2>/dev/null | tar -x -C .images || true); \
@@ -220,7 +220,13 @@ jobs:
             # --size-only : une couche porte son empreinte comme nom, même nom
             # et même taille = même contenu. Les métadonnées (index.json…)
             # sont, elles, comparées au contenu.
-            if rsync -rz --size-only --delete --partial-dir=.rsync-partial --timeout=120 --info=stats1,progress2 --no-inc-recursive \
+            # --partial + --append-verify : une couche coupée reste en place
+            # (taille inférieure, donc renvoyée) et seul son reste repart ;
+            # l'empreinte complète est revérifiée à l'arrivée. (Le
+            # --partial-dir d'origine échouait sur le VPS et perdait tout.)
+            # Arrêt propre avant le délai de l'étape, pour garder le reçu.
+            if timeout -s TERM 2700 rsync -rz --size-only --delete --partial --append-verify --timeout=120 \
+                 --info=stats1,progress2 --no-inc-recursive \
                  -e "$SSH" /tmp/images/blobs/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/.images/blobs/" \
                && rsync -rz --checksum --exclude=blobs --timeout=120 \
                  -e "$SSH" /tmp/images/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/.images/"; then
